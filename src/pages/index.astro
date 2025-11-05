@@ -1,0 +1,225 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import SearchFilter from '@/components/react/SearchFilter';
+import { supabase } from '@/lib/supabase';
+
+// Fetch cities and subject areas for the search filter
+const { data: cities } = await supabase
+  .from('cities')
+  .select('id, name, slug')
+  .order('name');
+
+const { data: subjectAreas } = await supabase
+  .from('subject_areas')
+  .select('id, name, slug')
+  .order('name');
+
+// Fetch featured lobbyists for homepage showcase
+const { data: featuredLobbyists } = await supabase
+  .from('lobbyists')
+  .select('id, first_name, last_name, slug, bio, profile_image_url, cities, subject_areas, subscription_tier')
+  .eq('subscription_tier', 'featured')
+  .eq('is_active', true)
+  .order('featured_order', { nullsFirst: false })
+  .limit(6);
+
+type Lobbyist = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  slug: string;
+  bio: string | null;
+  profile_image_url: string | null;
+  cities: string[];
+  subject_areas: string[];
+  subscription_tier: 'free' | 'premium' | 'featured';
+};
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'TexasLobby.org',
+  url: 'https://texaslobby.org',
+  description: 'Find and hire experienced Texas lobbyists. Search by city, expertise, and track record.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://texaslobby.org/lobbyists?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+
+<Layout
+  title="TexasLobby.org | Find Your Voice in Texas Politics"
+  description="Search and hire experienced Texas lobbyists. Browse transparent profiles with client lists, expertise areas, and track records. Find the right political advocate for your business."
+  schema={schema}
+>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue/5 to-background py-20 md:py-32">
+    <div class="container">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- StoryBrand Hero Message -->
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
+          Find Your Voice in <span class="text-texas-blue">Texas Politics</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-muted-foreground mb-4">
+          Connect with experienced lobbyists who understand your industry
+        </p>
+        <p class="text-lg text-muted-foreground mb-12">
+          Search 1,600+ Texas lobbyists by city and expertise. Compare profiles, see client lists, hire with confidence.
+        </p>
+
+        <!-- Search Filter -->
+        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+          <SearchFilter
+            cities={cities || []}
+            subjectAreas={subjectAreas || []}
+            client:load
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem/Solution Section (StoryBrand Framework) -->
+  <section class="py-20 border-t border-border">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          Stop Losing to Legislation You Never Saw Coming
+        </h2>
+        <p class="text-lg text-muted-foreground">
+          Every legislative session, Texas businesses lose millions because they had no voice at the table.
+          The lobbying system feels like an insider-only club. We're changing that.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-texas-blue/10 mb-4">
+            <svg class="w-6 h-6 text-texas-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Search by City & Industry</h3>
+          <p class="text-muted-foreground">
+            Find lobbyists who specialize in your industry and know your local market
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-texas-blue/10 mb-4">
+            <svg class="w-6 h-6 text-texas-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Transparent Track Records</h3>
+          <p class="text-muted-foreground">
+            See real client lists, years of experience, and areas of expertise
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-texas-blue/10 mb-4">
+            <svg class="w-6 h-6 text-texas-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Compare & Hire</h3>
+          <p class="text-muted-foreground">
+            Compare multiple lobbyists side-by-side, then connect directly
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Lobbyists -->
+  {featuredLobbyists && featuredLobbyists.length > 0 && (
+    <section class="py-20 bg-muted/50">
+      <div class="container">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured Lobbyists</h2>
+          <p class="text-lg text-muted-foreground">
+            Connect with top-rated political advocates across Texas
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(featuredLobbyists as Lobbyist[]).map((lobbyist) => (
+            <a
+              href={`/lobbyists/${lobbyist.slug}`}
+              class="block bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
+            >
+              <div class="flex items-start space-x-4">
+                <div class="w-16 h-16 rounded-full bg-texas-blue/10 flex items-center justify-center text-texas-blue font-semibold text-xl">
+                  {lobbyist.first_name[0]}{lobbyist.last_name[0]}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-semibold text-lg">
+                      {lobbyist.first_name} {lobbyist.last_name}
+                    </h3>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-texas-blue text-white">
+                      Featured
+                    </span>
+                  </div>
+                  {lobbyist.cities && lobbyist.cities.length > 0 && (
+                    <p class="text-sm text-muted-foreground mt-1">
+                      {lobbyist.cities.slice(0, 2).join(', ')}
+                      {lobbyist.cities.length > 2 && ` +${lobbyist.cities.length - 2}`}
+                    </p>
+                  )}
+                  {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 && (
+                    <div class="flex flex-wrap gap-1 mt-2">
+                      {lobbyist.subject_areas.slice(0, 3).map((subject) => (
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground">
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="text-center mt-12">
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue/90 transition-colors"
+          >
+            View All Lobbyists
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-texas-blue text-white">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          Are You a Texas Lobbyist?
+        </h2>
+        <p class="text-xl mb-8 opacity-90">
+          Claim your free profile and connect with businesses who need your expertise
+        </p>
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center justify-center rounded-md bg-white px-8 py-3 text-base font-medium text-texas-blue hover:bg-gray-100 transition-colors"
+        >
+          Claim Your Profile
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

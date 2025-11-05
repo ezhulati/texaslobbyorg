@@ -1,0 +1,83 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  noindex?: boolean;
+  schema?: Record<string, any>;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  noindex = false,
+  schema,
+} = Astro.props;
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://texaslobby.org';
+const canonicalURL = canonical || new URL(Astro.url.pathname, siteUrl).toString();
+const ogImageURL = new URL(ogImage, siteUrl).toString();
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+{canonical && <link rel="canonical" href={canonicalURL} />}
+{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:site_name" content="TexasLobby.org" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImageURL} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+<!-- Schema.org JSON-LD -->
+{schema && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+)}
+
+<!-- Default Organization Schema -->
+<script is:inline type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "TexasLobby.org",
+    "url": "https://texaslobby.org",
+    "logo": "https://texaslobby.org/logo.png",
+    "description": "The first modern, searchable directory connecting Texas business owners with experienced lobbyists.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "TX",
+      "addressCountry": "US"
+    }
+  }
+</script>

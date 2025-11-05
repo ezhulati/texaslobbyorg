@@ -4,14 +4,11 @@ import SearchFilter from '@/components/react/SearchFilter';
 import SearchableList from '@/components/react/SearchableList';
 import { supabase } from '@/lib/supabase';
 import { searchLobbyists, getLobbyistCount } from '@/lib/api/lobbyists';
-import { getUniqueClients } from '@/lib/api/clients';
 
 // Get search parameters from URL
 const url = new URL(Astro.request.url);
-const searchQuery = url.searchParams.get('q') || '';
 const cityFilter = url.searchParams.get('city') || '';
 const subjectFilter = url.searchParams.get('subject') || '';
-const clientFilters = url.searchParams.getAll('client'); // Multiple client params
 const page = parseInt(url.searchParams.get('page') || '1');
 const perPage = 24;
 
@@ -26,20 +23,10 @@ const { data: subjectAreas } = await supabase
   .select('id, name, slug')
   .order('name');
 
-// Fetch clients for the search filter
-const clientOptions = await getUniqueClients({ onlyActive: false, limit: 100 });
-const clients = clientOptions.map(c => ({
-  label: c.name,
-  value: c.name,
-  count: c.count
-}));
-
 // Build search parameters
 const searchParams = {
-  query: searchQuery || undefined,
   cities: cityFilter ? [cityFilter] : undefined,
   subjects: subjectFilter ? [subjectFilter] : undefined,
-  clients: clientFilters.length > 0 ? clientFilters : undefined,
   limit: perPage,
   offset: (page - 1) * perPage,
 };
@@ -50,22 +37,14 @@ const totalCount = await getLobbyistCount(searchParams);
 const totalPages = Math.ceil(totalCount / perPage);
 
 // Build page title and description
-const hasFilters = searchQuery || cityFilter || subjectFilter || clientFilters.length > 0;
+const hasFilters = cityFilter || subjectFilter;
 let pageTitle = 'Find Texas Lobbyists';
 let pageDescription = 'Search and browse experienced Texas lobbyists by city, expertise, and industry. Transparent profiles with client lists and track records.';
 
 if (hasFilters) {
   const parts = [];
-  if (searchQuery) parts.push(`matching "${searchQuery}"`);
   if (cityFilter) parts.push(`in ${cityFilter}`);
   if (subjectFilter) parts.push(`specializing in ${subjectFilter}`);
-  if (clientFilters.length > 0) {
-    if (clientFilters.length === 1) {
-      parts.push(`representing ${clientFilters[0]}`);
-    } else {
-      parts.push(`representing ${clientFilters.length} selected clients`);
-    }
-  }
 
   pageTitle = `Texas Lobbyists ${parts.join(' ')}`;
   pageDescription = `Find ${totalCount} Texas lobbyists ${parts.join(' ')}. Browse transparent profiles with client lists and expertise.`;
@@ -103,15 +82,12 @@ const schema = {
       </p>
 
       <!-- Search Filter -->
-      <div class="bg-white rounded-lg shadow-md p-6 overflow-visible">
+      <div class="bg-white rounded-lg shadow-md p-6">
         <SearchFilter
           cities={cities || []}
           subjectAreas={subjectAreas || []}
-          clients={clients || []}
-          initialQuery={searchQuery}
           initialCity={cityFilter}
           initialSubject={subjectFilter}
-          initialClients={clientFilters}
           client:load
         />
       </div>
@@ -119,25 +95,12 @@ const schema = {
       <!-- Active Filters -->
       {hasFilters && (
         <div class="mt-4 flex flex-wrap gap-2">
-          {searchQuery && (
-            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
-              <span class="font-medium">Search:</span>
-              <span>{searchQuery}</span>
-              <a
-                href={`/lobbyists?${new URLSearchParams({ city: cityFilter, subject: subjectFilter }).toString()}`}
-                class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
-                aria-label="Remove search filter"
-              >
-                ×
-              </a>
-            </div>
-          )}
           {cityFilter && (
             <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
               <span class="font-medium">City:</span>
               <span>{cityFilter}</span>
               <a
-                href={`/lobbyists?${new URLSearchParams({ q: searchQuery, subject: subjectFilter }).toString()}`}
+                href={`/lobbyists?${new URLSearchParams({ subject: subjectFilter }).toString()}`}
                 class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
                 aria-label="Remove city filter"
               >
@@ -150,7 +113,7 @@ const schema = {
               <span class="font-medium">Expertise:</span>
               <span>{subjectFilter}</span>
               <a
-                href={`/lobbyists?${new URLSearchParams({ q: searchQuery, city: cityFilter }).toString()}`}
+                href={`/lobbyists?${new URLSearchParams({ city: cityFilter }).toString()}`}
                 class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
                 aria-label="Remove subject filter"
               >
@@ -158,28 +121,6 @@ const schema = {
               </a>
             </div>
           )}
-          {clientFilters.map((client) => {
-            const otherClients = clientFilters.filter(c => c !== client);
-            const params = new URLSearchParams();
-            if (searchQuery) params.set('q', searchQuery);
-            if (cityFilter) params.set('city', cityFilter);
-            if (subjectFilter) params.set('subject', subjectFilter);
-            otherClients.forEach(c => params.append('client', c));
-
-            return (
-              <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
-                <span class="font-medium">Client:</span>
-                <span>{client}</span>
-                <a
-                  href={`/lobbyists?${params.toString()}`}
-                  class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
-                  aria-label={`Remove ${client} filter`}
-                >
-                  ×
-                </a>
-              </div>
-            );
-          })}
           <a
             href="/lobbyists"
             class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

@@ -180,8 +180,9 @@ async function main() {
   }
 
   // Phase 3: Generate slugs
-  if (!DRY_RUN) {
-    console.log('🔗 Phase 3: Generating unique slugs...\n');
+  // Skip database checks if we're clearing data (no collisions possible)
+  if (!DRY_RUN && !CLEAR_DATA) {
+    console.log('🔗 Phase 3: Generating unique slugs (checking database for collisions)...\n');
     for (const lobbyist of uniqueLobbyists) {
       if (!lobbyist.first_name || !lobbyist.last_name) continue;
 
@@ -193,8 +194,8 @@ async function main() {
     }
     console.log(`   ✓ Generated ${uniqueLobbyists.length} unique slugs\n`);
   } else {
-    // In dry-run, just create simple slugs without checking database
-    console.log('🔗 Phase 3: Generating slugs (dry-run)...\n');
+    // In dry-run or clear-data mode, just create simple slugs without checking database
+    console.log('🔗 Phase 3: Generating slugs...\n');
     for (const lobbyist of uniqueLobbyists) {
       if (!lobbyist.first_name || !lobbyist.last_name) continue;
 
@@ -275,20 +276,33 @@ async function main() {
   if (allClients.length > 0) {
     console.log('📥 Phase 6: Importing client relationships...\n');
 
-    // Need to fetch lobbyist IDs by slug
+    // Fetch all lobbyist IDs and slugs in one query for O(1) lookups
+    const { data: lobbyists } = await supabase
+      .from('lobbyists')
+      .select('id, slug');
+
+    if (!lobbyists) {
+      console.error('   ❌ Failed to fetch lobbyist IDs');
+      process.exit(1);
+    }
+
+    // Create slug -> ID map for fast lookups
+    const slugToIdMap = new Map<string, string>();
+    for (const lobbyist of lobbyists) {
+      slugToIdMap.set(lobbyist.slug, lobbyist.id);
+    }
+
+    console.log(`   ✓ Loaded ${slugToIdMap.size} lobbyist IDs`);
+
+    // Map client records to include lobbyist_id
     const clientsWithIds: ClientInsert[] = [];
-
     for (const { lobbyistSlug, client } of allClients) {
-      const { data: lobbyist } = await supabase
-        .from('lobbyists')
-        .select('id')
-        .eq('slug', lobbyistSlug)
-        .single();
+      const lobbyistId = slugToIdMap.get(lobbyistSlug);
 
-      if (lobbyist) {
+      if (lobbyistId) {
         clientsWithIds.push({
           ...client,
-          lobbyist_id: lobbyist.id,
+          lobbyist_id: lobbyistId,
         } as ClientInsert);
       }
     }
@@ -316,20 +330,31 @@ async function main() {
   if (allPoliticalFunds.length > 0) {
     console.log('📥 Phase 7: Importing political fund compensations...\n');
 
-    // Need to fetch lobbyist IDs by slug
+    // Fetch all lobbyist IDs and slugs in one query for O(1) lookups
+    const { data: lobbyists } = await supabase
+      .from('lobbyists')
+      .select('id, slug');
+
+    if (!lobbyists) {
+      console.error('   ❌ Failed to fetch lobbyist IDs');
+      process.exit(1);
+    }
+
+    // Create slug -> ID map for fast lookups
+    const slugToIdMap = new Map<string, string>();
+    for (const lobbyist of lobbyists) {
+      slugToIdMap.set(lobbyist.slug, lobbyist.id);
+    }
+
+    // Map fund records to include lobbyist_id
     const fundsWithIds: PoliticalFundCompensationInsert[] = [];
-
     for (const { lobbyistSlug, fund } of allPoliticalFunds) {
-      const { data: lobbyist } = await supabase
-        .from('lobbyists')
-        .select('id')
-        .eq('slug', lobbyistSlug)
-        .single();
+      const lobbyistId = slugToIdMap.get(lobbyistSlug);
 
-      if (lobbyist) {
+      if (lobbyistId) {
         fundsWithIds.push({
           ...fund,
-          lobbyist_id: lobbyist.id,
+          lobbyist_id: lobbyistId,
         } as PoliticalFundCompensationInsert);
       }
     }

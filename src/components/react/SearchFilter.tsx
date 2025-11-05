@@ -27,18 +27,93 @@ interface SearchFilterProps {
 }
 
 export default function SearchFilter({
-  cities,
-  subjectAreas,
-  clients = [],
+  cities: initialCities,
+  subjectAreas: initialSubjectAreas,
+  clients: initialClients = [],
   initialQuery = '',
   initialCity = '',
   initialSubject = '',
-  initialClients = [],
+  initialClients: initialClientSelections = [],
 }: SearchFilterProps) {
   const [query, setQuery] = useState(initialQuery);
   const [selectedCity, setSelectedCity] = useState(initialCity);
   const [selectedSubject, setSelectedSubject] = useState(initialSubject);
-  const [selectedClients, setSelectedClients] = useState<string[]>(initialClients);
+  const [selectedClients, setSelectedClients] = useState<string[]>(initialClientSelections);
+
+  // Dynamic filter options
+  const [cities, setCities] = useState<City[]>(initialCities);
+  const [subjectAreas, setSubjectAreas] = useState<SubjectArea[]>(initialSubjectAreas);
+  const [clients, setClients] = useState<MultiSelectOption[]>(initialClients);
+  const [isLoadingFilters, setIsLoadingFilters] = useState(false);
+
+  // Fetch filtered options when filters change
+  useEffect(() => {
+    const fetchFilteredOptions = async () => {
+      setIsLoadingFilters(true);
+
+      try {
+        // Build query parameters for each filter API
+        const cityParams = new URLSearchParams();
+        const subjectParams = new URLSearchParams();
+        const clientParams = new URLSearchParams();
+
+        if (selectedSubject) {
+          cityParams.set('subject', selectedSubject);
+          clientParams.set('subject', selectedSubject);
+        }
+
+        if (selectedCity) {
+          subjectParams.set('city', selectedCity);
+          clientParams.set('city', selectedCity);
+        }
+
+        // Fetch all three filter options in parallel
+        const [citiesRes, subjectsRes, clientsRes] = await Promise.all([
+          fetch(`/api/filters/cities?${cityParams.toString()}`),
+          fetch(`/api/filters/subjects?${subjectParams.toString()}`),
+          fetch(`/api/filters/clients?${clientParams.toString()}`)
+        ]);
+
+        const [newCities, newSubjects, newClients] = await Promise.all([
+          citiesRes.json(),
+          subjectsRes.json(),
+          clientsRes.json()
+        ]);
+
+        setCities(newCities);
+        setSubjectAreas(newSubjects);
+        setClients(newClients);
+
+        // If current selections are no longer available, clear them
+        if (selectedCity && !newCities.find((c: City) => c.slug === selectedCity)) {
+          setSelectedCity('');
+        }
+        if (selectedSubject && !newSubjects.find((s: SubjectArea) => s.slug === selectedSubject)) {
+          setSelectedSubject('');
+        }
+        // Clear any client selections that are no longer available
+        const availableClientValues = new Set(newClients.map((c: MultiSelectOption) => c.value));
+        const validSelections = selectedClients.filter(c => availableClientValues.has(c));
+        if (validSelections.length !== selectedClients.length) {
+          setSelectedClients(validSelections);
+        }
+      } catch (error) {
+        console.error('Error fetching filtered options:', error);
+      } finally {
+        setIsLoadingFilters(false);
+      }
+    };
+
+    // Only fetch if we have at least one filter selected
+    if (selectedCity || selectedSubject) {
+      fetchFilteredOptions();
+    } else {
+      // Reset to initial values when no filters
+      setCities(initialCities);
+      setSubjectAreas(initialSubjectAreas);
+      setClients(initialClients);
+    }
+  }, [selectedCity, selectedSubject]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,11 +160,12 @@ export default function SearchFilter({
       {/* Filters Row */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* City Filter */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative">
           <select
             value={selectedCity}
             onChange={(e) => setSelectedCity(e.target.value)}
-            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            disabled={isLoadingFilters}
+            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-wait"
           >
             <option value="">All Cities</option>
             {cities.map((city) => (
@@ -98,14 +174,18 @@ export default function SearchFilter({
               </option>
             ))}
           </select>
+          {isLoadingFilters && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-texas-blue-500 border-t-transparent rounded-full animate-spin" />
+          )}
         </div>
 
         {/* Subject Filter */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative">
           <select
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
-            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            disabled={isLoadingFilters}
+            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-wait"
           >
             <option value="">All Specialties</option>
             {subjectAreas.map((subject) => (
@@ -114,6 +194,9 @@ export default function SearchFilter({
               </option>
             ))}
           </select>
+          {isLoadingFilters && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-texas-blue-500 border-t-transparent rounded-full animate-spin" />
+          )}
         </div>
 
         {/* Client Filter */}
@@ -130,6 +213,7 @@ export default function SearchFilter({
               placeholder="Filter by client..."
               maxDisplayTags={1}
               className="h-11"
+              disabled={isLoadingFilters}
             />
           </div>
         )}

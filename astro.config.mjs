@@ -11,7 +11,7 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
   ],
-  output: 'hybrid',
+  output: 'server',
   adapter: netlify(),
   site: 'https://texaslobby.org',
   server: {

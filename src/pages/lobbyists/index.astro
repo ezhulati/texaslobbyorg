@@ -1,7 +1,7 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import SearchFilter from '@/components/react/SearchFilter';
-import LobbyistCard from '@/components/react/LobbyistCard';
+import SearchableList from '@/components/react/SearchableList';
 import { supabase } from '@/lib/supabase';
 import { searchLobbyists, getLobbyistCount } from '@/lib/api/lobbyists';
 
@@ -167,24 +167,8 @@ const schema = {
         </div>
       ) : (
         <>
-          <!-- Results Grid -->
-          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {lobbyists.map((lobbyist) => (
-              <LobbyistCard
-                id={lobbyist.id}
-                firstName={lobbyist.first_name}
-                lastName={lobbyist.last_name}
-                slug={lobbyist.slug}
-                bio={lobbyist.bio}
-                profileImageUrl={lobbyist.profile_image_url}
-                cities={lobbyist.cities}
-                subjectAreas={lobbyist.subject_areas}
-                subscriptionTier={lobbyist.subscription_tier}
-                viewCount={lobbyist.view_count}
-                client:load
-              />
-            ))}
-          </div>
+          <!-- Searchable Results List -->
+          <SearchableList lobbyists={lobbyists} client:load />
 
           <!-- Pagination -->
           {totalPages > 1 && (

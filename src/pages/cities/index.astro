@@ -3,7 +3,21 @@ import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
 
 // Get all cities with lobbyist counts
-const { data: cities } = await supabase.from('cities').select('*').order('population', { ascending: false });
+// Only show cities with population data, then sort by population descending
+const { data: citiesWithPopulation } = await supabase
+  .from('cities')
+  .select('*')
+  .not('population', 'is', null)
+  .order('population', { ascending: false });
+
+// Get cities without population data (smaller towns)
+const { data: citiesWithoutPopulation } = await supabase
+  .from('cities')
+  .select('*')
+  .is('population', null)
+  .order('name');
+
+const cities = [...(citiesWithPopulation || []), ...(citiesWithoutPopulation || [])];
 
 // Get all lobbyists to count by city
 const { data: lobbyists } = await supabase
@@ -30,7 +44,7 @@ const pageDescription =
 
 <Layout title={pageTitle} description={pageDescription}>
   <!-- Header -->
-  <section class="bg-texas-blue text-white py-16">
+  <section class="bg-texas-blue-500 text-white py-16">
     <div class="container">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">Find Lobbyists by City</h1>
@@ -50,7 +64,7 @@ const pageDescription =
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {
             majorCities.map((city) => {
-              const count = cityCounts[city.slug] || 0;
+              const count = cityCounts[city.name] || 0;
               return (
                 <a
                   href={`/cities/${city.slug}`}
@@ -108,7 +122,7 @@ const pageDescription =
             <h2 class="text-2xl font-bold mb-6">Other Texas Cities</h2>
             <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
               {otherCities.map((city) => {
-                const count = cityCounts[city.slug] || 0;
+                const count = cityCounts[city.name] || 0;
                 return (
                   <a
                     href={`/cities/${city.slug}`}

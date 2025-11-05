@@ -32,19 +32,19 @@ export default function LobbyistCard({
     <a
       href={`/lobbyists/${slug}`}
       className={cn(
-        'block rounded-lg border bg-white p-6 transition-all hover:shadow-lg',
-        subscriptionTier === 'featured' && 'border-texas-red-500 shadow-md ring-2 ring-texas-red-500/20',
-        subscriptionTier === 'premium' && 'border-texas-blue-500/30 ring-1 ring-texas-blue-500/10',
-        subscriptionTier === 'free' && 'border-border'
+        'block rounded-lg border bg-white p-6 transition-all relative overflow-hidden',
+        subscriptionTier === 'featured' && 'border-texas-red-500 shadow-xl ring-2 ring-texas-red-500/30 hover:shadow-2xl hover:ring-texas-red-500/40',
+        subscriptionTier === 'premium' && 'border-texas-gold-500 shadow-lg ring-2 ring-texas-gold-500/20 hover:shadow-xl hover:ring-texas-gold-500/30',
+        subscriptionTier === 'free' && 'border-border hover:shadow-lg'
       )}
     >
       <div className="flex items-start space-x-4">
         {/* Avatar */}
         <div
           className={cn(
-            'flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full text-xl font-semibold',
-            subscriptionTier === 'featured' ? 'bg-texas-red-500 text-white' :
-            subscriptionTier === 'premium' ? 'bg-texas-blue-500 text-white' :
+            'flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full text-xl font-semibold relative z-10',
+            subscriptionTier === 'featured' ? 'bg-gradient-to-br from-texas-red-500 to-texas-red-600 text-white ring-2 ring-texas-red-500/30' :
+            subscriptionTier === 'premium' ? 'bg-gradient-to-br from-texas-gold-500 to-texas-gold-600 text-white ring-2 ring-texas-gold-500/30' :
             'bg-lone-star-200 text-lone-star-700'
           )}
         >
@@ -60,7 +60,7 @@ export default function LobbyistCard({
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative z-10">
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-lg font-semibold text-foreground line-clamp-1">
               {fullName}
@@ -68,11 +68,16 @@ export default function LobbyistCard({
             {subscriptionTier !== 'free' && (
               <span
                 className={cn(
-                  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                  subscriptionTier === 'featured' && 'bg-texas-red-500 text-white',
-                  subscriptionTier === 'premium' && 'bg-texas-blue-500 text-white'
+                  'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold shadow-sm',
+                  subscriptionTier === 'featured' && 'bg-gradient-to-r from-texas-red-500 to-texas-red-600 text-white ring-2 ring-texas-red-500/30',
+                  subscriptionTier === 'premium' && 'bg-gradient-to-r from-texas-gold-500 to-texas-gold-600 text-white ring-2 ring-texas-gold-500/30'
                 )}
               >
+                {subscriptionTier === 'featured' && (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                )}
                 {subscriptionTier === 'featured' ? 'Featured' : 'Premium'}
               </span>
             )}
@@ -118,7 +123,7 @@ export default function LobbyistCard({
 
           {/* View count */}
           <div className="mt-3 text-xs text-muted-foreground">
-            {viewCount.toLocaleString()} {viewCount === 1 ? 'view' : 'views'}
+            {(viewCount || 0).toLocaleString()} {viewCount === 1 ? 'view' : 'views'}
           </div>
         </div>
       </div>

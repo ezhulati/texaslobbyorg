@@ -1,6 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import LobbyistCard from '@/components/react/LobbyistCard';
+import SearchableList from '@/components/react/SearchableList';
 import { supabase } from '@/lib/supabase';
 
 const { slug } = Astro.params;
@@ -16,11 +16,11 @@ if (cityError || !city) {
   return Astro.redirect('/404');
 }
 
-// Get lobbyists serving this city
+// Get lobbyists serving this city (use city NAME not slug)
 const { data: lobbyists } = await supabase
   .from('lobbyists')
   .select('*')
-  .contains('cities', [slug])
+  .contains('cities', [city.name])
   .eq('is_active', true)
   .order('subscription_tier', { ascending: false })
   .order('view_count', { ascending: false });
@@ -54,7 +54,7 @@ const pageDescription =
 
 <Layout title={pageTitle} description={pageDescription}>
   <!-- City Header -->
-  <section class="bg-texas-blue text-white py-16">
+  <section class="bg-texas-blue-500 text-white py-16">
     <div class="container">
       <div class="max-w-4xl">
         <div class="flex items-center gap-3 mb-4">
@@ -122,7 +122,7 @@ const pageDescription =
                   All Areas ({lobbyists?.length || 0})
                 </a>
                 {subjects?.map((subject) => {
-                  const count = subjectCounts[subject.slug] || 0;
+                  const count = subjectCounts[subject.name] || 0;
                   if (count === 0) return null;
                   return (
                     <a
@@ -161,7 +161,7 @@ const pageDescription =
               </p>
               <a
                 href="/claim-profile"
-                class="inline-flex items-center justify-center rounded-md bg-texas-gold-500 px-4 py-2 text-sm font-medium text-white hover:bg-texas-gold-500/90 transition-colors w-full"
+                class="inline-flex items-center justify-center rounded-md bg-texas-gold-500 px-4 py-2 text-sm font-medium text-white hover:bg-texas-gold-600 transition-colors w-full"
               >
                 Claim Your Profile
               </a>
@@ -189,12 +189,8 @@ const pageDescription =
                   </div>
                 </div>
 
-                {/* Lobbyists Grid */}
-                <div class="grid gap-6">
-                  {lobbyists.map((lobbyist) => (
-                    <LobbyistCard client:load lobbyist={lobbyist} />
-                  ))}
-                </div>
+                {/* Searchable Lobbyists List */}
+                <SearchableList lobbyists={lobbyists} client:load />
               </div>
             ) : (
               /* Empty State */

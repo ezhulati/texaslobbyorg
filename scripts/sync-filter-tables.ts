@@ -20,15 +20,31 @@ async function main() {
 
   const supabase = createServiceClient();
 
-  // Fetch all lobbyists with their cities and subject_areas
-  const { data: lobbyists, error } = await supabase
-    .from('lobbyists')
-    .select('cities, subject_areas');
+  // Fetch all lobbyists with their cities and subject_areas (paginate to get all records)
+  let allLobbyists: any[] = [];
+  let page = 0;
+  const pageSize = 1000;
 
-  if (error) {
-    console.error('❌ Error fetching lobbyists:', error.message);
-    process.exit(1);
+  while (true) {
+    const { data: lobbyists, error } = await supabase
+      .from('lobbyists')
+      .select('cities, subject_areas')
+      .range(page * pageSize, (page + 1) * pageSize - 1);
+
+    if (error) {
+      console.error('❌ Error fetching lobbyists:', error.message);
+      process.exit(1);
+    }
+
+    if (!lobbyists || lobbyists.length === 0) break;
+
+    allLobbyists = allLobbyists.concat(lobbyists);
+    page++;
+
+    if (lobbyists.length < pageSize) break;
   }
+
+  const lobbyists = allLobbyists;
 
   console.log(`📊 Analyzing ${lobbyists?.length || 0} lobbyist records...\n`);
 

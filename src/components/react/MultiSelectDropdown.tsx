@@ -124,7 +124,7 @@ export default function MultiSelectDropdown({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-full rounded-md border border-border bg-white shadow-lg">
+        <div className="absolute z-[9999] mt-2 w-full rounded-md border border-border bg-white shadow-lg">
           {/* Search Input */}
           <div className="p-2 border-b border-border">
             <input

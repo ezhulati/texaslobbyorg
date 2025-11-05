@@ -3,10 +3,5 @@
   publish = "dist"
 
 [functions]
-  directory = ".netlify/functions-internal"
-  node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/entry"
-  status = 200
+  directory = ".netlify/v1/functions"
+  included_files = [".netlify/v1/**"]

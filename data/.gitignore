@@ -1,0 +1,12 @@
+# Ignore all Excel files
+*.xlsx
+*.xls
+*.csv
+
+# Ignore error reports
+*-errors.csv
+*-errors.json
+
+# Keep this README
+!README.md
+!.gitignore

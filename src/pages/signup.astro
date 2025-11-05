@@ -1,0 +1,55 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import AuthForm from '@/components/react/AuthForm';
+import { getSession } from '@/lib/auth';
+
+// Redirect if already logged in
+const session = await getSession();
+if (session) {
+  return Astro.redirect('/dashboard');
+}
+
+const pageTitle = 'Create Account';
+const pageDescription = 'Join TexasLobby.org to access your profile, manage client relationships, and grow your lobbying business.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Signup Page -->
+  <section class="py-16 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-md">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Create Your Account</h1>
+        <p class="text-lg text-muted-foreground">
+          Join Texas's premier lobbyist directory
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div class="rounded-lg border border-border bg-white p-8 shadow-sm">
+        <AuthForm client:load mode="signup" redirectTo="/dashboard" />
+      </div>
+
+      <!-- Additional Info -->
+      <div class="mt-8 rounded-lg border-2 border-dashed border-texas-blue/30 bg-texas-blue/5 p-6">
+        <h3 class="font-semibold mb-2">Already listed in our directory?</h3>
+        <p class="text-sm text-muted-foreground mb-3">
+          If you're already a registered lobbyist in Texas, you can claim your existing profile instead of creating a new account.
+        </p>
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center text-sm font-medium text-texas-blue hover:underline"
+        >
+          Claim your existing profile →
+        </a>
+      </div>
+
+      <div class="mt-6 text-center text-sm text-muted-foreground">
+        By creating an account, you agree to our{' '}
+        <a href="/terms" class="text-texas-blue hover:underline">Terms of Service</a>
+        {' '}and{' '}
+        <a href="/privacy" class="text-texas-blue hover:underline">Privacy Policy</a>
+      </div>
+    </div>
+  </section>
+</Layout>

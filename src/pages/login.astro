@@ -1,0 +1,50 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import AuthForm from '@/components/react/AuthForm';
+import { getSession } from '@/lib/auth';
+
+// Redirect if already logged in
+const session = await getSession();
+if (session) {
+  return Astro.redirect('/dashboard');
+}
+
+const pageTitle = 'Log In';
+const pageDescription = 'Sign in to your TexasLobby.org account to manage your profile and connect with clients.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Login Page -->
+  <section class="py-16 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-md">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Welcome Back</h1>
+        <p class="text-lg text-muted-foreground">
+          Sign in to access your lobbyist profile and dashboard
+        </p>
+      </div>
+
+      <!-- Login Form -->
+      <div class="rounded-lg border border-border bg-white p-8 shadow-sm">
+        <AuthForm client:load mode="login" redirectTo="/dashboard" />
+      </div>
+
+      <!-- Additional Info -->
+      <div class="mt-8 text-center">
+        <p class="text-sm text-muted-foreground mb-4">
+          Looking for a lobbyist?{' '}
+          <a href="/lobbyists" class="text-texas-blue hover:underline">
+            Browse our directory
+          </a>
+        </p>
+        <p class="text-sm text-muted-foreground">
+          Are you a lobbyist but don't have an account?{' '}
+          <a href="/claim-profile" class="text-texas-blue hover:underline">
+            Claim your profile
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

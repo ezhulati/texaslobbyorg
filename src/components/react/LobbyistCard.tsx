@@ -25,8 +25,8 @@ export default function LobbyistCard({
   subscriptionTier,
   viewCount,
 }: LobbyistCardProps) {
-  const initials = `${firstName[0]}${lastName[0]}`;
-  const fullName = `${firstName} ${lastName}`;
+  const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`;
+  const fullName = `${firstName || ''} ${lastName || ''}`.trim();
 
   return (
     <a

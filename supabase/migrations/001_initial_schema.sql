@@ -1,5 +1,4 @@
 -- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- Create custom types
@@ -18,7 +17,7 @@ CREATE TABLE public.users (
 
 -- Cities table
 CREATE TABLE public.cities (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   county TEXT,
@@ -30,7 +29,7 @@ CREATE TABLE public.cities (
 
 -- Subject areas table
 CREATE TABLE public.subject_areas (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   description TEXT,
@@ -42,7 +41,7 @@ CREATE TABLE public.subject_areas (
 
 -- Lobbyists table
 CREATE TABLE public.lobbyists (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
 
   -- Basic info (from Texas Ethics Commission data)
@@ -91,7 +90,7 @@ CREATE TABLE public.lobbyists (
 
 -- Clients table (lobbyist client relationships)
 CREATE TABLE public.clients (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lobbyist_id UUID NOT NULL REFERENCES public.lobbyists(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
@@ -103,7 +102,7 @@ CREATE TABLE public.clients (
 
 -- Favorites table (users can save lobbyists)
 CREATE TABLE public.favorites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   lobbyist_id UUID NOT NULL REFERENCES public.lobbyists(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -112,7 +111,7 @@ CREATE TABLE public.favorites (
 
 -- Page views tracking
 CREATE TABLE public.page_views (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lobbyist_id UUID NOT NULL REFERENCES public.lobbyists(id) ON DELETE CASCADE,
   user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
   session_id TEXT,

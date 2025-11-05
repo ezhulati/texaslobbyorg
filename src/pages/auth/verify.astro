@@ -1,0 +1,105 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+const pageTitle = 'Verify Email';
+const pageDescription = 'Verify your email address to complete your registration.';
+
+// Handle email verification from Supabase
+const { searchParams } = Astro.url;
+const token_hash = searchParams.get('token_hash');
+const type = searchParams.get('type');
+
+let verificationStatus: 'success' | 'error' | 'pending' = 'pending';
+let message = 'Verifying your email...';
+
+if (token_hash && type) {
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({
+      token_hash,
+      type: type as any,
+    });
+
+    if (error) throw error;
+
+    if (data.user) {
+      // Create or update user record in database
+      const { error: upsertError } = await supabase.from('users').upsert({
+        id: data.user.id,
+        email: data.user.email!,
+        role: 'searcher',
+        full_name: data.user.user_metadata?.full_name || null,
+      });
+
+      if (upsertError) {
+        console.error('Error creating user record:', upsertError);
+      }
+
+      verificationStatus = 'success';
+      message = 'Email verified successfully! Redirecting to dashboard...';
+
+      // Redirect after a short delay
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
+      }
+    }
+  } catch (err: any) {
+    verificationStatus = 'error';
+    message = err?.message || 'Failed to verify email. The link may have expired.';
+  }
+}
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-16 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-md">
+      <div class="rounded-lg border border-border bg-white p-8 shadow-sm text-center">
+        {verificationStatus === 'success' && (
+          <div class="space-y-4">
+            <div class="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-green-900">Email Verified!</h1>
+            <p class="text-muted-foreground">{message}</p>
+          </div>
+        )}
+
+        {verificationStatus === 'error' && (
+          <div class="space-y-4">
+            <div class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-red-900">Verification Failed</h1>
+            <p class="text-muted-foreground">{message}</p>
+            <div class="pt-4">
+              <a
+                href="/signup"
+                class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                Try signing up again
+              </a>
+            </div>
+          </div>
+        )}
+
+        {verificationStatus === 'pending' && (
+          <div class="space-y-4">
+            <div class="mx-auto w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+              <svg class="w-8 h-8 text-blue-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold">Verifying...</h1>
+            <p class="text-muted-foreground">{message}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+</Layout>

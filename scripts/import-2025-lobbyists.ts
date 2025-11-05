@@ -276,20 +276,29 @@ async function main() {
   if (allClients.length > 0) {
     console.log('📥 Phase 6: Importing client relationships...\n');
 
-    // Fetch all lobbyist IDs and slugs in one query for O(1) lookups
-    const { data: lobbyists } = await supabase
-      .from('lobbyists')
-      .select('id, slug');
-
-    if (!lobbyists) {
-      console.error('   ❌ Failed to fetch lobbyist IDs');
-      process.exit(1);
-    }
-
-    // Create slug -> ID map for fast lookups
+    // Fetch all lobbyist IDs and slugs with pagination (Supabase has 1000 row default limit)
     const slugToIdMap = new Map<string, string>();
-    for (const lobbyist of lobbyists) {
-      slugToIdMap.set(lobbyist.slug, lobbyist.id);
+    let offset = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data: batch } = await supabase
+        .from('lobbyists')
+        .select('id, slug')
+        .range(offset, offset + batchSize - 1);
+
+      if (!batch || batch.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      for (const lobbyist of batch) {
+        slugToIdMap.set(lobbyist.slug, lobbyist.id);
+      }
+
+      offset += batchSize;
+      hasMore = batch.length === batchSize; // Stop if we got fewer than batchSize rows
     }
 
     console.log(`   ✓ Loaded ${slugToIdMap.size} lobbyist IDs`);
@@ -330,20 +339,29 @@ async function main() {
   if (allPoliticalFunds.length > 0) {
     console.log('📥 Phase 7: Importing political fund compensations...\n');
 
-    // Fetch all lobbyist IDs and slugs in one query for O(1) lookups
-    const { data: lobbyists } = await supabase
-      .from('lobbyists')
-      .select('id, slug');
-
-    if (!lobbyists) {
-      console.error('   ❌ Failed to fetch lobbyist IDs');
-      process.exit(1);
-    }
-
-    // Create slug -> ID map for fast lookups
+    // Fetch all lobbyist IDs and slugs with pagination (Supabase has 1000 row default limit)
     const slugToIdMap = new Map<string, string>();
-    for (const lobbyist of lobbyists) {
-      slugToIdMap.set(lobbyist.slug, lobbyist.id);
+    let offset = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data: batch } = await supabase
+        .from('lobbyists')
+        .select('id, slug')
+        .range(offset, offset + batchSize - 1);
+
+      if (!batch || batch.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      for (const lobbyist of batch) {
+        slugToIdMap.set(lobbyist.slug, lobbyist.id);
+      }
+
+      offset += batchSize;
+      hasMore = batch.length === batchSize; // Stop if we got fewer than batchSize rows
     }
 
     // Map fund records to include lobbyist_id

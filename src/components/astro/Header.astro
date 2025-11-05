@@ -42,8 +42,8 @@ const navLinks = [
         ))}
       </nav>
 
-      <!-- CTA Buttons -->
-      <div class="flex items-center space-x-4">
+      <!-- Desktop CTA Buttons -->
+      <div class="hidden md:flex items-center space-x-4">
         <a
           href="/login"
           class="text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -58,12 +58,15 @@ const navLinks = [
         </a>
       </div>
 
-      <!-- Mobile Menu Button (TODO: Add mobile nav) -->
+      <!-- Mobile Menu Button -->
       <button
+        id="mobile-menu-button"
         class="md:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
         aria-label="Open menu"
+        aria-expanded="false"
       >
         <svg
+          id="menu-icon"
           class="h-6 w-6"
           fill="none"
           stroke="currentColor"
@@ -76,7 +79,138 @@ const navLinks = [
             d="M4 6h16M4 12h16M4 18h16"
           ></path>
         </svg>
+        <svg
+          id="close-icon"
+          class="h-6 w-6 hidden"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
       </button>
     </div>
   </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    id="mobile-menu-overlay"
+    class="fixed inset-0 bg-black/50 z-40 md:hidden hidden"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Mobile Menu Drawer -->
+  <div
+    id="mobile-menu"
+    class="fixed top-0 right-0 bottom-0 w-[280px] bg-background border-l border-border z-50 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile menu"
+  >
+    <div class="flex flex-col h-full">
+      <!-- Mobile Menu Header -->
+      <div class="flex items-center justify-between p-4 border-b border-border">
+        <span class="text-lg font-bold text-foreground">Menu</span>
+        <button
+          id="mobile-menu-close"
+          class="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+          aria-label="Close menu"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <nav class="flex-1 overflow-y-auto py-4">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'block px-4 py-3 text-base font-medium transition-colors hover:bg-accent',
+              pathname === link.href ? 'text-texas-blue bg-accent/50' : 'text-foreground',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Mobile CTA Buttons -->
+      <div class="border-t border-border p-4 space-y-3">
+        <a
+          href="/login"
+          class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
+        >
+          Log In
+        </a>
+        <a
+          href="/claim-profile"
+          class="block w-full text-center px-4 py-2.5 text-sm font-medium text-white bg-texas-blue rounded-md hover:bg-texas-blue/90 transition-colors"
+        >
+          Claim Profile
+        </a>
+      </div>
+    </div>
+  </div>
 </header>
+
+<script>
+  // Mobile menu toggle functionality
+  const menuButton = document.getElementById('mobile-menu-button');
+  const menuCloseButton = document.getElementById('mobile-menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  function openMenu() {
+    mobileMenu?.classList.remove('translate-x-full');
+    mobileMenuOverlay?.classList.remove('hidden');
+    menuButton?.setAttribute('aria-expanded', 'true');
+    menuIcon?.classList.add('hidden');
+    closeIcon?.classList.remove('hidden');
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    mobileMenu?.classList.add('translate-x-full');
+    mobileMenuOverlay?.classList.add('hidden');
+    menuButton?.setAttribute('aria-expanded', 'false');
+    menuIcon?.classList.remove('hidden');
+    closeIcon?.classList.add('hidden');
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
+
+  // Open menu
+  menuButton?.addEventListener('click', openMenu);
+
+  // Close menu
+  menuCloseButton?.addEventListener('click', closeMenu);
+  mobileMenuOverlay?.addEventListener('click', closeMenu);
+
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !mobileMenu?.classList.contains('translate-x-full')) {
+      closeMenu();
+    }
+  });
+</script>

@@ -1,0 +1,318 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+// Get all subject areas
+const { data: subjects } = await supabase
+  .from('subject_areas')
+  .select('*')
+  .order('name');
+
+// Get all lobbyists to count by subject
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('subject_areas')
+  .eq('is_active', true);
+
+// Count lobbyists per subject
+const subjectCounts: Record<string, number> = {};
+lobbyists?.forEach((lobbyist) => {
+  lobbyist.subject_areas?.forEach((subject: string) => {
+    subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
+  });
+});
+
+const pageTitle = 'Browse by Expertise | Find Lobbyists by Subject Area';
+const pageDescription =
+  'Find Texas lobbyists by their areas of expertise. Browse specialists in healthcare, energy, education, real estate, technology, and more.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Header -->
+  <section class="bg-texas-blue text-white py-16">
+    <div class="container">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          Find Lobbyists by Expertise
+        </h1>
+        <p class="text-xl text-white/90">
+          Browse our directory of experienced Texas lobbyists organized by their areas of
+          specialization and industry expertise
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12">
+    <div class="container">
+      <!-- Subject Areas Grid -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">All Expertise Areas</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            subjects?.map((subject) => {
+              const count = subjectCounts[subject.name] || 0;
+              return (
+                <a
+                  href={`/subjects/${subject.slug}`}
+                  class="group rounded-lg border border-border bg-white p-6 hover:border-texas-blue hover:shadow-lg transition-all"
+                >
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1">
+                      <h3 class="text-xl font-bold group-hover:text-texas-blue transition-colors mb-2">
+                        {subject.name}
+                      </h3>
+                      <p class="text-sm text-muted-foreground line-clamp-2">
+                        {subject.description}
+                      </p>
+                    </div>
+                    <svg
+                      class="h-6 w-6 text-muted-foreground group-hover:text-texas-blue transition-colors flex-shrink-0 ml-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+
+                  <div class="mt-4 pt-4 border-t border-border">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <div class="text-2xl font-bold text-texas-blue">{count}</div>
+                        <div class="text-xs text-muted-foreground">Lobbyists</div>
+                      </div>
+                      <div class="text-sm font-medium text-texas-blue group-hover:underline">
+                        View Experts →
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      {/* Info Sections */}
+      <div class="grid md:grid-cols-2 gap-8 mt-16">
+        <!-- Why Expertise Matters -->}
+        <div class="rounded-lg border border-border bg-white p-8">
+          <h2 class="text-2xl font-bold mb-4">Why Expertise Matters</h2>
+          <ul class="space-y-3">
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Industry Knowledge</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Subject matter experts understand the nuances of your industry's regulatory
+                  environment.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Targeted Relationships</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Specialized lobbyists have connections with the right committees and
+                  stakeholders.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Credibility</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Track record in your field demonstrates competence and builds trust with
+                  legislators.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Strategic Advantage</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Experts can anticipate industry trends and position you ahead of legislative
+                  changes.</span
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Common Industries -->}
+        <div class="rounded-lg border border-border bg-muted/30 p-8">
+          <h2 class="text-2xl font-bold mb-4">Most Requested Expertise</h2>
+          <div class="space-y-3">
+            {
+              subjects
+                ?.sort((a, b) => {
+                  const countA = subjectCounts[a.name] || 0;
+                  const countB = subjectCounts[b.name] || 0;
+                  return countB - countA;
+                })
+                .slice(0, 8)
+                .map((subject) => {
+                  const count = subjectCounts[subject.name] || 0;
+                  return (
+                    <a
+                      href={`/subjects/${subject.slug}`}
+                      class="flex items-center justify-between p-3 rounded-md hover:bg-white transition-colors"
+                    >
+                      <span class="font-medium">{subject.name}</span>
+                      <span class="text-sm text-muted-foreground">
+                        {count} expert{count !== 1 ? 's' : ''}
+                      </span>
+                    </a>
+                  );
+                })
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* For Lobbyists CTA */}
+      <div class="mt-12 rounded-lg border border-austin-sage bg-austin-sage/5 p-8">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-2xl font-bold mb-4">Are You a Lobbyist?</h2>
+            <p class="text-muted-foreground mb-6">
+              Showcase your expertise and get discovered by businesses looking for specialists in
+              your areas of practice.
+            </p>
+            <ul class="space-y-2 mb-6 text-sm">
+              <li class="flex gap-2">
+                <svg
+                  class="h-5 w-5 text-austin-sage flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                <span>List multiple areas of expertise</span>
+              </li>
+              <li class="flex gap-2">
+                <svg
+                  class="h-5 w-5 text-austin-sage flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                <span>Appear in industry-specific searches</span>
+              </li>
+              <li class="flex gap-2">
+                <svg
+                  class="h-5 w-5 text-austin-sage flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                <span>Build credibility with detailed profiles</span>
+              </li>
+            </ul>
+            <a
+              href="/claim-profile"
+              class="inline-flex items-center justify-center rounded-md bg-austin-sage px-6 py-3 text-base font-medium text-white hover:bg-austin-sage/90 transition-colors"
+            >
+              Claim Your Profile
+            </a>
+          </div>
+          <div class="hidden md:block">
+            <div class="rounded-lg bg-white p-6 border border-austin-sage/20">
+              <h3 class="font-semibold mb-4">Popular Combinations</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex gap-2 items-center">
+                  <div class="h-2 w-2 rounded-full bg-austin-sage"></div>
+                  <span>Healthcare + Technology</span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <div class="h-2 w-2 rounded-full bg-austin-sage"></div>
+                  <span>Energy + Environmental</span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <div class="h-2 w-2 rounded-full bg-austin-sage"></div>
+                  <span>Real Estate + Transportation</span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <div class="h-2 w-2 rounded-full bg-austin-sage"></div>
+                  <span>Education + Technology</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Browse by Location CTA */}
+      <div class="mt-12 rounded-lg bg-gradient-to-br from-texas-blue to-texas-blue/80 text-white p-8 text-center">
+        <h2 class="text-3xl font-bold mb-3">Looking for Local Representation?</h2>
+        <p class="text-white/90 mb-6 max-w-2xl mx-auto">
+          Find lobbyists serving your city with the local connections and regional expertise you
+          need.
+        </p>
+        <a
+          href="/cities"
+          class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue hover:bg-white/90 transition-colors"
+        >
+          Browse by City
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

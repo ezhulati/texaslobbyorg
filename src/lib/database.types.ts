@@ -272,6 +272,12 @@ export type Database = {
           rank: number
         }[]
       }
+      increment_view_count: {
+        Args: {
+          lobbyist_id: string
+        }
+        Returns: void
+      }
     }
     Enums: {
       subscription_tier: 'free' | 'premium' | 'featured'

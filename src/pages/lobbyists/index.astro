@@ -1,0 +1,273 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import SearchFilter from '@/components/react/SearchFilter';
+import LobbyistCard from '@/components/react/LobbyistCard';
+import { supabase } from '@/lib/supabase';
+import { searchLobbyists, getLobbyistCount } from '@/lib/api/lobbyists';
+
+// Get search parameters from URL
+const url = new URL(Astro.request.url);
+const searchQuery = url.searchParams.get('q') || '';
+const cityFilter = url.searchParams.get('city') || '';
+const subjectFilter = url.searchParams.get('subject') || '';
+const page = parseInt(url.searchParams.get('page') || '1');
+const perPage = 24;
+
+// Fetch cities and subject areas for filter
+const { data: cities } = await supabase
+  .from('cities')
+  .select('id, name, slug')
+  .order('name');
+
+const { data: subjectAreas } = await supabase
+  .from('subject_areas')
+  .select('id, name, slug')
+  .order('name');
+
+// Build search parameters
+const searchParams = {
+  query: searchQuery || undefined,
+  cities: cityFilter ? [cityFilter] : undefined,
+  subjects: subjectFilter ? [subjectFilter] : undefined,
+  limit: perPage,
+  offset: (page - 1) * perPage,
+};
+
+// Search lobbyists
+const lobbyists = await searchLobbyists(searchParams);
+const totalCount = await getLobbyistCount(searchParams);
+const totalPages = Math.ceil(totalCount / perPage);
+
+// Build page title and description
+const hasFilters = searchQuery || cityFilter || subjectFilter;
+let pageTitle = 'Find Texas Lobbyists';
+let pageDescription = 'Search and browse experienced Texas lobbyists by city, expertise, and industry. Transparent profiles with client lists and track records.';
+
+if (hasFilters) {
+  const parts = [];
+  if (searchQuery) parts.push(`matching "${searchQuery}"`);
+  if (cityFilter) parts.push(`in ${cityFilter}`);
+  if (subjectFilter) parts.push(`specializing in ${subjectFilter}`);
+
+  pageTitle = `Texas Lobbyists ${parts.join(' ')}`;
+  pageDescription = `Find ${totalCount} Texas lobbyists ${parts.join(' ')}. Browse transparent profiles with client lists and expertise.`;
+}
+
+// Schema markup for search results
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: lobbyists.map((lobbyist, index) => ({
+    '@type': 'ListItem',
+    position: (page - 1) * perPage + index + 1,
+    item: {
+      '@type': 'Person',
+      name: `${lobbyist.first_name} ${lobbyist.last_name}`,
+      url: `https://texaslobby.org/lobbyists/${lobbyist.slug}`,
+      description: lobbyist.bio || undefined,
+    },
+  })),
+  numberOfItems: totalCount,
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  schema={schema}
+>
+  <!-- Search Header -->
+  <section class="bg-gradient-to-b from-texas-blue/5 to-background py-12 border-b border-border">
+    <div class="container">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">Find Texas Lobbyists</h1>
+      <p class="text-lg text-muted-foreground mb-6">
+        {totalCount.toLocaleString()} lobbyists ready to represent your business interests
+      </p>
+
+      <!-- Search Filter -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <SearchFilter
+          cities={cities || []}
+          subjectAreas={subjectAreas || []}
+          initialQuery={searchQuery}
+          initialCity={cityFilter}
+          initialSubject={subjectFilter}
+          client:load
+        />
+      </div>
+
+      <!-- Active Filters -->
+      {hasFilters && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {searchQuery && (
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+              <span class="font-medium">Search:</span>
+              <span>{searchQuery}</span>
+              <a
+                href={`/lobbyists?${new URLSearchParams({ city: cityFilter, subject: subjectFilter }).toString()}`}
+                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                aria-label="Remove search filter"
+              >
+                ×
+              </a>
+            </div>
+          )}
+          {cityFilter && (
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+              <span class="font-medium">City:</span>
+              <span>{cityFilter}</span>
+              <a
+                href={`/lobbyists?${new URLSearchParams({ q: searchQuery, subject: subjectFilter }).toString()}`}
+                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                aria-label="Remove city filter"
+              >
+                ×
+              </a>
+            </div>
+          )}
+          {subjectFilter && (
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+              <span class="font-medium">Expertise:</span>
+              <span>{subjectFilter}</span>
+              <a
+                href={`/lobbyists?${new URLSearchParams({ q: searchQuery, city: cityFilter }).toString()}`}
+                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                aria-label="Remove subject filter"
+              >
+                ×
+              </a>
+            </div>
+          )}
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
+            Clear all filters
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="py-12">
+    <div class="container">
+      {lobbyists.length === 0 ? (
+        <!-- No Results -->
+        <div class="text-center py-12">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+            <svg class="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold mb-2">No lobbyists found</h2>
+          <p class="text-muted-foreground mb-6">
+            Try adjusting your search criteria or <a href="/lobbyists" class="text-texas-blue hover:underline">browse all lobbyists</a>
+          </p>
+        </div>
+      ) : (
+        <>
+          <!-- Results Grid -->
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {lobbyists.map((lobbyist) => (
+              <LobbyistCard
+                id={lobbyist.id}
+                firstName={lobbyist.first_name}
+                lastName={lobbyist.last_name}
+                slug={lobbyist.slug}
+                bio={lobbyist.bio}
+                profileImageUrl={lobbyist.profile_image_url}
+                cities={lobbyist.cities}
+                subjectAreas={lobbyist.subject_areas}
+                subscriptionTier={lobbyist.subscription_tier}
+                viewCount={lobbyist.view_count}
+                client:load
+              />
+            ))}
+          </div>
+
+          <!-- Pagination -->
+          {totalPages > 1 && (
+            <div class="mt-12 flex items-center justify-center gap-2">
+              {/* Previous Button */}
+              {page > 1 ? (
+                <a
+                  href={`/lobbyists?${new URLSearchParams({ ...Object.fromEntries(url.searchParams), page: String(page - 1) }).toString()}`}
+                  class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                >
+                  ← Previous
+                </a>
+              ) : (
+                <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                  ← Previous
+                </span>
+              )}
+
+              {/* Page Numbers */}
+              <div class="flex items-center gap-1">
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let pageNum = i + 1;
+                  if (totalPages > 5 && page > 3) {
+                    pageNum = page - 2 + i;
+                    if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                  }
+
+                  return (
+                    <a
+                      href={`/lobbyists?${new URLSearchParams({ ...Object.fromEntries(url.searchParams), page: String(pageNum) }).toString()}`}
+                      class={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${
+                        pageNum === page
+                          ? 'bg-texas-blue text-white'
+                          : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                      }`}
+                    >
+                      {pageNum}
+                    </a>
+                  );
+                })}
+              </div>
+
+              {/* Next Button */}
+              {page < totalPages ? (
+                <a
+                  href={`/lobbyists?${new URLSearchParams({ ...Object.fromEntries(url.searchParams), page: String(page + 1) }).toString()}`}
+                  class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                >
+                  Next →
+                </a>
+              ) : (
+                <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                  Next →
+                </span>
+              )}
+            </div>
+
+            <p class="text-center text-sm text-muted-foreground mt-4">
+              Showing {(page - 1) * perPage + 1} - {Math.min(page * perPage, totalCount)} of {totalCount.toLocaleString()} lobbyists
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-12 bg-muted/50 border-t border-border">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+          Are You a Texas Lobbyist?
+        </h2>
+        <p class="text-lg text-muted-foreground mb-6">
+          Claim your free profile and connect with businesses who need your expertise
+        </p>
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue/90 transition-colors"
+        >
+          Claim Your Profile
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

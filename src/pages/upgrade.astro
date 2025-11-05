@@ -117,13 +117,13 @@ const tiers = [
           <div
             class:list={[
               'rounded-lg border bg-white p-8 relative',
-              tier.popular && 'border-texas-blue shadow-lg ring-2 ring-texas-blue/20',
+              tier.popular && 'border-texas-red-500 shadow-lg ring-2 ring-texas-red-500/20',
               tier.current && 'border-green-500',
             ]}
           >
             {tier.popular && (
               <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span class="inline-flex items-center rounded-full bg-texas-blue px-4 py-1 text-sm font-medium text-white">
+                <span class="inline-flex items-center rounded-full bg-texas-red-500 px-4 py-1 text-sm font-medium text-white">
                   Most Popular
                 </span>
               </div>
@@ -171,7 +171,7 @@ const tiers = [
                   class:list={[
                     'w-full rounded-md px-6 py-3 text-base font-medium transition-colors',
                     tier.popular
-                      ? 'bg-texas-blue text-white hover:bg-texas-blue-500/90'
+                      ? 'bg-texas-red-500 text-white hover:bg-texas-red-600'
                       : 'border border-border hover:bg-accent',
                   ]}
                 >

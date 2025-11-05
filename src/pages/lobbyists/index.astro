@@ -217,7 +217,7 @@ const schema = {
                       href={`/lobbyists?${new URLSearchParams({ ...Object.fromEntries(url.searchParams), page: String(pageNum) }).toString()}`}
                       class={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${
                         pageNum === page
-                          ? 'bg-texas-blue text-white'
+                          ? 'bg-texas-blue-500 text-white'
                           : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
                       }`}
                     >
@@ -263,7 +263,7 @@ const schema = {
         </p>
         <a
           href="/claim-profile"
-          class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
+          class="inline-flex items-center justify-center rounded-md bg-texas-red-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-red-600 transition-colors"
         >
           Claim Your Profile
         </a>

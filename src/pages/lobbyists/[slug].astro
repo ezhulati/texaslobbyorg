@@ -1,5 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
+import CollapsibleTags from '@/components/react/CollapsibleTags';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { MapPin, Briefcase, Mail, Phone, Globe, Calendar } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
@@ -103,16 +104,13 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
             </div>
           )}
 
-          {/* Subject Areas */}
+          {/* Subject Areas - Collapsible */}
           {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 && (
-            <div class="flex flex-wrap gap-2">
-              {lobbyist.subject_areas.map((subject) => (
-                <span class="inline-flex items-center rounded-md bg-muted px-3 py-1.5 text-sm font-medium text-foreground">
-                  <Briefcase className="mr-1.5 h-4 w-4" />
-                  {subject}
-                </span>
-              ))}
-            </div>
+            <CollapsibleTags
+              tags={lobbyist.subject_areas}
+              initialVisibleCount={10}
+              client:load
+            />
           )}
         </div>
 

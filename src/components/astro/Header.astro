@@ -27,8 +27,8 @@ const navLinks = [
           <a
             href={link.href}
             class:list={[
-              'text-sm font-medium transition-colors hover:text-texas-blue',
-              pathname === link.href ? 'text-texas-blue' : 'text-muted-foreground',
+              'text-sm font-medium transition-colors hover:text-texas-blue-500',
+              pathname === link.href ? 'text-texas-blue-500' : 'text-muted-foreground',
             ]}
           >
             {link.label}
@@ -46,7 +46,7 @@ const navLinks = [
         </a>
         <a
           href="/claim-profile"
-          class="inline-flex items-center justify-center rounded-md bg-texas-blue px-4 py-2 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
+          class="inline-flex items-center justify-center rounded-md bg-texas-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-texas-red-600 transition-colors"
         >
           Claim Profile
         </a>
@@ -156,7 +156,7 @@ const navLinks = [
         </a>
         <a
           href="/claim-profile"
-          class="block w-full text-center px-4 py-2.5 text-sm font-medium text-white bg-texas-blue rounded-md hover:bg-texas-blue-500/90 transition-colors"
+          class="block w-full text-center px-4 py-2.5 text-sm font-medium text-white bg-texas-red-500 rounded-md hover:bg-texas-red-600 transition-colors"
         >
           Claim Profile
         </a>

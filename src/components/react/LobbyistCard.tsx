@@ -33,8 +33,8 @@ export default function LobbyistCard({
       href={`/lobbyists/${slug}`}
       className={cn(
         'block rounded-lg border bg-white p-6 transition-all hover:shadow-lg',
-        subscriptionTier === 'featured' && 'border-texas-blue shadow-md ring-2 ring-texas-blue/20',
-        subscriptionTier === 'premium' && 'border-texas-gold-500/30',
+        subscriptionTier === 'featured' && 'border-texas-red-500 shadow-md ring-2 ring-texas-red-500/20',
+        subscriptionTier === 'premium' && 'border-texas-blue-500/30 ring-1 ring-texas-blue-500/10',
         subscriptionTier === 'free' && 'border-border'
       )}
     >
@@ -43,9 +43,9 @@ export default function LobbyistCard({
         <div
           className={cn(
             'flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full text-xl font-semibold',
-            subscriptionTier === 'featured' && 'bg-texas-blue text-white',
-            subscriptionTier === 'premium' && 'bg-texas-gold-500 text-white',
-            subscriptionTier === 'free' && 'bg-muted text-muted-foreground'
+            subscriptionTier === 'featured' ? 'bg-texas-red-500 text-white' :
+            subscriptionTier === 'premium' ? 'bg-texas-blue-500 text-white' :
+            'bg-lone-star-200 text-lone-star-700'
           )}
         >
           {profileImageUrl ? (
@@ -69,8 +69,8 @@ export default function LobbyistCard({
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                  subscriptionTier === 'featured' && 'bg-texas-blue text-white',
-                  subscriptionTier === 'premium' && 'bg-texas-gold-500 text-white'
+                  subscriptionTier === 'featured' && 'bg-texas-red-500 text-white',
+                  subscriptionTier === 'premium' && 'bg-texas-blue-500 text-white'
                 )}
               >
                 {subscriptionTier === 'featured' ? 'Featured' : 'Premium'}

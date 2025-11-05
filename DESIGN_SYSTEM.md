@@ -54,11 +54,12 @@ texas-red-900: #26030c  (Darkest)
 **CMYK**: 0, 100, 59, 11
 
 **Usage:**
-- Error states and alerts
-- Destructive actions (delete, cancel)
-- Important warnings
-- Call-to-action accents
-- Featured badges
+- **Featured badges and highlights** (primary use)
+- **Secondary CTAs and accents**
+- **Important notifications and alerts**
+- **Premium tier indicators**
+- **Navigation active states**
+- Error states and destructive actions (when appropriate)
 
 ### Complementary Colors
 

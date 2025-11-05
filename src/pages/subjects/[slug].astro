@@ -1,6 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import SearchableList from '@/components/react/LobbyistCard';
+import SearchableList from '@/components/react/SearchableList';
 import { supabase } from '@/lib/supabase';
 
 const { slug } = Astro.params;
@@ -144,7 +144,7 @@ const pageDescription =
               )
             }
 
-            <!-- CTA for Lobbyists -->}
+            <!-- CTA for Lobbyists -->
             <div class="rounded-lg border border-texas-gold-500 bg-texas-gold-500/5 p-6">
               <h3 class="font-semibold mb-2">Are you a lobbyist?</h3>
               <p class="text-sm text-muted-foreground mb-4">
@@ -181,25 +181,8 @@ const pageDescription =
                   </div>
                 </div>
 
-                {/* Lobbyists Grid */}
-                <div class="grid gap-6">
-                  {lobbyists.map((lobbyist) => (
-                    <LobbyistCard
-                      key={lobbyist.id}
-                      client:visible
-                      id={lobbyist.id}
-                      firstName={lobbyist.first_name}
-                      lastName={lobbyist.last_name}
-                      slug={lobbyist.slug}
-                      bio={lobbyist.bio}
-                      profileImageUrl={lobbyist.profile_image_url}
-                      cities={lobbyist.cities}
-                      subjectAreas={lobbyist.subject_areas}
-                      subscriptionTier={lobbyist.subscription_tier}
-                      viewCount={lobbyist.view_count}
-                    />
-                  ))}
-                </div>
+                {/* Searchable Lobbyists List */}
+                <SearchableList lobbyists={lobbyists} client:load />
               </div>
             ) : (
               /* Empty State */

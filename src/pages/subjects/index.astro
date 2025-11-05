@@ -22,6 +22,33 @@ lobbyists?.forEach((lobbyist) => {
   });
 });
 
+// Define featured/high-demand expertise areas (by slug)
+const featuredSlugs = [
+  'energy',
+  'healthcare',
+  'education',
+  'real-estate',
+  'transportation',
+  'technology',
+  'business-and-commerce',
+  'agriculture',
+  'environmental',
+  'financial-institutions',
+  'insurance',
+  'local-government'
+];
+
+// Separate featured and other subjects
+const featuredSubjects = subjects?.filter(s => featuredSlugs.includes(s.slug)) || [];
+const otherSubjects = subjects?.filter(s => !featuredSlugs.includes(s.slug)) || [];
+
+// Sort featured subjects by the order in featuredSlugs
+featuredSubjects.sort((a, b) => {
+  const indexA = featuredSlugs.indexOf(a.slug);
+  const indexB = featuredSlugs.indexOf(b.slug);
+  return indexA - indexB;
+});
+
 const pageTitle = 'Browse by Expertise | Find Lobbyists by Subject Area';
 const pageDescription =
   'Find Texas lobbyists by their areas of expertise. Browse specialists in healthcare, energy, education, real estate, technology, and more.';
@@ -46,12 +73,69 @@ const pageDescription =
   <!-- Main Content -->
   <section class="py-12">
     <div class="container">
-      <!-- Subject Areas Grid -->
+      <!-- Featured Expertise Areas -->
+      <div class="mb-16">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Most Sought-After Expertise</h2>
+          <span class="text-sm text-muted-foreground">Top specializations in Texas</span>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            featuredSubjects.map((subject) => {
+              const count = subjectCounts[subject.name] || 0;
+              return (
+                <a
+                  href={`/subjects/${subject.slug}`}
+                  class="group rounded-lg border-2 border-texas-blue-500/20 bg-gradient-to-br from-white to-texas-blue-500/5 p-6 hover:border-texas-blue-500 hover:shadow-lg transition-all"
+                >
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1">
+                      <h3 class="text-xl font-bold group-hover:text-texas-blue-500 transition-colors mb-2">
+                        {subject.name}
+                      </h3>
+                      <p class="text-sm text-muted-foreground line-clamp-2">
+                        {subject.description}
+                      </p>
+                    </div>
+                    <svg
+                      class="h-6 w-6 text-muted-foreground group-hover:text-texas-blue-500 transition-colors flex-shrink-0 ml-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+
+                  <div class="mt-4 pt-4 border-t border-texas-blue-500/20">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <div class="text-2xl font-bold text-texas-blue-500">{count}</div>
+                        <div class="text-xs text-muted-foreground">Lobbyists</div>
+                      </div>
+                      <div class="text-sm font-medium text-texas-blue-500 group-hover:underline">
+                        View Experts →
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- All Expertise Areas -->
       <div class="mb-12">
         <h2 class="text-2xl font-bold mb-6">All Expertise Areas</h2>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {
-            subjects?.map((subject) => {
+            otherSubjects.map((subject) => {
               const count = subjectCounts[subject.name] || 0;
               return (
                 <a
@@ -100,9 +184,9 @@ const pageDescription =
         </div>
       </div>
 
-      {/* Info Sections */}
+      <!-- Info Sections -->
       <div class="grid md:grid-cols-2 gap-8 mt-16">
-        <!-- Why Expertise Matters -->}
+        <!-- Why Expertise Matters -->
         <div class="rounded-lg border border-border bg-white p-8">
           <h2 class="text-2xl font-bold mb-4">Why Expertise Matters</h2>
           <ul class="space-y-3">
@@ -185,7 +269,7 @@ const pageDescription =
           </ul>
         </div>
 
-        <!-- Common Industries -->}
+        <!-- Common Industries -->
         <div class="rounded-lg border border-border bg-muted/30 p-8">
           <h2 class="text-2xl font-bold mb-4">Most Requested Expertise</h2>
           <div class="space-y-3">
@@ -216,7 +300,7 @@ const pageDescription =
         </div>
       </div>
 
-      {/* For Lobbyists CTA */}
+      <!-- For Lobbyists CTA -->
       <div class="mt-12 rounded-lg border border-texas-gold-500 bg-texas-gold-500/5 p-8">
         <div class="grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -299,7 +383,7 @@ const pageDescription =
         </div>
       </div>
 
-      {/* Browse by Location CTA */}
+      <!-- Browse by Location CTA -->
       <div class="mt-12 rounded-lg bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 text-white p-8 text-center">
         <h2 class="text-3xl font-bold mb-3">Looking for Local Representation?</h2>
         <p class="text-white/90 mb-6 max-w-2xl mx-auto">

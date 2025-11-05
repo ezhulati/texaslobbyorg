@@ -15,13 +15,22 @@ const { data: subjectAreas } = await supabase
   .order('name');
 
 // Fetch featured lobbyists for homepage showcase
-const { data: featuredLobbyists } = await supabase
+// Prioritize lobbyists with profile photos
+const { data: allFeaturedLobbyists } = await supabase
   .from('lobbyists')
-  .select('id, first_name, last_name, slug, bio, profile_image_url, cities, subject_areas, subscription_tier')
+  .select('id, first_name, last_name, slug, bio, profile_image_url, cities, subject_areas, subscription_tier, featured_order')
   .eq('subscription_tier', 'featured')
   .eq('is_active', true)
-  .order('featured_order', { nullsFirst: false })
-  .limit(6);
+  .order('featured_order', { nullsFirst: false });
+
+// Sort to prioritize those with profile images, then by featured_order
+const featuredLobbyists = allFeaturedLobbyists?.sort((a, b) => {
+  // First, sort by whether they have a profile image (with image comes first)
+  if (a.profile_image_url && !b.profile_image_url) return -1;
+  if (!a.profile_image_url && b.profile_image_url) return 1;
+  // Then sort by featured_order
+  return (a.featured_order || 999) - (b.featured_order || 999);
+}).slice(0, 6);
 
 type Lobbyist = {
   id: string;
@@ -165,9 +174,17 @@ const schema = {
               class="block bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
             >
               <div class="flex items-start space-x-4">
-                <div class="w-16 h-16 rounded-full bg-texas-blue-500/10 flex items-center justify-center text-texas-blue-500 font-semibold text-xl">
-                  {lobbyist.first_name[0]}{lobbyist.last_name[0]}
-                </div>
+                {lobbyist.profile_image_url ? (
+                  <img
+                    src={lobbyist.profile_image_url}
+                    alt={`${lobbyist.first_name} ${lobbyist.last_name}`}
+                    class="w-16 h-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <div class="w-16 h-16 rounded-full bg-texas-blue-500/10 flex items-center justify-center text-texas-blue-500 font-semibold text-xl">
+                    {lobbyist.first_name[0]}{lobbyist.last_name[0]}
+                  </div>
+                )}
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center space-x-2">
                     <h3 class="font-semibold text-lg">

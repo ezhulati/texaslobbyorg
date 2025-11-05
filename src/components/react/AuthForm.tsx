@@ -210,7 +210,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
         <div className="text-center">
           <a
             href="/auth/forgot-password"
-            className="text-sm text-texas-blue hover:underline"
+            className="text-sm text-texas-blue-500 hover:underline"
           >
             Forgot your password?
           </a>
@@ -221,14 +221,14 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
         {mode === 'login' ? (
           <>
             Don't have an account?{' '}
-            <a href="/signup" className="text-texas-blue hover:underline">
+            <a href="/signup" className="text-texas-blue-500 hover:underline">
               Sign up
             </a>
           </>
         ) : (
           <>
             Already have an account?{' '}
-            <a href="/login" className="text-texas-blue hover:underline">
+            <a href="/login" className="text-texas-blue-500 hover:underline">
               Sign in
             </a>
           </>

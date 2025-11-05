@@ -34,7 +34,7 @@ export default function LobbyistCard({
       className={cn(
         'block rounded-lg border bg-white p-6 transition-all hover:shadow-lg',
         subscriptionTier === 'featured' && 'border-texas-blue shadow-md ring-2 ring-texas-blue/20',
-        subscriptionTier === 'premium' && 'border-austin-sage/30',
+        subscriptionTier === 'premium' && 'border-texas-gold-500/30',
         subscriptionTier === 'free' && 'border-border'
       )}
     >
@@ -44,7 +44,7 @@ export default function LobbyistCard({
           className={cn(
             'flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full text-xl font-semibold',
             subscriptionTier === 'featured' && 'bg-texas-blue text-white',
-            subscriptionTier === 'premium' && 'bg-austin-sage text-white',
+            subscriptionTier === 'premium' && 'bg-texas-gold-500 text-white',
             subscriptionTier === 'free' && 'bg-muted text-muted-foreground'
           )}
         >
@@ -70,7 +70,7 @@ export default function LobbyistCard({
                 className={cn(
                   'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
                   subscriptionTier === 'featured' && 'bg-texas-blue text-white',
-                  subscriptionTier === 'premium' && 'bg-austin-sage text-white'
+                  subscriptionTier === 'premium' && 'bg-texas-gold-500 text-white'
                 )}
               >
                 {subscriptionTier === 'featured' ? 'Featured' : 'Premium'}

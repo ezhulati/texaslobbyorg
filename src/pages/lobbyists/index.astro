@@ -77,7 +77,7 @@ const schema = {
   schema={schema}
 >
   <!-- Search Header -->
-  <section class="bg-gradient-to-b from-texas-blue/5 to-background py-12 border-b border-border">
+  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-12 border-b border-border">
     <div class="container">
       <h1 class="text-3xl md:text-4xl font-bold mb-2">Find Texas Lobbyists</h1>
       <p class="text-lg text-muted-foreground mb-6">
@@ -100,12 +100,12 @@ const schema = {
       {hasFilters && (
         <div class="mt-4 flex flex-wrap gap-2">
           {searchQuery && (
-            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
               <span class="font-medium">Search:</span>
               <span>{searchQuery}</span>
               <a
                 href={`/lobbyists?${new URLSearchParams({ city: cityFilter, subject: subjectFilter }).toString()}`}
-                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
                 aria-label="Remove search filter"
               >
                 ×
@@ -113,12 +113,12 @@ const schema = {
             </div>
           )}
           {cityFilter && (
-            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
               <span class="font-medium">City:</span>
               <span>{cityFilter}</span>
               <a
                 href={`/lobbyists?${new URLSearchParams({ q: searchQuery, subject: subjectFilter }).toString()}`}
-                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
                 aria-label="Remove city filter"
               >
                 ×
@@ -126,12 +126,12 @@ const schema = {
             </div>
           )}
           {subjectFilter && (
-            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue/10 px-4 py-2 text-sm">
+            <div class="inline-flex items-center gap-2 rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm">
               <span class="font-medium">Expertise:</span>
               <span>{subjectFilter}</span>
               <a
                 href={`/lobbyists?${new URLSearchParams({ q: searchQuery, city: cityFilter }).toString()}`}
-                class="ml-1 text-texas-blue hover:text-texas-blue/80"
+                class="ml-1 text-texas-blue-500 hover:text-texas-blue/80"
                 aria-label="Remove subject filter"
               >
                 ×
@@ -162,7 +162,7 @@ const schema = {
           </div>
           <h2 class="text-2xl font-bold mb-2">No lobbyists found</h2>
           <p class="text-muted-foreground mb-6">
-            Try adjusting your search criteria or <a href="/lobbyists" class="text-texas-blue hover:underline">browse all lobbyists</a>
+            Try adjusting your search criteria or <a href="/lobbyists" class="text-texas-blue-500 hover:underline">browse all lobbyists</a>
           </p>
         </div>
       ) : (
@@ -263,7 +263,7 @@ const schema = {
         </p>
         <a
           href="/claim-profile"
-          class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue/90 transition-colors"
+          class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
         >
           Claim Your Profile
         </a>

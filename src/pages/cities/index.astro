@@ -58,7 +58,7 @@ const pageDescription =
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div>
-                      <h3 class="text-xl font-bold group-hover:text-texas-blue transition-colors">
+                      <h3 class="text-xl font-bold group-hover:text-texas-blue-500 transition-colors">
                         {city.name}
                       </h3>
                       {city.county && (
@@ -66,7 +66,7 @@ const pageDescription =
                       )}
                     </div>
                     <svg
-                      class="h-6 w-6 text-muted-foreground group-hover:text-texas-blue transition-colors"
+                      class="h-6 w-6 text-muted-foreground group-hover:text-texas-blue-500 transition-colors"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -82,7 +82,7 @@ const pageDescription =
 
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <div class="text-2xl font-bold text-texas-blue">{count}</div>
+                      <div class="text-2xl font-bold text-texas-blue-500">{count}</div>
                       <div class="text-xs text-muted-foreground">Lobbyists</div>
                     </div>
                     {city.population && (
@@ -115,11 +115,11 @@ const pageDescription =
                     class="group rounded-lg border border-border bg-white p-4 hover:border-texas-blue hover:shadow transition-all"
                   >
                     <div class="flex items-center justify-between mb-2">
-                      <h3 class="font-semibold group-hover:text-texas-blue transition-colors">
+                      <h3 class="font-semibold group-hover:text-texas-blue-500 transition-colors">
                         {city.name}
                       </h3>
                       <svg
-                        class="h-4 w-4 text-muted-foreground group-hover:text-texas-blue transition-colors"
+                        class="h-4 w-4 text-muted-foreground group-hover:text-texas-blue-500 transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -151,7 +151,7 @@ const pageDescription =
           <ul class="space-y-3">
             <li class="flex gap-3">
               <svg
-                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -170,7 +170,7 @@ const pageDescription =
             </li>
             <li class="flex gap-3">
               <svg
-                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -188,7 +188,7 @@ const pageDescription =
             </li>
             <li class="flex gap-3">
               <svg
-                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -208,7 +208,7 @@ const pageDescription =
         </div>
 
         <!-- For Lobbyists -->}
-        <div class="rounded-lg border border-austin-sage bg-austin-sage/5 p-8">
+        <div class="rounded-lg border border-texas-gold-500 bg-texas-gold-500/5 p-8">
           <h2 class="text-2xl font-bold mb-4">Are You a Lobbyist?</h2>
           <p class="text-muted-foreground mb-6">
             Add your service areas to get discovered by businesses looking for political
@@ -216,19 +216,19 @@ const pageDescription =
           </p>
           <ul class="space-y-2 mb-6 text-sm">
             <li class="flex gap-2">
-              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5 text-texas-gold-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
               </svg>
               <span>Appear in city-specific searches</span>
             </li>
             <li class="flex gap-2">
-              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5 text-texas-gold-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
               </svg>
               <span>Serve multiple cities across Texas</span>
             </li>
             <li class="flex gap-2">
-              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5 text-texas-gold-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
               </svg>
               <span>Increase your visibility to local clients</span>
@@ -236,7 +236,7 @@ const pageDescription =
           </ul>
           <a
             href="/claim-profile"
-            class="inline-flex items-center justify-center rounded-md bg-austin-sage px-6 py-3 text-base font-medium text-white hover:bg-austin-sage/90 transition-colors w-full"
+            class="inline-flex items-center justify-center rounded-md bg-texas-gold-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-gold-500/90 transition-colors w-full"
           >
             Claim Your Profile
           </a>
@@ -252,7 +252,7 @@ const pageDescription =
         </p>
         <a
           href="/subjects"
-          class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue hover:bg-white/90 transition-colors"
+          class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-500 hover:bg-white/90 transition-colors"
         >
           Browse by Expertise
         </a>

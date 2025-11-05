@@ -282,7 +282,7 @@ export default function ClientManagement({ lobbyistId }: ClientManagementProps) 
                 name="is_current"
                 checked={formData.is_current}
                 onChange={handleInputChange}
-                className="rounded border-gray-300 text-texas-blue focus:ring-texas-blue"
+                className="rounded border-gray-300 text-texas-blue-500 focus:ring-texas-blue"
               />
               <label htmlFor="is_current" className="text-sm font-medium">
                 Current Client

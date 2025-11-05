@@ -57,14 +57,14 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
   ogType="profile"
 >
   <!-- Profile Header -->
-  <section class="bg-gradient-to-b from-texas-blue/5 to-background py-12 border-b border-border">
+  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-12 border-b border-border">
     <div class="container">
       <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
         {/* Avatar */}
         <div
           class={`flex h-24 w-24 md:h-32 md:w-32 flex-shrink-0 items-center justify-center rounded-full text-3xl md:text-4xl font-bold ${
             lobbyist.subscription_tier === 'featured' ? 'bg-texas-blue text-white' :
-            lobbyist.subscription_tier === 'premium' ? 'bg-austin-sage text-white' :
+            lobbyist.subscription_tier === 'premium' ? 'bg-texas-gold-500 text-white' :
             'bg-muted text-muted-foreground'
           }`}
         >
@@ -87,7 +87,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               <span
                 class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                   lobbyist.subscription_tier === 'featured' ? 'bg-texas-blue text-white' :
-                  'bg-austin-sage text-white'
+                  'bg-texas-gold-500 text-white'
                 }`}
               >
                 {lobbyist.subscription_tier === 'featured' ? 'Featured Lobbyist' : 'Premium Lobbyist'}
@@ -121,7 +121,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
           <div class="flex flex-col gap-2 w-full md:w-auto">
             <a
               href={`mailto:${lobbyist.email}`}
-              class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue/90 transition-colors whitespace-nowrap"
+              class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors whitespace-nowrap"
             >
               Contact {lobbyist.first_name}
             </a>
@@ -133,7 +133,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
           <div class="w-full md:w-auto">
             <a
               href="/claim-profile"
-              class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue text-texas-blue px-6 py-3 text-base font-medium hover:bg-texas-blue/5 transition-colors whitespace-nowrap"
+              class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue text-texas-blue-500 px-6 py-3 text-base font-medium hover:bg-texas-blue-500/5 transition-colors whitespace-nowrap"
             >
               Claim This Profile
             </a>
@@ -166,7 +166,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               </p>
               <a
                 href="/claim-profile"
-                class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-texas-blue/90 transition-colors"
+                class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
               >
                 Are you {fullName}? Claim this profile
               </a>
@@ -221,7 +221,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               {lobbyist.email && (
                 <a
                   href={`mailto:${lobbyist.email}`}
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue transition-colors"
+                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
                 >
                   <Mail className="mr-3 h-5 w-5 flex-shrink-0" />
                   <span class="truncate">{lobbyist.email}</span>
@@ -231,7 +231,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               {lobbyist.phone && (
                 <a
                   href={`tel:${lobbyist.phone}`}
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue transition-colors"
+                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
                 >
                   <Phone className="mr-3 h-5 w-5 flex-shrink-0" />
                   <span>{lobbyist.phone}</span>
@@ -243,7 +243,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
                   href={lobbyist.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue transition-colors"
+                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
                 >
                   <Globe className="mr-3 h-5 w-5 flex-shrink-0" />
                   <span class="truncate">Website</span>
@@ -260,7 +260,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
             {lobbyist.is_claimed && (
               <a
                 href={`mailto:${lobbyist.email}`}
-                class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-texas-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue/90 transition-colors"
+                class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-texas-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
               >
                 Send Message
               </a>
@@ -269,14 +269,14 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
           {/* Upgrade CTA for unclaimed profiles */}
           {!lobbyist.is_claimed && (
-            <div class="mt-6 rounded-lg border-2 border-dashed border-texas-blue bg-texas-blue/5 p-6">
+            <div class="mt-6 rounded-lg border-2 border-dashed border-texas-blue bg-texas-blue-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Is this you?</h3>
               <p class="text-sm text-muted-foreground mb-4">
                 Claim your profile to add your bio, client list, and contact information. It's free!
               </p>
               <a
                 href="/claim-profile"
-                class="inline-flex w-full items-center justify-center rounded-md bg-texas-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue/90 transition-colors"
+                class="inline-flex w-full items-center justify-center rounded-md bg-texas-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
               >
                 Claim Profile
               </a>
@@ -285,14 +285,14 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
           {/* Upgrade CTA for free tier */}
           {lobbyist.is_claimed && lobbyist.subscription_tier === 'free' && (
-            <div class="mt-6 rounded-lg border-2 border-dashed border-austin-sage bg-austin-sage/5 p-6">
+            <div class="mt-6 rounded-lg border-2 border-dashed border-texas-gold-500 bg-texas-gold-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Upgrade Your Profile</h3>
               <p class="text-sm text-muted-foreground mb-4">
                 Get priority placement in search results and unlock analytics with Premium or Featured listings.
               </p>
               <a
                 href="/pricing"
-                class="inline-flex w-full items-center justify-center rounded-md bg-austin-sage px-4 py-2.5 text-sm font-medium text-white hover:bg-austin-sage/90 transition-colors"
+                class="inline-flex w-full items-center justify-center rounded-md bg-texas-gold-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-gold-500/90 transition-colors"
               >
                 View Pricing
               </a>
@@ -308,7 +308,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
     <div class="container">
       <a
         href="/lobbyists"
-        class="inline-flex items-center text-texas-blue hover:underline"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
       >
         ← Back to all lobbyists
       </a>

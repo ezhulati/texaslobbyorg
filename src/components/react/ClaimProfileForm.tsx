@@ -152,7 +152,7 @@ export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileForm
           </h3>
           <button
             onClick={() => setFoundProfiles([])}
-            className="text-sm text-texas-blue hover:underline"
+            className="text-sm text-texas-blue-500 hover:underline"
           >
             Search again
           </button>
@@ -295,7 +295,7 @@ export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileForm
         </p>
         <a
           href="mailto:support@texaslobby.org"
-          className="text-sm text-texas-blue hover:underline"
+          className="text-sm text-texas-blue-500 hover:underline"
         >
           Contact Support →
         </a>

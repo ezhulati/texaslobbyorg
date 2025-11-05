@@ -1,0 +1,197 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ClaimProfileForm from '@/components/react/ClaimProfileForm';
+import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Check if user is authenticated
+const user = await getCurrentUser();
+
+// If user is authenticated, check if they already have a claimed profile
+let alreadyClaimed = false;
+if (user) {
+  const { data } = await supabase
+    .from('lobbyists')
+    .select('id, slug')
+    .eq('user_id', user.id)
+    .eq('is_claimed', true)
+    .single();
+
+  if (data) {
+    // User already has a claimed profile, redirect to it
+    return Astro.redirect(`/lobbyists/${data.slug}`);
+  }
+}
+
+const pageTitle = 'Claim Your Profile';
+const pageDescription = 'Claim your lobbyist profile on TexasLobby.org to manage your information, showcase clients, and connect with potential business partners.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Claim Profile Page -->
+  <section class="py-16 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Claim Your Profile</h1>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          If you're a registered lobbyist in Texas, you likely already have a profile in our directory. Claim it to take control of your information and showcase your expertise.
+        </p>
+      </div>
+
+      <!-- Benefits Section -->
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="mb-3">
+            <svg
+              class="h-10 w-10 text-texas-blue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Control Your Information</h3>
+          <p class="text-sm text-muted-foreground">
+            Update your bio, contact details, and areas of expertise
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="mb-3">
+            <svg
+              class="h-10 w-10 text-texas-blue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Showcase Your Clients</h3>
+          <p class="text-sm text-muted-foreground">
+            Highlight your client relationships and track record
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="mb-3">
+            <svg
+              class="h-10 w-10 text-texas-blue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-2">Increase Visibility</h3>
+          <p class="text-sm text-muted-foreground">
+            Upgrade to Premium or Featured for priority placement
+          </p>
+        </div>
+      </div>
+
+      {!user ? (
+        <!-- Not Logged In -->
+        <div class="rounded-lg border-2 border-dashed border-texas-blue/30 bg-texas-blue/5 p-8 text-center">
+          <h3 class="text-xl font-semibold mb-3">Sign In Required</h3>
+          <p class="text-muted-foreground mb-6">
+            You need to sign in or create an account before claiming your profile. This helps us verify your identity and protect your information.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="/login"
+              class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue/90 transition-colors"
+            >
+              Sign In
+            </a>
+            <a
+              href="/signup"
+              class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+            >
+              Create Account
+            </a>
+          </div>
+        </div>
+      ) : (
+        <!-- Logged In - Show Claim Form -->
+        <div class="rounded-lg border border-border bg-white p-8">
+          <ClaimProfileForm
+            client:load
+            userId={user.id}
+            userEmail={user.email || undefined}
+          />
+        </div>
+      )}
+
+      <!-- Additional Info -->
+      <div class="mt-12 space-y-6">
+        <div class="rounded-lg border border-border bg-muted/30 p-6">
+          <h3 class="font-semibold mb-3">How does profile claiming work?</h3>
+          <ol class="space-y-2 text-sm text-muted-foreground">
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 font-semibold text-foreground">1.</span>
+              <span>Sign in or create an account using your professional email address</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 font-semibold text-foreground">2.</span>
+              <span>Search for your profile using your email or name</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 font-semibold text-foreground">3.</span>
+              <span>Verify your identity (your email must match our records)</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 font-semibold text-foreground">4.</span>
+              <span>Start managing your profile and connecting with potential clients</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="rounded-lg border border-border bg-muted/30 p-6">
+          <h3 class="font-semibold mb-3">Frequently Asked Questions</h3>
+          <div class="space-y-4">
+            <div>
+              <h4 class="font-medium text-sm mb-1">What if I can't find my profile?</h4>
+              <p class="text-sm text-muted-foreground">
+                Our directory is based on Texas Ethics Commission registration data. If you're a registered lobbyist but can't find your profile, please contact us at{' '}
+                <a href="mailto:support@texaslobby.org" class="text-texas-blue hover:underline">
+                  support@texaslobby.org
+                </a>
+              </p>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm mb-1">Is claiming my profile free?</h4>
+              <p class="text-sm text-muted-foreground">
+                Yes! Claiming your profile and maintaining a basic listing is completely free. You can upgrade to Premium ($297/mo) or Featured ($597/mo) for enhanced visibility and analytics.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm mb-1">What if the email doesn't match?</h4>
+              <p class="text-sm text-muted-foreground">
+                For security reasons, the email on your account must match the email we have on file from the Texas Ethics Commission. If you need to update your email, please contact support.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

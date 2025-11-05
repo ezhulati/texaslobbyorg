@@ -9,7 +9,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
-    "type-check": "astro check"
+    "type-check": "astro check",
+    "db:push": "supabase db push",
+    "db:seed": "supabase db execute < supabase/seed.sql",
+    "db:setup": "npm run db:push && npm run db:seed"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

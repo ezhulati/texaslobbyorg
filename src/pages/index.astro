@@ -2,6 +2,7 @@
 import Layout from '@/components/astro/Layout.astro';
 import SearchFilter from '@/components/react/SearchFilter';
 import { supabase } from '@/lib/supabase';
+import { getUniqueClients } from '@/lib/api/clients';
 
 // Fetch cities and subject areas for the search filter
 const { data: cities } = await supabase
@@ -13,6 +14,14 @@ const { data: subjectAreas } = await supabase
   .from('subject_areas')
   .select('id, name, slug')
   .order('name');
+
+// Fetch clients for the search filter
+const clientOptions = await getUniqueClients({ onlyActive: false, limit: 100 });
+const clients = clientOptions.map(c => ({
+  label: c.name,
+  value: c.name,
+  count: c.count
+}));
 
 // Fetch featured lobbyists for homepage showcase
 // Prioritize lobbyists with profile photos
@@ -95,6 +104,7 @@ const schema = {
           <SearchFilter
             cities={cities || []}
             subjectAreas={subjectAreas || []}
+            clients={clients || []}
             client:load
           />
         </div>

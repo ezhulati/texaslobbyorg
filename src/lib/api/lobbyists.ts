@@ -7,6 +7,7 @@ export interface SearchParams {
   query?: string;
   cities?: string[];
   subjects?: string[];
+  clients?: string[];  // Filter by client names
   tier?: 'free' | 'premium' | 'featured';
   limit?: number;
   offset?: number;
@@ -30,7 +31,7 @@ export interface SearchResult {
  * Search lobbyists with filters
  */
 export async function searchLobbyists(params: SearchParams) {
-  const { query, cities, subjects, tier, limit = 50, offset = 0 } = params;
+  const { query, cities, subjects, clients, tier, limit = 50, offset = 0 } = params;
 
   // Convert city slugs to names
   let cityNames: string[] | null = null;
@@ -52,10 +53,14 @@ export async function searchLobbyists(params: SearchParams) {
     subjectNames = subjectData ? subjectData.map(s => s.name) : null;
   }
 
+  // Client names are used directly (no slug conversion needed)
+  const clientNames: string[] | null = clients && clients.length > 0 ? clients : null;
+
   const { data, error } = await (supabase.rpc as any)('search_lobbyists', {
     search_query: query || null,
     city_filters: cityNames,
     subject_filters: subjectNames,
+    client_filters: clientNames,
     tier_filter: tier || null,
     limit_count: limit,
     offset_count: offset,

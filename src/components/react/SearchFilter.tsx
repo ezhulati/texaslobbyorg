@@ -48,9 +48,9 @@ export default function SearchFilter({
 
   return (
     <form onSubmit={handleSearch} className="w-full">
-      <div className="grid gap-4 md:grid-cols-12">
+      <div className="flex flex-col md:flex-row gap-3">
         {/* Search Input */}
-        <div className="md:col-span-5">
+        <div className="flex-1 min-w-0">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -64,7 +64,7 @@ export default function SearchFilter({
         </div>
 
         {/* City Filter */}
-        <div className="md:col-span-3">
+        <div className="w-full md:w-48">
           <select
             value={selectedCity}
             onChange={(e) => setSelectedCity(e.target.value)}
@@ -80,7 +80,7 @@ export default function SearchFilter({
         </div>
 
         {/* Subject Filter */}
-        <div className="md:col-span-3">
+        <div className="w-full md:w-48">
           <select
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
@@ -96,8 +96,12 @@ export default function SearchFilter({
         </div>
 
         {/* Search Button */}
-        <div className="md:col-span-1">
-          <Button type="submit" size="lg" className="w-full h-12">
+        <div className="w-full md:w-auto">
+          <Button
+            type="submit"
+            className="w-full md:w-auto h-12 px-8 bg-texas-blue-500 hover:bg-texas-blue-600 text-white font-semibold"
+          >
+            <Search className="h-4 w-4 mr-2" />
             Search
           </Button>
         </div>

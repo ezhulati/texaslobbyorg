@@ -32,10 +32,30 @@ export interface SearchResult {
 export async function searchLobbyists(params: SearchParams) {
   const { query, cities, subjects, tier, limit = 50, offset = 0 } = params;
 
+  // Convert city slugs to names
+  let cityNames: string[] | null = null;
+  if (cities && cities.length > 0) {
+    const { data: cityData } = await supabase
+      .from('cities')
+      .select('name')
+      .in('slug', cities);
+    cityNames = cityData ? cityData.map(c => c.name) : null;
+  }
+
+  // Convert subject slugs to names
+  let subjectNames: string[] | null = null;
+  if (subjects && subjects.length > 0) {
+    const { data: subjectData } = await supabase
+      .from('subject_areas')
+      .select('name')
+      .in('slug', subjects);
+    subjectNames = subjectData ? subjectData.map(s => s.name) : null;
+  }
+
   const { data, error } = await (supabase.rpc as any)('search_lobbyists', {
     search_query: query || null,
-    city_filters: cities && cities.length > 0 ? cities : null,
-    subject_filters: subjects && subjects.length > 0 ? subjects : null,
+    city_filters: cityNames,
+    subject_filters: subjectNames,
     tier_filter: tier || null,
     limit_count: limit,
     offset_count: offset,
@@ -129,12 +149,28 @@ export async function getLobbyistCount(params: SearchParams) {
     .select('id', { count: 'exact', head: true })
     .eq('is_active', true);
 
+  // Convert city slugs to names
   if (cities && cities.length > 0) {
-    queryBuilder = queryBuilder.overlaps('cities', cities);
+    const { data: cityData } = await supabase
+      .from('cities')
+      .select('name')
+      .in('slug', cities);
+    const cityNames = cityData ? cityData.map(c => c.name) : [];
+    if (cityNames.length > 0) {
+      queryBuilder = queryBuilder.overlaps('cities', cityNames);
+    }
   }
 
+  // Convert subject slugs to names
   if (subjects && subjects.length > 0) {
-    queryBuilder = queryBuilder.overlaps('subject_areas', subjects);
+    const { data: subjectData } = await supabase
+      .from('subject_areas')
+      .select('name')
+      .in('slug', subjects);
+    const subjectNames = subjectData ? subjectData.map(s => s.name) : [];
+    if (subjectNames.length > 0) {
+      queryBuilder = queryBuilder.overlaps('subject_areas', subjectNames);
+    }
   }
 
   if (tier) {

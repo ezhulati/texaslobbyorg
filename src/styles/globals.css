@@ -4,48 +4,75 @@
 
 @layer base {
   :root {
+    /* Texas Design System - Light Mode */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 100% 11%; /* texas-blue-900 */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 100% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 211 100% 27%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 211 100% 27%;
+    --popover-foreground: 215 100% 11%;
+
+    /* Primary: Official Texas Blue (#00205B) */
+    --primary: 215 100% 18%; /* texas-blue-500 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Texas Gold for accents */
+    --secondary: 43 81% 46%; /* texas-gold-500 */
+    --secondary-foreground: 215 100% 11%;
+
+    /* Muted: Subtle grays */
+    --muted: 210 17% 95%;
+    --muted-foreground: 215 14% 34%;
+
+    /* Accent: Light Texas Blue */
+    --accent: 214 45% 88%; /* texas-blue-100 */
+    --accent-foreground: 215 100% 18%;
+
+    /* Destructive: Official Texas Red (#BF0D3E) */
+    --destructive: 345 87% 40%; /* texas-red-500 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 215 100% 18%; /* texas-blue-500 */
+
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Texas Design System - Dark Mode */
+    --background: 215 100% 6%; /* texas-blue-900 */
+    --foreground: 0 0% 98%;
+    --card: 215 100% 9%; /* texas-blue-800 */
+    --card-foreground: 0 0% 98%;
+    --popover: 215 100% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary: Lighter blue for dark mode */
+    --primary: 214 45% 88%; /* texas-blue-100 */
+    --primary-foreground: 215 100% 11%;
+
+    /* Secondary: Texas Gold */
+    --secondary: 43 81% 56%; /* texas-gold-400 */
+    --secondary-foreground: 215 100% 6%;
+
+    /* Muted */
+    --muted: 215 100% 12%; /* texas-blue-700 */
+    --muted-foreground: 214 32% 76%;
+
+    /* Accent */
+    --accent: 215 100% 15%; /* texas-blue-600 */
+    --accent-foreground: 0 0% 98%;
+
+    /* Destructive: Lighter red for dark mode */
+    --destructive: 345 67% 50%; /* texas-red-400 */
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders and inputs */
+    --border: 215 100% 15%;
+    --input: 215 100% 15%;
+    --ring: 214 45% 88%;
   }
 }
 

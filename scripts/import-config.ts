@@ -2,7 +2,7 @@
  * Import Configuration for 2025 Texas Lobbyist Data
  *
  * Defines column mappings for each Excel file from Texas Ethics Commission.
- * Update these mappings based on actual column names in your Excel files.
+ * Updated with actual column names from the 2025 files.
  */
 
 export interface ColumnMapping {
@@ -10,30 +10,31 @@ export interface ColumnMapping {
   sourceFile: string;
   description: string;
 
-  // Column name mappings (supports multiple possible column names)
+  // Column name mappings
   columns: {
-    // Lobbyist identification
+    // Lobbyist identification (can be full name that needs parsing)
+    fullName?: string | string[]; // For "Last, First (Title)" format
     firstName?: string | string[];
     lastName?: string | string[];
-    email?: string | string[];
     phone?: string | string[];
-    website?: string | string[];
+    business?: string | string[]; // Professional specialty
 
-    // Array fields (with delimiter info)
-    cities?: { column: string | string[]; delimiter: string };
-    subjectAreas?: { column: string | string[]; delimiter: string };
+    // Location
+    city?: string | string[];
+    state?: string | string[];
+    zip?: string | string[];
+
+    // Subject areas
+    subjectArea?: string | string[]; // Single subject area per row
 
     // Client relationship fields
     clientName?: string | string[];
-    clientDescription?: string | string[];
     yearStarted?: string | string[];
     yearEnded?: string | string[];
 
     // Political fund compensation fields
-    fundName?: string | string[];
-    contributorName?: string | string[];
+    fundName?: string | string[]; // Provider Name
     compensationYear?: string | string[];
-    compensationAmount?: string | string[];
   };
 
   // Optional: Custom transformation functions for specific fields
@@ -43,140 +44,117 @@ export interface ColumnMapping {
 
   // Skip rows with certain conditions
   skipRow?: (row: any) => boolean;
+
+  // Special handling flags
+  parseFullName?: boolean; // If true, parse fullName into first/last
+  subjectAreaPerRow?: boolean; // If true, one subject area per row (not delimited list)
 }
 
 /**
- * Column mappings for each Excel file
- * IMPORTANT: Update these mappings based on your actual Excel file column names
+ * Column mappings for each actual Excel file
  */
 export const FILE_MAPPINGS: ColumnMapping[] = [
-  // File 1: Registered Lobbyists with Clients (sorted by client name)
+  // File 1: Registered Lobbyists with Clients (sorted by client)
+  // Columns: Client Name, FilerID, Lobby Name, City, Phone Number, Start, Stop, etc.
   {
-    sourceFile: 'data/2025-lobbyists-with-clients-by-client.xlsx',
+    sourceFile: 'data/2025LobbyGroupByClient.xlsx',
     description: '2025 Registered Lobbyists with Clients (sorted by client name)',
+    parseFullName: true,
     columns: {
-      firstName: ['First Name', 'FirstName', 'Lobbyist First Name'],
-      lastName: ['Last Name', 'LastName', 'Lobbyist Last Name'],
-      email: ['Email', 'Email Address', 'E-Mail'],
-      phone: ['Phone', 'Phone Number', 'Telephone'],
-      cities: {
-        column: ['City', 'Cities', 'Principal City'],
-        delimiter: ';',
-      },
-      subjectAreas: {
-        column: ['Subject', 'Subject Areas', 'Subjects'],
-        delimiter: ',',
-      },
-      clientName: ['Client Name', 'Client', 'Employer'],
-      yearStarted: ['Year Started', 'Start Year', 'Year Began'],
+      fullName: 'Lobby Name', // Format: "Scott, Natalie B. (Ms.)"
+      city: 'City',
+      phone: 'Phone Number',
+      clientName: 'Client Name',
+      yearStarted: 'Start',
+      yearEnded: 'Stop',
     },
-    // Example: Skip rows where lobbyist name is missing
-    skipRow: (row: any) => {
-      return !row['First Name'] || !row['Last Name'];
+    transformations: {
+      yearStarted: (value: any) => {
+        if (!value) return null;
+        // Parse date format "02/10/2025" -> 2025
+        const match = value.match(/\d{4}$/);
+        return match ? parseInt(match[0]) : null;
+      },
+      yearEnded: (value: any) => {
+        if (!value) return null;
+        const match = value.match(/\d{4}$/);
+        return match ? parseInt(match[0]) : null;
+      },
     },
   },
 
-  // File 2: Registered Lobbyists with Clients (sorted by lobbyist name)
+  // File 2: Registered Lobbyists with Clients (sorted by lobbyist)
+  // Columns: FilerID, Filer Name, Business, City, Client Name, Begin, Stop, etc.
   {
-    sourceFile: 'data/2025-lobbyists-with-clients-by-lobbyist.xlsx',
+    sourceFile: 'data/2025LobbyGroupByLobbyist.xlsx',
     description: '2025 Registered Lobbyists with Clients (sorted by lobbyist name)',
+    parseFullName: true,
     columns: {
-      firstName: ['First Name', 'FirstName', 'Lobbyist First Name'],
-      lastName: ['Last Name', 'LastName', 'Lobbyist Last Name'],
-      email: ['Email', 'Email Address'],
-      phone: ['Phone', 'Phone Number'],
-      cities: {
-        column: ['City', 'Cities'],
-        delimiter: ';',
+      fullName: 'Filer Name', // Format: "Abbott, Sean (Mr.)"
+      business: 'Business',
+      city: 'City',
+      clientName: 'Client Name',
+      yearStarted: 'Begin',
+      yearEnded: 'Stop',
+    },
+    transformations: {
+      yearStarted: (value: any) => {
+        if (!value) return null;
+        const match = value.match(/\d{4}$/);
+        return match ? parseInt(match[0]) : null;
       },
-      subjectAreas: {
-        column: ['Subject', 'Subject Areas'],
-        delimiter: ',',
+      yearEnded: (value: any) => {
+        if (!value) return null;
+        const match = value.match(/\d{4}$/);
+        return match ? parseInt(match[0]) : null;
       },
-      clientName: ['Client Name', 'Client'],
-      yearStarted: ['Year Started', 'Start Year'],
     },
   },
 
-  // File 3: Registered Lobbyists without client information
+  // File 3: Subject Matter List
+  // Columns: (unnamed column with subject), FilerID, Lobby Name, Primary Business, City, Phone
+  // IMPORTANT: This file has ONE SUBJECT PER ROW, not comma-delimited
   {
-    sourceFile: 'data/2025-lobbyists-without-clients.xlsx',
+    sourceFile: 'data/2025LobbySubjMatter.xlsx',
+    description: '2025 Subject Matter List (one subject per row)',
+    parseFullName: true,
+    subjectAreaPerRow: true, // Special flag: accumulate subjects per lobbyist
+    columns: {
+      fullName: 'Lobby Name',
+      business: 'Primary Business',
+      city: 'City',
+      phone: 'Phone',
+      subjectArea: '', // First column is unnamed (empty string key)
+    },
+  },
+
+  // File 4: Registered Lobbyists (clean list without clients)
+  // Columns: FilerID, Name, Business, Address 1, Address 2, City, State, Zip, Phone
+  {
+    sourceFile: 'data/2025RegisteredLobbyists.xlsx',
     description: '2025 Registered Lobbyists (without client information)',
+    parseFullName: true,
     columns: {
-      firstName: ['First Name', 'FirstName'],
-      lastName: ['Last Name', 'LastName'],
-      email: ['Email', 'Email Address'],
-      phone: ['Phone', 'Phone Number'],
-      website: ['Website', 'Web Site', 'URL'],
-      cities: {
-        column: ['City', 'Cities'],
-        delimiter: ';',
-      },
-      subjectAreas: {
-        column: ['Subject', 'Subject Areas'],
-        delimiter: ',',
-      },
+      fullName: 'Name',
+      business: 'Business',
+      city: 'City',
+      state: 'State',
+      zip: 'Zip',
+      phone: 'Phone',
     },
   },
 
-  // File 4: Subject Matter List without client information
+  // File 5: Political Fund Compensations (by lobbyist)
+  // Columns: FilerID, Lobbyist, Lobbyist Business, City, Interval, Provider Name
   {
-    sourceFile: 'data/2025-subject-matter-list.xlsx',
-    description: '2025 Subject Matter List (without client information)',
+    sourceFile: 'data/2025Pol_FundsByLobbyists.xlsx',
+    description: '2025 Lobbyists Compensated/Reimbursed By Political Funds',
+    parseFullName: true,
     columns: {
-      firstName: ['First Name', 'FirstName', 'Lobbyist First Name'],
-      lastName: ['Last Name', 'LastName', 'Lobbyist Last Name'],
-      email: ['Email'],
-      phone: ['Phone'],
-      subjectAreas: {
-        column: ['Subject', 'Subject Areas', 'Subject Matter'],
-        delimiter: ',',
-      },
-    },
-  },
-
-  // File 5: Lobbyists Compensated/Reimbursed By Political Funds (by lobbyist)
-  {
-    sourceFile: 'data/2025-political-funds-by-lobbyist.xlsx',
-    description: '2025 Lobbyists Compensated/Reimbursed By Political Funds (sorted by lobbyist)',
-    columns: {
-      firstName: ['First Name', 'FirstName', 'Lobbyist First Name'],
-      lastName: ['Last Name', 'LastName', 'Lobbyist Last Name'],
-      fundName: ['Fund Name', 'Political Fund', 'Fund'],
-      contributorName: ['Contributor Name', 'Contributor', 'Political Contributor Name'],
-      compensationYear: ['Year', 'Compensation Year', 'Calendar Year'],
-      compensationAmount: ['Amount', 'Compensation Amount', 'Total Amount'],
-    },
-    transformations: {
-      // Remove dollar signs and commas from amount
-      compensationAmount: (value: any) => {
-        if (!value) return null;
-        const cleaned = value.toString().replace(/[$,]/g, '');
-        const parsed = parseFloat(cleaned);
-        return isNaN(parsed) ? null : parsed;
-      },
-    },
-  },
-
-  // File 6: Lobbyists Compensated/Reimbursed By Political Funds (by contributor)
-  {
-    sourceFile: 'data/2025-political-funds-by-contributor.xlsx',
-    description: '2025 Lobbyists Compensated/Reimbursed By Political Funds (sorted by contributor)',
-    columns: {
-      firstName: ['First Name', 'FirstName', 'Lobbyist First Name'],
-      lastName: ['Last Name', 'LastName', 'Lobbyist Last Name'],
-      fundName: ['Fund Name', 'Political Fund'],
-      contributorName: ['Contributor Name', 'Contributor', 'Political Contributor Name'],
-      compensationYear: ['Year', 'Compensation Year'],
-      compensationAmount: ['Amount', 'Compensation Amount'],
-    },
-    transformations: {
-      compensationAmount: (value: any) => {
-        if (!value) return null;
-        const cleaned = value.toString().replace(/[$,]/g, '');
-        const parsed = parseFloat(cleaned);
-        return isNaN(parsed) ? null : parsed;
-      },
+      fullName: 'Lobbyist',
+      business: 'Lobbyist Business',
+      city: 'City',
+      fundName: 'Provider Name', // This is the political fund/contributor
     },
   },
 ];
@@ -189,7 +167,8 @@ export function getColumnValue(
   row: any,
   columnNames: string | string[] | undefined
 ): any {
-  if (!columnNames) return null;
+  // Check for undefined/null specifically (not just falsy, since '' is a valid column name)
+  if (columnNames === undefined || columnNames === null) return null;
 
   const names = Array.isArray(columnNames) ? columnNames : [columnNames];
 
@@ -203,22 +182,6 @@ export function getColumnValue(
 }
 
 /**
- * Get array field value with parsing
- */
-export function getArrayColumnValue(
-  row: any,
-  config: { column: string | string[]; delimiter: string } | undefined,
-  parseFunction: (value: string, delimiter: string) => string[]
-): string[] {
-  if (!config) return [];
-
-  const value = getColumnValue(row, config.column);
-  if (!value) return [];
-
-  return parseFunction(value, config.delimiter);
-}
-
-/**
  * Validate that required columns exist in Excel file
  * Returns array of missing columns
  */
@@ -228,21 +191,30 @@ export function validateColumns(
 ): string[] {
   const missing: string[] = [];
 
-  // Check required columns (firstName and lastName)
-  const hasFirstName = mapping.columns.firstName
-    ? findMatchingColumn(mapping.columns.firstName, actualColumns)
-    : null;
-
-  const hasLastName = mapping.columns.lastName
-    ? findMatchingColumn(mapping.columns.lastName, actualColumns)
-    : null;
-
-  if (!hasFirstName) {
-    missing.push('firstName (tried: ' + JSON.stringify(mapping.columns.firstName) + ')');
+  // For files with fullName parsing, check fullName column
+  if (mapping.parseFullName && mapping.columns.fullName) {
+    const hasFullName = findMatchingColumn(mapping.columns.fullName, actualColumns);
+    if (!hasFullName) {
+      missing.push('fullName (tried: ' + JSON.stringify(mapping.columns.fullName) + ')');
+    }
   }
+  // Otherwise check firstName and lastName
+  else {
+    const hasFirstName = mapping.columns.firstName
+      ? findMatchingColumn(mapping.columns.firstName, actualColumns)
+      : null;
 
-  if (!hasLastName) {
-    missing.push('lastName (tried: ' + JSON.stringify(mapping.columns.lastName) + ')');
+    const hasLastName = mapping.columns.lastName
+      ? findMatchingColumn(mapping.columns.lastName, actualColumns)
+      : null;
+
+    if (!hasFirstName && !mapping.parseFullName) {
+      missing.push('firstName (tried: ' + JSON.stringify(mapping.columns.firstName) + ')');
+    }
+
+    if (!hasLastName && !mapping.parseFullName) {
+      missing.push('lastName (tried: ' + JSON.stringify(mapping.columns.lastName) + ')');
+    }
   }
 
   return missing;

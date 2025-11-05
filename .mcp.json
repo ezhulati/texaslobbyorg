@@ -9,6 +9,9 @@
     },
     "supabase": {
       "url": "https://mcp.supabase.com/mcp"
+    },
+    "stripe": {
+      "url": "https://mcp.stripe.com/"
     }
   }
 }

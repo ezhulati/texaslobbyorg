@@ -22,6 +22,7 @@ import {
   parseArrayField,
   generateUniqueSlug,
   normalizeName,
+  parseTECName,
   deduplicateLobbyists,
   batchInsert,
   createServiceClient,
@@ -73,6 +74,9 @@ const allPoliticalFunds: {
   fund: Partial<PoliticalFundCompensationInsert>;
 }[] = [];
 
+// Subject area accumulator: key = "firstName-lastName", value = Set of subject areas
+const subjectAreaMap = new Map<string, Set<string>>();
+
 /**
  * Main import function
  */
@@ -89,9 +93,19 @@ async function main() {
     console.log('⚠️  CLEAR DATA MODE - Existing data will be deleted\n');
   }
 
-  // Create Supabase client
-  const supabase = createServiceClient();
-  console.log('✓ Connected to Supabase\n');
+  // Create Supabase client (only if not dry-run)
+  let supabase: any = null;
+  if (!DRY_RUN) {
+    try {
+      supabase = createServiceClient();
+      console.log('✓ Connected to Supabase\n');
+    } catch (error: any) {
+      console.error('❌ Failed to connect to Supabase:', error.message);
+      process.exit(1);
+    }
+  } else {
+    console.log('⚠️  Skipping Supabase connection (dry-run mode)\n');
+  }
 
   // Phase 1: Parse all Excel files
   console.log('📂 Phase 1: Parsing Excel files...\n');
@@ -147,18 +161,49 @@ async function main() {
   console.log(`   Found ${allLobbyists.length} total records`);
   console.log(`   Deduplicated to ${uniqueLobbyists.length} unique lobbyists\n`);
 
-  // Phase 3: Generate slugs
-  console.log('🔗 Phase 3: Generating unique slugs...\n');
-  for (const lobbyist of uniqueLobbyists) {
-    if (!lobbyist.first_name || !lobbyist.last_name) continue;
+  // Phase 2.5: Merge accumulated subject areas
+  if (subjectAreaMap.size > 0) {
+    console.log('📚 Phase 2.5: Merging subject areas...\n');
+    for (const lobbyist of uniqueLobbyists) {
+      if (!lobbyist.first_name || !lobbyist.last_name) continue;
 
-    lobbyist.slug = await generateUniqueSlug(
-      lobbyist.first_name,
-      lobbyist.last_name,
-      supabase
-    );
+      const key = `${lobbyist.first_name.toLowerCase()}-${lobbyist.last_name.toLowerCase()}`;
+      const subjects = subjectAreaMap.get(key);
+
+      if (subjects && subjects.size > 0) {
+        // Merge with existing subject areas
+        const existing = lobbyist.subject_areas || [];
+        lobbyist.subject_areas = Array.from(new Set([...existing, ...subjects]));
+      }
+    }
+    console.log(`   ✓ Merged subject areas for ${subjectAreaMap.size} lobbyists\n`);
   }
-  console.log(`   ✓ Generated ${uniqueLobbyists.length} unique slugs\n`);
+
+  // Phase 3: Generate slugs
+  if (!DRY_RUN) {
+    console.log('🔗 Phase 3: Generating unique slugs...\n');
+    for (const lobbyist of uniqueLobbyists) {
+      if (!lobbyist.first_name || !lobbyist.last_name) continue;
+
+      lobbyist.slug = await generateUniqueSlug(
+        lobbyist.first_name,
+        lobbyist.last_name,
+        supabase
+      );
+    }
+    console.log(`   ✓ Generated ${uniqueLobbyists.length} unique slugs\n`);
+  } else {
+    // In dry-run, just create simple slugs without checking database
+    console.log('🔗 Phase 3: Generating slugs (dry-run)...\n');
+    for (const lobbyist of uniqueLobbyists) {
+      if (!lobbyist.first_name || !lobbyist.last_name) continue;
+
+      lobbyist.slug = `${lobbyist.first_name.toLowerCase()}-${lobbyist.last_name.toLowerCase()}`
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+    console.log(`   ✓ Generated ${uniqueLobbyists.length} slugs\n`);
+  }
 
   if (DRY_RUN) {
     // Dry run summary
@@ -343,32 +388,67 @@ async function processFile(
       continue;
     }
 
-    // Extract lobbyist data
-    const firstName = normalizeName(getColumnValue(row, mapping.columns.firstName));
-    const lastName = normalizeName(getColumnValue(row, mapping.columns.lastName));
+    // Parse lobbyist name
+    let firstName: string;
+    let lastName: string;
+
+    if (mapping.parseFullName) {
+      // Parse "Last, First (Title)" format
+      const fullName = getColumnValue(row, mapping.columns.fullName);
+      const parsed = parseTECName(fullName);
+
+      if (!parsed) {
+        continue; // Skip rows with unparseable names
+      }
+
+      firstName = parsed.firstName;
+      lastName = parsed.lastName;
+    } else {
+      // Use separate first/last name columns
+      firstName = normalizeName(getColumnValue(row, mapping.columns.firstName));
+      lastName = normalizeName(getColumnValue(row, mapping.columns.lastName));
+    }
 
     if (!firstName || !lastName) {
       continue; // Skip rows without required fields
+    }
+
+    // Handle subject areas
+    let subjectAreas: string[] = [];
+
+    if (mapping.subjectAreaPerRow) {
+      // This file has one subject per row (2025LobbySubjMatter.xlsx)
+      // Accumulate subjects in a map, then merge later
+      const subjectArea = getColumnValue(row, mapping.columns.subjectArea);
+      if (subjectArea && subjectArea.trim()) {
+        const key = `${firstName.toLowerCase()}-${lastName.toLowerCase()}`;
+        if (!subjectAreaMap.has(key)) {
+          subjectAreaMap.set(key, new Set());
+        }
+        subjectAreaMap.get(key)!.add(subjectArea.trim());
+      }
+      // Subject areas will be merged later in Phase 2.5
     }
 
     // Build lobbyist record
     const lobbyist: Partial<LobbyistInsert> = {
       first_name: firstName,
       last_name: lastName,
-      email: normalizeEmail(getColumnValue(row, mapping.columns.email)),
       phone: normalizePhone(getColumnValue(row, mapping.columns.phone)),
-      website: getColumnValue(row, mapping.columns.website),
-      cities: getArrayColumnValue(row, mapping.columns.cities, parseArrayField),
-      subject_areas: getArrayColumnValue(
-        row,
-        mapping.columns.subjectAreas,
-        parseArrayField
-      ),
+      bio: getColumnValue(row, mapping.columns.business) || null, // Use business as initial bio
+      cities: [], // Will be populated from city column
+      subject_areas: subjectAreas,
       is_active: true,
       is_claimed: false,
       subscription_tier: 'free',
       view_count: 0,
     };
+
+    // Handle city (single value, not array in TEC files)
+    const city = getColumnValue(row, mapping.columns.city);
+    if (city && city.trim()) {
+      lobbyist.cities = [city.trim()];
+    }
 
     // Apply custom transformations
     if (mapping.transformations) {
@@ -383,21 +463,27 @@ async function processFile(
 
     // Extract client relationship if present
     const clientName = getColumnValue(row, mapping.columns.clientName);
-    if (clientName) {
-      // We'll need the slug later, so generate a temporary one
+    if (clientName && clientName.trim()) {
       const tempSlug = `${firstName.toLowerCase()}-${lastName.toLowerCase()}`;
+
+      // Apply transformations to year fields if they exist
+      let yearStarted = getColumnValue(row, mapping.columns.yearStarted);
+      let yearEnded = getColumnValue(row, mapping.columns.yearEnded);
+
+      if (mapping.transformations?.yearStarted) {
+        yearStarted = mapping.transformations.yearStarted(yearStarted, row);
+      }
+
+      if (mapping.transformations?.yearEnded) {
+        yearEnded = mapping.transformations.yearEnded(yearEnded, row);
+      }
 
       allClients.push({
         lobbyistSlug: tempSlug,
         client: {
-          name: clientName,
-          description: getColumnValue(row, mapping.columns.clientDescription),
-          year_started: getColumnValue(row, mapping.columns.yearStarted)
-            ? parseInt(getColumnValue(row, mapping.columns.yearStarted))
-            : null,
-          year_ended: getColumnValue(row, mapping.columns.yearEnded)
-            ? parseInt(getColumnValue(row, mapping.columns.yearEnded))
-            : null,
+          name: clientName.trim(),
+          year_started: yearStarted,
+          year_ended: yearEnded,
           is_current: true,
         },
       });
@@ -405,23 +491,15 @@ async function processFile(
 
     // Extract political fund compensation if present
     const fundName = getColumnValue(row, mapping.columns.fundName);
-    if (fundName) {
+    if (fundName && fundName.trim()) {
       const tempSlug = `${firstName.toLowerCase()}-${lastName.toLowerCase()}`;
-
-      let amount = getColumnValue(row, mapping.columns.compensationAmount);
-      if (mapping.transformations?.compensationAmount) {
-        amount = mapping.transformations.compensationAmount(amount, row);
-      }
 
       allPoliticalFunds.push({
         lobbyistSlug: tempSlug,
         fund: {
-          fund_name: fundName,
-          contributor_name: getColumnValue(row, mapping.columns.contributorName),
-          year: getColumnValue(row, mapping.columns.compensationYear)
-            ? parseInt(getColumnValue(row, mapping.columns.compensationYear))
-            : IMPORT_YEAR,
-          amount,
+          fund_name: fundName.trim(),
+          year: IMPORT_YEAR,
+          amount: null, // TEC doesn't provide amounts in this dataset
         },
       });
     }

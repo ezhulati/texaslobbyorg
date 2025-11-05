@@ -5,7 +5,7 @@
  * handling deduplication, and managing database operations.
  */
 
-import * as XLSX from 'xlsx';
+import XLSX from 'xlsx';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../src/lib/database.types';
 
@@ -162,6 +162,48 @@ export function normalizeName(name: string | null | undefined): string {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
     .join(' ');
+}
+
+/**
+ * Parse Texas Ethics Commission name format: "Last, First (Title)"
+ * Examples:
+ *   "Scott, Natalie B. (Ms.)" -> { firstName: "Natalie B.", lastName: "Scott" }
+ *   "Abbott, Sean (Mr.)" -> { firstName: "Sean", lastName: "Abbott" }
+ *   "Smith, John" -> { firstName: "John", lastName: "Smith" }
+ */
+export function parseTECName(fullName: string | null | undefined): {
+  firstName: string;
+  lastName: string;
+} | null {
+  if (!fullName) return null;
+
+  // Remove title in parentheses (Mr.), (Ms.), (Dr.), etc.
+  const withoutTitle = fullName.replace(/\s*\([^)]*\)\s*$/g, '').trim();
+
+  // Split by comma
+  const parts = withoutTitle.split(',').map(p => p.trim());
+
+  if (parts.length < 2) {
+    // No comma found, try to split by space and assume last word is last name
+    const words = withoutTitle.split(/\s+/);
+    if (words.length >= 2) {
+      const lastName = words[words.length - 1];
+      const firstName = words.slice(0, -1).join(' ');
+      return {
+        firstName: normalizeName(firstName),
+        lastName: normalizeName(lastName),
+      };
+    }
+    return null;
+  }
+
+  const lastName = parts[0];
+  const firstName = parts[1];
+
+  return {
+    firstName: normalizeName(firstName),
+    lastName: normalizeName(lastName),
+  };
 }
 
 /**

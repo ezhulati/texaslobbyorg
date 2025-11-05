@@ -1,0 +1,237 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+import { Check } from 'lucide-react';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login?redirect=/upgrade');
+}
+
+// Get user's lobbyist profile if they have one
+let lobbyistProfile = null;
+const { data } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+lobbyistProfile = data;
+
+// If user doesn't have a lobbyist profile, redirect to claim
+if (!lobbyistProfile) {
+  return Astro.redirect('/claim-profile');
+}
+
+// If already on premium or featured, show current plan
+const currentTier = lobbyistProfile.subscription_tier;
+
+const pageTitle = 'Upgrade Your Profile';
+const pageDescription = 'Upgrade to Premium or Featured to get priority placement, advanced analytics, and more visibility for your lobbying business.';
+
+const tiers = [
+  {
+    name: 'Free',
+    price: 0,
+    description: 'Basic profile listing',
+    features: [
+      'Profile in directory',
+      'Basic contact information',
+      'Client list',
+      'Search visibility',
+    ],
+    current: currentTier === 'free',
+    cta: 'Current Plan',
+    disabled: true,
+  },
+  {
+    name: 'Premium',
+    price: 297,
+    description: 'Enhanced visibility and features',
+    features: [
+      'Everything in Free',
+      'Priority search placement',
+      'Featured subject area badge',
+      'Basic analytics dashboard',
+      'Custom bio and expertise areas',
+      'Client testimonials',
+    ],
+    current: currentTier === 'premium',
+    cta: currentTier === 'premium' ? 'Current Plan' : 'Upgrade to Premium',
+    disabled: currentTier === 'premium' || currentTier === 'featured',
+    priceId: 'premium',
+  },
+  {
+    name: 'Featured',
+    price: 597,
+    description: 'Maximum exposure and premium features',
+    features: [
+      'Everything in Premium',
+      'Top of search results',
+      'Homepage featured section',
+      'Advanced analytics & insights',
+      'Priority support',
+      'Custom profile URL',
+      'Highlighted in email digests',
+    ],
+    current: currentTier === 'featured',
+    cta: currentTier === 'featured' ? 'Current Plan' : 'Upgrade to Featured',
+    disabled: currentTier === 'featured',
+    priceId: 'featured',
+    popular: true,
+  },
+];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Upgrade Page -->
+  <section class="py-16">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Upgrade Your Profile</h1>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Invest in your lobbying business with enhanced visibility and powerful features
+        </p>
+      </div>
+
+      <!-- Current Plan Banner (if premium or featured) -->
+      {currentTier !== 'free' && (
+        <div class="mb-8 rounded-lg border-2 border-green-200 bg-green-50 p-6 text-center">
+          <h3 class="text-lg font-semibold text-green-900 mb-2">
+            You're currently on the {currentTier === 'premium' ? 'Premium' : 'Featured'} plan
+          </h3>
+          <p class="text-sm text-green-700">
+            {currentTier === 'premium'
+              ? 'Upgrade to Featured for maximum visibility and advanced features'
+              : 'You have access to all our premium features. Thank you for your support!'}
+          </p>
+        </div>
+      )}
+
+      <!-- Pricing Tiers -->
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        {tiers.map((tier) => (
+          <div
+            class:list={[
+              'rounded-lg border bg-white p-8 relative',
+              tier.popular && 'border-texas-blue shadow-lg ring-2 ring-texas-blue/20',
+              tier.current && 'border-green-500',
+            ]}
+          >
+            {tier.popular && (
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span class="inline-flex items-center rounded-full bg-texas-blue px-4 py-1 text-sm font-medium text-white">
+                  Most Popular
+                </span>
+              </div>
+            )}
+
+            {tier.current && (
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span class="inline-flex items-center rounded-full bg-green-500 px-4 py-1 text-sm font-medium text-white">
+                  Current Plan
+                </span>
+              </div>
+            )}
+
+            <div class="mb-6">
+              <h3 class="text-2xl font-bold mb-2">{tier.name}</h3>
+              <div class="mb-3">
+                <span class="text-4xl font-bold">${tier.price}</span>
+                {tier.price > 0 && <span class="text-muted-foreground">/month</span>}
+              </div>
+              <p class="text-sm text-muted-foreground">{tier.description}</p>
+            </div>
+
+            <ul class="space-y-3 mb-8">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span class="text-sm">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            {tier.disabled ? (
+              <button
+                disabled
+                class="w-full rounded-md bg-muted px-6 py-3 text-base font-medium text-muted-foreground cursor-not-allowed"
+              >
+                {tier.cta}
+              </button>
+            ) : (
+              <form action="/api/create-checkout" method="POST">
+                <input type="hidden" name="priceId" value={tier.priceId} />
+                <input type="hidden" name="lobbyistId" value={lobbyistProfile.id} />
+                <button
+                  type="submit"
+                  class:list={[
+                    'w-full rounded-md px-6 py-3 text-base font-medium transition-colors',
+                    tier.popular
+                      ? 'bg-texas-blue text-white hover:bg-texas-blue/90'
+                      : 'border border-border hover:bg-accent',
+                  ]}
+                >
+                  {tier.cta}
+                </button>
+              </form>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="rounded-lg border border-border bg-white p-8">
+        <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div>
+            <h3 class="font-semibold mb-2">Can I cancel anytime?</h3>
+            <p class="text-sm text-muted-foreground">
+              Yes! You can cancel your subscription at any time. Your profile will remain active until the end of your billing period, then revert to the Free plan.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">What payment methods do you accept?</h3>
+            <p class="text-sm text-muted-foreground">
+              We accept all major credit cards (Visa, Mastercard, American Express, Discover) through our secure payment processor, Stripe.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">Can I upgrade from Premium to Featured later?</h3>
+            <p class="text-sm text-muted-foreground">
+              Absolutely! You can upgrade at any time. You'll be charged the prorated difference for the remainder of your billing cycle.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">Do you offer discounts for annual billing?</h3>
+            <p class="text-sm text-muted-foreground">
+              Not yet, but we're planning to introduce annual billing options with discounts in the future. Sign up for monthly billing now and we'll migrate you when available.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">What happens if I downgrade?</h3>
+            <p class="text-sm text-muted-foreground">
+              You can downgrade at any time. You'll retain access to premium features until the end of your current billing period, then your profile will move to the lower tier.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support CTA -->
+      <div class="mt-8 text-center">
+        <p class="text-muted-foreground mb-4">
+          Have questions about which plan is right for you?
+        </p>
+        <a
+          href="mailto:support@texaslobby.org"
+          class="inline-flex items-center text-texas-blue hover:underline"
+        >
+          Contact our team →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,262 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+// Get all cities with lobbyist counts
+const { data: cities } = await supabase.from('cities').select('*').order('population', { ascending: false });
+
+// Get all lobbyists to count by city
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('cities')
+  .eq('is_active', true);
+
+// Count lobbyists per city
+const cityCounts: Record<string, number> = {};
+lobbyists?.forEach((lobbyist) => {
+  lobbyist.cities?.forEach((city: string) => {
+    cityCounts[city] = (cityCounts[city] || 0) + 1;
+  });
+});
+
+// Separate major cities (top 10) from others
+const majorCities = cities?.slice(0, 10) || [];
+const otherCities = cities?.slice(10) || [];
+
+const pageTitle = 'Texas Cities | Find Lobbyists by Location';
+const pageDescription =
+  'Browse lobbyists by Texas city. Find experienced political representation in Houston, Austin, Dallas, San Antonio, and other major Texas cities.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Header -->
+  <section class="bg-texas-blue text-white py-16">
+    <div class="container">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Find Lobbyists by City</h1>
+        <p class="text-xl text-white/90">
+          Browse our directory of experienced Texas lobbyists organized by the cities they serve
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12">
+    <div class="container">
+      <!-- Major Cities -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">Major Texas Cities</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            majorCities.map((city) => {
+              const count = cityCounts[city.slug] || 0;
+              return (
+                <a
+                  href={`/cities/${city.slug}`}
+                  class="group rounded-lg border border-border bg-white p-6 hover:border-texas-blue hover:shadow-lg transition-all"
+                >
+                  <div class="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 class="text-xl font-bold group-hover:text-texas-blue transition-colors">
+                        {city.name}
+                      </h3>
+                      {city.county && (
+                        <p class="text-sm text-muted-foreground">{city.county} County</p>
+                      )}
+                    </div>
+                    <svg
+                      class="h-6 w-6 text-muted-foreground group-hover:text-texas-blue transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-2xl font-bold text-texas-blue">{count}</div>
+                      <div class="text-xs text-muted-foreground">Lobbyists</div>
+                    </div>
+                    {city.population && (
+                      <div>
+                        <div class="text-2xl font-bold text-muted-foreground">
+                          {(city.population / 1000000).toFixed(1)}M
+                        </div>
+                        <div class="text-xs text-muted-foreground">Population</div>
+                      </div>
+                    )}
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      {/* Other Cities */}
+      {
+        otherCities.length > 0 && (
+          <div>
+            <h2 class="text-2xl font-bold mb-6">Other Texas Cities</h2>
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {otherCities.map((city) => {
+                const count = cityCounts[city.slug] || 0;
+                return (
+                  <a
+                    href={`/cities/${city.slug}`}
+                    class="group rounded-lg border border-border bg-white p-4 hover:border-texas-blue hover:shadow transition-all"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <h3 class="font-semibold group-hover:text-texas-blue transition-colors">
+                        {city.name}
+                      </h3>
+                      <svg
+                        class="h-4 w-4 text-muted-foreground group-hover:text-texas-blue transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {count} lobbyist{count !== 1 ? 's' : ''}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )
+      }
+
+      {/* Info Section */}
+      <div class="mt-16 grid md:grid-cols-2 gap-8">
+        <!-- Why Location Matters -->}
+        <div class="rounded-lg border border-border bg-white p-8">
+          <h2 class="text-2xl font-bold mb-4">Why Location Matters</h2>
+          <ul class="space-y-3">
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Local Relationships</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Lobbyists serving your city have established connections with local
+                  officials.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Regional Expertise</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Understanding of specific regional issues, opportunities, and challenges.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Better Accessibility</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Face-to-face meetings and faster response times for local representation.</span
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- For Lobbyists -->}
+        <div class="rounded-lg border border-austin-sage bg-austin-sage/5 p-8">
+          <h2 class="text-2xl font-bold mb-4">Are You a Lobbyist?</h2>
+          <p class="text-muted-foreground mb-6">
+            Add your service areas to get discovered by businesses looking for political
+            representation in your region.
+          </p>
+          <ul class="space-y-2 mb-6 text-sm">
+            <li class="flex gap-2">
+              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Appear in city-specific searches</span>
+            </li>
+            <li class="flex gap-2">
+              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Serve multiple cities across Texas</span>
+            </li>
+            <li class="flex gap-2">
+              <svg class="h-5 w-5 text-austin-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Increase your visibility to local clients</span>
+            </li>
+          </ul>
+          <a
+            href="/claim-profile"
+            class="inline-flex items-center justify-center rounded-md bg-austin-sage px-6 py-3 text-base font-medium text-white hover:bg-austin-sage/90 transition-colors w-full"
+          >
+            Claim Your Profile
+          </a>
+        </div>
+      </div>
+
+      {/* Browse by Expertise CTA */}
+      <div class="mt-12 rounded-lg bg-gradient-to-br from-texas-blue to-texas-blue/80 text-white p-8 text-center">
+        <h2 class="text-3xl font-bold mb-3">Looking for Specific Expertise?</h2>
+        <p class="text-white/90 mb-6 max-w-2xl mx-auto">
+          Browse lobbyists by their areas of expertise including healthcare, energy, education,
+          technology, and more.
+        </p>
+        <a
+          href="/subjects"
+          class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue hover:bg-white/90 transition-colors"
+        >
+          Browse by Expertise
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

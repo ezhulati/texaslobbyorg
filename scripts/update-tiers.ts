@@ -14,49 +14,45 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function updateTiers() {
-  // Get first 10 lobbyists
-  const { data: lobbyists, error } = await supabase
+  console.log('Updating subscription tiers...\n');
+
+  // Update Sean Abbott to featured
+  console.log('1. Updating Sean Abbott to featured tier...');
+  const { data: seanData, error: seanError } = await supabase
     .from('lobbyists')
-    .select('id, first_name, last_name, slug')
-    .order('id')
-    .limit(10);
+    .update({ subscription_tier: 'featured' })
+    .eq('slug', 'sean-abbott')
+    .select('id, first_name, last_name, slug, subscription_tier');
 
-  if (error) {
-    console.error('Error fetching lobbyists:', error);
-    return;
+  if (seanError) {
+    console.error('❌ Error updating Sean Abbott:', seanError.message);
+  } else if (seanData && seanData.length > 0) {
+    console.log('✅ Sean Abbott updated to featured tier');
+    console.log('   Details:', seanData[0]);
+  } else {
+    console.log('⚠️  Sean Abbott not found');
   }
 
-  console.log('Current lobbyists:', lobbyists);
+  console.log('');
 
-  // Update first 3 to premium
-  if (lobbyists && lobbyists.length >= 3) {
-    for (let i = 0; i < 3; i++) {
-      const { error: updateError } = await supabase
-        .from('lobbyists')
-        .update({ subscription_tier: 'premium' })
-        .eq('id', lobbyists[i].id);
+  // Update Thomas Anderson to premium
+  console.log('2. Updating Thomas Anderson to premium tier...');
+  const { data: thomasData, error: thomasError } = await supabase
+    .from('lobbyists')
+    .update({ subscription_tier: 'premium' })
+    .eq('slug', 'thomas-anderson')
+    .select('id, first_name, last_name, slug, subscription_tier');
 
-      if (updateError) {
-        console.error(`Error updating ${lobbyists[i].first_name}:`, updateError);
-      } else {
-        console.log(`✓ Updated ${lobbyists[i].first_name} ${lobbyists[i].last_name} to premium`);
-      }
-    }
-
-    // Update 4th to featured
-    if (lobbyists.length >= 4) {
-      const { error: updateError } = await supabase
-        .from('lobbyists')
-        .update({ subscription_tier: 'featured' })
-        .eq('id', lobbyists[3].id);
-
-      if (updateError) {
-        console.error(`Error updating ${lobbyists[3].first_name}:`, updateError);
-      } else {
-        console.log(`✓ Updated ${lobbyists[3].first_name} ${lobbyists[3].last_name} to featured`);
-      }
-    }
+  if (thomasError) {
+    console.error('❌ Error updating Thomas Anderson:', thomasError.message);
+  } else if (thomasData && thomasData.length > 0) {
+    console.log('✅ Thomas Anderson updated to premium tier');
+    console.log('   Details:', thomasData[0]);
+  } else {
+    console.log('⚠️  Thomas Anderson not found');
   }
+
+  console.log('\n✅ All updates complete!');
 }
 
 updateTiers();

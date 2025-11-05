@@ -48,3 +48,10 @@ env/
 
 # Local Netlify folder
 .netlify
+
+# Playwright
+playwright-report/
+test-results/
+*.spec.ts
+playwright.config.ts
+lobbyist-*.png

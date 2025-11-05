@@ -17,9 +17,10 @@ interface Lobbyist {
 
 interface SearchableListProps {
   lobbyists: Lobbyist[];
+  hideSearch?: boolean;
 }
 
-export default function SearchableList({ lobbyists }: SearchableListProps) {
+export default function SearchableList({ lobbyists, hideSearch = false }: SearchableListProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLobbyists = useMemo(() => {
@@ -53,47 +54,51 @@ export default function SearchableList({ lobbyists }: SearchableListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search by name, city, or expertise..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full h-14 pl-12 pr-12 rounded-lg border border-border bg-white text-base focus:outline-none focus:ring-2 focus:ring-texas-blue-500 focus:border-texas-blue-500 transition-all"
-        />
-        {searchQuery && (
-          <button
-            onClick={handleClear}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors"
-            aria-label="Clear search"
-          >
-            <X className="h-5 w-5 text-muted-foreground" />
-          </button>
-        )}
-      </div>
+      {!hideSearch && (
+        <>
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search by name, city, or expertise..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-14 pl-12 pr-12 rounded-lg border border-border bg-white text-base focus:outline-none focus:ring-2 focus:ring-texas-blue-500 focus:border-texas-blue-500 transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={handleClear}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+            )}
+          </div>
 
-      {/* Results Count */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <p>
-          {filteredLobbyists.length === lobbyists.length ? (
-            <>Showing all {lobbyists.length} lobbyist{lobbyists.length !== 1 ? 's' : ''}</>
-          ) : (
-            <>
-              Showing {filteredLobbyists.length} of {lobbyists.length} lobbyist{lobbyists.length !== 1 ? 's' : ''}
-            </>
-          )}
-        </p>
-        {searchQuery && (
-          <button
-            onClick={handleClear}
-            className="text-texas-blue-500 hover:underline font-medium"
-          >
-            Clear search
-          </button>
-        )}
-      </div>
+          {/* Results Count */}
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <p>
+              {filteredLobbyists.length === lobbyists.length ? (
+                <>Showing all {lobbyists.length} lobbyist{lobbyists.length !== 1 ? 's' : ''}</>
+              ) : (
+                <>
+                  Showing {filteredLobbyists.length} of {lobbyists.length} lobbyist{lobbyists.length !== 1 ? 's' : ''}
+                </>
+              )}
+            </p>
+            {searchQuery && (
+              <button
+                onClick={handleClear}
+                className="text-texas-blue-500 hover:underline font-medium"
+              >
+                Clear search
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       {/* Results Grid */}
       {filteredLobbyists.length > 0 ? (

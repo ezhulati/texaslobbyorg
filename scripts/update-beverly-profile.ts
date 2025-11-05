@@ -10,17 +10,17 @@ async function main() {
 
   console.log('\n✨ Updating Beverly C. Cornwell Profile\n');
 
-  const updatedBio = `Senior Governmental Affairs Analyst at Oncor Electric Delivery with over 13 years of expertise in governmental relations, energy policy, and regulatory affairs. Beverly brings extensive experience from her 21+ years with Oncor (formerly TU Electric and TP&L), progressing through various roles including Accounting Analyst Specialist, R&D Administrator, and HR Assistant.
+  const updatedBio = `Beverly has spent over 40 years in the energy industry, with the last 13 years focused on governmental affairs at Oncor Electric Delivery. She knows Texas energy policy inside and out—from Smart Grid technology to regulatory compliance—and has built relationships across state government that help her clients navigate complex legislative issues.
 
-Her comprehensive background spans employee benefits, change management, process improvement, human resources, insurance, department budgeting, and financial analysis. Beverly excels in program management, project planning, business process improvement, and strategic planning, with specialized knowledge in energy sector regulations and Smart Grid technology.
+Her career at Oncor (formerly TU Electric and TP&L) started in accounting and human resources, which gave her a solid foundation in how large utilities actually work. Over two decades, she moved through roles in R&D administration, employee benefits, and process improvement before finding her calling in governmental relations.
 
-Based in the Dallas-Fort Worth Metroplex, Beverly provides sophisticated governmental affairs analysis across a remarkably broad range of policy areas including agriculture, healthcare, environmental issues, and technology. Her versatile skill set and deep understanding of Texas energy markets make her an invaluable resource for clients navigating complex regulatory environments. With endorsements in key competencies including budgets, energy, project management, and governmental affairs, Beverly delivers strategic counsel grounded in decades of industry experience.`;
+Beverly works on a surprisingly wide range of policy areas—energy, agriculture, healthcare, environmental issues, technology—basically anything that touches business in Texas. Based in the Dallas-Fort Worth area, she brings decades of hands-on experience helping clients understand what's happening in Austin and how it affects their bottom line.`;
 
   const updateData: any = {
     bio: updatedBio,
     profile_image_url: '/images/Beverly_C_Cornwell.jpg',
     years_experience: 40, // 40+ years total experience
-    // Note: linkedin_url will be added in a separate migration
+    linkedin_url: 'https://www.linkedin.com/in/beverly-c-91a2821/'
   };
 
   const { data, error } = await supabase

@@ -168,7 +168,7 @@ const schema = {
       ) : (
         <>
           <!-- Searchable Results List -->
-          <SearchableList lobbyists={lobbyists} client:load />
+          <SearchableList lobbyists={lobbyists} hideSearch={true} client:load />
 
           <!-- Pagination -->
           {totalPages > 1 && (

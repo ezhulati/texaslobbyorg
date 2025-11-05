@@ -9,5 +9,11 @@
     },
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true
-  }
+  },
+  "exclude": [
+    "scripts/**/*",
+    "netlify/**/*",
+    "test-api.ts",
+    "node_modules"
+  ]
 }

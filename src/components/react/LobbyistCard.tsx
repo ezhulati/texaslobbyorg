@@ -12,6 +12,8 @@ interface LobbyistCardProps {
   subjectAreas: string[];
   subscriptionTier: 'free' | 'premium' | 'featured';
   viewCount: number;
+  matchingSubjects?: string[];
+  industryClientCount?: number;
 }
 
 export default function LobbyistCard({
@@ -24,6 +26,8 @@ export default function LobbyistCard({
   subjectAreas,
   subscriptionTier,
   viewCount,
+  matchingSubjects,
+  industryClientCount,
 }: LobbyistCardProps) {
   const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`;
   const fullName = `${firstName || ''} ${lastName || ''}`.trim();
@@ -101,10 +105,33 @@ export default function LobbyistCard({
             </p>
           )}
 
+          {/* Industry client count - shown prominently if available */}
+          {industryClientCount !== undefined && industryClientCount > 0 && (
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-md bg-texas-gold-500/10 border border-texas-gold-500/30">
+              <svg className="h-4 w-4 text-texas-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+              </svg>
+              <span className="text-xs font-semibold text-texas-gold-700">
+                {industryClientCount} Industry {industryClientCount === 1 ? 'Client' : 'Clients'}
+              </span>
+            </div>
+          )}
+
           {/* Subject areas */}
           {subjectAreas && subjectAreas.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {subjectAreas.slice(0, 4).map((subject) => (
+              {/* Show matching subjects first with highlight */}
+              {matchingSubjects && matchingSubjects.length > 0 && matchingSubjects.slice(0, 3).map((subject) => (
+                <span
+                  key={subject}
+                  className="inline-flex items-center rounded-md bg-texas-blue-500/10 border border-texas-blue-500/30 px-2 py-1 text-xs font-semibold text-texas-blue-700"
+                >
+                  <Briefcase className="mr-1 h-3 w-3" />
+                  {subject}
+                </span>
+              ))}
+              {/* Show remaining non-matching subjects */}
+              {!matchingSubjects && subjectAreas.slice(0, 4).map((subject) => (
                 <span
                   key={subject}
                   className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground"
@@ -113,7 +140,12 @@ export default function LobbyistCard({
                   {subject}
                 </span>
               ))}
-              {subjectAreas.length > 4 && (
+              {matchingSubjects && matchingSubjects.length > 3 && (
+                <span className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                  +{matchingSubjects.length - 3} more
+                </span>
+              )}
+              {!matchingSubjects && subjectAreas.length > 4 && (
                 <span className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                   +{subjectAreas.length - 4} more
                 </span>

@@ -13,14 +13,18 @@ interface Lobbyist {
   subject_areas: string[];
   subscription_tier: 'free' | 'premium' | 'featured';
   view_count: number;
+  matchingSubjects?: string[];
+  industryClientCount?: number;
+  relevanceScore?: number;
 }
 
 interface SearchableListProps {
   lobbyists: Lobbyist[];
   hideSearch?: boolean;
+  showIndustryBadges?: boolean;
 }
 
-export default function SearchableList({ lobbyists, hideSearch = false }: SearchableListProps) {
+export default function SearchableList({ lobbyists, hideSearch = false, showIndustryBadges = false }: SearchableListProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLobbyists = useMemo(() => {
@@ -116,6 +120,8 @@ export default function SearchableList({ lobbyists, hideSearch = false }: Search
               subjectAreas={lobbyist.subject_areas}
               subscriptionTier={lobbyist.subscription_tier}
               viewCount={lobbyist.view_count}
+              matchingSubjects={showIndustryBadges ? lobbyist.matchingSubjects : undefined}
+              industryClientCount={showIndustryBadges ? lobbyist.industryClientCount : undefined}
             />
           ))}
         </div>

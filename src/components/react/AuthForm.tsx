@@ -38,6 +38,19 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
         if (signUpError) throw signUpError;
 
         if (data.user) {
+          // Immediately create user record (since trigger might not work due to permissions)
+          const { error: upsertError } = await supabase.from('users').upsert({
+            id: data.user.id,
+            email: data.user.email!,
+            role: 'searcher',
+            full_name: fullName || null,
+          });
+
+          if (upsertError) {
+            console.error('Error creating user record:', upsertError);
+            // Don't throw error - user was created in auth, we'll retry on verification
+          }
+
           setSuccess('Account created! Please check your email to verify your account.');
         }
       } else {

@@ -1,0 +1,333 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getAllIndustries } from '@/lib/industries-data';
+import { supabase } from '@/lib/supabase';
+
+// Get all industries
+const industries = getAllIndustries();
+
+// Get all lobbyists to calculate counts per industry
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('subject_areas')
+  .eq('is_active', true);
+
+// Count lobbyists per industry (based on related subjects)
+const industryCounts: Record<string, number> = {};
+industries.forEach((industry) => {
+  let count = 0;
+  lobbyists?.forEach((lobbyist) => {
+    const hasMatch = lobbyist.subject_areas?.some((area: string) =>
+      industry.relatedSubjects.some(
+        (subject) => area.toLowerCase().includes(subject.toLowerCase()) || subject.toLowerCase().includes(area.toLowerCase())
+      )
+    );
+    if (hasMatch) count++;
+  });
+  industryCounts[industry.slug] = count;
+});
+
+const pageTitle = 'Browse by Industry | Texas Lobbying Industry Insights';
+const pageDescription =
+  'Explore lobbying activity by industry in Texas. Get insights on energy, healthcare, gaming, technology, and local government lobbying spending and key issues.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Header -->
+  <section class="bg-texas-blue-500 text-white py-16">
+    <div class="container">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          Texas Lobbying by Industry
+        </h1>
+        <p class="text-xl text-white/90">
+          Explore lobbying activity, spending data, and key legislative issues across Texas's most
+          influential industries
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12">
+    <div class="container">
+      <!-- Industry Overview -->
+      <div class="mb-12 max-w-4xl">
+        <p class="text-lg text-muted-foreground">
+          Understanding industry-specific lobbying helps businesses identify the right advocates for
+          their needs. Each industry has unique policy priorities, spending patterns, and
+          legislative challenges. Browse our comprehensive industry guides to find specialists who
+          understand your sector.
+        </p>
+      </div>
+
+      <!-- Industries Grid -->
+      <div class="space-y-8 mb-16">
+        {
+          industries.map((industry) => {
+            const count = industryCounts[industry.slug] || 0;
+            return (
+              <a
+                href={`/industries/${industry.slug}`}
+                class="group block rounded-lg border-2 border-border bg-gradient-to-br from-white to-muted/20 p-8 hover:border-texas-blue-500 hover:shadow-xl transition-all"
+              >
+                <div class="grid lg:grid-cols-3 gap-6">
+                  {/* Main Content */}
+                  <div class="lg:col-span-2">
+                    <h2 class="text-3xl font-bold group-hover:text-texas-blue-500 transition-colors mb-3">
+                      {industry.name}
+                    </h2>
+                    <p class="text-muted-foreground mb-4 text-base leading-relaxed">
+                      {industry.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      {industry.relatedSubjects.map((subject) => (
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-texas-blue-500/10 text-texas-blue-700">
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                    <div class="flex items-center gap-2 text-texas-blue-500 font-medium group-hover:underline">
+                      View Industry Details
+                      <svg
+                        class="h-5 w-5 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Stats Sidebar */}
+                  <div class="lg:col-span-1 space-y-4">
+                    <div class="rounded-lg bg-white border border-border p-4">
+                      <div class="text-sm text-muted-foreground mb-1">Annual Spending</div>
+                      <div class="text-xl font-bold text-texas-blue-500">
+                        {industry.spendingStats.annualSpending}
+                      </div>
+                    </div>
+                    <div class="rounded-lg bg-white border border-border p-4">
+                      <div class="text-sm text-muted-foreground mb-1">Industry Lobbyists</div>
+                      <div class="text-xl font-bold">{industry.spendingStats.numberOfLobbyists}</div>
+                    </div>
+                    <div class="rounded-lg bg-white border border-border p-4">
+                      <div class="text-sm text-muted-foreground mb-1">On TexasLobby.org</div>
+                      <div class="text-xl font-bold text-texas-gold-500">{count} Matches</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <!-- Two Column Layout for Additional Content -->
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <!-- Why Industry Expertise Matters -->
+        <div class="rounded-lg border border-border bg-white p-8">
+          <h2 class="text-2xl font-bold mb-4">Why Industry Expertise Matters</h2>
+          <ul class="space-y-3">
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Sector-Specific Knowledge</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Industry specialists understand unique regulatory challenges, market dynamics, and
+                  policy trends affecting your business.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Strategic Coalitions</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Industry lobbyists can mobilize coalitions and coordinate advocacy efforts across
+                  multiple stakeholders in your sector.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Proven Results</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Track records with similar clients demonstrate ability to navigate your industry's
+                  specific legislative landscape.</span
+                >
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <svg
+                class="h-6 w-6 text-texas-blue-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <strong class="block mb-1">Anticipate Changes</strong>
+                <span class="text-sm text-muted-foreground"
+                  >Industry experts can identify emerging issues and position your business ahead of
+                  legislative developments.</span
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Industry Spending Overview -->
+        <div class="rounded-lg border border-border bg-muted/30 p-8">
+          <h2 class="text-2xl font-bold mb-4">Industry Lobbying Snapshot</h2>
+          <div class="space-y-4">
+            {
+              industries
+                .sort((a, b) => {
+                  // Sort by spending (extract number from string)
+                  const aSpend = parseInt(a.spendingStats.annualSpending.match(/\d+/)?.[0] || '0');
+                  const bSpend = parseInt(b.spendingStats.annualSpending.match(/\d+/)?.[0] || '0');
+                  return bSpend - aSpend;
+                })
+                .map((industry) => (
+                  <div class="flex items-center justify-between p-3 rounded-md bg-white hover:bg-texas-blue-500/5 transition-colors">
+                    <div>
+                      <div class="font-medium">{industry.name}</div>
+                      <div class="text-xs text-muted-foreground">
+                        {industry.spendingStats.numberOfLobbyists} lobbyists •{' '}
+                        {industry.spendingStats.activeOrganizations} organizations
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-bold text-texas-blue-500">
+                        {industry.spendingStats.annualSpending}
+                      </div>
+                      <div class="text-xs text-muted-foreground">annually</div>
+                    </div>
+                  </div>
+                ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Source Info -->
+      <div class="mb-12 rounded-lg border border-border bg-muted/20 p-6">
+        <div class="flex items-start gap-3">
+          <svg
+            class="h-6 w-6 text-texas-blue-500 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div>
+            <h3 class="font-semibold mb-2">About This Data</h3>
+            <p class="text-sm text-muted-foreground">
+              Spending estimates are based on Texas Ethics Commission lobbying reports and represent
+              approximate ranges. Actual spending may vary by legislative session and specific policy
+              issues. Lobbyist counts include registered Texas lobbyists who have reported activity
+              or client relationships within each industry sector.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Browse Other Ways CTA -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="rounded-lg bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 text-white p-8 text-center">
+          <h2 class="text-2xl font-bold mb-3">Browse by Expertise</h2>
+          <p class="text-white/90 mb-6">
+            Find lobbyists by specific policy areas and subject matter specializations.
+          </p>
+          <a
+            href="/subjects"
+            class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-500 hover:bg-white/90 transition-colors"
+          >
+            View All Expertise Areas
+          </a>
+        </div>
+
+        <div class="rounded-lg bg-gradient-to-br from-texas-gold-500 to-texas-gold-600 text-white p-8 text-center">
+          <h2 class="text-2xl font-bold mb-3">Browse by Location</h2>
+          <p class="text-white/90 mb-6">
+            Find lobbyists with local connections and regional expertise in your city.
+          </p>
+          <a
+            href="/cities"
+            class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-gold-600 hover:bg-white/90 transition-colors"
+          >
+            View All Cities
+          </a>
+        </div>
+      </div>
+
+      <!-- CTA for Businesses -->
+      <div class="mt-12 rounded-lg border border-texas-blue-500 bg-texas-blue-500/5 p-8">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl font-bold mb-4">Ready to Find Industry Experts?</h2>
+          <p class="text-lg text-muted-foreground mb-6">
+            Connect with experienced lobbyists who understand your industry's unique challenges and
+            have proven track records delivering results in Austin.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="/signup"
+              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-8 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+            >
+              Create Free Account
+            </a>
+            <a
+              href="/lobbyists"
+              class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue-500 px-8 py-3 text-base font-medium text-texas-blue-500 hover:bg-texas-blue-500 hover:text-white transition-colors"
+            >
+              Browse All Lobbyists
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

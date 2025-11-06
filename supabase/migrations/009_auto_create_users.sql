@@ -1,15 +1,19 @@
 -- Auto-create user record when someone signs up
--- This trigger ensures public.users is populated whenever auth.users gets a new record
+-- This uses Supabase's recommended pattern for auth triggers
 
+-- First, create the function
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER SET search_path = public
+LANGUAGE plpgsql
+AS $$
 BEGIN
   INSERT INTO public.users (id, email, role, full_name, created_at, updated_at)
   VALUES (
     NEW.id,
     NEW.email,
     'searcher', -- Default role
-    NEW.raw_user_meta_data->>'full_name', -- Extract full_name from metadata
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''), -- Extract full_name from metadata
     NOW(),
     NOW()
   )
@@ -20,12 +24,15 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
--- Trigger fires after insert on auth.users
-CREATE OR REPLACE TRIGGER on_auth_user_created
+-- Enable the trigger on auth.users
+-- Note: This requires superuser privileges, so if it fails, we'll handle it in the application
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
 
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;

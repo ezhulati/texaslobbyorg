@@ -1,0 +1,171 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login?redirect=/onboarding');
+}
+
+// Get lobbyist profile
+const { data: lobbyist } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+if (!lobbyist) {
+  return Astro.redirect('/dashboard');
+}
+
+// If already completed onboarding, redirect to dashboard
+if (lobbyist.onboarding_completed) {
+  return Astro.redirect('/dashboard');
+}
+
+const pageTitle = 'Complete Your Profile';
+const pageDescription = 'Set up your lobbyist profile to start connecting with potential clients.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Onboarding Page -->
+  <section class="py-12 min-h-[calc(100vh-4rem)] bg-gradient-to-b from-texas-blue-500/5 to-background">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Welcome, {lobbyist.first_name}!</h1>
+        <p class="text-lg text-muted-foreground">
+          Let's complete your profile to make it stand out
+        </p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-muted-foreground">Step {lobbyist.onboarding_step || 1} of 5</span>
+          <span class="text-sm font-medium text-texas-blue-500">{((lobbyist.onboarding_step || 0) / 5 * 100).toFixed(0)}% Complete</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div
+            class="bg-texas-blue-500 h-2.5 rounded-full transition-all duration-500"
+            style={`width: ${((lobbyist.onboarding_step || 0) / 5 * 100)}%`}
+          ></div>
+        </div>
+      </div>
+
+      <!-- Onboarding Steps -->
+      <div class="grid gap-6">
+        <!-- Step 1: Profile Photo -->
+        <div class="rounded-lg border-2 border-border bg-white p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-texas-blue-500 text-white flex items-center justify-center text-xl font-bold">
+                1
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold mb-2">Add Your Profile Photo</h2>
+              <p class="text-muted-foreground mb-6">
+                Profiles with photos get 40% more views. Add a professional headshot to stand out.
+              </p>
+              <a
+                href="/onboarding/photo"
+                class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                Upload Photo
+              </a>
+              <button
+                onclick="window.location.href='/onboarding/bio'"
+                class="ml-3 inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+              >
+                Skip for Now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Bio -->
+        <div class="rounded-lg border border-border bg-white/50 p-8 opacity-60">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xl font-bold">
+                2
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-xl font-bold mb-2">Write Your Bio</h2>
+              <p class="text-sm text-muted-foreground">
+                Tell potential clients about your experience and expertise
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Contact Info -->
+        <div class="rounded-lg border border-border bg-white/50 p-8 opacity-60">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xl font-bold">
+                3
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-xl font-bold mb-2">Add Contact Information</h2>
+              <p class="text-sm text-muted-foreground">
+                Make it easy for clients to reach you
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Review Clients -->
+        <div class="rounded-lg border border-border bg-white/50 p-8 opacity-60">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xl font-bold">
+                4
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-xl font-bold mb-2">Review Client List</h2>
+              <p class="text-sm text-muted-foreground">
+                Verify and organize your client relationships
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Choose Plan -->
+        <div class="rounded-lg border border-border bg-white/50 p-8 opacity-60">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xl font-bold">
+                5
+              </div>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-xl font-bold mb-2">Choose Your Plan</h2>
+              <p class="text-sm text-muted-foreground">
+                Upgrade for premium features and increased visibility
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skip All Button -->
+      <div class="mt-8 text-center">
+        <form method="POST" action="/api/onboarding/skip">
+          <button
+            type="submit"
+            class="text-sm text-muted-foreground hover:text-foreground underline"
+          >
+            Skip onboarding and go to dashboard
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,183 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication and admin role
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login?redirect=/admin/pending-profiles');
+}
+
+const userRole = await getUserRole(user.id);
+if (userRole !== 'admin') {
+  return Astro.redirect('/dashboard');
+}
+
+// Get all pending profiles
+const { data: pendingProfiles } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('is_pending', true)
+  .order('created_at', { ascending: false });
+
+const pageTitle = 'Pending Profiles | Admin';
+const pageDescription = 'Review and approve pending lobbyist profiles.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Admin Pending Profiles -->
+  <section class="py-12">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="mb-8 flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Pending Profiles</h1>
+          <p class="text-lg text-muted-foreground">
+            Review and approve new lobbyist registrations
+          </p>
+        </div>
+        <a
+          href="/dashboard"
+          class="inline-flex items-center text-sm text-texas-blue-500 hover:underline"
+        >
+          ← Back to Dashboard
+        </a>
+      </div>
+
+      {!pendingProfiles || pendingProfiles.length === 0 ? (
+        <!-- No Pending Profiles -->
+        <div class="rounded-lg border-2 border-dashed border-border p-12 text-center">
+          <svg
+            class="mx-auto h-12 w-12 text-muted-foreground mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 class="text-lg font-semibold mb-2">All Caught Up!</h3>
+          <p class="text-muted-foreground">
+            There are no pending profiles to review at this time.
+          </p>
+        </div>
+      ) : (
+        <!-- Pending Profiles List -->
+        <div class="space-y-6">
+          {pendingProfiles.map((profile) => (
+            <div class="rounded-lg border-2 border-yellow-200 bg-yellow-50/50 p-6">
+              <div class="flex items-start justify-between gap-6">
+                <div class="flex-1">
+                  <!-- Profile Info -->
+                  <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-1">
+                      {profile.first_name} {profile.last_name}
+                    </h3>
+                    <p class="text-sm text-muted-foreground">
+                      Submitted {new Date(profile.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p class="text-sm font-medium text-muted-foreground">Email</p>
+                      <p class="text-sm">{profile.email || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-muted-foreground">Phone</p>
+                      <p class="text-sm">{profile.phone || 'Not provided'}</p>
+                    </div>
+                    {profile.website && (
+                      <div>
+                        <p class="text-sm font-medium text-muted-foreground">Website</p>
+                        <a href={profile.website} target="_blank" rel="noopener noreferrer" class="text-sm text-texas-blue-500 hover:underline">
+                          {profile.website}
+                        </a>
+                      </div>
+                    )}
+                    {profile.linkedin_url && (
+                      <div>
+                        <p class="text-sm font-medium text-muted-foreground">LinkedIn</p>
+                        <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" class="text-sm text-texas-blue-500 hover:underline">
+                          View Profile
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {profile.bio && (
+                    <div class="mb-4">
+                      <p class="text-sm font-medium text-muted-foreground mb-1">Bio</p>
+                      <p class="text-sm">{profile.bio}</p>
+                    </div>
+                  )}
+
+                  <div class="grid md:grid-cols-2 gap-4">
+                    {profile.cities && profile.cities.length > 0 && (
+                      <div>
+                        <p class="text-sm font-medium text-muted-foreground mb-1">Cities</p>
+                        <div class="flex flex-wrap gap-2">
+                          {profile.cities.map((city: string) => (
+                            <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium">
+                              {city}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {profile.subject_areas && profile.subject_areas.length > 0 && (
+                      <div>
+                        <p class="text-sm font-medium text-muted-foreground mb-1">Expertise</p>
+                        <div class="flex flex-wrap gap-2">
+                          {profile.subject_areas.map((area: string) => (
+                            <span class="inline-flex items-center rounded-md bg-texas-blue-500/10 px-2 py-1 text-xs font-medium text-texas-blue-700">
+                              {area}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {profile.pending_reason && (
+                    <div class="mt-4 rounded-lg bg-yellow-100 p-3">
+                      <p class="text-xs font-medium text-yellow-900 mb-1">Reason for Review</p>
+                      <p class="text-sm text-yellow-800">{profile.pending_reason}</p>
+                    </div>
+                  )}
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-col gap-3">
+                  <form method="POST" action="/api/admin/approve-profile">
+                    <input type="hidden" name="profileId" value={profile.id} />
+                    <button
+                      type="submit"
+                      class="inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors whitespace-nowrap"
+                    >
+                      ✓ Approve
+                    </button>
+                  </form>
+                  <form method="POST" action="/api/admin/reject-profile">
+                    <input type="hidden" name="profileId" value={profile.id} />
+                    <button
+                      type="submit"
+                      class="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors whitespace-nowrap"
+                    >
+                      × Reject
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

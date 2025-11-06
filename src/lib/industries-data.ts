@@ -224,3 +224,30 @@ export function getIndustryBySlug(slug: string): Industry | undefined {
 export function getAllIndustries(): Industry[] {
   return Object.values(INDUSTRIES);
 }
+
+export function getIndustriesForSubject(subjectName: string): Industry[] {
+  const normalizedSubject = subjectName.toLowerCase().replace(/\s+and\s+/g, ' ');
+
+  return Object.values(INDUSTRIES).filter((industry) =>
+    industry.relatedSubjects.some((subject) => {
+      const normalizedIndustrySubject = subject.toLowerCase().replace(/\s+and\s+/g, ' ');
+
+      // Check for exact match
+      if (normalizedIndustrySubject === normalizedSubject) return true;
+
+      // Check if one contains the other
+      if (normalizedIndustrySubject.includes(normalizedSubject)) return true;
+      if (normalizedSubject.includes(normalizedIndustrySubject)) return true;
+
+      // Check for word-level matches (e.g., "healthcare" matches "health")
+      const subjectWords = normalizedSubject.split(/\s+/);
+      const industryWords = normalizedIndustrySubject.split(/\s+/);
+
+      return subjectWords.some(sw =>
+        industryWords.some(iw =>
+          sw.includes(iw) || iw.includes(sw)
+        )
+      );
+    })
+  );
+}

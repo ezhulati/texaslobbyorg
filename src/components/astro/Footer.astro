@@ -16,6 +16,7 @@ const footerLinks = {
     { label: 'About Us', href: '/about' },
     { label: 'Blog', href: '/blog' },
     { label: 'FAQs', href: '/faqs' },
+    { label: 'Texas Ethics Commission', href: 'https://ethics.state.tx.us/search/lobby/', external: true },
   ],
   'Legal': [
     { label: 'Terms of Service', href: '/terms' },
@@ -52,8 +53,15 @@ const footerLinks = {
                 <a
                   href={link.href}
                   class="text-sm text-white/70 hover:text-white transition-colors"
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
                 >
                   {link.label}
+                  {link.external && (
+                    <svg class="inline-block w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  )}
                 </a>
               </li>
             ))}
@@ -62,8 +70,17 @@ const footerLinks = {
       ))}
     </div>
 
+    <!-- Independent Service Disclaimer -->
+    <div class="mt-12 pt-8 border-t border-white/20">
+      <div class="bg-white/5 rounded-lg p-6 text-center">
+        <p class="text-sm text-white/80 max-w-4xl mx-auto">
+          <strong class="text-white">Independent Service Notice:</strong> TexasLobby.org is an independent directory service and is not affiliated with, endorsed by, or connected to the Texas Ethics Commission or any Texas state agency. For official lobbyist filings and compliance information, please visit <a href="https://ethics.state.tx.us/search/lobby/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-300 hover:text-white underline">ethics.state.tx.us</a>.
+        </p>
+      </div>
+    </div>
+
     <!-- Bottom Bar -->
-    <div class="mt-12 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center">
+    <div class="mt-8 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center">
       <p class="text-sm text-white/70">
         &copy; {currentYear} TexasLobby.org. All rights reserved.
       </p>

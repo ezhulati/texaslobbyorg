@@ -1,0 +1,13 @@
+# Allow all search engines to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow authenticated/private pages
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /api/
+Disallow: /create-profile
+Disallow: /reset-password
+
+# Sitemap location
+Sitemap: https://texaslobby.org/sitemap.xml

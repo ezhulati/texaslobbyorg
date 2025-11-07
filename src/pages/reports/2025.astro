@@ -3,16 +3,18 @@ import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
 import { getAllIndustries } from '@/lib/industries-data';
 
-// Fetch all active lobbyists
+// Fetch all active lobbyists (override default 1000 row limit)
 const { data: lobbyists } = await supabase
   .from('lobbyists')
   .select('*')
-  .eq('is_active', true);
+  .eq('is_active', true)
+  .limit(10000);
 
-// Fetch all clients (each row represents one lobbyist-client relationship)
+// Fetch all clients (override default 1000 row limit)
 const { data: allClients } = await supabase
   .from('clients')
-  .select('*');
+  .select('*')
+  .limit(10000);
 
 // Group clients by lobbyist
 const lobbyistsWithClients = lobbyists?.map(lobbyist => ({

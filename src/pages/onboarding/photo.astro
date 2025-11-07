@@ -1,0 +1,116 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ProfilePhotoUpload from '@/components/react/ProfilePhotoUpload';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+// Require lobbyist role
+const userRole = await getUserRole(user.id);
+if (userRole !== 'lobbyist') {
+  return Astro.redirect('/dashboard');
+}
+
+// Get lobbyist profile
+const { data: lobbyistProfile } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+if (!lobbyistProfile) {
+  return Astro.redirect('/claim-profile');
+}
+
+const pageTitle = 'Add Profile Photo | Onboarding';
+const pageDescription = 'Upload a professional photo to your lobbyist profile.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-2xl">
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          <span>Step 1 of 6</span>
+          <span>Profile Photo</span>
+        </div>
+        <div class="h-2 bg-muted rounded-full overflow-hidden">
+          <div class="h-full bg-texas-blue-500 transition-all duration-300" style="width: 16.66%"></div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Add a Professional Photo</h1>
+        <p class="text-lg text-muted-foreground">
+          A great photo helps potential clients connect with you. Profiles with photos get 3x more views.
+        </p>
+      </div>
+
+      <!-- Photo Upload Component -->
+      <div class="rounded-lg border border-border bg-white p-6 md:p-8 mb-6">
+        <ProfilePhotoUpload
+          client:load
+          userId={user.id}
+          currentPhotoUrl={lobbyistProfile.photo_url}
+        />
+      </div>
+
+      <!-- Navigation -->}
+      <div class="flex items-center justify-between gap-4">
+        <a
+          href="/dashboard"
+          class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+        >
+          ← Back to Dashboard
+        </a>
+
+        <div class="flex gap-3">
+          <form method="POST" action="/api/onboarding/skip-step" class="inline">
+            <input type="hidden" name="current_step" value="1" />
+            <input type="hidden" name="next_step" value="2" />
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+            >
+              Skip for Now
+            </button>
+          </form>
+
+          <form method="POST" action="/api/onboarding/update-step" class="inline">
+            <input type="hidden" name="step" value="2" />
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+            >
+              Continue →
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Help Text -->
+      <div class="mt-8 rounded-lg border border-border bg-muted/30 p-4 text-center">
+        <p class="text-sm text-muted-foreground">
+          You can always come back and update your photo later from your dashboard.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Auto-save photo URL when uploaded
+  const photoUpload = document.querySelector('[data-component="ProfilePhotoUpload"]');
+  if (photoUpload) {
+    photoUpload.addEventListener('photoUploaded', async (event: any) => {
+      console.log('Photo uploaded:', event.detail.photoUrl);
+    });
+  }
+</script>

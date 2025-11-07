@@ -1,0 +1,90 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ExpertiseSelector from '@/components/react/ExpertiseSelector';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+// Require lobbyist role
+const userRole = await getUserRole(user.id);
+if (userRole !== 'lobbyist') {
+  return Astro.redirect('/dashboard');
+}
+
+// Get lobbyist profile
+const { data: lobbyistProfile } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+if (!lobbyistProfile) {
+  return Astro.redirect('/claim-profile');
+}
+
+const pageTitle = 'Your Expertise | Onboarding';
+const pageDescription = 'Tell us where you work and what you specialize in.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-2xl">
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          <span>Step 4 of 6</span>
+          <span>Expertise</span>
+        </div>
+        <div class="h-2 bg-muted rounded-full overflow-hidden">
+          <div class="h-full bg-texas-blue-500 transition-all duration-300" style="width: 66.66%"></div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Your Cities & Expertise</h1>
+        <p class="text-lg text-muted-foreground">
+          Help clients find you by specifying where you work and what you specialize in.
+        </p>
+      </div>
+
+      <!-- Expertise Selector Component -->
+      <div class="rounded-lg border border-border bg-white p-6 md:p-8 mb-6">
+        <ExpertiseSelector
+          client:load
+          userId={user.id}
+          currentCities={lobbyistProfile.cities}
+          currentSubjects={lobbyistProfile.subject_areas}
+        />
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex items-center justify-between gap-4">
+        <form method="POST" action="/api/onboarding/update-step" class="inline">
+          <input type="hidden" name="step" value="3" />
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+          >
+            ← Back
+          </button>
+        </form>
+
+        <form method="POST" action="/api/onboarding/update-step" class="inline">
+          <input type="hidden" name="step" value="5" />
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+          >
+            Continue →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -25,6 +25,23 @@ if (lobbyist.onboarding_completed) {
   return Astro.redirect('/dashboard');
 }
 
+// Auto-resume: redirect to last incomplete step
+const currentStep = lobbyist.onboarding_step || 0;
+if (currentStep > 0) {
+  const stepUrls: Record<number, string> = {
+    1: '/onboarding/photo',
+    2: '/onboarding/bio',
+    3: '/onboarding/contact',
+    4: '/onboarding/expertise',
+    5: '/onboarding/clients',
+    6: '/onboarding/review',
+  };
+
+  if (stepUrls[currentStep]) {
+    return Astro.redirect(stepUrls[currentStep]);
+  }
+}
+
 const pageTitle = 'Complete Your Profile';
 const pageDescription = 'Set up your lobbyist profile to start connecting with potential clients.';
 ---

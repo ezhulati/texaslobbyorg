@@ -1,12 +1,13 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { getCurrentUser } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
+import { createServerAuthClient } from '@/lib/supabase';
 
-// Require authentication
-const user = await getCurrentUser();
+// Require authentication using cookie-based session
+const supabase = createServerAuthClient(Astro.cookies);
+const { data: { user }, error } = await supabase.auth.getUser();
 
-if (!user) {
+if (error || !user) {
   return Astro.redirect('/login');
 }
 

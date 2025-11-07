@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { signOut } from '@/lib/auth';
 
-export const POST: APIRoute = async ({ cookies, redirect }) => {
+const handleSignOut: APIRoute = async ({ cookies, redirect }) => {
   try {
     // Sign out from Supabase
     await signOut();
@@ -17,3 +17,6 @@ export const POST: APIRoute = async ({ cookies, redirect }) => {
     return redirect('/');
   }
 };
+
+export const POST: APIRoute = handleSignOut;
+export const GET: APIRoute = handleSignOut;

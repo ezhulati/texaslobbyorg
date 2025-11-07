@@ -51,62 +51,91 @@ const schema = {
 
 <Layout title={pageTitle} description={pageDescription} schema={schema}>
   <!-- Hero Section -->
-  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-16 border-b border-border">
-    <div class="container max-w-4xl">
-      <div class="mb-6">
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-3xl">
+      <div class="mb-8">
         <a
           href="/guides"
-          class="inline-flex items-center text-sm text-texas-blue-500 hover:underline mb-4"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
         >
-          ← Back to all guides
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to all guides
         </a>
       </div>
 
-      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
         What Does a Lobbyist Actually Do?
       </h1>
 
-      <p class="text-xl text-muted-foreground mb-8">
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
         Let's clear up the mystery. Here's what Texas lobbyists <em>really</em> do all day,
         the myths that need busting, and why the profession is more important (and less shady) than you think.
       </p>
 
-      <div class="flex flex-wrap gap-4 text-sm text-muted-foreground">
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
         <div class="flex items-center gap-2">
-          <Clock className="h-4 w-4" />
-          <span>12 min read</span>
+          <Clock className="h-5 w-5 text-texas-blue-500" />
+          <span class="font-medium">12 min read</span>
         </div>
         <div class="flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          <span>{totalLobbyists.toLocaleString()} active Texas lobbyists</span>
+          <Users className="h-5 w-5 text-texas-blue-500" />
+          <span class="font-medium">{totalLobbyists.toLocaleString()} active Texas lobbyists</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Table of Contents -->
-  <section class="py-8 bg-muted/30 border-b border-border">
+  <section class="py-12 bg-gradient-to-b from-muted/20 to-background border-b border-border">
     <div class="container">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-lg font-semibold mb-4">What You'll Learn</h2>
-        <div class="grid md:grid-cols-2 gap-2 text-sm">
-          <a href="#simple-answer" class="text-texas-blue-500 hover:underline">→ The Simple Answer</a>
-          <a href="#myths" class="text-texas-blue-500 hover:underline">→ 6 Myths Debunked</a>
-          <a href="#day-in-life" class="text-texas-blue-500 hover:underline">→ A Day in the Life</a>
-          <a href="#types" class="text-texas-blue-500 hover:underline">→ Three Types of Lobbyists</a>
-          <a href="#skills" class="text-texas-blue-500 hover:underline">→ Real Skills for Success</a>
-          <a href="#ethics" class="text-texas-blue-500 hover:underline">→ Ethics and Legal Limits</a>
-          <a href="#tools" class="text-texas-blue-500 hover:underline">→ Tools of the Trade</a>
-          <a href="#success-stories" class="text-texas-blue-500 hover:underline">→ What Success Looks Like</a>
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl border border-border shadow-sm p-8 lg:p-10">
+          <h2 class="text-lg font-bold mb-6 text-foreground">What You'll Learn</h2>
+          <nav class="grid md:grid-cols-2 gap-x-8 gap-y-3">
+            <a href="#simple-answer" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">The Simple Answer</span>
+            </a>
+            <a href="#myths" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">6 Myths Debunked</span>
+            </a>
+            <a href="#day-in-life" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">A Day in the Life</span>
+            </a>
+            <a href="#types" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">Three Types of Lobbyists</span>
+            </a>
+            <a href="#skills" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">Real Skills for Success</span>
+            </a>
+            <a href="#ethics" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">Ethics and Legal Limits</span>
+            </a>
+            <a href="#tools" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">Tools of the Trade</span>
+            </a>
+            <a href="#success-stories" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
+              <span class="text-texas-blue-500 mt-0.5">→</span>
+              <span class="group-hover:translate-x-1 transition-transform">What Success Looks Like</span>
+            </a>
+          </nav>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content -->
-  <article class="py-16">
+  <article class="py-20 lg:py-24">
     <div class="container">
-      <div class="max-w-4xl mx-auto prose prose-lg">
+      <div class="max-w-3xl mx-auto article-content">
 
         <!-- Simple Answer -->
         <div id="simple-answer" class="not-prose scroll-mt-24">
@@ -1080,7 +1109,7 @@ const schema = {
 
   <!-- Back to Guides -->
   <section class="py-8 border-t border-border">
-    <div class="container max-w-4xl">
+    <div class="container max-w-3xl">
       <a
         href="/guides"
         class="inline-flex items-center text-texas-blue-500 hover:underline"

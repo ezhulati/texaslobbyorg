@@ -1,0 +1,314 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+// Require lobbyist role
+const userRole = await getUserRole(user.id);
+if (userRole !== 'lobbyist') {
+  return Astro.redirect('/dashboard');
+}
+
+// Get lobbyist profile with clients
+const { data: lobbyistProfile } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+if (!lobbyistProfile) {
+  return Astro.redirect('/claim-profile');
+}
+
+// Get clients
+const { data: clients } = await supabase
+  .from('clients')
+  .select('*')
+  .eq('lobbyist_id', lobbyistProfile.id)
+  .order('year_started', { ascending: false });
+
+const pageTitle = 'Review & Submit | Onboarding';
+const pageDescription = 'Review your profile before submitting for approval.';
+
+// Check if profile is complete enough to submit
+const hasRequiredFields = lobbyistProfile.bio && lobbyistProfile.bio.length >= 100;
+const hasClients = clients && clients.length > 0;
+const canSubmit = hasRequiredFields && hasClients;
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-3xl">
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          <span>Step 6 of 6</span>
+          <span>Review & Submit</span>
+        </div>
+        <div class="h-2 bg-muted rounded-full overflow-hidden">
+          <div class="h-full bg-texas-blue-500 transition-all duration-300" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Review Your Profile</h1>
+        <p class="text-lg text-muted-foreground">
+          Make sure everything looks good before submitting for approval.
+        </p>
+      </div>
+
+      <!-- Profile Summary -->
+      <div class="space-y-6">
+        <!-- Photo -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="text-lg font-semibold">Profile Photo</h3>
+            <a
+              href="/onboarding/photo"
+              class="text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit
+            </a>
+          </div>
+          {lobbyistProfile.photo_url ? (
+            <div class="flex items-center gap-4">
+              <img
+                src={lobbyistProfile.photo_url}
+                alt={`${lobbyistProfile.first_name} ${lobbyistProfile.last_name}`}
+                class="h-24 w-24 rounded-full object-cover border-2 border-border"
+              />
+              <div class="text-sm text-green-600 flex items-center gap-1">
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                Photo added
+              </div>
+            </div>
+          ) : (
+            <div class="text-sm text-muted-foreground">
+              No photo uploaded (optional)
+            </div>
+          )}
+        </div>
+
+        <!-- Bio -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="text-lg font-semibold">
+              Professional Bio {!hasRequiredFields && <span class="text-red-500">*</span>}
+            </h3>
+            <a
+              href="/onboarding/bio"
+              class="text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit
+            </a>
+          </div>
+          {lobbyistProfile.bio ? (
+            <div>
+              <p class="text-sm text-muted-foreground mb-2">{lobbyistProfile.bio}</p>
+              {lobbyistProfile.bio.length >= 100 ? (
+                <div class="text-sm text-green-600 flex items-center gap-1">
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  Complete ({lobbyistProfile.bio.length} characters)
+                </div>
+              ) : (
+                <div class="text-sm text-red-600">
+                  Bio too short (minimum 100 characters, currently {lobbyistProfile.bio.length})
+                </div>
+              )}
+            </div>
+          ) : (
+            <div class="text-sm text-red-600">
+              Bio required (minimum 100 characters)
+            </div>
+          )}
+        </div>
+
+        <!-- Contact Info -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="text-lg font-semibold">Contact Information</h3>
+            <a
+              href="/onboarding/contact"
+              class="text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit
+            </a>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="text-muted-foreground">Email:</span>{' '}
+              <span class="font-medium">{lobbyistProfile.email || user.email}</span>
+            </div>
+            {lobbyistProfile.phone && (
+              <div>
+                <span class="text-muted-foreground">Phone:</span>{' '}
+                <span class="font-medium">{lobbyistProfile.phone}</span>
+              </div>
+            )}
+            {lobbyistProfile.website && (
+              <div>
+                <span class="text-muted-foreground">Website:</span>{' '}
+                <a href={lobbyistProfile.website} target="_blank" rel="noopener" class="font-medium text-texas-blue-500 hover:underline">
+                  {lobbyistProfile.website}
+                </a>
+              </div>
+            )}
+            {lobbyistProfile.linkedin_url && (
+              <div>
+                <span class="text-muted-foreground">LinkedIn:</span>{' '}
+                <a href={lobbyistProfile.linkedin_url} target="_blank" rel="noopener" class="font-medium text-texas-blue-500 hover:underline">
+                  View Profile
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Expertise -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="text-lg font-semibold">Expertise</h3>
+            <a
+              href="/onboarding/expertise"
+              class="text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit
+            </a>
+          </div>
+          <div class="space-y-3">
+            {lobbyistProfile.cities && lobbyistProfile.cities.length > 0 && (
+              <div>
+                <div class="text-sm font-medium mb-2">Cities:</div>
+                <div class="flex flex-wrap gap-2">
+                  {lobbyistProfile.cities.map((city: string) => (
+                    <span class="inline-flex items-center rounded-full bg-texas-blue-500 px-3 py-1 text-xs text-white">
+                      {city}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {lobbyistProfile.subject_areas && lobbyistProfile.subject_areas.length > 0 && (
+              <div>
+                <div class="text-sm font-medium mb-2">Subject Areas:</div>
+                <div class="flex flex-wrap gap-2">
+                  {lobbyistProfile.subject_areas.map((area: string) => (
+                    <span class="inline-flex items-center rounded-full bg-texas-gold-500 px-3 py-1 text-xs text-white">
+                      {area}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Clients -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="text-lg font-semibold">
+              Clients {!hasClients && <span class="text-red-500">*</span>}
+            </h3>
+            <a
+              href="/onboarding/clients"
+              class="text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit
+            </a>
+          </div>
+          {clients && clients.length > 0 ? (
+            <div class="space-y-2">
+              {clients.map((client) => (
+                <div class="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <span class="font-medium">{client.client_name}</span>
+                  <span class="text-sm text-muted-foreground">Since {client.year_started}</span>
+                </div>
+              ))}
+              <div class="text-sm text-green-600 flex items-center gap-1 mt-3">
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                {clients.length} client{clients.length !== 1 ? 's' : ''} added
+              </div>
+            </div>
+          ) : (
+            <div class="text-sm text-red-600">
+              At least one client required for approval
+            </div>
+          )}
+        </div>
+
+        <!-- Submission Requirements -->
+        {!canSubmit && (
+          <div class="rounded-lg border-2 border-amber-500 bg-amber-50 p-6">
+            <div class="flex gap-3">
+              <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <h4 class="font-semibold text-amber-900 mb-2">Profile Incomplete</h4>
+                <p class="text-sm text-amber-800 mb-3">
+                  To submit your profile for approval, you need:
+                </p>
+                <ul class="text-sm text-amber-800 space-y-1">
+                  {!hasRequiredFields && (
+                    <li>• A professional bio (minimum 100 characters)</li>
+                  )}
+                  {!hasClients && (
+                    <li>• At least one client listed</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Navigation -->
+      <div class="mt-8 flex items-center justify-between gap-4">
+        <form method="POST" action="/api/onboarding/update-step" class="inline">
+          <input type="hidden" name="step" value="5" />
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+          >
+            ← Back
+          </button>
+        </form>
+
+        <form method="POST" action="/api/onboarding/submit" class="inline">
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            class={`inline-flex items-center justify-center rounded-md px-8 py-3 text-base font-medium text-white transition-colors ${
+              canSubmit
+                ? 'bg-texas-blue-500 hover:bg-texas-blue-600'
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
+          >
+            Submit for Approval →
+          </button>
+        </form>
+      </div>
+
+      {canSubmit && (
+        <div class="mt-6 rounded-lg border border-border bg-muted/30 p-4 text-center">
+          <p class="text-sm text-muted-foreground">
+            Your profile will be reviewed within 24-48 hours. You'll receive an email once it's approved.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

@@ -34,7 +34,7 @@ const pageDescription = 'Manage your TexasLobby.org account and profile.';
     <div class="container max-w-6xl">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-2">Welcome back{user.user_metadata?.full_name ? `, ${user.user_metadata.full_name}` : ''}!</h1>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Welcome back{user.user_metadata?.first_name ? `, ${user.user_metadata.first_name}` : ''}</h1>
         <p class="text-lg text-muted-foreground">
           {userRole === 'lobbyist' ? 'Manage your profile and view analytics' : 'Manage your account and saved lobbyists'}
         </p>

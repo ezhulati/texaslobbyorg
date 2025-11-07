@@ -1,0 +1,182 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require admin authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+const userRole = await getUserRole(user.id);
+if (userRole !== 'admin') {
+  return Astro.redirect('/dashboard');
+}
+
+// Get pending profiles
+const { data: pendingProfiles } = await supabase
+  .from('lobbyists')
+  .select('*, users!inner(email)')
+  .eq('is_pending', true)
+  .order('created_at', { ascending: false });
+
+const pageTitle = 'Pending Approvals | Admin';
+const pageDescription = 'Review and approve lobbyist profiles.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Pending Approvals</h1>
+          <p class="text-muted-foreground">
+            Review and approve new lobbyist profiles
+          </p>
+        </div>
+        <a
+          href="/admin"
+          class="inline-flex items-center gap-2 text-texas-blue-500 hover:underline"
+        >
+          ← Back to Admin
+        </a>
+      </div>
+
+      <!-- Pending Count -->
+      <div class="mb-6 rounded-lg border border-border bg-white p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="rounded-full bg-amber-100 p-2">
+              <svg class="h-5 w-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <div class="font-semibold">{pendingProfiles?.length || 0} Profiles Awaiting Review</div>
+              <div class="text-sm text-muted-foreground">Target: Review within 24-48 hours</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Profiles List -->
+      {pendingProfiles && pendingProfiles.length > 0 ? (
+        <div class="space-y-4">
+          {pendingProfiles.map((profile: any) => (
+            <div class="rounded-lg border border-border bg-white p-6 hover:shadow-md transition-shadow">
+              <div class="flex items-start justify-between gap-6">
+                <!-- Profile Info -->
+                <div class="flex-1">
+                  <div class="flex items-start gap-4 mb-4">
+                    {profile.photo_url ? (
+                      <img
+                        src={profile.photo_url}
+                        alt={`${profile.first_name} ${profile.last_name}`}
+                        class="h-16 w-16 rounded-full object-cover border-2 border-border"
+                      />
+                    ) : (
+                      <div class="h-16 w-16 rounded-full bg-muted flex items-center justify-center border-2 border-border">
+                        <svg class="h-8 w-8 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+
+                    <div class="flex-1">
+                      <h3 class="text-xl font-bold mb-1">
+                        {profile.first_name} {profile.last_name}
+                      </h3>
+                      <p class="text-sm text-muted-foreground mb-2">
+                        {profile.users.email}
+                      </p>
+                      <div class="flex flex-wrap gap-2 mb-3">
+                        {profile.cities?.slice(0, 3).map((city: string) => (
+                          <span class="inline-flex items-center rounded-full bg-texas-blue-100 px-2.5 py-0.5 text-xs font-medium text-texas-blue-800">
+                            {city}
+                          </span>
+                        ))}
+                        {profile.cities?.length > 3 && (
+                          <span class="text-xs text-muted-foreground">
+                            +{profile.cities.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {profile.bio && (
+                    <p class="text-sm text-muted-foreground line-clamp-3 mb-3">
+                      {profile.bio}
+                    </p>
+                  )}
+
+                  <div class="flex flex-wrap gap-4 text-sm">
+                    {profile.phone && (
+                      <div class="flex items-center gap-1 text-muted-foreground">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                        </svg>
+                        {profile.phone}
+                      </div>
+                    )}
+                    {profile.website && (
+                      <a href={profile.website} target="_blank" class="flex items-center gap-1 text-texas-blue-500 hover:underline">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd" />
+                        </svg>
+                        Website
+                      </a>
+                    )}
+                    <div class="text-muted-foreground">
+                      Submitted {new Date(profile.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-col gap-2">
+                  <a
+                    href={`/admin/pending/${profile.id}`}
+                    class="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+                  >
+                    Review Details
+                  </a>
+                  <form method="POST" action="/api/admin/approve-profile" class="inline">
+                    <input type="hidden" name="lobbyist_id" value={profile.id} />
+                    <button
+                      type="submit"
+                      class="w-full inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+                    >
+                      ✓ Approve
+                    </button>
+                  </form>
+                  <form method="POST" action="/api/admin/reject-profile" class="inline">
+                    <input type="hidden" name="lobbyist_id" value={profile.id} />
+                    <button
+                      type="submit"
+                      class="w-full inline-flex items-center justify-center rounded-md border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      ✗ Reject
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="text-lg font-semibold mb-2">No Pending Profiles</h3>
+          <p class="text-muted-foreground">
+            All profiles have been reviewed. Great work!
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

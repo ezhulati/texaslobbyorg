@@ -1,11 +1,12 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import AuthForm from '@/components/react/AuthForm';
-import { getSession } from '@/lib/auth';
+import { createServerAuthClient } from '@/lib/supabase';
 
 // Redirect if already logged in
-const session = await getSession();
-if (session) {
+const supabase = createServerAuthClient(Astro.cookies);
+const { data: { user } } = await supabase.auth.getUser();
+if (user) {
   return Astro.redirect('/dashboard');
 }
 

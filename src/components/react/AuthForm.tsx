@@ -13,6 +13,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [userType, setUserType] = useState<'searcher' | 'lobbyist'>('searcher');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
             data: {
               first_name: firstName,
               last_name: lastName,
+              user_type: userType,
             },
             emailRedirectTo: `${window.location.origin}/auth/verify`,
           },
@@ -47,7 +49,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
           const { error: upsertError } = await supabase.from('users').upsert({
             id: data.user.id,
             email: data.user.email!,
-            role: 'searcher',
+            role: userType,
             // first_name: firstName || null,  // Commented until schema cache refreshes
             // last_name: lastName || null,      // Commented until schema cache refreshes
             full_name: `${firstName} ${lastName}`.trim() || null,
@@ -58,37 +60,31 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
             // Don't throw error - user was created in auth, we'll retry on verification
           }
 
-          setSuccess('Account created! Please check your email to verify your account.');
+          // Redirect based on user type
+          if (userType === 'lobbyist') {
+            window.location.href = '/create-profile';
+          } else {
+            window.location.href = '/lobbyists';
+          }
         }
       } else {
-        // Sign in
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+        // Sign in via API endpoint (server-side auth with cookies)
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
         });
 
-        if (signInError) throw signInError;
+        const result = await response.json();
 
-        if (data.session) {
-          // Create or update user record
-          const firstName = data.user.user_metadata?.first_name || null;
-          const lastName = data.user.user_metadata?.last_name || null;
-
-          // TODO: Re-enable first_name/last_name once schema cache refreshes
-          const { error: upsertError } = await supabase.from('users').upsert({
-            id: data.user.id,
-            email: data.user.email!,
-            role: 'searcher',
-            // first_name: firstName,           // Commented until schema cache refreshes
-            // last_name: lastName,              // Commented until schema cache refreshes
-            full_name: firstName && lastName ? `${firstName} ${lastName}`.trim() : null,
-          });
-
-          if (upsertError) console.error('Error creating user record:', upsertError);
-
-          // Redirect on successful login
-          window.location.href = redirectTo;
+        if (!response.ok) {
+          throw new Error(result.error || 'Login failed');
         }
+
+        // Redirect on successful login
+        window.location.href = redirectTo;
       }
     } catch (err: any) {
       setError(err?.message || 'An error occurred');
@@ -171,6 +167,44 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
               />
             </div>
           </>
+        )}
+
+        {mode === 'signup' && (
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-3">
+              I am:
+            </label>
+            <div className="space-y-3">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="searcher"
+                  checked={userType === 'searcher'}
+                  onChange={(e) => setUserType(e.target.value as 'searcher' | 'lobbyist')}
+                  className="w-4 h-4 text-texas-blue-600 border-gray-300 focus:ring-texas-blue-500"
+                  disabled={loading}
+                />
+                <span className="ml-3 text-sm text-foreground">
+                  Searching for a lobbyist
+                </span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="lobbyist"
+                  checked={userType === 'lobbyist'}
+                  onChange={(e) => setUserType(e.target.value as 'searcher' | 'lobbyist')}
+                  className="w-4 h-4 text-texas-blue-600 border-gray-300 focus:ring-texas-blue-500"
+                  disabled={loading}
+                />
+                <span className="ml-3 text-sm text-foreground">
+                  A registered Texas lobbyist
+                </span>
+              </label>
+            </div>
+          </div>
         )}
 
         <div>

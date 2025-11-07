@@ -43,12 +43,13 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
 
         if (data.user) {
           // Immediately create user record (since trigger might not work due to permissions)
+          // TODO: Re-enable first_name/last_name once schema cache refreshes
           const { error: upsertError } = await supabase.from('users').upsert({
             id: data.user.id,
             email: data.user.email!,
             role: 'searcher',
-            first_name: firstName || null,
-            last_name: lastName || null,
+            // first_name: firstName || null,  // Commented until schema cache refreshes
+            // last_name: lastName || null,      // Commented until schema cache refreshes
             full_name: `${firstName} ${lastName}`.trim() || null,
           });
 
@@ -73,12 +74,13 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
           const firstName = data.user.user_metadata?.first_name || null;
           const lastName = data.user.user_metadata?.last_name || null;
 
+          // TODO: Re-enable first_name/last_name once schema cache refreshes
           const { error: upsertError } = await supabase.from('users').upsert({
             id: data.user.id,
             email: data.user.email!,
             role: 'searcher',
-            first_name: firstName,
-            last_name: lastName,
+            // first_name: firstName,           // Commented until schema cache refreshes
+            // last_name: lastName,              // Commented until schema cache refreshes
             full_name: firstName && lastName ? `${firstName} ${lastName}`.trim() : null,
           });
 

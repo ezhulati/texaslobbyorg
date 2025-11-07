@@ -17,11 +17,13 @@ interface Lobbyist {
 interface SimilarLobbyistsListProps {
   lobbyists: Lobbyist[];
   maxDisplay?: number;
+  singleColumn?: boolean;
 }
 
 export default function SimilarLobbyistsList({
   lobbyists,
-  maxDisplay = 6
+  maxDisplay = 6,
+  singleColumn = false
 }: SimilarLobbyistsListProps) {
   const displayedLobbyists = lobbyists.slice(0, maxDisplay);
 
@@ -30,7 +32,7 @@ export default function SimilarLobbyistsList({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 w-full">
+    <div className={`grid gap-4 w-full ${singleColumn ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
       {displayedLobbyists.map((lobbyist) => (
         <SimilarLobbyistCard
           key={lobbyist.id}

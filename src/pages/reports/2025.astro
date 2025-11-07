@@ -1,20 +1,29 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 import { getAllIndustries } from '@/lib/industries-data';
 
-// Fetch all active lobbyists (override default 1000 row limit)
-const { data: lobbyists } = await supabase
+// Use service role client for unrestricted access (server-side only)
+const supabase = createServerClient();
+
+// Fetch all active lobbyists
+const { data: lobbyists, error: lobbyistsError } = await supabase
   .from('lobbyists')
   .select('*')
-  .eq('is_active', true)
-  .limit(10000);
+  .eq('is_active', true);
 
-// Fetch all clients (override default 1000 row limit)
-const { data: allClients } = await supabase
+if (lobbyistsError) {
+  console.error('Error fetching lobbyists:', lobbyistsError);
+}
+
+// Fetch all clients
+const { data: allClients, error: clientsError } = await supabase
   .from('clients')
-  .select('*')
-  .limit(10000);
+  .select('*');
+
+if (clientsError) {
+  console.error('Error fetching clients:', clientsError);
+}
 
 // Group clients by lobbyist
 const lobbyistsWithClients = lobbyists?.map(lobbyist => ({

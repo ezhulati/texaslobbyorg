@@ -1,0 +1,754 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+// Fetch real data
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('is_active', true);
+
+const totalLobbyists = lobbyists?.length || 0;
+const claimedCount = lobbyists?.filter(l => l.is_claimed).length || 0;
+
+// Calculate average subjects per lobbyist
+const avgSubjects = lobbyists && lobbyists.length > 0
+  ? (lobbyists.reduce((sum, l) => sum + (l.subject_areas?.length || 0), 0) / lobbyists.length).toFixed(1)
+  : '0';
+
+const pageTitle = 'How to Become a Lobbyist in Texas: Complete Career Guide 2025';
+const pageDescription = 'Step-by-step guide to starting a lobbying career in Texas. Registration requirements, education paths, building your network, getting clients, and what you can realistically earn. No law degree required.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Become a Lobbyist in Texas',
+  description: pageDescription,
+  step: [
+    { '@type': 'HowToStep', name: 'Get relevant education', text: 'Earn a bachelor\'s degree in political science, law, public relations, or related field' },
+    { '@type': 'HowToStep', name: 'Gain political experience', text: 'Work on campaigns, intern at the Capitol, or work in government' },
+    { '@type': 'HowToStep', name: 'Build your network', text: 'Develop relationships with legislators, staffers, and industry contacts' },
+    { '@type': 'HowToStep', name: 'Register with Texas Ethics Commission', text: 'File registration when you meet compensation thresholds' },
+    { '@type': 'HowToStep', name: 'Get your first client', text: 'Leverage relationships and demonstrate value' },
+    { '@type': 'HowToStep', name: 'Establish your professional presence', text: 'Claim your profile and build credibility' }
+  ]
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-500/10 to-background py-16 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+          Career Guide
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+          How to Become a Lobbyist in Texas
+        </h1>
+        <p class="text-xl text-muted-foreground mb-8">
+          Your complete roadmap to breaking into the lobbying profession in the Lone Star State. From education and
+          registration to landing your first client and building a sustainable practice.
+        </p>
+        <div class="flex flex-wrap gap-4 text-sm text-muted-foreground">
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            12 min read
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {totalLobbyists.toLocaleString()} active lobbyists in Texas
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table of Contents -->
+  <section class="py-8 bg-muted/30 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-lg font-semibold mb-4">Table of Contents</h2>
+        <div class="grid md:grid-cols-2 gap-2 text-sm">
+          <a href="#is-it-for-you" class="text-texas-blue-500 hover:underline">→ Is Lobbying Right for You?</a>
+          <a href="#education" class="text-texas-blue-500 hover:underline">→ Education Requirements</a>
+          <a href="#experience" class="text-texas-blue-500 hover:underline">→ Getting Political Experience</a>
+          <a href="#network" class="text-texas-blue-500 hover:underline">→ Building Your Network</a>
+          <a href="#registration" class="text-texas-blue-500 hover:underline">→ Registration Process</a>
+          <a href="#first-client" class="text-texas-blue-500 hover:underline">→ Landing Your First Client</a>
+          <a href="#career-paths" class="text-texas-blue-500 hover:underline">→ Career Paths & Progression</a>
+          <a href="#salary" class="text-texas-blue-500 hover:underline">→ What You'll Earn</a>
+          <a href="#mistakes" class="text-texas-blue-500 hover:underline">→ Common Mistakes to Avoid</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto prose prose-lg">
+
+        <!-- Introduction -->
+        <p class="lead">
+          Let's get something out of the way immediately: <strong>you don't need a law degree to become a lobbyist in Texas.</strong>
+        </p>
+
+        <p>
+          Surprised? Most people are. They picture lobbyists as former legislators or high-powered attorneys schmoozing
+          over expensive steaks. And sure, some fit that stereotype. But the reality is far more accessible than you think.
+        </p>
+
+        <p>
+          Right now, there are {totalLobbyists.toLocaleString()} registered lobbyists working in Texas—representing everything
+          from oil companies to environmental groups, hospitals to tech startups, cities to school districts. They come from
+          diverse backgrounds: former legislative staffers, campaign managers, policy analysts, PR professionals, and yes,
+          some lawyers and ex-legislators too.
+        </p>
+
+        <p>
+          The common denominator? They know how to build relationships, navigate the legislative process, and advocate
+          effectively for their clients' interests. If that sounds like something you can learn, you're in the right place.
+        </p>
+
+        <div class="not-prose bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+          <p class="text-sm text-blue-900 m-0">
+            <strong>Reality Check:</strong> Lobbying isn't a get-rich-quick scheme. It takes years to build the relationships
+            and expertise that command top dollar. But if you're willing to put in the work, it can be a lucrative and
+            intellectually stimulating career where you genuinely influence policy.
+          </p>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="is-it-for-you">Is Lobbying Right for You?</h2>
+
+        <p>Before we dive into the how-to, let's talk about whether you should.</p>
+
+        <h3>You'll Probably Thrive as a Lobbyist If:</h3>
+        <ul>
+          <li><strong>You're genuinely interested in policy and politics.</strong> Not just elections—actual governance, how laws get made, regulatory nuances.</li>
+          <li><strong>You're comfortable with rejection.</strong> Most of your asks will be "no" or "not yet." You need thick skin.</li>
+          <li><strong>You can build and maintain relationships.</strong> This job is 80% networking, 20% everything else.</li>
+          <li><strong>You're strategic and patient.</strong> Lobbying victories often take years. Instant gratification junkies need not apply.</li>
+          <li><strong>You can explain complex issues simply.</strong> Legislators are smart but busy. Clarity wins.</li>
+          <li><strong>You're okay with ambiguity and uncertainty.</strong> Politics is unpredictable. Plans change. Votes flip.</li>
+          <li><strong>You have strong ethics.</strong> Reputation is everything. One ethics scandal can end your career.</li>
+        </ul>
+
+        <h3>You'll Probably Hate It If:</h3>
+        <ul>
+          <li>You need 9-to-5 predictability (legislative sessions are chaos)</li>
+          <li>You're uncomfortable with schmoozing and small talk</li>
+          <li>You can't handle representing positions you personally disagree with</li>
+          <li>You expect quick wins and immediate results</li>
+          <li>You're conflict-averse (you'll face opposition constantly)</li>
+        </ul>
+
+        <!-- Section 2 -->
+        <h2 id="education">Education Requirements (Spoiler: They're Flexible)</h2>
+
+        <p>
+          Here's the good news: <strong>Texas has no formal education requirements to become a lobbyist.</strong> You could
+          technically start lobbying tomorrow if you have a client willing to pay you the registration threshold.
+        </p>
+
+        <p>
+          Here's the practical news: Having the right education makes everything easier.
+        </p>
+
+        <h3>Most Common Degrees for Texas Lobbyists:</h3>
+
+        <div class="not-prose my-8">
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="bg-texas-blue-100 rounded-lg px-3 py-1 text-sm font-medium text-texas-blue-700">Most Common</div>
+                <div>
+                  <div class="font-semibold">Political Science / Government</div>
+                  <p class="text-sm text-muted-foreground m-0">Teaches legislative process, policy analysis, political theory</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-texas-blue-100 rounded-lg px-3 py-1 text-sm font-medium text-texas-blue-700">Common</div>
+                <div>
+                  <div class="font-semibold">Law (JD)</div>
+                  <p class="text-sm text-muted-foreground m-0">Helpful for regulatory lobbying, contract negotiations, legal drafting</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-texas-blue-100 rounded-lg px-3 py-1 text-sm font-medium text-texas-blue-700">Common</div>
+                <div>
+                  <div class="font-semibold">Public Relations / Communications</div>
+                  <p class="text-sm text-muted-foreground m-0">Message development, media relations, stakeholder management</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-gray-100 rounded-lg px-3 py-1 text-sm font-medium text-gray-700">Less Common</div>
+                <div>
+                  <div class="font-semibold">Public Policy / Public Administration</div>
+                  <p class="text-sm text-muted-foreground m-0">Policy analysis, program evaluation, public sector management</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-gray-100 rounded-lg px-3 py-1 text-sm font-medium text-gray-700">Industry-Specific</div>
+                <div>
+                  <div class="font-semibold">Whatever Your Industry Needs</div>
+                  <p class="text-sm text-muted-foreground m-0">Healthcare, engineering, finance, education—deep expertise matters</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>The "Do I Need a Master's Degree?" Question</h3>
+        <p>
+          Short answer: No, but it can help.
+        </p>
+
+        <p>
+          An MPP (Master of Public Policy) or MPA (Master of Public Administration) can give you credibility and deepen your
+          policy chops. But honestly? Three years working as a legislative staffer will teach you more practical lobbying
+          skills than any graduate degree.
+        </p>
+
+        <p>
+          <strong>Bottom line:</strong> Your degree matters less than your experience, relationships, and results.
+        </p>
+
+        <!-- Section 3 -->
+        <h2 id="experience">Getting Political Experience (The Real Education)</h2>
+
+        <p>
+          This is where you actually learn the job. No classroom can teach you the unwritten rules of the Texas Legislature,
+          which senators are morning people vs night owls, or how to read a whip count.
+        </p>
+
+        <h3>Best Ways to Break In:</h3>
+
+        <p><strong>1. Work on a Political Campaign</strong></p>
+        <p>
+          Campaigns are boot camp for political operatives. You'll learn how to work insane hours, build coalitions, message
+          under pressure, and—most importantly—meet people who'll remember you when they win.
+        </p>
+        <p class="text-sm text-muted-foreground">
+          <em>Pro tip:</em> Pick campaigns where you'll have real responsibilities, not just canvassing. Field director,
+          communications staffer, or policy advisor roles are gold.
+        </p>
+
+        <p><strong>2. Get a Legislative Internship or Staff Position</strong></p>
+        <p>
+          This is the most direct path. Working in a legislator's office—or for a committee—teaches you how bills actually
+          move, who the key players are, and how the sausage gets made.
+        </p>
+        <p>
+          Capitol staff jobs don't pay well (think $35K-$50K to start), but the education is priceless. You'll learn:
+        </p>
+        <ul>
+          <li>Legislative process and procedure</li>
+          <li>How to draft and analyze legislation</li>
+          <li>Committee dynamics and voting patterns</li>
+          <li>Who has real power vs who has titles</li>
+          <li>How to brief busy legislators effectively</li>
+        </ul>
+
+        <p><strong>3. Work for a State Agency or Local Government</strong></p>
+        <p>
+          Agencies have government relations teams that interact with the Legislature. Cities, counties, and school districts
+          hire folks to monitor legislation. These positions teach you the regulatory side and how government actually works.
+        </p>
+
+        <p><strong>4. Join a Trade Association or Advocacy Organization</strong></p>
+        <p>
+          Nonprofits and industry groups employ policy staff who track legislation and advocate for their members. You'll
+          learn coalition-building, grassroots organizing, and issue advocacy—all core lobbying skills.
+        </p>
+
+        <p><strong>5. Work for an Established Lobbying Firm</strong></p>
+        <p>
+          Many firms hire junior associates or analysts to support senior lobbyists. You'll start by doing research, tracking
+          bills, and maybe attending hearings. It's apprenticeship-style learning.
+        </p>
+
+        <div class="not-prose bg-green-50 border-l-4 border-green-500 p-6 my-8">
+          <h3 class="text-lg font-semibold text-green-900 mt-0 mb-2">The Capitol Intern Pipeline</h3>
+          <p class="text-sm text-green-900 mb-2">
+            Huge numbers of successful Texas lobbyists started as Capitol interns during legislative sessions. It's a
+            6-month crash course in how Austin works, and you'll meet everyone who matters.
+          </p>
+          <p class="text-sm text-green-900 m-0">
+            The Texas Legislative Internship Program and individual legislator offices hire interns every session. Pay is
+            minimal, but the connections are career-making.
+          </p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="network">Building Your Network (The Most Important Part)</h2>
+
+        <p>
+          Let's be blunt: <strong>lobbying is a relationship business.</strong> Your network is your net worth.
+        </p>
+
+        <p>
+          You need to know legislators, their chiefs of staff, committee clerks, agency heads, other lobbyists, industry
+          leaders, and reporters who cover the Capitol beat. The more people who know and trust you, the more effective you'll be.
+        </p>
+
+        <h3>How to Build a Legislative Network:</h3>
+
+        <p><strong>Show Up Consistently</strong></p>
+        <p>
+          During session, be at the Capitol. Attend committee hearings (even boring ones). Go to morning coffee at the
+          Capitol Grill. Show up at evening receptions. Be visible and helpful.
+        </p>
+
+        <p><strong>Be Genuinely Helpful (Not Transactional)</strong></p>
+        <p>
+          Don't just reach out when you need something. Share useful information. Connect people. Offer to help with research.
+          Build relationships before you need to cash them in.
+        </p>
+
+        <p><strong>Join Professional Organizations</strong></p>
+        <ul>
+          <li>Texas Association of Business</li>
+          <li>Industry-specific groups in your area of focus</li>
+          <li>Young professional networks in Austin</li>
+          <li>Alumni associations (UT, A&M, etc.)</li>
+        </ul>
+
+        <p><strong>Master the Art of the Follow-Up</strong></p>
+        <p>
+          Met someone interesting at a reception? Email them the next day. Had a good conversation with a staffer? Send a
+          thank you note. People remember thoughtfulness.
+        </p>
+
+        <p><strong>Become a Subject Matter Expert</strong></p>
+        <p>
+          Pick 2-3 policy areas and become the go-to person on them. Write about them. Speak at conferences. Be the person
+          legislators' staff call when they need background on an issue.
+        </p>
+
+        <div class="not-prose bg-amber-50 border-l-4 border-amber-500 p-6 my-8">
+          <h3 class="text-lg font-semibold text-amber-900 mt-0 mb-2">The Long Game</h3>
+          <p class="text-sm text-amber-900 m-0">
+            The legislative staffer you're nice to today might be a legislator in 10 years. The reporter you help might
+            write the definitive piece on your issue. The lobbyist you don't compete with might refer clients to you.
+            Play long ball. Be kind. Build real relationships.
+          </p>
+        </div>
+
+        <!-- Section 5 -->
+        <h2 id="registration">Registering as a Lobbyist (The Official Part)</h2>
+
+        <p>
+          Now for the bureaucratic stuff. In Texas, you must register as a lobbyist with the Texas Ethics Commission (TEC)
+          if you meet certain thresholds.
+        </p>
+
+        <h3>When Registration is Required:</h3>
+
+        <p>You must register if, in a calendar quarter, you either:</p>
+        <ul>
+          <li><strong>Receive or are entitled to receive more than $1,000</strong> in compensation for lobbying, OR</li>
+          <li><strong>Spend more than $500</strong> on lobbying expenses (meals, events, etc.) benefiting state officers/employees</li>
+        </ul>
+
+        <h3>The Registration Process:</h3>
+
+        <div class="not-prose my-8">
+          <div class="bg-white rounded-lg border border-border divide-y divide-border">
+            <div class="p-6">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-500 text-white flex items-center justify-center font-bold">1</div>
+                <div>
+                  <h4 class="font-semibold mb-2">Create Your TEC Account</h4>
+                  <p class="text-sm text-muted-foreground m-0">Visit ethics.state.tx.us and create a login for the electronic filing system</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-500 text-white flex items-center justify-center font-bold">2</div>
+                <div>
+                  <h4 class="font-semibold mb-2">File Your Registration Form</h4>
+                  <p class="text-sm text-muted-foreground m-0">Complete the lobbyist registration form within 5 days of meeting the threshold</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-500 text-white flex items-center justify-center font-bold">3</div>
+                <div>
+                  <h4 class="font-semibold mb-2">List Your Clients</h4>
+                  <p class="text-sm text-muted-foreground m-0">Identify each client you're representing and the general subject matter</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-500 text-white flex items-center justify-center font-bold">4</div>
+                <div>
+                  <h4 class="font-semibold mb-2">File Quarterly Activity Reports</h4>
+                  <p class="text-sm text-muted-foreground m-0">Submit reports every quarter showing compensation and expenditures</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Important Registration Notes:</h3>
+        <ul>
+          <li><strong>Registration fee:</strong> Currently none for lobbyist registration</li>
+          <li><strong>Deadlines matter:</strong> Late filings carry penalties</li>
+          <li><strong>Keep records:</strong> Document everything for your quarterly reports</li>
+          <li><strong>Update promptly:</strong> Add new clients within 5 days of representation</li>
+          <li><strong>Annual renewals:</strong> Re-register each year you remain active</li>
+        </ul>
+
+        <p>
+          <strong>Full details:</strong> The Texas Ethics Commission has a comprehensive lobbying guide at
+          ethics.state.tx.us. Read it. Know it. Follow it.
+        </p>
+
+        <!-- Section 6 -->
+        <h2 id="first-client">Landing Your First Client (The Hardest Part)</h2>
+
+        <p>
+          You've got the education. You've done your time in the trenches. You're networked. Now you need someone to pay you.
+        </p>
+
+        <p>
+          This is where most aspiring lobbyists struggle. Nobody hands you clients. You have to earn them.
+        </p>
+
+        <h3>Strategies That Actually Work:</h3>
+
+        <p><strong>1. Leverage Your Former Employer</strong></p>
+        <p>
+          Worked for a legislator who's termed out? There's probably a company or association that wants to hire someone with
+          that relationship. Worked at an agency? Firms might hire you for your regulatory expertise.
+        </p>
+
+        <p><strong>2. Specialize in What You Know</strong></p>
+        <p>
+          If you worked in healthcare, target healthcare clients. If you're an expert on property tax policy, position yourself
+          as the property tax lobbyist. Don't try to be everything to everyone when you're starting out.
+        </p>
+
+        <p><strong>3. Join an Established Firm First</strong></p>
+        <p>
+          Many lobbyists spend 3-5 years at a firm learning the business and building their own client book before going solo.
+          It's lower risk and you'll learn from experienced practitioners.
+        </p>
+
+        <p><strong>4. Offer Value Before Asking for Money</strong></p>
+        <p>
+          Do free legislative monitoring for a nonprofit. Write a detailed analysis of a pending bill for a company. Prove
+          your worth before pitching a contract.
+        </p>
+
+        <p><strong>5. Ask for Referrals</strong></p>
+        <p>
+          Once you have one client and do good work, ask them to introduce you to other organizations with similar needs.
+          Referrals close faster than cold pitches.
+        </p>
+
+        <p><strong>6. Target Organizations Without Representation</strong></p>
+        <p>
+          Look for growing companies, new nonprofits, or industries facing emerging legislative challenges. They might not
+          have a lobbyist yet but clearly need one.
+        </p>
+
+        <div class="not-prose bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+          <h3 class="text-lg font-semibold text-blue-900 mt-0 mb-2">Pricing Your Services (When You're New)</h3>
+          <p class="text-sm text-blue-900 mb-3">
+            This is tricky. Price too high and you won't land clients. Too low and you'll be seen as inexperienced.
+          </p>
+          <p class="text-sm text-blue-900 m-0">
+            <strong>Realistic starting range:</strong> $2,000-$5,000/month for a session retainer if you're brand new. As you
+            build your track record and client roster, you can raise rates. Experienced lobbyists charge $10K-$25K+/month.
+          </p>
+        </div>
+
+        <!-- Section 7 -->
+        <h2 id="career-paths">Career Paths & Progression</h2>
+
+        <p>
+          Lobbying isn't a single job—it's a career with multiple paths. Here's what progression typically looks like:
+        </p>
+
+        <h3>The Typical Career Arc:</h3>
+
+        <div class="not-prose my-8">
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="space-y-6">
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="text-2xl font-bold text-muted-foreground">1-3 years</div>
+                  <div class="text-lg font-semibold">Junior Lobbyist / Policy Analyst</div>
+                </div>
+                <div class="pl-20 space-y-1 text-sm text-muted-foreground">
+                  <p>• Tracking bills and writing summaries</p>
+                  <p>• Attending hearings and taking notes</p>
+                  <p>• Research and background memos</p>
+                  <p>• Supporting senior lobbyists</p>
+                  <p class="font-medium text-foreground">Salary: $45K-$65K</p>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="text-2xl font-bold text-muted-foreground">3-7 years</div>
+                  <div class="text-lg font-semibold">Lobbyist / Government Relations Manager</div>
+                </div>
+                <div class="pl-20 space-y-1 text-sm text-muted-foreground">
+                  <p>• Managing own client accounts</p>
+                  <p>• Direct legislator meetings</p>
+                  <p>• Testifying before committees</p>
+                  <p>• Strategy development</p>
+                  <p class="font-medium text-foreground">Salary: $70K-$120K</p>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="text-2xl font-bold text-muted-foreground">7-15 years</div>
+                  <div class="text-lg font-semibold">Senior Lobbyist / Director</div>
+                </div>
+                <div class="pl-20 space-y-1 text-sm text-muted-foreground">
+                  <p>• Leading major accounts</p>
+                  <p>• High-level strategy</p>
+                  <p>• Rainmaking (bringing in new clients)</p>
+                  <p>• Mentoring junior staff</p>
+                  <p class="font-medium text-foreground">Salary: $125K-$200K+</p>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="text-2xl font-bold text-muted-foreground">15+ years</div>
+                  <div class="text-lg font-semibold">Principal / Partner / Solo Practice</div>
+                </div>
+                <div class="pl-20 space-y-1 text-sm text-muted-foreground">
+                  <p>• Own firm or partnership stake</p>
+                  <p>• Major clients and high-stakes issues</p>
+                  <p>• Industry thought leader</p>
+                  <p>• Building and managing teams</p>
+                  <p class="font-medium text-foreground">Salary: $200K-$500K+ (highly variable)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Alternative Paths:</h3>
+        <ul>
+          <li><strong>In-House Corporate:</strong> Join a major company's government affairs team</li>
+          <li><strong>Trade Association:</strong> Represent an entire industry as association staff</li>
+          <li><strong>Nonprofit Advocacy:</strong> Policy director for an advocacy organization</li>
+          <li><strong>Public Affairs Consulting:</strong> Broader strategic advisory beyond just lobbying</li>
+          <li><strong>Run for Office:</strong> Some lobbyists eventually become legislators themselves</li>
+        </ul>
+
+        <!-- Section 8 -->
+        <h2 id="salary">What You'll Actually Earn</h2>
+
+        <p>
+          Let's talk money. Lobbying can be lucrative, but there's huge variability based on experience, clients, and how
+          much you're willing to hustle.
+        </p>
+
+        <h3>Texas Lobbyist Salary Ranges (2025):</h3>
+
+        <div class="not-prose my-8">
+          <div class="bg-white rounded-lg border border-border overflow-hidden">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-muted border-b border-border">
+                  <th class="text-left py-3 px-4 font-semibold">Experience Level</th>
+                  <th class="text-left py-3 px-4 font-semibold">Employment Type</th>
+                  <th class="text-right py-3 px-4 font-semibold">Typical Range</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <tr>
+                  <td class="py-3 px-4">Entry Level (0-3 yrs)</td>
+                  <td class="py-3 px-4">Firm Associate</td>
+                  <td class="text-right py-3 px-4">$45K-$70K</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Mid-Level (3-7 yrs)</td>
+                  <td class="py-3 px-4">Firm Lobbyist</td>
+                  <td class="text-right py-3 px-4">$70K-$130K</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Senior (7-15 yrs)</td>
+                  <td class="py-3 px-4">Firm Principal</td>
+                  <td class="text-right py-3 px-4">$130K-$250K+</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Entry Level (0-3 yrs)</td>
+                  <td class="py-3 px-4">In-House Corporate</td>
+                  <td class="text-right py-3 px-4">$60K-$85K</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Mid-Level (3-7 yrs)</td>
+                  <td class="py-3 px-4">In-House Corporate</td>
+                  <td class="text-right py-3 px-4">$90K-$145K</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Senior (7-15 yrs)</td>
+                  <td class="py-3 px-4">VP Government Affairs</td>
+                  <td class="text-right py-3 px-4">$150K-$300K+</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4">Solo Practice</td>
+                  <td class="py-3 px-4">Self-Employed</td>
+                  <td class="text-right py-3 px-4">$30K-$500K+ (wildly variable)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>Factors That Increase Earning Potential:</h3>
+        <ul>
+          <li><strong>Specialization:</strong> Energy and healthcare lobbyists typically earn more than education lobbyists</li>
+          <li><strong>Client type:</strong> Corporate clients pay better than nonprofits</li>
+          <li><strong>Track record:</strong> Demonstrable wins command premium pricing</li>
+          <li><strong>Relationships:</strong> Strong connections with leadership = higher value</li>
+          <li><strong>Location:</strong> Austin-based generally earn more than regional</li>
+        </ul>
+
+        <p>
+          <strong>Reality check:</strong> Your first few years will be a grind. Don't expect six figures immediately. But if
+          you stick with it and build your reputation, the earning potential is substantial.
+        </p>
+
+        <!-- Section 9 -->
+        <h2 id="mistakes">Common Mistakes to Avoid</h2>
+
+        <div class="not-prose my-8">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-red-900 mt-0 mb-4">🚫 Career-Killing Errors</h3>
+            <div class="space-y-4">
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Burning bridges.</strong> The Texas political world is small. That staffer you're rude to today might
+                  be a legislator tomorrow. Be professional always.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Ethics violations.</strong> One mistake can end your career. Know the rules. Follow them. Period.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Over-promising.</strong> Never guarantee a bill will pass. Politics is unpredictable. Manage expectations.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Neglecting relationships in the off-season.</strong> Don't only show up when session starts.
+                  Year-round engagement builds deeper connections.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Lying or misleading legislators.</strong> Your credibility is your only currency. Lose it and you're done.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-red-600 font-bold flex-shrink-0">×</span>
+                <div class="text-sm text-red-900">
+                  <strong>Being too partisan.</strong> Effective lobbyists work across party lines. Don't alienate half the Legislature.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conclusion -->
+        <h2>Your Next Steps</h2>
+
+        <p>
+          Becoming a successful Texas lobbyist isn't easy, but it's absolutely achievable if you're willing to put in the work.
+        </p>
+
+        <p><strong>To recap your roadmap:</strong></p>
+        <ol>
+          <li>Get relevant education (but don't obsess over degrees)</li>
+          <li>Gain hands-on political experience (Capitol internship is ideal)</li>
+          <li>Build a robust network (relationships are everything)</li>
+          <li>Register when you hit the threshold</li>
+          <li>Land your first client (hardest step, but you only need one to start)</li>
+          <li>Deliver results and build your reputation</li>
+          <li>Grow your practice strategically</li>
+        </ol>
+
+        <p>
+          The most successful lobbyists aren't necessarily the smartest or most connected. They're the ones who show up
+          consistently, treat people well, deliver value to clients, and play the long game.
+        </p>
+
+        <p>
+          Texas needs good lobbyists—people who understand policy, respect the process, and advocate ethically for their
+          clients. If that sounds like you, get started.
+        </p>
+
+        <!-- CTA Section -->
+        <div class="not-prose mt-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg p-8 text-white">
+          <h3 class="text-2xl font-bold mb-4 text-white">Ready to Launch Your Lobbying Career?</h3>
+          <p class="mb-6 text-blue-50">
+            Claim your free lobbyist profile on TexasLobby.org. Showcase your expertise, connect with potential clients,
+            and establish your professional presence.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="/claim-profile"
+              class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-600 hover:bg-gray-100 transition-colors"
+            >
+              Claim Your Profile
+            </a>
+            <a
+              href="/lobbyists"
+              class="inline-flex items-center justify-center rounded-md border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              Browse Active Lobbyists
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </article>
+
+  <!-- Related Guides -->
+  <section class="py-12 bg-muted/30 border-t border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold mb-6">Related Guides</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <a href="/guides/how-much-does-a-lobbyist-cost" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
+            <h3 class="font-semibold mb-2">Lobbyist Pricing Guide</h3>
+            <p class="text-sm text-muted-foreground">What to charge (or pay) for lobbying services</p>
+          </a>
+          <a href="/guides/how-to-hire-a-lobbyist-in-texas" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
+            <h3 class="font-semibold mb-2">How to Hire a Lobbyist</h3>
+            <p class="text-sm text-muted-foreground">Complete buyer's guide for organizations</p>
+          </a>
+          <a href="/guides/what-does-a-lobbyist-do" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
+            <h3 class="font-semibold mb-2">What Lobbyists Do</h3>
+            <p class="text-sm text-muted-foreground">Day-to-day reality of the profession</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

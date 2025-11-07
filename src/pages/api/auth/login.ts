@@ -1,11 +1,11 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { supabase, createServerClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const { email, password, firstName, lastName } = await request.json();
 
-    // Sign in with Supabase
+    // Sign in with Supabase (use public client for auth)
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -42,8 +42,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
+    // Use service role client for database operations
+    const serverClient = createServerClient();
+
     // Check if user record exists, create only if it doesn't (first login)
-    const { data: existingUser, error: checkError } = await supabase
+    const { data: existingUser, error: checkError } = await serverClient
       .from('users')
       .select('id')
       .eq('id', data.user.id)
@@ -56,7 +59,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       const userLastName = lastName || data.user.user_metadata?.last_name || null;
       const userType = data.user.user_metadata?.user_type || 'searcher';
 
-      const { error: insertError } = await supabase.from('users').insert({
+      const { error: insertError } = await serverClient.from('users').insert({
         id: data.user.id,
         email: data.user.email!,
         role: userType as 'searcher' | 'lobbyist' | 'admin',

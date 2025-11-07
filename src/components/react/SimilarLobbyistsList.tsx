@@ -30,7 +30,7 @@ export default function SimilarLobbyistsList({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 w-full">
       {displayedLobbyists.map((lobbyist) => (
         <SimilarLobbyistCard
           key={lobbyist.id}

@@ -9,8 +9,9 @@ if (session) {
   return Astro.redirect('/dashboard');
 }
 
-const pageTitle = 'Log In';
-const pageDescription = 'Sign in to your TexasLobby.org account to manage your profile and connect with clients.';
+// SEO-optimized title (55-60 chars) and description (155-160 chars)
+const pageTitle = 'Log In | Access Your Texas Lobbyist Profile';
+const pageDescription = 'Sign in to your TexasLobby.org account. Manage your lobbyist profile, update client information, track views, and connect with Texas businesses seeking advocacy.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>

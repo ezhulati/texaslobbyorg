@@ -46,10 +46,31 @@ const topSubjects = Object.entries(subjectCounts)
 const featuredCount = lobbyists?.filter((l) => l.subscription_tier === 'featured').length || 0;
 const premiumCount = lobbyists?.filter((l) => l.subscription_tier === 'premium').length || 0;
 
-const pageTitle = city.meta_title || `${city.name} Lobbyists | TexasLobby.org`;
-const pageDescription =
-  city.meta_description ||
-  `Find experienced lobbyists serving ${city.name}, Texas. Browse profiles, expertise areas, and client lists.`;
+// Build SEO-optimized title (55-60 chars)
+const lobbyistCount = lobbyists?.length || 0;
+const countyText = city.county ? ` ${city.county} County` : '';
+let pageTitle = city.meta_title;
+if (!pageTitle) {
+  // Format: "Austin Lobbyists | 150+ Texas Political Advocates"
+  const countText = lobbyistCount > 0 ? `${lobbyistCount}+ ` : '';
+  pageTitle = `${city.name} Lobbyists | ${countText}Texas Political Advocates`;
+  // If too long, simplify
+  if (pageTitle.length > 60) {
+    pageTitle = `${city.name} Texas Lobbyists | Find Political Advocates`;
+  }
+}
+
+// Build SEO-optimized description (155-160 chars max)
+let pageDescription = city.meta_description;
+if (!pageDescription) {
+  const countText = lobbyistCount > 0 ? `${lobbyistCount}+ ` : '';
+  const countyCtx = city.county ? ` in ${city.county} County` : '';
+  pageDescription = `Find ${countText}experienced Texas lobbyists serving ${city.name}${countyCtx}. Compare profiles, review expertise areas, client lists, and connect directly.`;
+  // Ensure it doesn't exceed 160 chars
+  if (pageDescription.length > 160) {
+    pageDescription = pageDescription.substring(0, 157) + '...';
+  }
+}
 ---
 
 <Layout title={pageTitle} description={pageDescription}>

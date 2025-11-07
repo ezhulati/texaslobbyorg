@@ -52,10 +52,35 @@ const totalYearsExperience = lobbyists?.reduce((sum, l) => {
 }, 0) || 0;
 const avgYearsExperience = lobbyists?.length ? Math.round(totalYearsExperience / lobbyists.length) : 0;
 
-const pageTitle = subject.meta_title || `${subject.name} Lobbyists in Texas | TexasLobby.org`;
-const pageDescription =
-  subject.meta_description ||
-  `Find experienced ${subject.name.toLowerCase()} lobbyists in Texas. ${subject.description}`;
+// Build SEO-optimized title (55-60 chars)
+const lobbyistCount = lobbyists?.length || 0;
+let pageTitle = subject.meta_title;
+if (!pageTitle) {
+  // Format: "Business Lobbyists | 45+ Texas Experts"
+  const countText = lobbyistCount > 0 ? `${lobbyistCount}+ ` : '';
+  const shortName = subject.name.length > 20 ? subject.name.substring(0, 20) : subject.name;
+  pageTitle = `${shortName} Lobbyists | ${countText}Texas Experts`;
+  // If too long, simplify
+  if (pageTitle.length > 60) {
+    pageTitle = `${shortName} Lobbyists in Texas`;
+  }
+}
+
+// Build SEO-optimized description (155-160 chars max)
+let pageDescription = subject.meta_description;
+if (!pageDescription) {
+  const countText = lobbyistCount > 0 ? `${lobbyistCount}+ ` : '';
+  const citiesText = Object.keys(cityCounts).length > 0 ? ` serving ${Object.keys(cityCounts).length}+ cities` : '';
+  pageDescription = `Find ${countText}experienced ${subject.name.toLowerCase()} lobbyists in Texas${citiesText}. Compare profiles, review track records, and connect directly.`;
+  // Ensure it doesn't exceed 160 chars
+  if (pageDescription.length > 160) {
+    // Simplify if too long
+    pageDescription = `Find ${countText}Texas ${subject.name.toLowerCase()} lobbyists. Compare profiles, expertise, track records. Connect with experienced advocates today.`;
+    if (pageDescription.length > 160) {
+      pageDescription = pageDescription.substring(0, 157) + '...';
+    }
+  }
+}
 ---
 
 <Layout title={pageTitle} description={pageDescription}>

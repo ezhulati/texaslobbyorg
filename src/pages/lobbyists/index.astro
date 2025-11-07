@@ -36,18 +36,33 @@ const lobbyists = await searchLobbyists(searchParams);
 const totalCount = await getLobbyistCount(searchParams);
 const totalPages = Math.ceil(totalCount / perPage);
 
-// Build page title and description
+// Build SEO-optimized page title and description (55-60 chars, 155-160 chars)
 const hasFilters = cityFilter || subjectFilter;
-let pageTitle = 'Find Texas Lobbyists';
-let pageDescription = 'Search and browse experienced Texas lobbyists by city, expertise, and industry. Transparent profiles with client lists and track records.';
+let pageTitle = 'Find Texas Lobbyists | 1,600+ Political Advocates';
+let pageDescription = `Search ${totalCount.toLocaleString()}+ Texas lobbyists by city and expertise. Compare transparent profiles, review client lists, track records. Connect with experienced advocates.`;
 
 if (hasFilters) {
   const parts = [];
   if (cityFilter) parts.push(`in ${cityFilter}`);
   if (subjectFilter) parts.push(`specializing in ${subjectFilter}`);
 
-  pageTitle = `Texas Lobbyists ${parts.join(' ')}`;
-  pageDescription = `Find ${totalCount} Texas lobbyists ${parts.join(' ')}. Browse transparent profiles with client lists and expertise.`;
+  // Optimized filtered title (55-60 chars)
+  const filterText = parts.join(' ');
+  pageTitle = `Texas Lobbyists ${filterText}`;
+  if (pageTitle.length > 60) {
+    pageTitle = pageTitle.substring(0, 57) + '...';
+  }
+
+  // Optimized filtered description (155-160 chars)
+  pageDescription = `Find ${totalCount}+ Texas lobbyists ${filterText}. Browse transparent profiles, compare expertise, review client lists. Connect with advocates today.`;
+  if (pageDescription.length > 160) {
+    pageDescription = pageDescription.substring(0, 157) + '...';
+  }
+}
+
+// Ensure description doesn't exceed 160 chars
+if (pageDescription.length > 160) {
+  pageDescription = pageDescription.substring(0, 157) + '...';
 }
 
 // Schema markup for search results

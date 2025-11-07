@@ -24,8 +24,34 @@ const clients: Database['public']['Tables']['clients']['Row'][] = await getLobby
 
 // Build page title and description
 const fullName = `${lobbyist.first_name} ${lobbyist.last_name}`;
-const pageTitle = `${fullName} - Texas Lobbyist`;
-const pageDescription = lobbyist.bio || `Contact ${fullName}, an experienced Texas lobbyist${lobbyist.cities.length > 0 ? ` serving ${lobbyist.cities[0]}` : ''}${lobbyist.subject_areas.length > 0 ? ` specializing in ${lobbyist.subject_areas[0]}` : ''}.`;
+
+// Build SEO-optimized title (55-60 chars)
+let titleParts = [fullName];
+if (lobbyist.subject_areas.length > 0) {
+  titleParts.push(lobbyist.subject_areas[0]);
+}
+if (lobbyist.cities.length > 0 && titleParts.join(' | ').length < 45) {
+  titleParts.push(lobbyist.cities[0]);
+}
+const pageTitle = `${titleParts.join(' | ')} | Texas Lobbyist`;
+
+// Build SEO-optimized description (155-160 chars max)
+let pageDescription = '';
+if (lobbyist.bio) {
+  // Truncate bio to 155 chars, ending at last complete word
+  const truncated = lobbyist.bio.substring(0, 155);
+  const lastSpace = truncated.lastIndexOf(' ');
+  pageDescription = lastSpace > 140 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
+} else {
+  // Fallback description
+  const cityText = lobbyist.cities.length > 0 ? ` in ${lobbyist.cities[0]}` : '';
+  const subjectText = lobbyist.subject_areas.length > 0 ? ` specializing in ${lobbyist.subject_areas[0]}` : '';
+  pageDescription = `Contact ${fullName}, an experienced Texas lobbyist${cityText}${subjectText}. View profile, clients, and track record.`;
+  // Ensure it doesn't exceed 160 chars
+  if (pageDescription.length > 160) {
+    pageDescription = pageDescription.substring(0, 157) + '...';
+  }
+}
 
 // Schema.org markup
 const schema = {

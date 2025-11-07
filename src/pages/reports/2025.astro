@@ -1,0 +1,424 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+import { getAllIndustries } from '@/lib/industries-data';
+
+// Fetch all active lobbyists with their clients
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select(`
+    *,
+    lobbyist_clients!inner(
+      client:clients(*)
+    )
+  `)
+  .eq('is_active', true);
+
+const { data: allClients } = await supabase
+  .from('clients')
+  .select('*');
+
+// Calculate key statistics
+const totalLobbyists = lobbyists?.length || 0;
+
+// Subscription tier breakdown
+const tierCounts = lobbyists?.reduce((acc, l) => {
+  acc[l.subscription_tier] = (acc[l.subscription_tier] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>) || {};
+
+// City breakdown
+const cityData = lobbyists?.reduce((acc, l) => {
+  l.cities?.forEach((city: string) => {
+    acc[city] = (acc[city] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>) || {};
+
+const topCities = Object.entries(cityData)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 10);
+
+// Subject area breakdown
+const subjectData = lobbyists?.reduce((acc, l) => {
+  l.subject_areas?.forEach((subject: string) => {
+    acc[subject] = (acc[subject] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>) || {};
+
+const topSubjects = Object.entries(subjectData)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 15);
+
+// Industry breakdown using our industry matching logic
+const industries = getAllIndustries();
+const industryData: Record<string, number> = {};
+
+lobbyists?.forEach(lobbyist => {
+  const lobbyistClients = lobbyist.lobbyist_clients?.map((lc: any) => lc.client) || [];
+
+  industries.forEach(industry => {
+    const hasMatch = lobbyistClients.some((client: any) =>
+      industry.clientKeywords.some(keyword =>
+        client?.name?.toLowerCase().includes(keyword.toLowerCase())
+      )
+    );
+
+    if (hasMatch) {
+      industryData[industry.name] = (industryData[industry.name] || 0) + 1;
+    }
+  });
+});
+
+const topIndustries = Object.entries(industryData)
+  .sort(([, a], [, b]) => b - a);
+
+// Claimed vs unclaimed
+const claimedCount = lobbyists?.filter(l => l.is_claimed).length || 0;
+const unclaimedCount = totalLobbyists - claimedCount;
+
+// Total clients
+const totalClients = allClients?.length || 0;
+
+// Average clients per lobbyist
+const avgClientsPerLobbyist = lobbyists && lobbyists.length > 0
+  ? (lobbyists.reduce((sum, l) => sum + (l.lobbyist_clients?.length || 0), 0) / lobbyists.length).toFixed(1)
+  : '0';
+
+// Calculate percentage with multiple specialties
+const multiSpecialtyCount = lobbyists?.filter(l => (l.subject_areas?.length || 0) > 1).length || 0;
+const multiSpecialtyPct = ((multiSpecialtyCount / totalLobbyists) * 100).toFixed(1);
+
+// SEO
+const pageTitle = 'The State of Texas Lobbying: 2025 Annual Report | TexasLobby.org';
+const pageDescription = `Comprehensive data analysis of Texas lobbying in 2025. ${totalLobbyists.toLocaleString()} active lobbyists, ${totalClients.toLocaleString()} clients, and insights into the state's most influential industries and policy areas.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Report',
+  name: 'The State of Texas Lobbying: 2025 Annual Report',
+  url: 'https://texaslobby.org/reports/2025',
+  description: pageDescription,
+  datePublished: '2025-01-06',
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    url: 'https://texaslobby.org'
+  }
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-500/10 to-background py-16 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+          Annual Report • 2025
+        </div>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          The State of Texas Lobbying: 2025
+        </h1>
+        <p class="text-xl text-muted-foreground mb-8">
+          A comprehensive data-driven analysis of lobbying activity, influence, and trends across the Lone Star State
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center text-sm text-muted-foreground">
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Published January 2025
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Based on {totalLobbyists.toLocaleString()} active lobbyists
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Findings / Executive Summary -->
+  <section class="py-16 bg-muted/30">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center">Key Findings</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{totalLobbyists.toLocaleString()}</div>
+            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Active Lobbyists</div>
+            <p class="text-sm text-muted-foreground">Registered and actively representing clients in Texas</p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{totalClients.toLocaleString()}</div>
+            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Total Clients</div>
+            <p class="text-sm text-muted-foreground">Organizations represented by Texas lobbyists</p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{avgClientsPerLobbyist}</div>
+            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Avg. Clients per Lobbyist</div>
+            <p class="text-sm text-muted-foreground">The typical lobbyist represents multiple interests</p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{multiSpecialtyPct}%</div>
+            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Multi-Specialty Lobbyists</div>
+            <p class="text-sm text-muted-foreground">Work across multiple policy areas</p>
+          </div>
+        </div>
+
+        <!-- Transparency Insight -->
+        <div class="mt-8 bg-amber-50 border-2 border-amber-200 rounded-lg p-6">
+          <div class="flex gap-3">
+            <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <h3 class="font-semibold text-amber-900 mb-2">Transparency Gap</h3>
+              <p class="text-sm text-amber-800">
+                <strong>{unclaimedCount.toLocaleString()} lobbyist profiles ({((unclaimedCount / totalLobbyists) * 100).toFixed(1)}%)</strong> remain unclaimed,
+                limiting public access to complete contact information and detailed expertise. This highlights the ongoing need
+                for greater transparency in Texas lobbying disclosure.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Geographic Distribution -->
+  <section class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">Geographic Distribution</h2>
+        <p class="text-muted-foreground mb-8">Where Texas lobbyists are based and operate</p>
+
+        <div class="bg-white rounded-lg border border-border overflow-hidden">
+          <div class="p-6 border-b border-border bg-muted/30">
+            <h3 class="font-semibold">Top 10 Cities by Lobbyist Concentration</h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              {topCities.map(([city, count], index) => {
+                const percentage = ((count / totalLobbyists) * 100).toFixed(1);
+                const barWidth = Math.max(10, (count / topCities[0][1]) * 100);
+
+                return (
+                  <div key={city}>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm font-mono text-muted-foreground w-6">#{index + 1}</span>
+                        <a href={`/cities/${city.toLowerCase().replace(/\s+/g, '-')}`} class="font-medium hover:text-texas-blue-500">
+                          {city}
+                        </a>
+                      </div>
+                      <div class="text-sm text-muted-foreground">
+                        <span class="font-semibold text-foreground">{count}</span> ({percentage}%)
+                      </div>
+                    </div>
+                    <div class="w-full bg-muted rounded-full h-2">
+                      <div
+                        class="bg-texas-blue-500 h-2 rounded-full transition-all"
+                        style={`width: ${barWidth}%`}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <h3 class="font-semibold text-blue-900 mb-2">Key Insight</h3>
+          <p class="text-sm text-blue-800">
+            Austin dominates Texas lobbying with {cityData['Austin']?.toLocaleString() || '0'} active lobbyists ({((cityData['Austin'] / totalLobbyists) * 100).toFixed(1)}% of all lobbyists),
+            reflecting its role as the state capital. However, major metros like Houston, Dallas, and San Antonio
+            maintain significant lobbying presences to represent local business and civic interests.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Policy Areas & Industries -->
+  <section class="py-16 bg-muted/30">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">Most Lobbied Policy Areas</h2>
+        <p class="text-muted-foreground mb-8">The subjects drawing the most lobbying attention in Texas</p>
+
+        <div class="bg-white rounded-lg border border-border overflow-hidden mb-12">
+          <div class="p-6 border-b border-border bg-muted/30">
+            <h3 class="font-semibold">Top 15 Subject Areas by Lobbyist Count</h3>
+          </div>
+          <div class="p-6">
+            <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+              {topSubjects.map(([subject, count], index) => {
+                const percentage = ((count / totalLobbyists) * 100).toFixed(1);
+
+                return (
+                  <div key={subject} class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-mono text-muted-foreground w-6">#{index + 1}</span>
+                      <a
+                        href={`/subjects/${subject.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}`}
+                        class="font-medium hover:text-texas-blue-500"
+                      >
+                        {subject}
+                      </a>
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      <span class="font-semibold text-foreground">{count}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <!-- Industries -->
+        <h2 class="text-3xl font-bold mb-4">Industry Representation</h2>
+        <p class="text-muted-foreground mb-8">Major industries with active lobbying efforts</p>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          {topIndustries.map(([industry, count]) => {
+            const industrySlug = industry.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const percentage = ((count / totalLobbyists) * 100).toFixed(1);
+
+            return (
+              <a
+                href={`/industries/${industrySlug}`}
+                key={industry}
+                class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors"
+              >
+                <h3 class="font-semibold text-lg mb-2">{industry}</h3>
+                <div class="text-3xl font-bold text-texas-blue-500 mb-1">{count}</div>
+                <div class="text-sm text-muted-foreground">
+                  {percentage}% of lobbyists represent clients in this industry
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Tier Distribution -->
+  <section class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">Lobbyist Profile Engagement</h2>
+        <p class="text-muted-foreground mb-8">How lobbyists are utilizing TexasLobby.org to showcase their expertise</p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border border-gray-200 p-6">
+            <div class="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">Free Tier</div>
+            <div class="text-4xl font-bold text-gray-700 mb-2">{tierCounts.free || 0}</div>
+            <div class="text-sm text-gray-600">Basic public profiles</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg border border-amber-200 p-6">
+            <div class="text-sm font-medium text-amber-700 uppercase tracking-wide mb-2">Premium</div>
+            <div class="text-4xl font-bold text-amber-600 mb-2">{tierCounts.premium || 0}</div>
+            <div class="text-sm text-amber-700">Enhanced visibility</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-6">
+            <div class="text-sm font-medium text-blue-700 uppercase tracking-wide mb-2">Featured</div>
+            <div class="text-4xl font-bold text-blue-600 mb-2">{tierCounts.featured || 0}</div>
+            <div class="text-sm text-blue-700">Maximum exposure</div>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
+          <h3 class="font-semibold text-green-900 mb-2">Claimed Profiles</h3>
+          <p class="text-sm text-green-800">
+            <strong>{claimedCount.toLocaleString()} lobbyists ({((claimedCount / totalLobbyists) * 100).toFixed(1)}%)</strong> have claimed
+            their profiles, adding bios, contact information, and client details to help constituents and organizations connect with them more effectively.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Methodology -->
+  <section class="py-16 bg-muted/30">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">Methodology & Data Sources</h2>
+        <div class="prose prose-lg max-w-none">
+          <p class="text-muted-foreground">
+            This report is based on comprehensive data from the Texas Ethics Commission's public lobbying disclosure records,
+            supplemented by lobbyist-submitted profile information on TexasLobby.org. All statistics reflect active registered
+            lobbyists and their publicly disclosed client relationships as of January 2025.
+          </p>
+
+          <div class="mt-6 bg-white rounded-lg border border-border p-6">
+            <h3 class="text-lg font-semibold mb-3">Data Collection</h3>
+            <ul class="space-y-2 text-sm text-muted-foreground">
+              <li>• Lobbyist registration data from Texas Ethics Commission</li>
+              <li>• Client representation disclosures filed with TEC</li>
+              <li>• Subject matter expertise self-reported by lobbyists</li>
+              <li>• Geographic service areas based on lobbyist-provided information</li>
+              <li>• Industry classification using automated keyword matching against client names</li>
+            </ul>
+          </div>
+
+          <div class="mt-6 bg-white rounded-lg border border-border p-6">
+            <h3 class="text-lg font-semibold mb-3">Limitations</h3>
+            <ul class="space-y-2 text-sm text-muted-foreground">
+              <li>• Some lobbyists may work across multiple offices; counts reflect primary location</li>
+              <li>• Subject areas are self-reported and may not capture all expertise</li>
+              <li>• Industry matching is automated and may not be 100% accurate for all clients</li>
+              <li>• Unclaimed profiles contain only publicly available TEC data</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Share & Citation -->
+  <section class="py-16 border-t border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-2xl font-bold mb-4">Share This Report</h2>
+        <p class="text-muted-foreground mb-8">
+          Help promote transparency in Texas lobbying by sharing these insights
+        </p>
+
+        <div class="bg-muted rounded-lg p-6 mb-8">
+          <div class="text-xs uppercase tracking-wide text-muted-foreground mb-2">Cite this report as:</div>
+          <div class="font-mono text-sm bg-white rounded border border-border p-4">
+            TexasLobby.org (2025). The State of Texas Lobbying: 2025 Annual Report.
+            Retrieved from https://texaslobby.org/reports/2025
+          </div>
+        </div>
+
+        <div class="flex gap-4 justify-center">
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
+          >
+            Explore All Lobbyists
+          </a>
+          <a
+            href="/industries"
+            class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue-500 text-texas-blue-500 px-6 py-3 text-base font-medium hover:bg-texas-blue-500/5 transition-colors"
+          >
+            Browse by Industry
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

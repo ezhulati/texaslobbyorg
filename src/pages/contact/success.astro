@@ -1,0 +1,88 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'Message Sent Successfully | TexasLobby.org';
+const pageDescription = 'Thank you for contacting TexasLobby.org. We\'ve received your message and will respond soon.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-20 md:py-28">
+    <div class="container">
+      <div class="max-w-2xl mx-auto text-center">
+        <!-- Success Icon -->
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-6">
+          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <!-- Success Message -->
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Message Sent Successfully!</h1>
+        <p class="text-xl text-muted-foreground mb-8">
+          Thank you for reaching out to us. We've received your message and will get back to you within 1-2 business days.
+        </p>
+
+        <!-- Next Steps -->
+        <div class="bg-muted/50 rounded-lg border border-border p-6 mb-8 text-left">
+          <h2 class="text-lg font-semibold mb-3">What happens next?</h2>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-texas-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Our team will review your message carefully</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-texas-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>We'll respond to your email address within 1-2 business days</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-texas-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Check your spam folder if you don't see our response</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="/"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+          >
+            Return to Home
+          </a>
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center justify-center rounded-md border border-border bg-white px-6 py-3 text-base font-medium text-foreground hover:bg-accent transition-colors"
+          >
+            Browse Lobbyists
+          </a>
+        </div>
+
+        <!-- Additional Resources -->
+        <div class="mt-12 pt-8 border-t border-border">
+          <p class="text-sm text-muted-foreground mb-4">
+            While you wait, explore our resources:
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-4 text-sm">
+            <a href="/guides" class="text-texas-blue-500 hover:underline">
+              Lobbying Guides
+            </a>
+            <span class="text-muted-foreground">•</span>
+            <a href="/how-it-works" class="text-texas-blue-500 hover:underline">
+              How It Works
+            </a>
+            <span class="text-muted-foreground">•</span>
+            <a href="/for-lobbyists" class="text-texas-blue-500 hover:underline">
+              For Lobbyists
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -11,7 +11,8 @@ interface AuthFormProps {
 export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,10 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
           email,
           password,
           options: {
-            data: { full_name: fullName },
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+            },
             emailRedirectTo: `${window.location.origin}/auth/verify`,
           },
         });
@@ -43,7 +47,9 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
             id: data.user.id,
             email: data.user.email!,
             role: 'searcher',
-            full_name: fullName || null,
+            first_name: firstName || null,
+            last_name: lastName || null,
+            full_name: `${firstName} ${lastName}`.trim() || null,
           });
 
           if (upsertError) {
@@ -64,11 +70,16 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
 
         if (data.session) {
           // Create or update user record
+          const firstName = data.user.user_metadata?.first_name || null;
+          const lastName = data.user.user_metadata?.last_name || null;
+
           const { error: upsertError } = await supabase.from('users').upsert({
             id: data.user.id,
             email: data.user.email!,
             role: 'searcher',
-            full_name: data.user.user_metadata?.full_name || null,
+            first_name: firstName,
+            last_name: lastName,
+            full_name: firstName && lastName ? `${firstName} ${lastName}`.trim() : null,
           });
 
           if (upsertError) console.error('Error creating user record:', upsertError);
@@ -128,20 +139,36 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === 'signup' && (
-          <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-foreground mb-2">
-              Full Name
-            </label>
-            <Input
-              id="fullName"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="John Doe"
-              required
-              disabled={loading}
-            />
-          </div>
+          <>
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-foreground mb-2">
+                First Name
+              </label>
+              <Input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="John"
+                required
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-foreground mb-2">
+                Last Name
+              </label>
+              <Input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Doe"
+                required
+                disabled={loading}
+              />
+            </div>
+          </>
         )}
 
         <div>

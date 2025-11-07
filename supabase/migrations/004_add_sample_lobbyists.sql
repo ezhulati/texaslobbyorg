@@ -129,7 +129,8 @@ INSERT INTO public.lobbyists (first_name, last_name, slug, email, phone, bio, ci
   'free',
   true,
   true
-);
+)
+ON CONFLICT (slug) DO NOTHING;
 
 -- Add some sample clients for lobbyists
 INSERT INTO public.clients (lobbyist_id, name, description, year_started, is_current) VALUES

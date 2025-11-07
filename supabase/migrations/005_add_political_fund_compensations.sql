@@ -34,6 +34,7 @@ CREATE INDEX IF NOT EXISTS idx_political_fund_compensations_lobbyist_year
   ON public.political_fund_compensations(lobbyist_id, year);
 
 -- Apply updated_at trigger
+DROP TRIGGER IF EXISTS update_political_fund_compensations_updated_at ON public.political_fund_compensations;
 CREATE TRIGGER update_political_fund_compensations_updated_at
   BEFORE UPDATE ON public.political_fund_compensations
   FOR EACH ROW
@@ -43,6 +44,7 @@ CREATE TRIGGER update_political_fund_compensations_updated_at
 ALTER TABLE public.political_fund_compensations ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Anyone can view political fund compensation data (public transparency)
+DROP POLICY IF EXISTS "Public can view political fund compensations" ON public.political_fund_compensations;
 CREATE POLICY "Public can view political fund compensations"
   ON public.political_fund_compensations
   FOR SELECT
@@ -51,6 +53,7 @@ CREATE POLICY "Public can view political fund compensations"
 
 -- Policy: Only authenticated users with admin role can insert/update/delete
 -- (This will be refined when auth system is implemented in Week 3)
+DROP POLICY IF EXISTS "Admin can manage political fund compensations" ON public.political_fund_compensations;
 CREATE POLICY "Admin can manage political fund compensations"
   ON public.political_fund_compensations
   FOR ALL

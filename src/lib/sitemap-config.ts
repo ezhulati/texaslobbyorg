@@ -25,9 +25,13 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { url: 'subjects', priority: '0.8', changefreq: 'weekly' },
   { url: 'cities', priority: '0.8', changefreq: 'weekly' },
 
+  // Content pages
+  { url: 'reports/2025', priority: '0.8', changefreq: 'monthly' },
+  { url: 'guides/how-to-hire-a-lobbyist-in-texas', priority: '0.7', changefreq: 'monthly' },
+  { url: 'guides/how-to-become-a-lobbyist-in-texas', priority: '0.7', changefreq: 'monthly' },
+  { url: 'guides/how-much-does-a-lobbyist-cost', priority: '0.7', changefreq: 'monthly' },
+
   // Add new sections here as you create them:
-  // { url: 'reports', priority: '0.8', changefreq: 'weekly' },
-  // { url: 'guides', priority: '0.8', changefreq: 'weekly' },
   // { url: 'blog', priority: '0.7', changefreq: 'daily' },
   // { url: 'about', priority: '0.6', changefreq: 'monthly' },
 ];

@@ -3,29 +3,35 @@ import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
 import { getAllIndustries } from '@/lib/industries-data';
 
-// Fetch all active lobbyists with their clients
+// Fetch all active lobbyists
 const { data: lobbyists } = await supabase
   .from('lobbyists')
-  .select(`
-    *,
-    lobbyist_clients!inner(
-      client:clients(*)
-    )
-  `)
+  .select('*')
   .eq('is_active', true);
 
+// Fetch all clients
 const { data: allClients } = await supabase
   .from('clients')
   .select('*');
 
+// Fetch lobbyist-client relationships
+const { data: lobbyistClientRelations } = await supabase
+  .from('lobbyist_clients')
+  .select(`
+    lobbyist_id,
+    client:clients(*)
+  `);
+
+// Merge relationships with lobbyists
+const lobbyistsWithClients = lobbyists?.map(lobbyist => ({
+  ...lobbyist,
+  lobbyist_clients: lobbyistClientRelations
+    ?.filter(rel => rel.lobbyist_id === lobbyist.id)
+    .map(rel => ({ client: rel.client })) || []
+})) || [];
+
 // Calculate key statistics
 const totalLobbyists = lobbyists?.length || 0;
-
-// Subscription tier breakdown
-const tierCounts = lobbyists?.reduce((acc, l) => {
-  acc[l.subscription_tier] = (acc[l.subscription_tier] || 0) + 1;
-  return acc;
-}, {} as Record<string, number>) || {};
 
 // City breakdown
 const cityData = lobbyists?.reduce((acc, l) => {
@@ -55,7 +61,7 @@ const topSubjects = Object.entries(subjectData)
 const industries = getAllIndustries();
 const industryData: Record<string, number> = {};
 
-lobbyists?.forEach(lobbyist => {
+lobbyistsWithClients.forEach(lobbyist => {
   const lobbyistClients = lobbyist.lobbyist_clients?.map((lc: any) => lc.client) || [];
 
   industries.forEach(industry => {
@@ -74,17 +80,8 @@ lobbyists?.forEach(lobbyist => {
 const topIndustries = Object.entries(industryData)
   .sort(([, a], [, b]) => b - a);
 
-// Claimed vs unclaimed
-const claimedCount = lobbyists?.filter(l => l.is_claimed).length || 0;
-const unclaimedCount = totalLobbyists - claimedCount;
-
 // Total clients
 const totalClients = allClients?.length || 0;
-
-// Average clients per lobbyist
-const avgClientsPerLobbyist = lobbyists && lobbyists.length > 0
-  ? (lobbyists.reduce((sum, l) => sum + (l.lobbyist_clients?.length || 0), 0) / lobbyists.length).toFixed(1)
-  : '0';
 
 // Calculate percentage with multiple specialties
 const multiSpecialtyCount = lobbyists?.filter(l => (l.subject_areas?.length || 0) > 1).length || 0;
@@ -159,33 +156,10 @@ const schema = {
             <p class="text-sm text-muted-foreground">Organizations represented by Texas lobbyists</p>
           </div>
 
-          <div class="bg-white rounded-lg border border-border p-6">
-            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{avgClientsPerLobbyist}</div>
-            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Avg. Clients per Lobbyist</div>
-            <p class="text-sm text-muted-foreground">The typical lobbyist represents multiple interests</p>
-          </div>
-
-          <div class="bg-white rounded-lg border border-border p-6">
+          <div class="bg-white rounded-lg border border-border p-6 md:col-span-2">
             <div class="text-4xl font-bold text-texas-blue-500 mb-2">{multiSpecialtyPct}%</div>
             <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Multi-Specialty Lobbyists</div>
             <p class="text-sm text-muted-foreground">Work across multiple policy areas</p>
-          </div>
-        </div>
-
-        <!-- Transparency Insight -->
-        <div class="mt-8 bg-amber-50 border-2 border-amber-200 rounded-lg p-6">
-          <div class="flex gap-3">
-            <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <h3 class="font-semibold text-amber-900 mb-2">Transparency Gap</h3>
-              <p class="text-sm text-amber-800">
-                <strong>{unclaimedCount.toLocaleString()} lobbyist profiles ({((unclaimedCount / totalLobbyists) * 100).toFixed(1)}%)</strong> remain unclaimed,
-                limiting public access to complete contact information and detailed expertise. This highlights the ongoing need
-                for greater transparency in Texas lobbying disclosure.
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -307,44 +281,6 @@ const schema = {
               </a>
             );
           })}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Profile Tier Distribution -->
-  <section class="py-16">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-4">Lobbyist Profile Engagement</h2>
-        <p class="text-muted-foreground mb-8">How lobbyists are utilizing TexasLobby.org to showcase their expertise</p>
-
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border border-gray-200 p-6">
-            <div class="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">Free Tier</div>
-            <div class="text-4xl font-bold text-gray-700 mb-2">{tierCounts.free || 0}</div>
-            <div class="text-sm text-gray-600">Basic public profiles</div>
-          </div>
-
-          <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg border border-amber-200 p-6">
-            <div class="text-sm font-medium text-amber-700 uppercase tracking-wide mb-2">Premium</div>
-            <div class="text-4xl font-bold text-amber-600 mb-2">{tierCounts.premium || 0}</div>
-            <div class="text-sm text-amber-700">Enhanced visibility</div>
-          </div>
-
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-6">
-            <div class="text-sm font-medium text-blue-700 uppercase tracking-wide mb-2">Featured</div>
-            <div class="text-4xl font-bold text-blue-600 mb-2">{tierCounts.featured || 0}</div>
-            <div class="text-sm text-blue-700">Maximum exposure</div>
-          </div>
-        </div>
-
-        <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
-          <h3 class="font-semibold text-green-900 mb-2">Claimed Profiles</h3>
-          <p class="text-sm text-green-800">
-            <strong>{claimedCount.toLocaleString()} lobbyists ({((claimedCount / totalLobbyists) * 100).toFixed(1)}%)</strong> have claimed
-            their profiles, adding bios, contact information, and client details to help constituents and organizations connect with them more effectively.
-          </p>
         </div>
       </div>
     </div>

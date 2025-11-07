@@ -87,6 +87,64 @@ const totalClients = allClients?.length || 0;
 const multiSpecialtyCount = lobbyists?.filter(l => (l.subject_areas?.length || 0) > 1).length || 0;
 const multiSpecialtyPct = ((multiSpecialtyCount / totalLobbyists) * 100).toFixed(1);
 
+// Client categorization - count lobbyists per client
+const clientLobbyistCounts: Record<string, { name: string; count: number }> = {};
+
+lobbyistClientRelations?.forEach(rel => {
+  const clientName = rel.client?.name;
+  if (clientName) {
+    if (!clientLobbyistCounts[clientName]) {
+      clientLobbyistCounts[clientName] = { name: clientName, count: 0 };
+    }
+    clientLobbyistCounts[clientName].count++;
+  }
+});
+
+// Define category keywords
+const categoryKeywords = {
+  lobbyTeams: ['hillco', 'partners', 'lobby group', 'alliance', 'blackridge', 'schlueter'],
+  lawFirms: ['troutman', 'greenberg', 'scarborough', 'boone', 'kelly hart', 'law', 'attorneys', 'legal'],
+  corporate: ['charter', 'at&t', 'att', "landry's", 'h-e-b', 'heb', 'oncor', 'corp', 'inc.', 'llc', 'company'],
+  privateAssociations: ['medical association', 'lawsuit reform', 'realtors', 'hospital association', 'oil & gas', 'oil and gas', 'trade association'],
+  publicAssociations: ['school boards', 'school administrators', 'municipal league', 'association of counties', 'classroom teachers', 'public'],
+  causesIssues: ['tppf', 'ttara', 'strive', 'raise your hand', 'moak casey', 'foundation', 'institute', 'coalition']
+};
+
+// Helper to categorize client
+const categorizeClient = (name: string): string | null => {
+  const lowerName = name.toLowerCase();
+
+  // Check in priority order
+  if (categoryKeywords.lobbyTeams.some(k => lowerName.includes(k))) return 'lobbyTeams';
+  if (categoryKeywords.lawFirms.some(k => lowerName.includes(k))) return 'lawFirms';
+  if (categoryKeywords.privateAssociations.some(k => lowerName.includes(k))) return 'privateAssociations';
+  if (categoryKeywords.publicAssociations.some(k => lowerName.includes(k))) return 'publicAssociations';
+  if (categoryKeywords.causesIssues.some(k => lowerName.includes(k))) return 'causesIssues';
+  if (categoryKeywords.corporate.some(k => lowerName.includes(k))) return 'corporate';
+
+  return null;
+};
+
+// Sort clients by lobbyist count
+const sortedClients = Object.values(clientLobbyistCounts).sort((a, b) => b.count - a.count);
+
+// Categorize and get top 5 for each
+const categorizedClients: Record<string, Array<{ name: string; count: number }>> = {
+  lobbyTeams: [],
+  lawFirms: [],
+  corporate: [],
+  privateAssociations: [],
+  publicAssociations: [],
+  causesIssues: []
+};
+
+sortedClients.forEach(client => {
+  const category = categorizeClient(client.name);
+  if (category && categorizedClients[category].length < 5) {
+    categorizedClients[category].push(client);
+  }
+});
+
 // SEO
 const pageTitle = 'The State of Texas Lobbying: 2025 Annual Report | TexasLobby.org';
 const pageDescription = `Comprehensive data analysis of Texas lobbying in 2025. ${totalLobbyists.toLocaleString()} active lobbyists, ${totalClients.toLocaleString()} clients, and insights into the state's most influential industries and policy areas.`;
@@ -281,6 +339,150 @@ const schema = {
               </a>
             );
           })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Most Lobbied Organizations -->
+  <section class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">Most Lobbied Organizations</h2>
+        <p class="text-muted-foreground mb-8">Top clients by number of lobbyists representing them</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Lobby Teams -->
+          {categorizedClients.lobbyTeams.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Lobby Teams</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.lobbyTeams.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          <!-- Law Firms -->
+          {categorizedClients.lawFirms.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Law Firms</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.lawFirms.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          <!-- Corporate -->
+          {categorizedClients.corporate.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Corporate</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.corporate.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          <!-- Private Associations -->
+          {categorizedClients.privateAssociations.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Private Associations</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.privateAssociations.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          <!-- Public Associations -->
+          {categorizedClients.publicAssociations.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Public Associations</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.publicAssociations.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          <!-- Causes & Issues -->
+          {categorizedClients.causesIssues.length > 0 && (
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Causes & Issues</h3>
+              </div>
+              <div class="p-6">
+                <ol class="space-y-3">
+                  {categorizedClients.causesIssues.map((client, index) => (
+                    <li key={client.name} class="flex items-start justify-between">
+                      <div class="flex items-start gap-3">
+                        <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
+                        <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
+                      </div>
+                      <span class="text-sm text-muted-foreground">{client.count}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

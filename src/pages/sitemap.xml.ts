@@ -1,18 +1,13 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase';
 import { INDUSTRY_SLUGS } from '@/lib/industries-data';
+import { STATIC_ROUTES } from '@/lib/sitemap-config';
 
 export const GET: APIRoute = async ({ site }) => {
   const siteUrl = site?.toString() || 'https://texaslobby.org';
 
-  // Static pages (high priority)
-  const staticPages = [
-    { url: '', priority: '1.0', changefreq: 'daily' }, // Homepage
-    { url: 'lobbyists', priority: '0.9', changefreq: 'daily' },
-    { url: 'industries', priority: '0.8', changefreq: 'weekly' },
-    { url: 'subjects', priority: '0.8', changefreq: 'weekly' },
-    { url: 'cities', priority: '0.8', changefreq: 'weekly' },
-  ];
+  // Static pages from centralized config
+  const staticPages = STATIC_ROUTES;
 
   // Industry pages (from static data)
   const industryPages = INDUSTRY_SLUGS.map(slug => ({
@@ -59,6 +54,21 @@ export const GET: APIRoute = async ({ site }) => {
     changefreq: 'weekly',
   }));
 
+  // Add new database-driven sections here as you create them:
+  // Example for /reports section:
+  // const { data: reports } = await supabase
+  //   .from('reports')
+  //   .select('slug, updated_at')
+  //   .eq('is_published', true)
+  //   .order('slug');
+  //
+  // const reportPages = (reports || []).map(report => ({
+  //   url: `reports/${report.slug}`,
+  //   lastmod: report.updated_at ? new Date(report.updated_at).toISOString().split('T')[0] : undefined,
+  //   priority: '0.7',
+  //   changefreq: 'monthly',
+  // }));
+
   // Combine all pages
   const allPages = [
     ...staticPages,
@@ -66,6 +76,9 @@ export const GET: APIRoute = async ({ site }) => {
     ...lobbyistPages,
     ...subjectPages,
     ...cityPages,
+    // Add new sections here:
+    // ...reportPages,
+    // ...guidePages,
   ];
 
   // Generate XML

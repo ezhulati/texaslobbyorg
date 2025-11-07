@@ -9,25 +9,17 @@ const { data: lobbyists } = await supabase
   .select('*')
   .eq('is_active', true);
 
-// Fetch all clients
+// Fetch all clients (each row represents one lobbyist-client relationship)
 const { data: allClients } = await supabase
   .from('clients')
   .select('*');
 
-// Fetch lobbyist-client relationships
-const { data: lobbyistClientRelations } = await supabase
-  .from('lobbyist_clients')
-  .select(`
-    lobbyist_id,
-    client:clients(*)
-  `);
-
-// Merge relationships with lobbyists
+// Group clients by lobbyist
 const lobbyistsWithClients = lobbyists?.map(lobbyist => ({
   ...lobbyist,
-  lobbyist_clients: lobbyistClientRelations
-    ?.filter(rel => rel.lobbyist_id === lobbyist.id)
-    .map(rel => ({ client: rel.client })) || []
+  lobbyist_clients: allClients
+    ?.filter(client => client.lobbyist_id === lobbyist.id)
+    .map(client => ({ client })) || []
 })) || [];
 
 // Calculate key statistics
@@ -90,8 +82,8 @@ const multiSpecialtyPct = ((multiSpecialtyCount / totalLobbyists) * 100).toFixed
 // Client categorization - count lobbyists per client
 const clientLobbyistCounts: Record<string, { name: string; count: number }> = {};
 
-lobbyistClientRelations?.forEach(rel => {
-  const clientName = rel.client?.name;
+allClients?.forEach(client => {
+  const clientName = client.name;
   if (clientName) {
     if (!clientLobbyistCounts[clientName]) {
       clientLobbyistCounts[clientName] = { name: clientName, count: 0 };

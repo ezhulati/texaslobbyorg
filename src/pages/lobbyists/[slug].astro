@@ -237,8 +237,9 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
         {/* Sidebar */}
         <div class="lg:col-span-1">
+          <div class="sticky top-24 space-y-6">
           {/* Contact Information */}
-          <div class="rounded-lg border border-border bg-white p-6 sticky top-24">
+          <div class="rounded-lg border border-border bg-white p-6">
             <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
             <div class="space-y-3">
               {lobbyist.email && (
@@ -304,7 +305,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
           {/* Upgrade CTA for unclaimed profiles */}
           {!lobbyist.is_claimed && (
-            <div class="mt-6 rounded-lg border-2 border-dashed border-texas-blue-500 bg-texas-blue-500/5 p-6">
+            <div class="rounded-lg border-2 border-dashed border-texas-blue-500 bg-texas-blue-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Is this you?</h3>
               <p class="text-sm text-muted-foreground mb-4">
                 Claim your profile to add your bio, client list, and contact information. It's free!
@@ -320,7 +321,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
           {/* Upgrade CTA for free tier */}
           {lobbyist.is_claimed && lobbyist.subscription_tier === 'free' && (
-            <div class="mt-6 rounded-lg border-2 border-dashed border-texas-gold-500 bg-texas-gold-500/5 p-6">
+            <div class="rounded-lg border-2 border-dashed border-texas-gold-500 bg-texas-gold-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Upgrade Your Profile</h3>
               <p class="text-sm text-muted-foreground mb-4">
                 Get priority placement in search results and unlock analytics with Premium or Featured listings.
@@ -336,7 +337,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
 
           {/* Similar Lobbyists Recommendations */}
           {similarLobbyists && similarLobbyists.length > 0 && (
-            <div class="mt-6 rounded-lg border border-border bg-white p-6 sticky top-24">
+            <div class="rounded-lg border border-border bg-white p-6">
               <div class="mb-4">
                 <h3 class="text-lg font-semibold mb-1 flex items-center gap-2">
                   Similar Lobbyists
@@ -360,6 +361,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               />
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>

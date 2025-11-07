@@ -2,6 +2,7 @@
 import Layout from '@/components/astro/Layout.astro';
 import CollapsibleTags from '@/components/react/CollapsibleTags';
 import CollapsibleClients from '@/components/react/CollapsibleClients';
+import CollapsibleBio from '@/components/react/CollapsibleBio';
 import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
@@ -167,30 +168,6 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
             />
           )}
         </div>
-
-        {/* Contact CTA */}
-        {lobbyist.is_claimed ? (
-          <div class="flex flex-col gap-2 w-full md:w-auto">
-            <a
-              href={`mailto:${lobbyist.email}`}
-              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors whitespace-nowrap"
-            >
-              Contact {lobbyist.first_name}
-            </a>
-            <p class="text-xs text-center text-muted-foreground">
-              {lobbyist.view_count.toLocaleString()} profile {lobbyist.view_count === 1 ? 'view' : 'views'}
-            </p>
-          </div>
-        ) : (
-          <div class="w-full md:w-auto">
-            <a
-              href="/claim-profile"
-              class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue-500 text-texas-blue-500 px-6 py-3 text-base font-medium hover:bg-texas-blue-500/5 transition-colors whitespace-nowrap"
-            >
-              Claim This Profile
-            </a>
-          </div>
-        )}
       </div>
     </div>
   </section>
@@ -206,7 +183,7 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
             <div class="mb-8">
               <h2 class="text-2xl font-bold mb-4">About</h2>
               <div class="prose prose-lg max-w-none">
-                <p class="text-muted-foreground leading-relaxed">{lobbyist.bio}</p>
+                <CollapsibleBio bio={lobbyist.bio} previewSentences={3} client:load />
               </div>
             </div>
           ) : !lobbyist.is_claimed && (
@@ -232,6 +209,241 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
               <CollapsibleClients clients={clients} initialVisibleCount={10} client:load />
             </div>
           )}
+
+          {/* Areas of Expertise - Always show */}
+          {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 && (
+            <div class="mb-8">
+              <h2 class="text-2xl font-bold mb-4">Areas of Expertise</h2>
+              <p class="text-muted-foreground mb-4">
+                {fullName} specializes in the following areas. Explore more lobbyists and resources in these fields.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-4">
+                {lobbyist.subject_areas.slice(0, 6).map(async (subject) => {
+                  // Get count of lobbyists in this subject
+                  const { count } = await supabase
+                    .from('lobbyists')
+                    .select('*', { count: 'exact', head: true })
+                    .contains('subject_areas', [subject])
+                    .eq('is_active', true);
+
+                  const slug = subject.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+
+                  return (
+                    <a
+                      href={`/subjects/${slug}`}
+                      class="group relative overflow-hidden rounded-lg border border-border bg-white p-5 hover:border-texas-blue-500 hover:shadow-md transition-all"
+                    >
+                      <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                          <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-1">
+                            {subject}
+                          </h3>
+                          <p class="text-sm text-muted-foreground">
+                            {count || 0} {count === 1 ? 'lobbyist' : 'lobbyists'}
+                          </p>
+                        </div>
+                        <svg class="h-5 w-5 text-muted-foreground group-hover:text-texas-blue-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Cities They Serve - Always show */}
+          {lobbyist.cities && lobbyist.cities.length > 0 && (
+            <div class="mb-8">
+              <h2 class="text-2xl font-bold mb-4">Cities They Serve</h2>
+              <p class="text-muted-foreground mb-4">
+                Find other lobbyists practicing in {fullName}'s service areas.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-4">
+                {lobbyist.cities.slice(0, 6).map(async (city) => {
+                  // Get count of lobbyists in this city
+                  const { count } = await supabase
+                    .from('lobbyists')
+                    .select('*', { count: 'exact', head: true })
+                    .contains('cities', [city])
+                    .eq('is_active', true);
+
+                  const citySlug = city.toLowerCase().replace(/\s+/g, '-');
+
+                  return (
+                    <a
+                      href={`/cities/${citySlug}`}
+                      class="group relative overflow-hidden rounded-lg border border-border bg-white p-5 hover:border-texas-blue-500 hover:shadow-md transition-all"
+                    >
+                      <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                          <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-1">
+                            {city}
+                          </h3>
+                          <p class="text-sm text-muted-foreground">
+                            {count || 0} {count === 1 ? 'lobbyist' : 'lobbyists'}
+                          </p>
+                        </div>
+                        <svg class="h-5 w-5 text-muted-foreground group-hover:text-texas-blue-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Related Guides - Always show */}
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Related Guides</h2>
+            <p class="text-muted-foreground mb-4">
+              Learn more about lobbying in Texas with these helpful resources.
+            </p>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <a
+                href="/guides/what-does-a-lobbyist-do"
+                class="group rounded-lg border border-border bg-white p-5 hover:border-texas-blue-500 hover:shadow-md transition-all"
+              >
+                <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-2">
+                  What Does a Lobbyist Do?
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  Understanding the role and responsibilities of professional lobbyists in Texas.
+                </p>
+              </a>
+
+              <a
+                href="/guides/how-to-hire-a-lobbyist"
+                class="group rounded-lg border border-border bg-white p-5 hover:border-texas-blue-500 hover:shadow-md transition-all"
+              >
+                <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-2">
+                  How to Hire a Lobbyist
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  A step-by-step guide to finding and working with the right lobbyist for your needs.
+                </p>
+              </a>
+
+              <a
+                href="/guides/texas-ethics-commission-overview"
+                class="group rounded-lg border border-border bg-white p-5 hover:border-texas-blue-500 hover:shadow-md transition-all"
+              >
+                <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-2">
+                  Texas Ethics Commission
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  Learn about lobbyist registration and regulatory oversight in Texas.
+                </p>
+              </a>
+
+              <a
+                href="/guides"
+                class="group rounded-lg border-2 border-dashed border-border bg-muted/30 p-5 hover:border-texas-blue-500 hover:bg-texas-blue-500/5 transition-all"
+              >
+                <h3 class="font-semibold text-foreground group-hover:text-texas-blue-500 transition-colors mb-2 flex items-center gap-2">
+                  View All Guides
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  Browse our complete library of Texas lobbying resources.
+                </p>
+              </a>
+            </div>
+          </div>
+
+          {/* Industry Insights - Always show */}
+          {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 && (
+            <div class="mb-8">
+              <h2 class="text-2xl font-bold mb-4">Industry Insights</h2>
+              <div class="rounded-lg border border-border bg-white p-6">
+                <div class="grid sm:grid-cols-3 gap-6">
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-texas-blue-500 mb-2">
+                      {lobbyist.subject_areas.length}
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      Practice {lobbyist.subject_areas.length === 1 ? 'Area' : 'Areas'}
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-texas-blue-500 mb-2">
+                      {lobbyist.cities.length}
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {lobbyist.cities.length === 1 ? 'City' : 'Cities'} Served
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-texas-blue-500 mb-2">
+                      {clients.length}
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {clients.length === 1 ? 'Client' : 'Clients'} Listed
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Professional Highlights - Always show */}
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Professional Highlights</h2>
+            <div class="space-y-4">
+              <div class="rounded-lg border border-border bg-white p-5">
+                <div class="flex items-start gap-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-texas-blue-100">
+                    <Briefcase className="h-5 w-5 text-texas-blue-600" />
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-semibold mb-1">Registration Status</h3>
+                    <p class="text-sm text-muted-foreground">
+                      {lobbyist.is_active ? 'Active Texas Lobbyist' : 'Inactive'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-lg border border-border bg-white p-5">
+                <div class="flex items-start gap-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-texas-blue-100">
+                    <MapPin className="h-5 w-5 text-texas-blue-600" />
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-semibold mb-1">Primary Location</h3>
+                    <p class="text-sm text-muted-foreground">
+                      {lobbyist.cities && lobbyist.cities.length > 0 ? lobbyist.cities[0] : 'Texas'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {lobbyist.subscription_tier !== 'free' && (
+                <div class="rounded-lg border border-border bg-white p-5">
+                  <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-texas-gold-100">
+                      <svg class="h-5 w-5 text-texas-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold mb-1">{lobbyist.subscription_tier === 'featured' ? 'Featured' : 'Premium'} Listing</h3>
+                      <p class="text-sm text-muted-foreground">
+                        {lobbyist.subscription_tier === 'featured' ? 'Top priority placement in search results' : 'Enhanced visibility in search results'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
         </div>
 

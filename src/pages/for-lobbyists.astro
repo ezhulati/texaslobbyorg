@@ -1,0 +1,308 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+import { Check, Star, TrendingUp, Users, Eye, Award } from 'lucide-react';
+
+// Get some real data for social proof
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('is_claimed, subscription_tier')
+  .eq('is_active', true);
+
+const totalLobbyists = lobbyists?.length || 0;
+const claimedProfiles = lobbyists?.filter(l => l.is_claimed).length || 0;
+const premiumProfiles = lobbyists?.filter(l => l.subscription_tier === 'premium').length || 0;
+const featuredProfiles = lobbyists?.filter(l => l.subscription_tier === 'featured').length || 0;
+
+const pageTitle = 'List Your Lobbying Practice on TexasLobby.org';
+const pageDescription = 'Get found by businesses and organizations actively searching for Texas lobbyists. Claim your free profile or upgrade to Premium/Featured for maximum visibility.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl text-center">
+      <div class="inline-flex items-center rounded-full bg-texas-blue-100 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        For Texas Lobbyists
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        Get Found by Your Ideal Clients
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
+        TexasLobby.org connects businesses and organizations with experienced lobbyists.
+        Claim your profile and get discovered by clients actively searching for your expertise.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-8 py-4 text-lg font-medium text-white hover:bg-texas-blue-600 transition-colors"
+        >
+          Claim Your Profile
+        </a>
+        <a
+          href="/pricing"
+          class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue-500 text-texas-blue-500 px-8 py-4 text-lg font-medium hover:bg-texas-blue-50 transition-colors"
+        >
+          View Pricing
+        </a>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <Users className="h-5 w-5 text-texas-blue-500" />
+          <span class="font-medium">{claimedProfiles}+ claimed profiles</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-texas-blue-500" />
+          <span class="font-medium">Free to get started</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <Eye className="h-5 w-5 text-texas-blue-500" />
+          <span class="font-medium">Get discovered 24/7</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="py-20 lg:py-24">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Why List on TexasLobby.org?</h2>
+        <p class="text-xl text-muted-foreground">
+          The first place businesses and organizations look when searching for Texas lobbyists
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="bg-white rounded-lg border border-border p-8 text-center">
+          <div class="h-12 w-12 rounded-full bg-texas-blue-100 flex items-center justify-center mx-auto mb-4">
+            <Eye className="h-6 w-6 text-texas-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold mb-3">Control Your Profile</h3>
+          <p class="text-muted-foreground">
+            Add your bio, showcase clients, highlight your expertise areas, and control what potential clients see
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-8 text-center">
+          <div class="h-12 w-12 rounded-full bg-texas-blue-100 flex items-center justify-center mx-auto mb-4">
+            <Users className="h-6 w-6 text-texas-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold mb-3">Increase Visibility</h3>
+          <p class="text-muted-foreground">
+            Appear in search results when businesses filter by city, expertise, or industry. Premium members get priority placement
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-8 text-center">
+          <div class="h-12 w-12 rounded-full bg-texas-blue-100 flex items-center justify-center mx-auto mb-4">
+            <TrendingUp className="h-6 w-6 text-texas-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold mb-3">Build Your Practice</h3>
+          <p class="text-muted-foreground">
+            Get contacted by qualified leads actively searching for lobbying representation in your areas of expertise
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Tiers -->
+  <section class="py-20 lg:py-24 bg-gradient-to-b from-background to-muted/20">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+        <p class="text-xl text-muted-foreground">
+          Choose the plan that fits your practice. Upgrade or downgrade anytime.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Free Tier -->
+        <div class="bg-white rounded-lg border-2 border-border p-8">
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold mb-2">Free</h3>
+            <div class="text-4xl font-bold mb-2">$0</div>
+            <p class="text-sm text-muted-foreground">Forever free</p>
+          </div>
+
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Basic profile with contact info</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Listed in search results</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">City and subject area tags</span>
+            </li>
+            <li class="flex items-start gap-3 text-muted-foreground">
+              <div class="h-5 w-5 flex-shrink-0 mt-0.5"></div>
+              <span class="text-sm">No bio or client showcase</span>
+            </li>
+            <li class="flex items-start gap-3 text-muted-foreground">
+              <div class="h-5 w-5 flex-shrink-0 mt-0.5"></div>
+              <span class="text-sm">Standard placement in results</span>
+            </li>
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-foreground border-2 border-border rounded-md hover:bg-accent transition-colors"
+          >
+            Claim Your Profile
+          </a>
+        </div>
+
+        <!-- Premium Tier -->
+        <div class="bg-white rounded-lg border-2 border-texas-blue-500 p-8 relative">
+          <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-texas-blue-500 text-white px-4 py-1 rounded-full text-xs font-semibold">
+              Most Popular
+            </div>
+          </div>
+
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold mb-2">Premium</h3>
+            <div class="text-4xl font-bold mb-2">$297<span class="text-lg text-muted-foreground">/mo</span></div>
+            <p class="text-sm text-muted-foreground">Billed monthly</p>
+          </div>
+
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm font-medium">Everything in Free, plus:</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Custom bio and profile content</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Showcase client list</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Priority placement in search</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Profile analytics dashboard</span>
+            </li>
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-white bg-texas-blue-500 rounded-md hover:bg-texas-blue-600 transition-colors"
+          >
+            Start Premium
+          </a>
+        </div>
+
+        <!-- Featured Tier -->
+        <div class="bg-gradient-to-br from-texas-red-500 to-texas-red-600 rounded-lg border-2 border-texas-red-500 p-8 text-white">
+          <div class="text-center mb-6">
+            <div class="flex items-center justify-center gap-2 mb-2">
+              <h3 class="text-2xl font-bold">Featured</h3>
+              <Star className="h-6 w-6 text-yellow-300" />
+            </div>
+            <div class="text-4xl font-bold mb-2">$597<span class="text-lg text-white/80">/mo</span></div>
+            <p class="text-sm text-white/80">Billed monthly</p>
+          </div>
+
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+              <span class="text-sm font-medium">Everything in Premium, plus:</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Top placement in all searches</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Featured badge on profile</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Homepage featured listings</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Premium support</span>
+            </li>
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-texas-red-600 bg-white rounded-md hover:bg-gray-100 transition-colors"
+          >
+            Go Featured
+          </a>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-muted-foreground mt-8">
+        All plans include 24/7 profile visibility and client contact forms. Cancel anytime.
+      </p>
+    </div>
+  </section>
+
+  <!-- Social Proof -->
+  <section class="py-20 lg:py-24 bg-texas-blue-500 text-white">
+    <div class="container max-w-4xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-12">
+        Join {claimedProfiles}+ Texas Lobbyists Already Listed
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="text-5xl font-bold mb-2">{totalLobbyists.toLocaleString()}+</div>
+          <p class="text-white/80">Active lobbyist profiles</p>
+        </div>
+        <div>
+          <div class="text-5xl font-bold mb-2">{premiumProfiles}+</div>
+          <p class="text-white/80">Premium members</p>
+        </div>
+        <div>
+          <div class="text-5xl font-bold mb-2">{featuredProfiles}+</div>
+          <p class="text-white/80">Featured listings</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 lg:py-24">
+    <div class="container max-w-3xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Ready to Get Found?
+      </h2>
+      <p class="text-xl text-muted-foreground mb-8">
+        Claim your free profile today. Upgrade to Premium or Featured anytime to maximize your visibility.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-8 py-4 text-lg font-medium text-white hover:bg-texas-blue-600 transition-colors"
+        >
+          Claim Your Profile
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center rounded-md border-2 border-border text-foreground px-8 py-4 text-lg font-medium hover:bg-accent transition-colors"
+        >
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

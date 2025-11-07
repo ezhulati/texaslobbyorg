@@ -1,0 +1,342 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { Check, X, Star, TrendingUp, Eye, Award, Zap } from 'lucide-react';
+
+const pageTitle = 'Pricing - TexasLobby.org';
+const pageDescription = 'Transparent pricing for Texas lobbyists. Free basic listings, or upgrade to Premium ($297/mo) or Featured ($597/mo) for maximum visibility.';
+
+const pricingFeatures = {
+  free: [
+    { feature: 'Basic profile with contact info', included: true },
+    { feature: 'Listed in search results', included: true },
+    { feature: 'City and subject area tags', included: true },
+    { feature: 'Profile views counter', included: true },
+    { feature: 'Custom bio and description', included: false },
+    { feature: 'Client showcase section', included: false },
+    { feature: 'Priority search placement', included: false },
+    { feature: 'Profile analytics dashboard', included: false },
+    { feature: 'Featured badge', included: false },
+    { feature: 'Homepage featured section', included: false },
+  ],
+  premium: [
+    { feature: 'Everything in Free', included: true, highlight: true },
+    { feature: 'Custom bio and description', included: true },
+    { feature: 'Client showcase section', included: true },
+    { feature: 'Unlimited subject areas', included: true },
+    { feature: 'Priority search placement', included: true },
+    { feature: 'Profile analytics dashboard', included: true },
+    { feature: 'Remove "Unclaimed" badge', included: true },
+    { feature: 'Featured badge', included: false },
+    { feature: 'Homepage featured section', included: false },
+    { feature: 'Top search placement', included: false },
+  ],
+  featured: [
+    { feature: 'Everything in Premium', included: true, highlight: true },
+    { feature: 'Featured badge on profile', included: true },
+    { feature: 'Homepage featured section', included: true },
+    { feature: 'Top placement in all searches', included: true },
+    { feature: 'Highlighted in search results', included: true },
+    { feature: 'Premium email support', included: true },
+    { feature: 'Early access to new features', included: true },
+  ],
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        Simple, Transparent Pricing
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto">
+        Start with a free profile. Upgrade anytime to increase your visibility and get more client inquiries.
+      </p>
+
+      <div class="inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted rounded-full px-6 py-3">
+        <Zap className="h-4 w-4 text-texas-blue-500" />
+        <span>All plans include 24/7 profile visibility and unlimited client contacts</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Cards -->
+  <section class="py-20 lg:py-24">
+    <div class="container">
+      <div class="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Free Tier -->
+        <div class="bg-white rounded-2xl border-2 border-border p-8 flex flex-col">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold mb-2">Free</h3>
+            <div class="mb-4">
+              <span class="text-5xl font-bold">$0</span>
+            </div>
+            <p class="text-sm text-muted-foreground">Forever free, no credit card required</p>
+          </div>
+
+          <ul class="space-y-4 mb-8 flex-1">
+            {pricingFeatures.free.map((item) => (
+              <li class="flex items-start gap-3">
+                {item.included ? (
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <X className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                )}
+                <span class:list={[
+                  'text-sm',
+                  item.included ? 'text-foreground' : 'text-muted-foreground'
+                ]}>
+                  {item.feature}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-foreground border-2 border-border rounded-lg hover:bg-accent transition-colors"
+          >
+            Claim Free Profile
+          </a>
+        </div>
+
+        <!-- Premium Tier -->
+        <div class="bg-white rounded-2xl border-2 border-texas-blue-500 p-8 flex flex-col relative shadow-xl">
+          <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-texas-blue-500 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+              Most Popular
+            </div>
+          </div>
+
+          <div class="text-center mb-8 pt-4">
+            <h3 class="text-2xl font-bold mb-2">Premium</h3>
+            <div class="mb-2">
+              <span class="text-5xl font-bold">$297</span>
+              <span class="text-xl text-muted-foreground">/mo</span>
+            </div>
+            <p class="text-sm text-muted-foreground">Billed monthly, cancel anytime</p>
+          </div>
+
+          <ul class="space-y-4 mb-8 flex-1">
+            {pricingFeatures.premium.map((item) => (
+              <li class="flex items-start gap-3">
+                {item.included ? (
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <X className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                )}
+                <span class:list={[
+                  'text-sm',
+                  item.highlight && 'font-semibold',
+                  item.included ? 'text-foreground' : 'text-muted-foreground'
+                ]}>
+                  {item.feature}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-white bg-texas-blue-500 rounded-lg hover:bg-texas-blue-600 transition-colors shadow-md"
+          >
+            Start Premium Trial
+          </a>
+        </div>
+
+        <!-- Featured Tier -->
+        <div class="bg-gradient-to-br from-texas-red-500 to-texas-red-600 rounded-2xl border-2 border-texas-red-500 p-8 flex flex-col text-white shadow-xl">
+          <div class="text-center mb-8">
+            <div class="flex items-center justify-center gap-2 mb-2">
+              <h3 class="text-2xl font-bold">Featured</h3>
+              <Star className="h-6 w-6 text-yellow-300 fill-yellow-300" />
+            </div>
+            <div class="mb-2">
+              <span class="text-5xl font-bold">$597</span>
+              <span class="text-xl text-white/80">/mo</span>
+            </div>
+            <p class="text-sm text-white/80">Maximum visibility & leads</p>
+          </div>
+
+          <ul class="space-y-4 mb-8 flex-1">
+            {pricingFeatures.featured.map((item) => (
+              <li class="flex items-start gap-3">
+                <Check className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                <span class:list={[
+                  'text-sm',
+                  item.highlight && 'font-semibold'
+                ]}>
+                  {item.feature}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="/claim-profile"
+            class="block w-full text-center px-6 py-3 text-sm font-medium text-texas-red-600 bg-white rounded-lg hover:bg-gray-100 transition-colors shadow-md"
+          >
+            Go Featured
+          </a>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-muted-foreground mt-12 max-w-2xl mx-auto">
+        All paid plans include a 14-day money-back guarantee. Cancel or downgrade anytime from your dashboard. No contracts or hidden fees.
+      </p>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="py-20 lg:py-24 bg-muted/30">
+    <div class="container">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Feature Comparison</h2>
+
+        <div class="bg-white rounded-xl border border-border overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-muted">
+              <tr>
+                <th class="text-left py-4 px-6 font-semibold">Feature</th>
+                <th class="text-center py-4 px-6 font-semibold">Free</th>
+                <th class="text-center py-4 px-6 font-semibold bg-texas-blue-50">Premium</th>
+                <th class="text-center py-4 px-6 font-semibold">Featured</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="py-4 px-6 text-sm">Profile visibility</td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Contact information display</td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Custom bio & description</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Client showcase</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Priority search placement</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Analytics dashboard</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Featured badge</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Homepage featured section</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+              <tr>
+                <td class="py-4 px-6 text-sm">Top search placement</td>
+                <td class="text-center py-4 px-6"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6 bg-texas-blue-50/30"><X className="h-5 w-5 text-muted-foreground mx-auto" /></td>
+                <td class="text-center py-4 px-6"><Check className="h-5 w-5 text-green-600 mx-auto" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 lg:py-24">
+    <div class="container max-w-3xl">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+
+      <div class="space-y-6">
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">Can I upgrade or downgrade my plan?</h3>
+          <p class="text-muted-foreground">
+            Yes, you can upgrade or downgrade at any time from your dashboard. Upgrades take effect immediately, and downgrades take effect at the end of your current billing period.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">What payment methods do you accept?</h3>
+          <p class="text-muted-foreground">
+            We accept all major credit cards (Visa, MasterCard, American Express) via Stripe. All payments are secure and encrypted.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">Is there a contract or commitment?</h3>
+          <p class="text-muted-foreground">
+            No. All plans are month-to-month with no long-term contracts. You can cancel anytime from your dashboard.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">What's the difference between Premium and Featured?</h3>
+          <p class="text-muted-foreground">
+            Premium gives you full profile control and priority placement in search results. Featured adds top-tier placement, a special badge, homepage visibility, and premium support. Featured is best for lobbyists who want maximum exposure to potential clients.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">Do I need to be a registered Texas lobbyist?</h3>
+          <p class="text-muted-foreground">
+            Yes. We verify all profiles against Texas Ethics Commission records. You'll need to be registered with the TEC to claim a profile.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border p-6">
+          <h3 class="text-lg font-semibold mb-2">What if I'm not satisfied?</h3>
+          <p class="text-muted-foreground">
+            We offer a 14-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 14 days for a full refund.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 lg:py-24 bg-gradient-to-b from-background to-texas-blue-50">
+    <div class="container max-w-3xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Ready to Get Started?
+      </h2>
+      <p class="text-xl text-muted-foreground mb-8">
+        Claim your free profile today. No credit card required.
+      </p>
+
+      <a
+        href="/claim-profile"
+        class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-8 py-4 text-lg font-medium text-white hover:bg-texas-blue-600 transition-colors shadow-lg"
+      >
+        Claim Your Profile
+      </a>
+
+      <p class="text-sm text-muted-foreground mt-6">
+        Questions? <a href="/contact" class="text-texas-blue-500 hover:underline">Contact us</a> or email <a href="mailto:support@texaslobby.org" class="text-texas-blue-500 hover:underline">support@texaslobby.org</a>
+      </p>
+    </div>
+  </section>
+</Layout>

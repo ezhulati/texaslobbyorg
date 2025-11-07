@@ -84,25 +84,29 @@ const schema = {
     </div>
   </section>
 
-  <!-- Main Content -->
-  <section class="py-12">
-    <div class="container max-w-4xl">
-      <div class="prose prose-lg max-w-none">
-
-        <!-- Table of Contents -->
-        <div class="not-prose bg-muted/50 rounded-lg p-6 mb-12">
-          <h2 class="text-lg font-semibold mb-4">What You'll Learn</h2>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#simple-answer" class="text-texas-blue-500 hover:underline">The Simple Answer</a></li>
-            <li><a href="#myths" class="text-texas-blue-500 hover:underline">6 Myths About Lobbyists (Debunked)</a></li>
-            <li><a href="#day-in-life" class="text-texas-blue-500 hover:underline">A Day in the Life (What They Actually Do)</a></li>
-            <li><a href="#types" class="text-texas-blue-500 hover:underline">Three Types of Lobbyists Explained</a></li>
-            <li><a href="#skills" class="text-texas-blue-500 hover:underline">The Real Skills That Make Someone Successful</a></li>
-            <li><a href="#ethics" class="text-texas-blue-500 hover:underline">Ethics and Legal Limits (What They Can't Do)</a></li>
-            <li><a href="#tools" class="text-texas-blue-500 hover:underline">The Tools of the Trade</a></li>
-            <li><a href="#success-stories" class="text-texas-blue-500 hover:underline">What Success Looks Like</a></li>
-          </ul>
+  <!-- Table of Contents -->
+  <section class="py-8 bg-muted/30 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-lg font-semibold mb-4">What You'll Learn</h2>
+        <div class="grid md:grid-cols-2 gap-2 text-sm">
+          <a href="#simple-answer" class="text-texas-blue-500 hover:underline">→ The Simple Answer</a>
+          <a href="#myths" class="text-texas-blue-500 hover:underline">→ 6 Myths Debunked</a>
+          <a href="#day-in-life" class="text-texas-blue-500 hover:underline">→ A Day in the Life</a>
+          <a href="#types" class="text-texas-blue-500 hover:underline">→ Three Types of Lobbyists</a>
+          <a href="#skills" class="text-texas-blue-500 hover:underline">→ Real Skills for Success</a>
+          <a href="#ethics" class="text-texas-blue-500 hover:underline">→ Ethics and Legal Limits</a>
+          <a href="#tools" class="text-texas-blue-500 hover:underline">→ Tools of the Trade</a>
+          <a href="#success-stories" class="text-texas-blue-500 hover:underline">→ What Success Looks Like</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto prose prose-lg">
 
         <!-- Simple Answer -->
         <div id="simple-answer" class="not-prose scroll-mt-24">
@@ -164,7 +168,7 @@ const schema = {
 
         <!-- Myths -->
         <div id="myths" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">6 Myths About Lobbyists (Debunked)</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">6 Myths About Lobbyists (Debunked)</h2>
         </div>
 
         <p>
@@ -329,7 +333,7 @@ const schema = {
 
         <!-- Day in the Life -->
         <div id="day-in-life" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">A Day in the Life: What They Actually Do</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">A Day in the Life: What They Actually Do</h2>
         </div>
 
         <p>
@@ -337,9 +341,9 @@ const schema = {
           (January–May). This is what the work <em>really</em> looks like:
         </p>
 
-        <div class="not-prose my-8 space-y-6">
+        <div class="not-prose my-12 space-y-8">
           <!-- Morning -->
-          <div class="bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-400 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-orange-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <div class="bg-orange-500 text-white rounded-lg px-3 py-1 text-sm font-bold">7:00 AM</div>
               <h3 class="text-xl font-bold">Morning: Bill Tracking & Capitol Intel</h3>
@@ -374,7 +378,7 @@ const schema = {
           </div>
 
           <!-- Late Morning -->
-          <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-blue-400 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <div class="bg-blue-500 text-white rounded-lg px-3 py-1 text-sm font-bold">9:30 AM</div>
               <h3 class="text-xl font-bold">Late Morning: Meetings & Strategy</h3>
@@ -409,7 +413,7 @@ const schema = {
           </div>
 
           <!-- Lunch -->
-          <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-400 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-purple-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <div class="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm font-bold">12:00 PM</div>
               <h3 class="text-xl font-bold">Lunch: Relationship Building</h3>
@@ -433,7 +437,7 @@ const schema = {
           </div>
 
           <!-- Afternoon -->
-          <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-400 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-green-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <div class="bg-green-500 text-white rounded-lg px-3 py-1 text-sm font-bold">2:00 PM</div>
               <h3 class="text-xl font-bold">Afternoon: Client Work & Floor Action</h3>
@@ -469,7 +473,7 @@ const schema = {
           </div>
 
           <!-- Evening -->
-          <div class="bg-gradient-to-r from-indigo-50 to-blue-50 border-l-4 border-indigo-400 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-indigo-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <div class="bg-indigo-500 text-white rounded-lg px-3 py-1 text-sm font-bold">6:00 PM</div>
               <h3 class="text-xl font-bold">Evening: Never Really Done</h3>
@@ -522,7 +526,7 @@ const schema = {
 
         <!-- Types of Lobbyists -->
         <div id="types" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Three Types of Lobbyists Explained</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Three Types of Lobbyists Explained</h2>
         </div>
 
         <p>
@@ -682,7 +686,7 @@ const schema = {
 
         <!-- Skills -->
         <div id="skills" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">The Real Skills That Make Someone Successful</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">The Real Skills That Make Someone Successful</h2>
         </div>
 
         <p>
@@ -748,7 +752,7 @@ const schema = {
 
         <!-- Ethics and Limits -->
         <div id="ethics" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Ethics and Legal Limits: What They Can't Do</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Ethics and Legal Limits: What They Can't Do</h2>
         </div>
 
         <p>
@@ -843,7 +847,7 @@ const schema = {
 
         <!-- Tools of the Trade -->
         <div id="tools" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">The Tools of the Trade</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">The Tools of the Trade</h2>
         </div>
 
         <p>
@@ -894,7 +898,7 @@ const schema = {
 
         <!-- Success Stories -->
         <div id="success-stories" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">What Success Actually Looks Like</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">What Success Actually Looks Like</h2>
         </div>
 
         <p>
@@ -902,8 +906,8 @@ const schema = {
           (types of outcomes, not specific bills to avoid partisan issues):
         </p>
 
-        <div class="not-prose my-8 space-y-6">
-          <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-6">
+        <div class="not-prose my-12 space-y-8">
+          <div class="bg-white border-l-4 border-green-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <CheckCircle className="h-8 w-8 text-green-600 flex-shrink-0" />
               <div>
@@ -920,7 +924,7 @@ const schema = {
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-l-4 border-blue-500 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <CheckCircle className="h-8 w-8 text-blue-600 flex-shrink-0" />
               <div>
@@ -937,7 +941,7 @@ const schema = {
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-purple-50 to-pink-50 border-l-4 border-purple-500 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-purple-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <CheckCircle className="h-8 w-8 text-purple-600 flex-shrink-0" />
               <div>
@@ -954,7 +958,7 @@ const schema = {
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-orange-50 to-yellow-50 border-l-4 border-orange-500 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-orange-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <CheckCircle className="h-8 w-8 text-orange-600 flex-shrink-0" />
               <div>
@@ -971,7 +975,7 @@ const schema = {
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border-l-4 border-indigo-500 rounded-lg p-6">
+          <div class="bg-white border-l-4 border-indigo-600 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <CheckCircle className="h-8 w-8 text-indigo-600 flex-shrink-0" />
               <div>

@@ -72,27 +72,31 @@ const schema = {
     </div>
   </section>
 
-  <!-- Main Content -->
-  <section class="py-12">
-    <div class="container max-w-4xl">
-      <div class="prose prose-lg max-w-none">
-
-        <!-- Table of Contents -->
-        <div class="not-prose bg-muted/50 rounded-lg p-6 mb-12">
-          <h2 class="text-lg font-semibold mb-4">What You'll Learn</h2>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#quick-answer" class="text-texas-blue-500 hover:underline">The Quick Answer (TL;DR)</a></li>
-            <li><a href="#pricing-models" class="text-texas-blue-500 hover:underline">Four Pricing Models Explained</a></li>
-            <li><a href="#real-costs" class="text-texas-blue-500 hover:underline">What You'll Actually Pay (The Real Numbers)</a></li>
-            <li><a href="#cost-drivers" class="text-texas-blue-500 hover:underline">What Makes Lobbying More Expensive</a></li>
-            <li><a href="#hidden-costs" class="text-texas-blue-500 hover:underline">Hidden Costs Nobody Tells You About</a></li>
-            <li><a href="#by-experience" class="text-texas-blue-500 hover:underline">Pricing by Lobbyist Experience Level</a></li>
-            <li><a href="#red-flags" class="text-texas-blue-500 hover:underline">Pricing Red Flags to Watch For</a></li>
-            <li><a href="#roi" class="text-texas-blue-500 hover:underline">How to Calculate Your ROI</a></li>
-            <li><a href="#negotiating" class="text-texas-blue-500 hover:underline">Can You Negotiate? (Yes, Here's How)</a></li>
-            <li><a href="#budget-alternatives" class="text-texas-blue-500 hover:underline">What If You Can't Afford a Lobbyist?</a></li>
-          </ul>
+  <!-- Table of Contents -->
+  <section class="py-8 bg-muted/30 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-lg font-semibold mb-4">What You'll Learn</h2>
+        <div class="grid md:grid-cols-2 gap-2 text-sm">
+          <a href="#quick-answer" class="text-texas-blue-500 hover:underline">→ The Quick Answer (TL;DR)</a>
+          <a href="#pricing-models" class="text-texas-blue-500 hover:underline">→ Four Pricing Models Explained</a>
+          <a href="#real-costs" class="text-texas-blue-500 hover:underline">→ What You'll Actually Pay</a>
+          <a href="#cost-drivers" class="text-texas-blue-500 hover:underline">→ What Makes Lobbying More Expensive</a>
+          <a href="#hidden-costs" class="text-texas-blue-500 hover:underline">→ Hidden Costs Nobody Tells You About</a>
+          <a href="#by-experience" class="text-texas-blue-500 hover:underline">→ Pricing by Experience Level</a>
+          <a href="#red-flags" class="text-texas-blue-500 hover:underline">→ Pricing Red Flags to Watch For</a>
+          <a href="#roi" class="text-texas-blue-500 hover:underline">→ How to Calculate Your ROI</a>
+          <a href="#negotiating" class="text-texas-blue-500 hover:underline">→ Can You Negotiate?</a>
+          <a href="#budget-alternatives" class="text-texas-blue-500 hover:underline">→ Budget Alternatives</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto prose prose-lg">
 
         <!-- Quick Answer -->
         <div id="quick-answer" class="not-prose scroll-mt-24">
@@ -135,7 +139,7 @@ const schema = {
 
         <!-- Pricing Models -->
         <div id="pricing-models" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Four Pricing Models Explained</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Four Pricing Models Explained</h2>
         </div>
 
         <p>
@@ -346,7 +350,7 @@ const schema = {
 
         <!-- What You'll Actually Pay -->
         <div id="real-costs" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">What You'll Actually Pay: Real-World Scenarios</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">What You'll Actually Pay: Real-World Scenarios</h2>
         </div>
 
         <p>
@@ -355,8 +359,8 @@ const schema = {
         </p>
 
         <!-- Scenario 1 -->
-        <div class="not-prose my-8">
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div class="not-prose my-12">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <h3 class="text-lg font-bold text-blue-900 mb-3">Scenario 1: Small Business, Bill Monitoring Only</h3>
             <div class="grid md:grid-cols-2 gap-6">
               <div>
@@ -375,8 +379,8 @@ const schema = {
         </div>
 
         <!-- Scenario 2 -->
-        <div class="not-prose my-8">
-          <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+        <div class="not-prose my-12">
+          <div class="bg-white border-l-4 border-purple-600 rounded-lg p-6 shadow-sm">
             <h3 class="text-lg font-bold text-purple-900 mb-3">Scenario 2: Trade Association, Active Advocacy</h3>
             <div class="grid md:grid-cols-2 gap-6">
               <div>
@@ -396,8 +400,8 @@ const schema = {
         </div>
 
         <!-- Scenario 3 -->
-        <div class="not-prose my-8">
-          <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+        <div class="not-prose my-12">
+          <div class="bg-white border-l-4 border-green-600 rounded-lg p-6 shadow-sm">
             <h3 class="text-lg font-bold text-green-900 mb-3">Scenario 3: Major Corporation, Multiple Issues</h3>
             <div class="grid md:grid-cols-2 gap-6">
               <div>
@@ -417,8 +421,8 @@ const schema = {
         </div>
 
         <!-- Scenario 4 -->
-        <div class="not-prose my-8">
-          <div class="bg-orange-50 border border-orange-200 rounded-lg p-6">
+        <div class="not-prose my-12">
+          <div class="bg-white border-l-4 border-orange-600 rounded-lg p-6 shadow-sm">
             <h3 class="text-lg font-bold text-orange-900 mb-3">Scenario 4: Nonprofit, Single High-Stakes Bill</h3>
             <div class="grid md:grid-cols-2 gap-6">
               <div>
@@ -439,7 +443,7 @@ const schema = {
 
         <!-- Cost Drivers -->
         <div id="cost-drivers" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">What Makes Lobbying More Expensive?</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">What Makes Lobbying More Expensive?</h2>
         </div>
 
         <p>
@@ -447,9 +451,9 @@ const schema = {
           where you might be able to save money.
         </p>
 
-        <div class="not-prose my-8 space-y-4">
+        <div class="not-prose my-12 space-y-6">
           <!-- Driver 1 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -468,7 +472,7 @@ const schema = {
           </div>
 
           <!-- Driver 2 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -487,7 +491,7 @@ const schema = {
           </div>
 
           <!-- Driver 3 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -506,7 +510,7 @@ const schema = {
           </div>
 
           <!-- Driver 4 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -525,7 +529,7 @@ const schema = {
           </div>
 
           <!-- Driver 5 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -544,7 +548,7 @@ const schema = {
           </div>
 
           <!-- Driver 6 -->
-          <div class="bg-white border border-border rounded-lg p-6">
+          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6 shadow-sm">
             <div class="flex items-start gap-4">
               <div class="bg-texas-blue-500 text-white rounded-lg p-3 flex-shrink-0">
                 <TrendingUp className="h-6 w-6" />
@@ -565,7 +569,7 @@ const schema = {
 
         <!-- Hidden Costs -->
         <div id="hidden-costs" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Hidden Costs Nobody Tells You About</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Hidden Costs Nobody Tells You About</h2>
         </div>
 
         <p>
@@ -659,7 +663,7 @@ const schema = {
 
         <!-- Pricing by Experience -->
         <div id="by-experience" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Pricing by Lobbyist Experience Level</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Pricing by Lobbyist Experience Level</h2>
         </div>
 
         <p>
@@ -826,7 +830,7 @@ const schema = {
 
         <!-- Red Flags -->
         <div id="red-flags" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Pricing Red Flags to Watch For</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Pricing Red Flags to Watch For</h2>
         </div>
 
         <p>
@@ -917,7 +921,7 @@ const schema = {
 
         <!-- ROI Calculation -->
         <div id="roi" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">How to Calculate Your ROI</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">How to Calculate Your ROI</h2>
         </div>
 
         <p>
@@ -1033,7 +1037,7 @@ const schema = {
 
         <!-- Negotiating -->
         <div id="negotiating" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">Can You Negotiate? (Yes, Here's How)</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">Can You Negotiate? (Yes, Here's How)</h2>
         </div>
 
         <p>
@@ -1104,7 +1108,7 @@ const schema = {
 
         <!-- Budget Alternatives -->
         <div id="budget-alternatives" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-12">What If You Can't Afford a Lobbyist?</h2>
+          <h2 class="text-3xl font-bold mb-6 mt-20">What If You Can't Afford a Lobbyist?</h2>
         </div>
 
         <p>

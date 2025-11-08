@@ -35,60 +35,33 @@ export default function CreateProfileForm({ userId, userEmail }: CreateProfileFo
         throw new Error('Please fill in all required fields');
       }
 
-      // Generate slug from name
-      const slug = `${formData.firstName}-${formData.lastName}`
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+      console.log('[CreateProfileForm] Submitting profile creation');
 
-      // Parse cities and subject areas
-      const cities = formData.cities
-        .split(',')
-        .map(c => c.trim())
-        .filter(c => c.length > 0);
+      // Call the secure API endpoint instead of direct Supabase calls
+      const response = await fetch('/api/profile/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formData }),
+      });
 
-      const subjectAreas = formData.subjectAreas
-        .split(',')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
+      console.log('[CreateProfileForm] Create API response status:', response.status);
 
-      // Create lobbyist profile with pending status
-      const { error: insertError } = await supabase
-        .from('lobbyists')
-        .insert({
-          user_id: userId,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          slug,
-          email: formData.email,
-          phone: formData.phone || null,
-          website: formData.website || null,
-          linkedin_url: formData.linkedinUrl || null,
-          bio: formData.bio || null,
-          cities: cities.length > 0 ? cities : [],
-          subject_areas: subjectAreas.length > 0 ? subjectAreas : [],
-          is_claimed: true,
-          is_active: false, // Not active until approved
-          is_pending: true,
-          pending_reason: 'New lobbyist registration',
-          subscription_tier: 'free',
-        });
+      const result = await response.json();
+      console.log('[CreateProfileForm] Create API result:', result);
 
-      if (insertError) throw insertError;
+      if (!response.ok) {
+        console.error('[CreateProfileForm] Create failed with error:', result.error);
+        throw new Error(result.error || 'Failed to create profile');
+      }
 
-      // Update user role to lobbyist
-      const { error: userError } = await supabase
-        .from('users')
-        .update({ role: 'lobbyist' })
-        .eq('id', userId);
-
-      if (userError) throw userError;
-
+      console.log('[CreateProfileForm] Profile created successfully, redirecting to:', result.redirectTo);
       setSuccess(true);
 
-      // Redirect to onboarding after 2 seconds
+      // Redirect to the URL returned by the API (dashboard with pending status)
       setTimeout(() => {
-        window.location.href = '/onboarding';
+        window.location.href = result.redirectTo;
       }, 2000);
     } catch (err: any) {
       setError(err?.message || 'Error creating profile');

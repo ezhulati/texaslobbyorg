@@ -1,0 +1,231 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Check if user is authenticated
+const user = await getCurrentUser();
+
+if (!user) {
+  // Not authenticated, redirect to login with return URL
+  return Astro.redirect(`/login?redirect=${encodeURIComponent('/favorites')}`);
+}
+
+// Fetch user's favorited lobbyists
+const { data: favorites, error: favError } = await supabase
+  .from('favorites')
+  .select(`
+    id,
+    created_at,
+    lobbyist:lobbyist_id (
+      id,
+      first_name,
+      last_name,
+      slug,
+      bio,
+      cities,
+      subject_areas,
+      email,
+      phone,
+      website,
+      subscription_tier,
+      view_count
+    )
+  `)
+  .eq('user_id', user.id)
+  .order('created_at', { ascending: false });
+
+if (favError) {
+  console.error('[Favorites Page] Error fetching favorites:', favError);
+}
+
+const favoriteLobbyists = favorites?.map(fav => fav.lobbyist).filter(Boolean) || [];
+
+// SEO-optimized title (55-60 chars) and description (155-160 chars)
+const pageTitle = 'My Favorite Lobbyists | Saved Profiles';
+const pageDescription = 'View and manage your saved Texas lobbyist profiles. Keep track of advocates you\'re interested in working with.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Favorites Page -->
+  <section class="py-16 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">My Favorites</h1>
+        <p class="text-lg text-muted-foreground">
+          {favoriteLobbyists.length > 0
+            ? `You have ${favoriteLobbyists.length} saved ${favoriteLobbyists.length === 1 ? 'lobbyist' : 'lobbyists'}`
+            : 'No saved lobbyists yet'
+          }
+        </p>
+      </div>
+
+      {favoriteLobbyists.length === 0 ? (
+        <!-- Empty State -->
+        <div class="rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+          <div class="max-w-md mx-auto">
+            <div class="mb-4">
+              <svg
+                class="mx-auto h-16 w-16 text-muted-foreground/50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                ></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">No favorites yet</h3>
+            <p class="text-muted-foreground mb-6">
+              Start exploring our directory and save lobbyists you're interested in working with. Click the heart icon on any profile to add them to your favorites.
+            </p>
+            <a
+              href="/lobbyists"
+              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+            >
+              Browse Lobbyists
+            </a>
+          </div>
+        </div>
+      ) : (
+        <!-- Favorites Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {favoriteLobbyists.map((lobbyist: any) => (
+            <div key={lobbyist.id} class="rounded-lg border border-border bg-white p-6 hover:shadow-lg transition-shadow">
+              <!-- Subscription Tier Badge -->
+              {lobbyist.subscription_tier !== 'free' && (
+                <div class="mb-3">
+                  <span
+                    class={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      lobbyist.subscription_tier === 'featured'
+                        ? 'bg-texas-gold-500 text-white'
+                        : 'bg-texas-blue-500 text-white'
+                    }`}
+                  >
+                    {lobbyist.subscription_tier === 'featured' ? 'Featured' : 'Premium'}
+                  </span>
+                </div>
+              )}
+
+              <!-- Name -->
+              <h3 class="text-xl font-bold mb-2">
+                <a
+                  href={`/lobbyists/${lobbyist.slug}`}
+                  class="hover:text-texas-blue-500 transition-colors"
+                >
+                  {lobbyist.first_name} {lobbyist.last_name}
+                </a>
+              </h3>
+
+              <!-- Cities -->
+              {lobbyist.cities && lobbyist.cities.length > 0 && (
+                <p class="text-sm text-muted-foreground mb-3">
+                  {lobbyist.cities.slice(0, 2).join(', ')}
+                  {lobbyist.cities.length > 2 && ` +${lobbyist.cities.length - 2} more`}
+                </p>
+              )}
+
+              <!-- Subject Areas -->
+              {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 && (
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {lobbyist.subject_areas.slice(0, 3).map((area: string) => (
+                    <span
+                      key={area}
+                      class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium"
+                    >
+                      {area}
+                    </span>
+                  ))}
+                  {lobbyist.subject_areas.length > 3 && (
+                    <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium">
+                      +{lobbyist.subject_areas.length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <!-- Bio Preview -->
+              {lobbyist.bio && (
+                <p class="text-sm text-muted-foreground line-clamp-3 mb-4">
+                  {lobbyist.bio}
+                </p>
+              )}
+
+              <!-- Actions -->
+              <div class="flex gap-2 mt-auto">
+                <a
+                  href={`/lobbyists/${lobbyist.slug}`}
+                  class="flex-1 inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-texas-blue-600 transition-colors"
+                >
+                  View Profile
+                </a>
+                <button
+                  data-lobbyist-id={lobbyist.id}
+                  class="remove-favorite inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+                  title="Remove from favorites"
+                >
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <!-- Back to Browse Link -->
+      <div class="mt-8 text-center">
+        <a
+          href="/lobbyists"
+          class="inline-flex items-center text-texas-blue-500 hover:underline"
+        >
+          <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Browse All Lobbyists
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client-side script for removing favorites -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const removeButtons = document.querySelectorAll('.remove-favorite');
+
+      removeButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+          const lobbyistId = (e.currentTarget as HTMLElement).dataset.lobbyistId;
+          if (!lobbyistId) return;
+
+          if (!confirm('Remove this lobbyist from your favorites?')) return;
+
+          try {
+            const response = await fetch('/api/favorites/remove', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ lobbyistId }),
+            });
+
+            if (response.ok) {
+              // Reload page to show updated list
+              window.location.reload();
+            } else {
+              const result = await response.json();
+              alert(result.error || 'Failed to remove favorite');
+            }
+          } catch (error) {
+            console.error('Error removing favorite:', error);
+            alert('Failed to remove favorite. Please try again.');
+          }
+        });
+      });
+    });
+  </script>
+</Layout>

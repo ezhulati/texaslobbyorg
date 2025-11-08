@@ -122,7 +122,7 @@ if (isAdmin) {
               </button>
               <div class="absolute right-0 mt-2 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 {lobbyistSlug && <a href={`/lobbyists/${lobbyistSlug}`} class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Profile</a>}
-                <a href="/dashboard/edit-profile" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Edit Profile</a>
+                <a href="/dashboard" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Edit Profile</a>
                 <a href="/dashboard/analytics" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Analytics</a>
                 <a href="/dashboard/upgrade" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Upgrade Plan</a>
                 <a href="/account" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Account Settings</a>
@@ -326,7 +326,7 @@ if (isAdmin) {
               </a>
             )}
             <a
-              href="/dashboard/edit-profile"
+              href="/dashboard"
               class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
             >
               Edit Profile

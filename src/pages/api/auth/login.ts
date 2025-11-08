@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { supabase, createServerClient } from '@/lib/supabase';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
@@ -7,7 +7,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const { email, password, firstName, lastName } = await request.json();
     console.log('[Login API] Attempting login for email:', email);
 
-    // Sign in with Supabase (use public client for auth)
+    // Use SSR auth client - this handles cookies automatically
+    const supabase = createServerAuthClient(cookies);
+
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -29,26 +31,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     }
 
-    console.log('[Login API] Sign in successful, setting cookies');
-    // Store session tokens in HTTP-only cookies
-    const isProduction = import.meta.env.PROD || process.env.NODE_ENV === 'production';
-    console.log('[Login API] Is production:', isProduction, 'Secure cookies:', isProduction);
-
-    cookies.set('sb-access-token', data.session.access_token, {
-      path: '/',
-      httpOnly: true,
-      secure: isProduction, // Only require HTTPS in production
-      sameSite: 'lax',
-      maxAge: data.session.expires_in,
-    });
-
-    cookies.set('sb-refresh-token', data.session.refresh_token, {
-      path: '/',
-      httpOnly: true,
-      secure: isProduction, // Only require HTTPS in production
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
+    console.log('[Login API] Sign in successful, cookies set automatically by SSR client');
 
     // Use service role client for database operations
     const serverClient = createServerClient();
@@ -56,13 +39,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Check if user record exists, create only if it doesn't (first login)
     const { data: existingUser, error: checkError } = await serverClient
       .from('users')
-      .select('id')
+      .select('id, role')
       .eq('id', data.user.id)
       .single();
 
-    // Only create user record on first login, don't update role on subsequent logins
+    let userRole: 'searcher' | 'lobbyist' | 'admin' = 'searcher';
+
+    // Only create user record on first login
     if (checkError && checkError.code === 'PGRST116') {
-      // User doesn't exist, create new record
       const userFirstName = firstName || data.user.user_metadata?.first_name || null;
       const userLastName = lastName || data.user.user_metadata?.last_name || null;
       const userType = data.user.user_metadata?.user_type || 'searcher';
@@ -75,19 +59,67 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
 
       if (insertError) {
-        console.error('Error creating user record:', insertError);
-        // Continue even if insert fails - user is authenticated
+        console.error('[Login API] Error creating user record:', insertError);
+      }
+
+      userRole = userType as 'searcher' | 'lobbyist' | 'admin';
+    } else if (existingUser) {
+      userRole = existingUser.role;
+    }
+
+    console.log('[Login API] User role:', userRole);
+
+    // SMART ROUTING: Determine redirect based on user role and status
+    let redirectTo: string;
+
+    if (userRole === 'admin') {
+      // Admins go to admin dashboard
+      redirectTo = '/admin';
+      console.log('[Login API] Admin user, redirecting to admin dashboard');
+    } else if (userRole === 'lobbyist') {
+      // Check if lobbyist has a profile
+      const { data: lobbyistProfile, error: profileError } = await serverClient
+        .from('lobbyists')
+        .select('id, slug')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (!profileError && lobbyistProfile) {
+        // Has profile, send to dashboard
+        redirectTo = '/dashboard';
+        console.log('[Login API] Lobbyist with profile, redirecting to dashboard');
+      } else {
+        // No profile, send to claim profile page
+        redirectTo = '/claim-profile';
+        console.log('[Login API] Lobbyist without profile, redirecting to claim profile');
+      }
+    } else {
+      // Searcher - check if they have favorites
+      const { data: favorites, error: favError } = await serverClient
+        .from('favorites')
+        .select('id')
+        .eq('user_id', data.user.id)
+        .limit(1);
+
+      if (!favError && favorites && favorites.length > 0) {
+        // Has favorites, send to favorites page
+        redirectTo = '/favorites';
+        console.log('[Login API] Searcher with favorites, redirecting to favorites page');
+      } else {
+        // No favorites, send to directory
+        redirectTo = '/lobbyists';
+        console.log('[Login API] Searcher without favorites, redirecting to directory');
       }
     }
-    // If user exists, don't modify their role
 
-    // Return success
-    console.log('[Login API] Login complete, returning success response');
+    console.log('[Login API] Login complete, returning success with redirect:', redirectTo);
     return new Response(JSON.stringify({
       success: true,
+      redirectTo,
       user: {
         id: data.user.id,
         email: data.user.email,
+        role: userRole,
       }
     }), {
       status: 200,

@@ -7,6 +7,10 @@ import { supabase } from '@/lib/supabase';
 // Check if user is authenticated
 const user = await getCurrentUser();
 
+// Check for auto-detection query params (from signup flow)
+const autoDetect = Astro.url.searchParams.get('auto') === 'true';
+const prefilledEmail = Astro.url.searchParams.get('email') || null;
+
 // If user is authenticated, check if they already have a claimed profile
 let alreadyClaimed = false;
 if (user) {
@@ -133,12 +137,33 @@ const pageDescription = 'Claim your lobbyist profile on TexasLobby.org. Manage y
         </div>
       ) : (
         <!-- Logged In - Show Claim Form -->
-        <div class="rounded-lg border border-border bg-white p-8">
-          <ClaimProfileForm
-            client:load
-            userId={user.id}
-            userEmail={user.email || undefined}
-          />
+        <div class="space-y-6">
+          <!-- Auto-Detection Banner (if coming from signup) -->
+          {autoDetect && prefilledEmail && (
+            <div class="rounded-lg border-2 border-texas-blue-200 bg-texas-blue-50 p-6">
+              <div class="flex gap-3">
+                <svg class="h-6 w-6 text-texas-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <div>
+                  <h3 class="font-semibold text-texas-blue-900 mb-1">We Found Your Profile!</h3>
+                  <p class="text-sm text-texas-blue-800">
+                    Great news! We found an existing profile for <strong>{prefilledEmail}</strong>. Review the details below and claim it to manage your listing.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div class="rounded-lg border border-border bg-white p-8">
+            <ClaimProfileForm
+              client:load
+              userId={user.id}
+              userEmail={user.email || undefined}
+              autoDetect={autoDetect}
+              prefilledEmail={prefilledEmail}
+            />
+          </div>
         </div>
       )}
 

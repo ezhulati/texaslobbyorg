@@ -27,46 +27,44 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
 
     try {
       if (mode === 'signup') {
-        // Sign up
-        const { data, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              first_name: firstName,
-              last_name: lastName,
-              user_type: userType,
-            },
-            emailRedirectTo: `${window.location.origin}/auth/verify`,
+        // Sign up via API endpoint (server-side auth with cookies)
+        console.log('[AuthForm] Starting signup with email:', email, 'userType:', userType);
+
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            email,
+            password,
+            firstName,
+            lastName,
+            userType
+          }),
         });
 
-        if (signUpError) throw signUpError;
+        console.log('[AuthForm] Signup API response status:', response.status);
 
-        if (data.user) {
-          // Immediately create user record (since trigger might not work due to permissions)
-          // TODO: Re-enable first_name/last_name once schema cache refreshes
-          const { error: upsertError } = await supabase.from('users').upsert({
-            id: data.user.id,
-            email: data.user.email!,
-            role: userType,
-            // first_name: firstName || null,  // Commented until schema cache refreshes
-            // last_name: lastName || null,      // Commented until schema cache refreshes
-            full_name: `${firstName} ${lastName}`.trim() || null,
-          });
+        const result = await response.json();
+        console.log('[AuthForm] Signup API result:', result);
 
-          if (upsertError) {
-            console.error('Error creating user record:', upsertError);
-            // Don't throw error - user was created in auth, we'll retry on verification
+        if (!response.ok) {
+          console.error('[AuthForm] Signup failed with error:', result.error);
+
+          // Special handling for duplicate email
+          if (result.code === 'EMAIL_EXISTS') {
+            setError(result.error);
+            setMagicLinkSent(false); // Show the form again with error
+            return;
           }
 
-          // Redirect based on user type
-          if (userType === 'lobbyist') {
-            window.location.href = '/create-profile';
-          } else {
-            window.location.href = '/lobbyists';
-          }
+          throw new Error(result.error || 'Signup failed');
         }
+
+        console.log('[AuthForm] Signup successful, redirecting to:', result.redirectTo);
+        // Redirect on successful signup
+        window.location.href = result.redirectTo;
       } else {
         // Sign in via API endpoint (server-side auth with cookies)
         console.log('[AuthForm] Starting login with email:', email);
@@ -90,9 +88,10 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
           throw new Error(result.error || 'Login failed');
         }
 
-        console.log('[AuthForm] Login successful, redirecting to:', redirectTo);
-        // Redirect on successful login
-        window.location.href = redirectTo;
+        // Use the redirect URL from API response (smart routing based on user type)
+        const finalRedirect = result.redirectTo || redirectTo;
+        console.log('[AuthForm] Login successful, redirecting to:', finalRedirect);
+        window.location.href = finalRedirect;
       }
     } catch (err: any) {
       setError(err?.message || 'An error occurred');
@@ -227,6 +226,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
             placeholder="you@example.com"
             required
             disabled={loading}
+            data-testid="email-input"
           />
         </div>
 
@@ -243,6 +243,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
             required
             minLength={6}
             disabled={loading}
+            data-testid="password-input"
           />
           {mode === 'signup' && (
             <p className="mt-1 text-xs text-muted-foreground">
@@ -253,7 +254,15 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
 
         {error && (
           <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-            <p className="text-sm text-red-800">{error}</p>
+            <p className="text-sm text-red-800 mb-2">{error}</p>
+            {error.includes('already registered') && mode === 'signup' && (
+              <a
+                href={`/login?email=${encodeURIComponent(email)}`}
+                className="inline-block text-sm font-medium text-red-700 hover:text-red-900 underline"
+              >
+                Go to Login →
+              </a>
+            )}
           </div>
         )}
 

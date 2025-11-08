@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
@@ -6,10 +6,17 @@ import { supabase } from '@/lib/supabase';
 interface ClaimProfileFormProps {
   userId?: string;
   userEmail?: string;
+  autoDetect?: boolean;
+  prefilledEmail?: string | null;
 }
 
-export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileFormProps) {
-  const [searchEmail, setSearchEmail] = useState(userEmail || '');
+export default function ClaimProfileForm({
+  userId,
+  userEmail,
+  autoDetect = false,
+  prefilledEmail = null
+}: ClaimProfileFormProps) {
+  const [searchEmail, setSearchEmail] = useState(prefilledEmail || userEmail || '');
   const [searchName, setSearchName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,8 +24,16 @@ export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileForm
   const [claiming, setClaiming] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Auto-detect: trigger search on mount if coming from signup flow
+  useEffect(() => {
+    if (autoDetect && prefilledEmail) {
+      console.log('[ClaimProfileForm] Auto-detecting profile for:', prefilledEmail);
+      // Trigger search automatically
+      handleSearchInternal();
+    }
+  }, [autoDetect, prefilledEmail]);
+
+  const handleSearchInternal = async () => {
     setError('');
     setFoundProfiles([]);
     setLoading(true);
@@ -61,15 +76,14 @@ export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileForm
     }
   };
 
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleSearchInternal();
+  };
+
   const handleClaim = async (lobbyistId: string, lobbyistEmail: string | null) => {
     if (!userId) {
       setError('You must be logged in to claim a profile');
-      return;
-    }
-
-    // Verify email matches if lobbyist has an email on file
-    if (lobbyistEmail && userEmail && lobbyistEmail.toLowerCase() !== userEmail.toLowerCase()) {
-      setError('The email on this profile does not match your account email. Please contact support if you believe this is an error.');
       return;
     }
 
@@ -77,31 +91,33 @@ export default function ClaimProfileForm({ userId, userEmail }: ClaimProfileForm
     setError('');
 
     try {
-      // Update lobbyist profile
-      const { error: updateError } = await supabase
-        .from('lobbyists')
-        .update({
-          user_id: userId,
-          is_claimed: true,
-          email: userEmail, // Update email if not set
-        })
-        .eq('id', lobbyistId);
+      console.log('[ClaimProfileForm] Claiming profile:', lobbyistId);
 
-      if (updateError) throw updateError;
+      // Call the secure API endpoint instead of direct Supabase calls
+      const response = await fetch('/api/profile/claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lobbyistId }),
+      });
 
-      // Update user role to lobbyist
-      const { error: userError } = await supabase
-        .from('users')
-        .update({ role: 'lobbyist' })
-        .eq('id', userId);
+      console.log('[ClaimProfileForm] Claim API response status:', response.status);
 
-      if (userError) throw userError;
+      const result = await response.json();
+      console.log('[ClaimProfileForm] Claim API result:', result);
 
+      if (!response.ok) {
+        console.error('[ClaimProfileForm] Claim failed with error:', result.error);
+        throw new Error(result.error || 'Failed to claim profile');
+      }
+
+      console.log('[ClaimProfileForm] Profile claimed successfully, redirecting to:', result.redirectTo);
       setSuccess(true);
 
-      // Redirect to onboarding after 2 seconds
+      // Redirect to the URL returned by the API (onboarding)
       setTimeout(() => {
-        window.location.href = '/onboarding';
+        window.location.href = result.redirectTo;
       }, 2000);
     } catch (err: any) {
       setError(err?.message || 'Error claiming profile');

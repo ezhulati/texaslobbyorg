@@ -1,6 +1,7 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 
 // Check if user is authenticated (from middleware)
 const user = Astro.locals.user;
@@ -27,6 +28,29 @@ if (lobbyistError || !lobbyist) {
 const isPending = lobbyist.is_pending === true;
 const isActive = lobbyist.is_active === true;
 const isClaimed = lobbyist.is_claimed === true;
+
+// Check for duplicate profiles using fuzzy matching
+const serverClient = createServerClient();
+const { data: potentialDuplicates } = await serverClient.rpc('find_potential_duplicates', {
+  p_first_name: lobbyist.first_name,
+  p_last_name: lobbyist.last_name,
+  p_email: user.email
+});
+
+// Filter out the current profile and only show high-confidence matches
+const duplicates = potentialDuplicates?.filter((d: any) =>
+  d.id !== lobbyist.id &&
+  d.similarity_score > 0.7 &&
+  !d.deleted_at
+) || [];
+
+// Check if user already has a pending merge request
+const { data: pendingMerge } = await serverClient
+  .from('account_merge_requests')
+  .select('id')
+  .eq('user_id', user.id)
+  .eq('status', 'pending')
+  .single();
 
 // SEO
 const pageTitle = 'Lobbyist Dashboard | TexasLobby.org';

@@ -1,29 +1,16 @@
 import type { APIRoute } from 'astro';
-import { createServerClient } from '@/lib/supabase';
+import { createServerAuthClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
-    // Get the session from cookies
-    const accessToken = cookies.get('sb-access-token')?.value;
-    const refreshToken = cookies.get('sb-refresh-token')?.value;
+    // Create auth client with cookie context
+    const supabase = createServerAuthClient(cookies);
 
-    if (!accessToken) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    // Get the current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    // Create supabase client
-    const supabase = createServerClient();
-
-    // Set the session
-    const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken || '',
-    });
-
-    if (sessionError || !sessionData.user) {
+    if (userError || !user) {
+      console.error('[Update Password] Authentication error:', userError);
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +44,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Verify current password by attempting to sign in
     const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: sessionData.user.email!,
+      email: user.email!,
       password: current_password,
     });
 

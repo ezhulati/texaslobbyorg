@@ -1,0 +1,228 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth';
+import { createServerClient } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login?redirect=/merge-accounts');
+}
+
+const serverClient = createServerClient();
+
+// Get user's current lobbyist profile (if any)
+const { data: currentProfile } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .eq('claimed_by', user.id)
+  .single();
+
+// Get all lobbyist profiles (for manual selection)
+const { data: allProfiles } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .order('last_name');
+
+// Check for existing pending merge requests
+const { data: pendingMerges } = await serverClient
+  .from('account_merge_requests')
+  .select(`
+    id,
+    status,
+    submitted_at,
+    primary_lobbyist:primary_lobbyist_id(first_name, last_name, slug),
+    duplicate_lobbyist:duplicate_lobbyist_id(first_name, last_name, slug)
+  `)
+  .eq('user_id', user.id)
+  .eq('status', 'pending');
+
+const pageTitle = 'Merge Accounts | TexasLobby.org';
+const pageDescription = 'Merge duplicate lobbyist profiles into a single account.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <a
+          href="/dashboard"
+          class="inline-flex items-center gap-2 text-texas-blue-500 hover:underline mb-4"
+        >
+          ← Back to Dashboard
+        </a>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Merge Accounts</h1>
+        <p class="text-muted-foreground">
+          Combine duplicate lobbyist profiles into a single account
+        </p>
+      </div>
+
+      <!-- Pending Merge Requests -->
+      {pendingMerges && pendingMerges.length > 0 && (
+        <div class="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-6">
+          <div class="flex items-start gap-3">
+            <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <h3 class="font-semibold text-amber-900 mb-2">Pending Merge Request</h3>
+              <p class="text-sm text-amber-800 mb-3">
+                You have a merge request pending review. We'll notify you once it's been processed.
+              </p>
+              {pendingMerges.map((merge: any) => (
+                <div class="text-sm text-amber-800">
+                  <p>
+                    <strong>Primary:</strong> {merge.primary_lobbyist?.first_name} {merge.primary_lobbyist?.last_name}
+                  </p>
+                  <p>
+                    <strong>Merging:</strong> {merge.duplicate_lobbyist?.first_name} {merge.duplicate_lobbyist?.last_name}
+                  </p>
+                  <p class="text-xs mt-1">Submitted: {new Date(merge.submitted_at).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Info Box -->
+      <div class="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6">
+        <h3 class="font-semibold text-blue-900 mb-2">When to Merge Accounts</h3>
+        <ul class="text-sm text-blue-800 space-y-2 list-disc list-inside">
+          <li>You created a new profile but discovered you already have a profile from the TEC database</li>
+          <li>You have multiple profiles with different information that should be combined</li>
+          <li>You want to consolidate subscriptions, favorites, or profile views</li>
+        </ul>
+
+        <div class="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-md">
+          <p class="text-sm text-blue-900">
+            <strong>Note:</strong> Merge requests require admin approval with ID verification. The process typically takes 24-48 hours.
+          </p>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-8 rounded-lg border border-border bg-white p-6">
+        <h3 class="font-semibold mb-4">How Merging Works</h3>
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              1
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Select Profiles to Merge</h4>
+              <p class="text-sm text-muted-foreground">
+                Choose which profile to keep (primary) and which to merge into it (duplicate).
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              2
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Upload ID Verification</h4>
+              <p class="text-sm text-muted-foreground">
+                Provide your driver's license or passport to verify you own both profiles.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              3
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Admin Review</h4>
+              <p class="text-sm text-muted-foreground">
+                Our team reviews your request and verifies your identity within 48 hours.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              4
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Profiles Merged</h4>
+              <p class="text-sm text-muted-foreground">
+                Once approved, all data from the duplicate is transferred to the primary profile.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What Gets Transferred -->
+      <div class="mb-8 rounded-lg border border-border bg-muted/30 p-6">
+        <h3 class="font-semibold mb-3">What Gets Transferred</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div class="flex items-start gap-2">
+            <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Subscription tier (if higher)</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Profile views and favorites</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Client relationships</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>TEC registration data</span>
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground mt-3">
+          The duplicate profile will be soft-deleted and hidden from public view.
+        </p>
+      </div>
+
+      <!-- Merge Request Form -->
+      {!pendingMerges || pendingMerges.length === 0 ? (
+        <div class="rounded-lg border-2 border-border bg-white p-6">
+          <h3 class="font-semibold text-lg mb-4">Submit Merge Request</h3>
+          <div id="merge-form-container" data-user-id={user.id} data-user-email={user.email}></div>
+        </div>
+      ) : null}
+
+      <!-- Contact Support -->
+      <div class="mt-8 text-center text-sm text-muted-foreground">
+        <p>
+          Have questions about merging accounts?
+          <a href="mailto:support@texaslobby.org" class="text-texas-blue-500 hover:underline">
+            Contact Support
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import MergeRequestForm from '@/components/react/MergeRequestForm';
+    import { createRoot } from 'react-dom/client';
+
+    const container = document.getElementById('merge-form-container');
+    if (container) {
+      const userId = container.getAttribute('data-user-id');
+      const userEmail = container.getAttribute('data-user-email');
+
+      const root = createRoot(container);
+      root.render(
+        MergeRequestForm({
+          userId: userId || '',
+          userEmail: userEmail || ''
+        })
+      );
+    }
+  </script>
+</Layout>

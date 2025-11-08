@@ -1,0 +1,434 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser, getUserRole } from '@/lib/auth';
+import { createServerClient } from '@/lib/supabase';
+
+// Require admin authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+const userRole = await getUserRole(user.id);
+if (userRole !== 'admin') {
+  return Astro.redirect('/dashboard');
+}
+
+// Use server client for admin access
+const serverClient = createServerClient();
+
+// Get pending merge requests
+const { data: pendingMerges } = await serverClient
+  .from('account_merge_requests')
+  .select(`
+    id,
+    verification_document_url,
+    submitted_at,
+    status,
+    user_id,
+    users!inner (
+      email,
+      full_name
+    ),
+    primary_lobbyist:primary_lobbyist_id (
+      id,
+      first_name,
+      last_name,
+      email,
+      slug,
+      cities,
+      subject_areas,
+      subscription_tier,
+      view_count,
+      bio,
+      photo_url,
+      is_claimed,
+      claimed_by
+    ),
+    duplicate_lobbyist:duplicate_lobbyist_id (
+      id,
+      first_name,
+      last_name,
+      email,
+      slug,
+      cities,
+      subject_areas,
+      subscription_tier,
+      view_count,
+      bio,
+      photo_url,
+      is_claimed,
+      claimed_by
+    )
+  `)
+  .eq('status', 'pending')
+  .order('submitted_at', { ascending: true });
+
+const pageTitle = 'Merge Requests | Admin';
+const pageDescription = 'Review and approve account merge requests.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-7xl">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Account Merge Requests</h1>
+          <p class="text-muted-foreground">
+            Review requests to merge duplicate lobbyist profiles
+          </p>
+        </div>
+        <a
+          href="/admin"
+          class="inline-flex items-center gap-2 text-texas-blue-500 hover:underline"
+        >
+          ← Back to Admin
+        </a>
+      </div>
+
+      <!-- Pending Count -->
+      <div class="mb-6 rounded-lg border border-border bg-white p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="rounded-full bg-purple-100 p-2">
+              <svg class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+              </svg>
+            </div>
+            <div>
+              <div class="font-semibold">{pendingMerges?.length || 0} Merge Requests Pending</div>
+              <div class="text-sm text-muted-foreground">Target: Review within 48 hours</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Merges List -->
+      {pendingMerges && pendingMerges.length > 0 ? (
+        <div class="space-y-6">
+          {pendingMerges.map((merge: any) => {
+            const primary = merge.primary_lobbyist;
+            const duplicate = merge.duplicate_lobbyist;
+            const requester = merge.users;
+            const daysPending = Math.floor((Date.now() - new Date(merge.submitted_at).getTime()) / (1000 * 60 * 60 * 24));
+            const isOverdue = daysPending > 2;
+
+            return (
+            <div class={`rounded-lg border-2 ${isOverdue ? 'border-red-300 bg-red-50/30' : 'border-border bg-white'} p-6 hover:shadow-lg transition-shadow`}>
+              <!-- Overdue warning -->
+              {isOverdue && (
+                <div class="mb-4 rounded-md bg-red-100 border border-red-300 p-3">
+                  <div class="flex items-center gap-2 text-red-800">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium">Overdue: {daysPending} days pending (target: 2 days)</span>
+                  </div>
+                </div>
+              )}
+
+              <!-- Requester Info -->
+              <div class="mb-4 pb-4 border-b border-border">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-sm font-medium text-muted-foreground">Requested by:</span>
+                    <span class="ml-2 font-medium">{requester.email}</span>
+                  </div>
+                  <div class="text-sm text-muted-foreground">
+                    {new Date(merge.submitted_at).toLocaleDateString()} ({daysPending} {daysPending === 1 ? 'day' : 'days'} ago)
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Primary Profile (Keep) -->
+                <div class="lg:col-span-1">
+                  <div class="mb-3 flex items-center gap-2">
+                    <div class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">
+                      PRIMARY - KEEP
+                    </div>
+                  </div>
+
+                  <div class="rounded-lg border-2 border-green-600 bg-green-50/30 p-4">
+                    <div class="flex items-start gap-3 mb-3">
+                      {primary.photo_url ? (
+                        <img
+                          src={primary.photo_url}
+                          alt={`${primary.first_name} ${primary.last_name}`}
+                          class="h-12 w-12 rounded-full object-cover border-2 border-border"
+                        />
+                      ) : (
+                        <div class="h-12 w-12 rounded-full bg-muted flex items-center justify-center border-2 border-border">
+                          <svg class="h-6 w-6 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+
+                      <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-base truncate">
+                          {primary.first_name} {primary.last_name}
+                        </h4>
+                        <p class="text-xs text-muted-foreground truncate">
+                          {primary.email || 'No email'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="space-y-2 text-sm">
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Tier:</span>
+                        <span class={`font-semibold uppercase ${primary.subscription_tier === 'featured' ? 'text-purple-600' : primary.subscription_tier === 'premium' ? 'text-blue-600' : ''}`}>
+                          {primary.subscription_tier}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Views:</span>
+                        <span class="font-semibold">{primary.view_count}</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Claimed:</span>
+                        <span class={primary.is_claimed ? 'text-green-600 font-semibold' : 'text-muted-foreground'}>
+                          {primary.is_claimed ? 'Yes' : 'No'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {primary.cities && primary.cities.length > 0 && (
+                      <div class="mt-3 pt-3 border-t border-green-200">
+                        <p class="text-xs font-medium mb-1">Cities:</p>
+                        <div class="flex flex-wrap gap-1">
+                          {primary.cities.slice(0, 3).map((city: string) => (
+                            <span class="text-xs bg-white px-2 py-0.5 rounded-full">
+                              {city}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div class="mt-3">
+                      <a
+                        href={`/lobbyists/${primary.slug}`}
+                        target="_blank"
+                        class="text-xs text-texas-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        View Profile →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Middle: Duplicate Profile (Merge) -->
+                <div class="lg:col-span-1">
+                  <div class="mb-3 flex items-center gap-2">
+                    <div class="px-2 py-1 bg-red-100 text-red-800 text-xs font-bold rounded">
+                      DUPLICATE - MERGE
+                    </div>
+                  </div>
+
+                  <div class="rounded-lg border-2 border-red-600 bg-red-50/30 p-4">
+                    <div class="flex items-start gap-3 mb-3">
+                      {duplicate.photo_url ? (
+                        <img
+                          src={duplicate.photo_url}
+                          alt={`${duplicate.first_name} ${duplicate.last_name}`}
+                          class="h-12 w-12 rounded-full object-cover border-2 border-border"
+                        />
+                      ) : (
+                        <div class="h-12 w-12 rounded-full bg-muted flex items-center justify-center border-2 border-border">
+                          <svg class="h-6 w-6 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+
+                      <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-base truncate">
+                          {duplicate.first_name} {duplicate.last_name}
+                        </h4>
+                        <p class="text-xs text-muted-foreground truncate">
+                          {duplicate.email || 'No email'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="space-y-2 text-sm">
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Tier:</span>
+                        <span class={`font-semibold uppercase ${duplicate.subscription_tier === 'featured' ? 'text-purple-600' : duplicate.subscription_tier === 'premium' ? 'text-blue-600' : ''}`}>
+                          {duplicate.subscription_tier}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Views:</span>
+                        <span class="font-semibold">{duplicate.view_count}</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-muted-foreground">Claimed:</span>
+                        <span class={duplicate.is_claimed ? 'text-green-600 font-semibold' : 'text-muted-foreground'}>
+                          {duplicate.is_claimed ? 'Yes' : 'No'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {duplicate.cities && duplicate.cities.length > 0 && (
+                      <div class="mt-3 pt-3 border-t border-red-200">
+                        <p class="text-xs font-medium mb-1">Cities:</p>
+                        <div class="flex flex-wrap gap-1">
+                          {duplicate.cities.slice(0, 3).map((city: string) => (
+                            <span class="text-xs bg-white px-2 py-0.5 rounded-full">
+                              {city}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div class="mt-3">
+                      <a
+                        href={`/lobbyists/${duplicate.slug}`}
+                        target="_blank"
+                        class="text-xs text-texas-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        View Profile →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right: ID Verification -->
+                <div class="lg:col-span-1">
+                  <div class="mb-3">
+                    <div class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded inline-block">
+                      ID VERIFICATION
+                    </div>
+                  </div>
+
+                  <div class="rounded-lg border-2 border-border p-4 bg-muted/30">
+                    {merge.verification_document_url && (
+                      merge.verification_document_url.endsWith('.pdf') ? (
+                        <div class="text-center">
+                          <div class="inline-flex items-center justify-center w-24 h-24 rounded-lg bg-red-50 border border-red-200 mb-3">
+                            <svg class="h-12 w-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <a
+                            href={merge.verification_document_url}
+                            target="_blank"
+                            class="inline-flex items-center gap-2 text-sm text-texas-blue-500 hover:underline font-medium"
+                          >
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View PDF
+                          </a>
+                        </div>
+                      ) : (
+                        <div>
+                          <img
+                            src={merge.verification_document_url}
+                            alt="ID Verification"
+                            class="w-full rounded-md border border-border mb-3"
+                          />
+                          <a
+                            href={merge.verification_document_url}
+                            target="_blank"
+                            class="text-sm text-texas-blue-500 hover:underline flex items-center justify-center gap-1"
+                          >
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                            View Full Size
+                          </a>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p class="text-xs text-blue-800 font-medium mb-1">
+                      Verification Checklist:
+                    </p>
+                    <ul class="text-xs text-blue-700 space-y-0.5 list-disc list-inside">
+                      <li>Name matches one or both profiles</li>
+                      <li>Photo is clearly visible</li>
+                      <li>Document appears authentic</li>
+                      <li>User has legitimate claim to both</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Merge Impact Summary -->
+              <div class="mt-6 pt-6 border-t border-border">
+                <h4 class="font-semibold text-sm mb-3">Merge Impact:</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div class="p-3 bg-muted/50 rounded-md">
+                    <p class="text-xs text-muted-foreground mb-1">Final Tier</p>
+                    <p class="font-semibold uppercase">
+                      {primary.subscription_tier === 'featured' || duplicate.subscription_tier === 'featured' ? 'Featured' :
+                       primary.subscription_tier === 'premium' || duplicate.subscription_tier === 'premium' ? 'Premium' : 'Free'}
+                    </p>
+                  </div>
+                  <div class="p-3 bg-muted/50 rounded-md">
+                    <p class="text-xs text-muted-foreground mb-1">Total Views</p>
+                    <p class="font-semibold">{primary.view_count + duplicate.view_count}</p>
+                  </div>
+                  <div class="p-3 bg-muted/50 rounded-md">
+                    <p class="text-xs text-muted-foreground mb-1">Duplicate Status</p>
+                    <p class="font-semibold text-red-600">Will be hidden</p>
+                  </div>
+                  <div class="p-3 bg-muted/50 rounded-md">
+                    <p class="text-xs text-muted-foreground mb-1">Data Transfer</p>
+                    <p class="font-semibold text-green-600">All merged</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="mt-6 pt-6 border-t border-border flex gap-3">
+                <form method="POST" action="/api/admin/approve-merge" class="flex-1">
+                  <input type="hidden" name="merge_id" value={merge.id} />
+                  <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 transition-colors shadow-sm"
+                  >
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Approve Merge
+                  </button>
+                </form>
+                <form method="POST" action="/api/admin/reject-merge" class="flex-1">
+                  <input type="hidden" name="merge_id" value={merge.id} />
+                  <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-md border-2 border-red-600 px-6 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Reject Merge
+                  </button>
+                </form>
+              </div>
+            </div>
+          )})}
+        </div>
+      ) : (
+        <div class="rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="text-lg font-semibold mb-2">No Pending Merge Requests</h3>
+          <p class="text-muted-foreground">
+            All merge requests have been reviewed. Great work!
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

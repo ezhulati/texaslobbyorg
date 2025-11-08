@@ -1,36 +1,26 @@
 import type { APIRoute } from 'astro';
-import { createServerClient } from '@/lib/supabase';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
-    // Get the session from cookies
-    const accessToken = cookies.get('sb-access-token')?.value;
-    const refreshToken = cookies.get('sb-refresh-token')?.value;
+    // Create auth client with cookie context
+    const authClient = createServerAuthClient(cookies);
 
-    if (!accessToken) {
+    // Get the current user
+    const { data: { user }, error: userError } = await authClient.auth.getUser();
+
+    if (userError || !user) {
+      console.error('[Delete Account] Authentication error:', userError);
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // Create supabase client
+    const userId = user.id;
+
+    // Use service role client for deletion (bypasses RLS)
     const supabase = createServerClient();
-
-    // Set the session
-    const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken || '',
-    });
-
-    if (sessionError || !sessionData.user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const userId = sessionData.user.id;
 
     // Delete user data (cascade will handle related records due to foreign keys)
     // Note: This will delete favorites, page_views, and potentially lobbyist profiles

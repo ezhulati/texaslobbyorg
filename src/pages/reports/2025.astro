@@ -251,10 +251,16 @@ const schema = {
             <p class="text-sm text-muted-foreground">Organizations represented by Texas lobbyists</p>
           </div>
 
-          <div class="bg-white rounded-lg border border-border p-6 md:col-span-2">
+          <div class="bg-white rounded-lg border border-border p-6">
             <div class="text-4xl font-bold text-texas-blue-500 mb-2">{multiSpecialtyPct}%</div>
             <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Multi-Specialty Lobbyists</div>
             <p class="text-sm text-muted-foreground">Work across multiple policy areas</p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-border p-6">
+            <div class="text-4xl font-bold text-texas-blue-500 mb-2">{((cityData['Austin'] / totalLobbyists) * 100).toFixed(1)}%</div>
+            <div class="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Austin-Based</div>
+            <p class="text-sm text-muted-foreground">Lobbyists operating from the state capital</p>
           </div>
         </div>
       </div>

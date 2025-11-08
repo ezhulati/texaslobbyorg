@@ -1,0 +1,342 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth';
+import { createServerClient } from '@/lib/supabase';
+
+// Require authentication
+const user = await getCurrentUser();
+if (!user) {
+  return Astro.redirect('/login?redirect=/become-lobbyist');
+}
+
+const serverClient = createServerClient();
+
+// Get user's role
+const { data: userData } = await serverClient
+  .from('users')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+
+// If already a lobbyist, redirect to dashboard
+if (userData?.role === 'lobbyist') {
+  return Astro.redirect('/dashboard?message=already_lobbyist');
+}
+
+// Check for existing pending role upgrade request
+const { data: pendingRequest } = await serverClient
+  .from('role_upgrade_requests')
+  .select('*')
+  .eq('user_id', user.id)
+  .eq('status', 'pending')
+  .single();
+
+const pageTitle = 'Become a Lobbyist | TexasLobby.org';
+const pageDescription = 'Upgrade your account to create a lobbyist profile and get discovered by Texas businesses.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <a
+          href="/dashboard"
+          class="inline-flex items-center gap-2 text-texas-blue-500 hover:underline mb-4"
+        >
+          ← Back to Dashboard
+        </a>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Become a Lobbyist</h1>
+        <p class="text-muted-foreground">
+          Upgrade your account to create a professional lobbyist profile
+        </p>
+      </div>
+
+      <!-- Pending Request Notice -->
+      {pendingRequest && (
+        <div class="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-6">
+          <div class="flex items-start gap-3">
+            <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <h3 class="font-semibold text-amber-900 mb-2">Request Pending Review</h3>
+              <p class="text-sm text-amber-800 mb-2">
+                Your role upgrade request is currently under review. We'll notify you once it's been processed.
+              </p>
+              <p class="text-xs text-amber-700">
+                Submitted: {new Date(pendingRequest.submitted_at).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Benefits Section -->
+      <div class="mb-8 rounded-lg border border-border bg-gradient-to-br from-texas-blue-50 to-white p-8">
+        <h2 class="text-2xl font-bold mb-6 text-texas-blue-900">Why Create a Lobbyist Profile?</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <div class="rounded-full bg-green-100 p-3">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold mb-1">Get Discovered</h3>
+              <p class="text-sm text-muted-foreground">
+                Texas businesses actively search for lobbyists with your expertise
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <div class="rounded-full bg-blue-100 p-3">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold mb-1">Professional Profile</h3>
+              <p class="text-sm text-muted-foreground">
+                Showcase your experience, clients, and areas of expertise
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <div class="rounded-full bg-purple-100 p-3">
+                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold mb-1">Premium Features</h3>
+              <p class="text-sm text-muted-foreground">
+                Access Premium and Featured tiers for increased visibility
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <div class="rounded-full bg-amber-100 p-3">
+                <svg class="h-6 w-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold mb-1">Track Performance</h3>
+              <p class="text-sm text-muted-foreground">
+                See profile views, favorites, and engagement metrics
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mb-8 rounded-lg border border-border bg-white p-6">
+        <h3 class="font-semibold text-lg mb-4">How the Upgrade Process Works</h3>
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              1
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Submit Your Request</h4>
+              <p class="text-sm text-muted-foreground">
+                Tell us why you want to create a lobbyist profile and provide basic information.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              2
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Admin Review</h4>
+              <p class="text-sm text-muted-foreground">
+                Our team reviews your request to ensure quality and authenticity (typically within 24-48 hours).
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              3
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Create Your Profile</h4>
+              <p class="text-sm text-muted-foreground">
+                Once approved, you can claim an existing profile or create a new one.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-texas-blue-600 text-white flex items-center justify-center font-bold text-sm">
+              4
+            </div>
+            <div>
+              <h4 class="font-medium mb-1">Go Live!</h4>
+              <p class="text-sm text-muted-foreground">
+                Your profile goes live and you can start attracting clients.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Request Form -->
+      {!pendingRequest && (
+        <div class="rounded-lg border-2 border-border bg-white p-8">
+          <h3 class="font-semibold text-lg mb-4">Submit Role Upgrade Request</h3>
+
+          <form method="POST" action="/api/account/request-role-upgrade" class="space-y-6">
+            <div>
+              <label for="reason" class="block text-sm font-medium mb-2">
+                Why do you want to become a lobbyist on TexasLobby.org? <span class="text-red-600">*</span>
+              </label>
+              <textarea
+                id="reason"
+                name="reason"
+                rows="6"
+                required
+                placeholder="Tell us about your lobbying experience, your target clients, areas of expertise, etc."
+                class="w-full rounded-md border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-texas-blue-600"
+              ></textarea>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Minimum 50 characters. This helps us verify you're a legitimate lobbyist.
+              </p>
+            </div>
+
+            <div>
+              <label for="current_firm" class="block text-sm font-medium mb-2">
+                Current Firm or Organization (Optional)
+              </label>
+              <input
+                type="text"
+                id="current_firm"
+                name="current_firm"
+                placeholder="e.g., Smith & Associates Government Relations"
+                class="w-full rounded-md border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-texas-blue-600"
+              />
+            </div>
+
+            <div>
+              <label for="years_experience" class="block text-sm font-medium mb-2">
+                Years of Lobbying Experience (Optional)
+              </label>
+              <input
+                type="number"
+                id="years_experience"
+                name="years_experience"
+                min="0"
+                max="50"
+                placeholder="e.g., 5"
+                class="w-full rounded-md border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-texas-blue-600"
+              />
+            </div>
+
+            <div>
+              <label for="tec_registration" class="block text-sm font-medium mb-2">
+                Are you registered with the Texas Ethics Commission? <span class="text-red-600">*</span>
+              </label>
+              <select
+                id="tec_registration"
+                name="tec_registration"
+                required
+                class="w-full rounded-md border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-texas-blue-600"
+              >
+                <option value="">Select an option</option>
+                <option value="yes">Yes, I'm currently registered</option>
+                <option value="pending">I'm in the process of registering</option>
+                <option value="no">Not yet, but I plan to register</option>
+              </select>
+              <p class="mt-1 text-xs text-muted-foreground">
+                TEC registration is required to lobby in Texas. Learn more at <a href="https://www.ethics.state.tx.us" target="_blank" class="text-texas-blue-500 hover:underline">ethics.state.tx.us</a>
+              </p>
+            </div>
+
+            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <div class="flex gap-3">
+                <svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="text-sm text-blue-800">
+                  <p class="font-medium mb-1">What happens after I submit?</p>
+                  <ul class="space-y-1 text-xs">
+                    <li>• We'll review your request within 24-48 hours</li>
+                    <li>• You'll receive an email notification with our decision</li>
+                    <li>• If approved, you can immediately create or claim your profile</li>
+                    <li>• Your searcher account features remain active</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <button
+                type="submit"
+                class="flex-1 inline-flex items-center justify-center rounded-md bg-texas-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-texas-blue-700 transition-colors shadow-sm"
+              >
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Submit Upgrade Request
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <!-- FAQ Section -->
+      <div class="mt-8 rounded-lg border border-border bg-muted/30 p-6">
+        <h3 class="font-semibold mb-4">Frequently Asked Questions</h3>
+        <div class="space-y-4 text-sm">
+          <div>
+            <p class="font-medium mb-1">Do I need to be registered with the TEC?</p>
+            <p class="text-muted-foreground">
+              Yes, Texas law requires all lobbyists to register with the Texas Ethics Commission. You must register before actively lobbying.
+            </p>
+          </div>
+          <div>
+            <p class="font-medium mb-1">Will I lose my searcher features?</p>
+            <p class="text-muted-foreground">
+              No! Lobbyist accounts can still search for and favorite other lobbyists. You get all searcher features plus profile management.
+            </p>
+          </div>
+          <div>
+            <p class="font-medium mb-1">How long does approval take?</p>
+            <p class="text-muted-foreground">
+              Most requests are reviewed within 24-48 hours. We'll send you an email as soon as we make a decision.
+            </p>
+          </div>
+          <div>
+            <p class="font-medium mb-1">Is there a fee to create a profile?</p>
+            <p class="text-muted-foreground">
+              Basic lobbyist profiles are free. Premium ($297/mo) and Featured ($597/mo) tiers are optional upgrades for increased visibility.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Support -->
+      <div class="mt-8 text-center text-sm text-muted-foreground">
+        <p>
+          Have questions?
+          <a href="mailto:support@texaslobby.org" class="text-texas-blue-500 hover:underline">
+            Contact Support
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

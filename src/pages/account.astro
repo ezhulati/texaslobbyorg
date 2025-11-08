@@ -168,12 +168,40 @@ if (!isAuthenticated || !currentUser) {
         </form>
       </div>
 
+      <!-- Data Export & Privacy -->
+      <div class="bg-card border border-border rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-foreground mb-2">Data & Privacy</h2>
+        <p class="text-sm text-muted-foreground mb-4">
+          Download a complete copy of your data or manage your account deletion.
+        </p>
+
+        <a
+          href="/api/account/export-data"
+          class="inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
+        >
+          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export My Data (JSON)
+        </a>
+      </div>
+
       <!-- Danger Zone -->
       <div class="bg-card border border-red-200 rounded-lg p-6">
-        <h2 class="text-xl font-semibold text-red-600 mb-2">Danger Zone</h2>
+        <h2 class="text-xl font-semibold text-red-600 mb-2">Delete Account</h2>
         <p class="text-sm text-muted-foreground mb-4">
-          Once you delete your account, there is no going back. Please be certain.
+          Deleting your account will schedule it for permanent deletion in 30 days. You can recover your account during this grace period by logging back in.
         </p>
+
+        <div class="space-y-2 mb-4">
+          <h3 class="text-sm font-medium text-foreground">What will be deleted:</h3>
+          <ul class="text-sm text-muted-foreground space-y-1 ml-4">
+            <li>• Your profile and account information</li>
+            <li>• Your saved favorites</li>
+            <li>• Your browsing history</li>
+            {currentUser.role === 'lobbyist' && <li>• Your lobbyist profile and listing</li>}
+          </ul>
+        </div>
 
         <button
           type="button"
@@ -190,9 +218,42 @@ if (!isAuthenticated || !currentUser) {
   <div id="delete-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg max-w-md w-full p-6">
       <h3 class="text-xl font-semibold text-foreground mb-4">Delete Account</h3>
-      <p class="text-muted-foreground mb-6">
-        Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently removed.
-      </p>
+
+      <div class="mb-6 space-y-4">
+        <p class="text-muted-foreground">
+          Your account will be scheduled for deletion with a <strong>30-day grace period</strong>. During this time:
+        </p>
+        <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+          <li>• You can recover your account by logging back in</li>
+          <li>• Your data remains accessible for recovery</li>
+          <li>• After 30 days, your account will be permanently deleted</li>
+        </ul>
+
+        <div class="border-t border-border pt-4">
+          <label for="delete-password" class="block text-sm font-medium text-foreground mb-2">
+            Confirm your password to continue
+          </label>
+          <input
+            type="password"
+            id="delete-password"
+            class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="delete-reason" class="block text-sm font-medium text-foreground mb-2">
+            Reason for leaving (optional)
+          </label>
+          <textarea
+            id="delete-reason"
+            rows="2"
+            class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Help us improve by sharing why you're leaving..."
+          ></textarea>
+        </div>
+      </div>
 
       <div class="flex gap-3 justify-end">
         <button
@@ -203,9 +264,9 @@ if (!isAuthenticated || !currentUser) {
         </button>
         <button
           id="confirm-delete-btn"
-          class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+          class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:opacity-50"
         >
-          Delete Account
+          Schedule Deletion
         </button>
       </div>
     </div>
@@ -355,23 +416,63 @@ if (!isAuthenticated || !currentUser) {
   });
 
   confirmDeleteBtn?.addEventListener('click', async () => {
+    const passwordInput = document.getElementById('delete-password') as HTMLInputElement;
+    const reasonInput = document.getElementById('delete-reason') as HTMLTextAreaElement;
+
+    const password = passwordInput?.value;
+    const reason = reasonInput?.value;
+
+    if (!password) {
+      showMessage('error', 'Password is required to delete your account');
+      return;
+    }
+
+    // Disable button during request
+    if (confirmDeleteBtn) {
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.textContent = 'Processing...';
+    }
+
     try {
       const response = await fetch('/api/account/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password,
+          reason: reason || null,
+          immediate: false, // Use grace period (30 days)
+        }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        // Redirect to homepage after successful deletion
-        window.location.href = '/?message=account-deleted';
+        // Show success message with scheduled date
+        const scheduledDate = data.scheduled_date
+          ? new Date(data.scheduled_date).toLocaleDateString()
+          : 'in 30 days';
+
+        // Redirect to homepage with deletion confirmation
+        window.location.href = `/?message=account-deletion-scheduled&date=${encodeURIComponent(scheduledDate)}`;
       } else {
-        const data = await response.json();
         showMessage('error', data.error || 'Failed to delete account');
         deleteModal?.classList.add('hidden');
+
+        // Reset button
+        if (confirmDeleteBtn) {
+          confirmDeleteBtn.disabled = false;
+          confirmDeleteBtn.textContent = 'Schedule Deletion';
+        }
       }
     } catch (error) {
       showMessage('error', 'An error occurred. Please try again.');
       deleteModal?.classList.add('hidden');
+
+      // Reset button
+      if (confirmDeleteBtn) {
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.textContent = 'Schedule Deletion';
+      }
     }
   });
 

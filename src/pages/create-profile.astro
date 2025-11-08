@@ -1,11 +1,10 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import CreateProfileForm from '@/components/react/CreateProfileForm';
-import { getCurrentUser } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
-// Check if user is authenticated
-const user = await getCurrentUser();
+// Check if user is authenticated (from middleware)
+const user = Astro.locals.user;
 
 // If user is authenticated, check if they already have a profile
 let existingProfile = false;

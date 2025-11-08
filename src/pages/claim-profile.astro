@@ -1,11 +1,10 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import ClaimProfileForm from '@/components/react/ClaimProfileForm';
-import { getCurrentUser } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
-// Check if user is authenticated
-const user = await getCurrentUser();
+// Check if user is authenticated (from middleware)
+const user = Astro.locals.user;
 
 // Check for auto-detection query params (from signup flow)
 const autoDetect = Astro.url.searchParams.get('auto') === 'true';

@@ -1,5 +1,6 @@
 ---
-import { getCurrentUser, getLobbyistSlug } from '@/lib/auth-helpers';
+import { getLobbyistSlug } from '@/lib/auth-helpers';
+import { supabase } from '@/lib/supabase';
 
 const pathname = Astro.url.pathname;
 
@@ -10,24 +11,23 @@ const navLinks = [
   { href: '/how-it-works', label: 'How It Works' },
 ];
 
-// Get current user and their role
-const currentUser = await getCurrentUser(Astro.cookies);
-const isAuthenticated = currentUser !== null;
+// Get current user from middleware (stored in Astro.locals)
+const currentUser = Astro.locals.user;
+const isAuthenticated = Astro.locals.isAuthenticated;
 const isLobbyist = currentUser?.role === 'lobbyist';
 const isSearcher = currentUser?.role === 'searcher';
 const isAdmin = currentUser?.role === 'admin';
 
 // Get lobbyist profile slug if applicable
-const lobbyistSlug = isLobbyist ? await getLobbyistSlug(currentUser.id) : null;
+const lobbyistSlug = isLobbyist && currentUser ? await getLobbyistSlug(currentUser.id) : null;
 
 // Get pending count for admin
 let pendingCount = 0;
 if (isAdmin) {
-  const { count } = await import('@/lib/supabase').then(m => m.supabase
+  const { count } = await supabase
     .from('lobbyists')
     .select('*', { count: 'exact', head: true })
-    .eq('is_pending', true)
-  );
+    .eq('is_pending', true);
   pendingCount = count || 0;
 }
 ---

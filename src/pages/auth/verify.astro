@@ -1,6 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { supabase } from '@/lib/supabase';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 
 const pageTitle = 'Verify Email';
 const pageDescription = 'Verify your email address to complete your registration.';
@@ -12,9 +12,15 @@ const type = searchParams.get('type');
 
 let verificationStatus: 'success' | 'error' | 'pending' = 'pending';
 let message = 'Verifying your email...';
+let redirectUrl = '/lobbyists'; // Default redirect
 
 if (token_hash && type) {
   try {
+    console.log('[Auth Verify] Verifying OTP for type:', type);
+
+    // Use SSR auth client for verification
+    const supabase = createServerAuthClient(Astro.cookies);
+
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash,
       type: type as any,
@@ -23,35 +29,88 @@ if (token_hash && type) {
     if (error) throw error;
 
     if (data.user) {
-      // Create or update user record in database
+      console.log('[Auth Verify] User verified:', data.user.id);
+
+      // Use service role client for database operations
+      const serverClient = createServerClient();
+
+      // Get user type from metadata
+      const userType = data.user.user_metadata?.user_type || 'searcher';
       const firstName = data.user.user_metadata?.first_name || null;
       const lastName = data.user.user_metadata?.last_name || null;
 
-      // TODO: Re-enable first_name/last_name once schema cache refreshes
-      const { error: upsertError } = await supabase.from('users').upsert({
-        id: data.user.id,
-        email: data.user.email!,
-        role: 'searcher',
-        // first_name: firstName,           // Commented until schema cache refreshes
-        // last_name: lastName,              // Commented until schema cache refreshes
-        full_name: firstName && lastName ? `${firstName} ${lastName}`.trim() : null,
-      });
+      console.log('[Auth Verify] User type from metadata:', userType);
 
-      if (upsertError) {
-        console.error('Error creating user record:', upsertError);
+      // Check if user already exists in database
+      const { data: existingUser, error: checkError } = await serverClient
+        .from('users')
+        .select('id, role')
+        .eq('id', data.user.id)
+        .single();
+
+      let userRole: 'searcher' | 'lobbyist' | 'admin' = userType as 'searcher' | 'lobbyist' | 'admin';
+
+      // Only create user record if it doesn't exist
+      if (checkError && checkError.code === 'PGRST116') {
+        const { error: insertError } = await serverClient.from('users').insert({
+          id: data.user.id,
+          email: data.user.email!,
+          role: userRole,
+          full_name: firstName && lastName ? `${firstName} ${lastName}`.trim() : null,
+        });
+
+        if (insertError) {
+          console.error('[Auth Verify] Error creating user record:', insertError);
+        } else {
+          console.log('[Auth Verify] Created user record with role:', userRole);
+        }
+      } else if (existingUser) {
+        userRole = existingUser.role;
+        console.log('[Auth Verify] Existing user found with role:', userRole);
+      }
+
+      // SMART ROUTING: Determine redirect based on user role and status
+      if (userRole === 'admin') {
+        redirectUrl = '/admin';
+        console.log('[Auth Verify] Admin user, redirecting to admin dashboard');
+      } else if (userRole === 'lobbyist') {
+        // Check if lobbyist has a profile
+        const { data: lobbyistProfile, error: profileError } = await serverClient
+          .from('lobbyists')
+          .select('id, slug')
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (!profileError && lobbyistProfile) {
+          redirectUrl = '/dashboard';
+          console.log('[Auth Verify] Lobbyist with profile, redirecting to dashboard');
+        } else {
+          redirectUrl = '/claim-profile';
+          console.log('[Auth Verify] Lobbyist without profile, redirecting to claim profile');
+        }
+      } else {
+        // Searcher - check if they have favorites
+        const { data: favorites, error: favError } = await serverClient
+          .from('favorites')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .limit(1);
+
+        if (!favError && favorites && favorites.length > 0) {
+          redirectUrl = '/favorites';
+          console.log('[Auth Verify] Searcher with favorites, redirecting to favorites page');
+        } else {
+          redirectUrl = '/lobbyists';
+          console.log('[Auth Verify] Searcher without favorites, redirecting to directory');
+        }
       }
 
       verificationStatus = 'success';
-      message = 'Email verified successfully! Redirecting to dashboard...';
-
-      // Redirect after a short delay
-      if (typeof window !== 'undefined') {
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 2000);
-      }
+      message = 'Email verified successfully! Redirecting...';
+      console.log('[Auth Verify] Verification complete, redirecting to:', redirectUrl);
     }
   } catch (err: any) {
+    console.error('[Auth Verify] Verification error:', err);
     verificationStatus = 'error';
     message = err?.message || 'Failed to verify email. The link may have expired.';
   }
@@ -71,6 +130,12 @@ if (token_hash && type) {
             </div>
             <h1 class="text-2xl font-bold text-green-900">Email Verified!</h1>
             <p class="text-muted-foreground">{message}</p>
+            <script define:vars={{ redirectUrl }}>
+              // Redirect to the appropriate page based on user role/status
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 2000);
+            </script>
           </div>
         )}
 

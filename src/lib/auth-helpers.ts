@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, createServerAuthClient, createServerClient } from './supabase';
 import type { Database } from './database.types';
 
 type UserRole = Database['public']['Enums']['user_role'];
@@ -16,7 +16,38 @@ export interface CurrentUser {
  */
 export async function getCurrentUser(cookies?: any): Promise<CurrentUser | null> {
   try {
-    // If we're in an Astro component with access to cookies, use server-side auth
+    // If we have cookies (Astro context), use server-side auth client
+    // This properly reads auth session from HTTP-only cookies
+    if (cookies) {
+      const supabaseAuth = createServerAuthClient(cookies);
+      const { data: { user }, error } = await supabaseAuth.auth.getUser();
+
+      if (error || !user) {
+        return null;
+      }
+
+      // Fetch user profile data including role using service role client
+      const serverClient = createServerClient();
+      const { data: profile, error: profileError } = await serverClient
+        .from('users')
+        .select('id, email, role, full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        // User exists in auth but not in users table - shouldn't happen, but return default
+        return {
+          id: user.id,
+          email: user.email!,
+          role: 'searcher', // Default role
+          full_name: null,
+        };
+      }
+
+      return profile;
+    }
+
+    // Fallback to public client (for non-Astro contexts)
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {

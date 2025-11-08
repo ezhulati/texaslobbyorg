@@ -1,10 +1,9 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { getCurrentUser } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
-// Check if user is authenticated
-const user = await getCurrentUser();
+// Check if user is authenticated (from middleware)
+const user = Astro.locals.user;
 
 if (!user) {
   // Not authenticated, redirect to login with return URL

@@ -1,0 +1,258 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+// Check if user is authenticated (from middleware)
+const user = Astro.locals.user;
+
+if (!user) {
+  // Not authenticated, redirect to login
+  return Astro.redirect('/login?redirect=/dashboard');
+}
+
+// Fetch user's lobbyist profile
+const { data: lobbyist, error: lobbyistError } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
+
+if (lobbyistError || !lobbyist) {
+  // User doesn't have a profile, redirect to claim or create
+  console.error('[Dashboard] No profile found for user:', user.id);
+  return Astro.redirect('/claim-profile');
+}
+
+// Check profile status for conditional rendering
+const isPending = lobbyist.is_pending === true;
+const isActive = lobbyist.is_active === true;
+const isClaimed = lobbyist.is_claimed === true;
+
+// SEO
+const pageTitle = 'Lobbyist Dashboard | TexasLobby.org';
+const pageDescription = 'Manage your Texas lobbyist profile, update information, and track engagement.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Dashboard -->
+  <section class="py-8 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Dashboard</h1>
+        <p class="text-lg text-muted-foreground">
+          Welcome back, {lobbyist.first_name}!
+        </p>
+      </div>
+
+      <!-- Pending Approval Banner -->
+      {isPending && (
+        <div class="mb-8 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-6">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <svg class="h-8 w-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-yellow-900 mb-2">Profile Pending Approval</h3>
+              <p class="text-sm text-yellow-800 mb-3">
+                {lobbyist.pending_reason || 'Your profile is currently under review by our team. We\'ll notify you once it\'s approved and live on the site.'}
+              </p>
+              <div class="flex flex-wrap gap-2 text-sm">
+                <div class="inline-flex items-center gap-2 rounded-md bg-yellow-100 px-3 py-1.5">
+                  <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="font-medium text-yellow-900">Typically reviewed within 24-48 hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Inactive Profile Banner (claimed but not yet active) -->
+      {isClaimed && !isActive && !isPending && (
+        <div class="mb-8 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0">
+              <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-blue-900 mb-2">Profile Not Yet Active</h3>
+              <p class="text-sm text-blue-800">
+                Your profile has been claimed but is not yet visible on the site. Please contact support if you believe this is an error.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Main Dashboard Grid -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <!-- Profile Status Card -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">Profile Status</h3>
+            <span class={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              isActive ? 'bg-green-100 text-green-800' :
+              isPending ? 'bg-yellow-100 text-yellow-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              {isActive ? 'Active' : isPending ? 'Pending' : 'Inactive'}
+            </span>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Claimed:</span>
+              <span class="font-medium">{isClaimed ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Visibility:</span>
+              <span class="font-medium">{isActive ? 'Public' : 'Hidden'}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Tier:</span>
+              <span class="font-medium capitalize">{lobbyist.subscription_tier || 'Free'}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Views Card -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">Profile Views</h3>
+            <svg class="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </div>
+          <div class="text-3xl font-bold mb-1">{lobbyist.view_count || 0}</div>
+          <p class="text-sm text-muted-foreground">Total profile views</p>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="rounded-lg border border-border bg-white p-6">
+          <h3 class="font-semibold mb-4">Quick Actions</h3>
+          <div class="space-y-2">
+            {isActive && (
+              <a
+                href={`/lobbyists/${lobbyist.slug}`}
+                class="block text-sm text-texas-blue-500 hover:underline"
+              >
+                View Public Profile →
+              </a>
+            )}
+            <a
+              href="/dashboard/edit"
+              class="block text-sm text-texas-blue-500 hover:underline"
+            >
+              Edit Profile →
+            </a>
+            <a
+              href="/dashboard/subscription"
+              class="block text-sm text-texas-blue-500 hover:underline"
+            >
+              Upgrade Plan →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Summary -->
+      <div class="rounded-lg border border-border bg-white p-8">
+        <h2 class="text-2xl font-bold mb-6">Your Profile</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Basic Info -->
+          <div>
+            <h3 class="font-semibold mb-4 text-lg">Basic Information</h3>
+            <dl class="space-y-3 text-sm">
+              <div>
+                <dt class="text-muted-foreground mb-1">Name</dt>
+                <dd class="font-medium">{lobbyist.first_name} {lobbyist.last_name}</dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground mb-1">Email</dt>
+                <dd class="font-medium">{lobbyist.email || 'Not provided'}</dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground mb-1">Phone</dt>
+                <dd class="font-medium">{lobbyist.phone || 'Not provided'}</dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground mb-1">Website</dt>
+                <dd class="font-medium">
+                  {lobbyist.website ? (
+                    <a href={lobbyist.website} target="_blank" rel="noopener noreferrer" class="text-texas-blue-500 hover:underline">
+                      {lobbyist.website}
+                    </a>
+                  ) : 'Not provided'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Professional Info -->
+          <div>
+            <h3 class="font-semibold mb-4 text-lg">Professional Details</h3>
+            <dl class="space-y-3 text-sm">
+              <div>
+                <dt class="text-muted-foreground mb-1">Cities Served</dt>
+                <dd class="font-medium">
+                  {lobbyist.cities && lobbyist.cities.length > 0 ? lobbyist.cities.join(', ') : 'Not specified'}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground mb-1">Areas of Expertise</dt>
+                <dd class="font-medium">
+                  {lobbyist.subject_areas && lobbyist.subject_areas.length > 0 ? lobbyist.subject_areas.join(', ') : 'Not specified'}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground mb-1">Bio</dt>
+                <dd class="font-medium line-clamp-4">
+                  {lobbyist.bio || 'No bio provided'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <a
+            href="/dashboard/edit"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+          >
+            Edit Profile
+          </a>
+          {!isPending && lobbyist.subscription_tier === 'free' && (
+            <a
+              href="/dashboard/subscription"
+              class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+            >
+              Upgrade to Premium
+            </a>
+          )}
+        </div>
+      </div>
+
+      <!-- Help Section -->
+      <div class="mt-8 rounded-lg border border-border bg-muted/30 p-6">
+        <h3 class="font-semibold mb-3">Need Help?</h3>
+        <p class="text-sm text-muted-foreground mb-4">
+          Have questions about your profile or subscription? Our support team is here to help.
+        </p>
+        <a
+          href="mailto:support@texaslobby.org"
+          class="inline-flex items-center text-sm text-texas-blue-500 hover:underline"
+        >
+          Contact Support →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

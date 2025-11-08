@@ -15,6 +15,8 @@ export type Database = {
           email: string
           role: 'searcher' | 'lobbyist' | 'admin'
           full_name: string | null
+          first_name: string | null
+          last_name: string | null
           created_at: string
           updated_at: string
         }
@@ -23,6 +25,8 @@ export type Database = {
           email: string
           role?: 'searcher' | 'lobbyist' | 'admin'
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -31,6 +35,8 @@ export type Database = {
           email?: string
           role?: 'searcher' | 'lobbyist' | 'admin'
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
           updated_at?: string
         }
       }

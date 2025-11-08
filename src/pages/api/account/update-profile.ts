@@ -32,12 +32,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Get request body
     const body = await request.json();
-    const { full_name } = body;
+    const { first_name, last_name } = body;
 
     // Validate input
-    if (!full_name || typeof full_name !== 'string' || full_name.trim().length === 0) {
+    if (!first_name || typeof first_name !== 'string' || first_name.trim().length === 0) {
       return new Response(
-        JSON.stringify({ error: 'Full name is required' }),
+        JSON.stringify({ error: 'First name is required' }),
         {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
@@ -45,10 +45,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
+    // Prepare update data
+    const updateData: { first_name: string; last_name: string | null; full_name: string } = {
+      first_name: first_name.trim(),
+      last_name: last_name && typeof last_name === 'string' ? last_name.trim() : null,
+      full_name: `${first_name.trim()} ${last_name?.trim() || ''}`.trim(),
+    };
+
     // Update user profile in the users table
     const { error: updateError } = await supabase
       .from('users')
-      .update({ full_name: full_name.trim() })
+      .update(updateData)
       .eq('id', sessionData.user.id);
 
     if (updateError) {

@@ -85,6 +85,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       id: data.user.id,
       email: data.user.email!,
       role: userRole,
+      first_name: firstName || null,
+      last_name: lastName || null,
       full_name: `${firstName} ${lastName}`.trim() || null,
     });
 

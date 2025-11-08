@@ -16,7 +16,7 @@ const { data: favorites, error: favError } = await supabase
   .select(`
     id,
     created_at,
-    lobbyist:lobbyist_id (
+    lobbyist:lobbyists!lobbyist_id (
       id,
       first_name,
       last_name,

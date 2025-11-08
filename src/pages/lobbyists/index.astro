@@ -5,6 +5,20 @@ import SearchableList from '@/components/react/SearchableList';
 import { supabase } from '@/lib/supabase';
 import { searchLobbyists, getLobbyistCount } from '@/lib/api/lobbyists';
 
+// Check if user is authenticated and fetch their favorites
+const isAuthenticated = Astro.locals.isAuthenticated || false;
+const currentUser = Astro.locals.user;
+let favoriteLobbyistIds: string[] = [];
+
+if (isAuthenticated && currentUser) {
+  const { data: favorites } = await supabase
+    .from('favorites')
+    .select('lobbyist_id')
+    .eq('user_id', currentUser.id);
+
+  favoriteLobbyistIds = favorites?.map(f => f.lobbyist_id) || [];
+}
+
 // Get search parameters from URL
 const url = new URL(Astro.request.url);
 const cityFilter = url.searchParams.get('city') || '';
@@ -166,7 +180,13 @@ const schema = {
       ) : (
         <>
           <!-- Searchable Results List -->
-          <SearchableList lobbyists={lobbyists} hideSearch={true} client:load />
+          <SearchableList
+            lobbyists={lobbyists}
+            hideSearch={true}
+            favoriteLobbyistIds={favoriteLobbyistIds}
+            isAuthenticated={isAuthenticated}
+            client:load
+          />
 
           <!-- Pagination -->
           {totalPages > 1 && (

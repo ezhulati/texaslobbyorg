@@ -4,6 +4,7 @@ import CollapsibleTags from '@/components/react/CollapsibleTags';
 import CollapsibleClients from '@/components/react/CollapsibleClients';
 import CollapsibleBio from '@/components/react/CollapsibleBio';
 import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
+import FavoriteButton from '@/components/react/FavoriteButton';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
 import { supabase } from '@/lib/supabase';
@@ -21,6 +22,22 @@ const lobbyist = await getLobbyistBySlug(slug);
 
 if (!lobbyist) {
   return Astro.redirect('/lobbyists');
+}
+
+// Check if user is authenticated and if this lobbyist is favorited
+const isAuthenticated = Astro.locals.isAuthenticated || false;
+const currentUser = Astro.locals.user;
+let isFavorited = false;
+
+if (isAuthenticated && currentUser) {
+  const { data: favorite } = await supabase
+    .from('favorites')
+    .select('id')
+    .eq('user_id', currentUser.id)
+    .eq('lobbyist_id', lobbyist.id)
+    .maybeSingle();
+
+  isFavorited = !!favorite;
 }
 
 // Fetch clients
@@ -149,6 +166,14 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
                 {lobbyist.subscription_tier === 'featured' ? 'Featured Lobbyist' : 'Premium Lobbyist'}
               </span>
             )}
+            <FavoriteButton
+              lobbyistId={lobbyist.id}
+              lobbyistName={fullName}
+              initialIsFavorited={isFavorited}
+              isAuthenticated={isAuthenticated}
+              variant="button"
+              client:load
+            />
           </div>
 
           {/* Location */}

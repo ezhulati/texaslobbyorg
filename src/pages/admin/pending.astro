@@ -1,7 +1,7 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import { getCurrentUser, getUserRole } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 
 // Require admin authentication
 const user = await getCurrentUser();
@@ -14,15 +14,42 @@ if (userRole !== 'admin') {
   return Astro.redirect('/dashboard');
 }
 
-// Get pending profiles
-const { data: pendingProfiles } = await supabase
-  .from('lobbyists')
-  .select('*, users!inner(email)')
-  .eq('is_pending', true)
-  .order('created_at', { ascending: false });
+// Use server client for admin access
+const serverClient = createServerClient();
 
-const pageTitle = 'Pending Approvals | Admin';
-const pageDescription = 'Review and approve lobbyist profiles.';
+// Get pending claim requests (new system)
+const { data: pendingClaims } = await serverClient
+  .from('profile_claim_requests')
+  .select(`
+    id,
+    verification_document_url,
+    submitted_at,
+    status,
+    lobbyist_id,
+    lobbyists!inner (
+      id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      website,
+      bio,
+      cities,
+      subject_areas,
+      slug,
+      photo_url
+    ),
+    user_id,
+    users!inner (
+      email,
+      full_name
+    )
+  `)
+  .eq('status', 'pending')
+  .order('submitted_at', { ascending: true });
+
+const pageTitle = 'Pending Claim Requests | Admin';
+const pageDescription = 'Review and approve profile claim requests with ID verification.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -31,9 +58,9 @@ const pageDescription = 'Review and approve lobbyist profiles.';
       <!-- Header -->
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-3xl md:text-4xl font-bold mb-2">Pending Approvals</h1>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Pending Claim Requests</h1>
           <p class="text-muted-foreground">
-            Review and approve new lobbyist profiles
+            Review profile claims with ID verification
           </p>
         </div>
         <a
@@ -54,21 +81,41 @@ const pageDescription = 'Review and approve lobbyist profiles.';
               </svg>
             </div>
             <div>
-              <div class="font-semibold">{pendingProfiles?.length || 0} Profiles Awaiting Review</div>
-              <div class="text-sm text-muted-foreground">Target: Review within 24-48 hours</div>
+              <div class="font-semibold">{pendingClaims?.length || 0} Claim Requests Awaiting Review</div>
+              <div class="text-sm text-muted-foreground">Target: Review within 48 hours</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Pending Profiles List -->
-      {pendingProfiles && pendingProfiles.length > 0 ? (
-        <div class="space-y-4">
-          {pendingProfiles.map((profile: any) => (
-            <div class="rounded-lg border border-border bg-white p-6 hover:shadow-md transition-shadow">
-              <div class="flex items-start justify-between gap-6">
-                <!-- Profile Info -->
-                <div class="flex-1">
+      <!-- Pending Claims List -->
+      {pendingClaims && pendingClaims.length > 0 ? (
+        <div class="space-y-6">
+          {pendingClaims.map((claim: any) => {
+            const profile = claim.lobbyists;
+            const claimant = claim.users;
+            const daysPending = Math.floor((Date.now() - new Date(claim.submitted_at).getTime()) / (1000 * 60 * 60 * 24));
+            const isOverdue = daysPending > 2;
+
+            return (
+            <div class={`rounded-lg border-2 ${isOverdue ? 'border-red-300 bg-red-50/30' : 'border-border bg-white'} p-6 hover:shadow-lg transition-shadow`}>
+              <!-- Time warning for overdue claims -->
+              {isOverdue && (
+                <div class="mb-4 rounded-md bg-red-100 border border-red-300 p-3">
+                  <div class="flex items-center gap-2 text-red-800">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium">Overdue: {daysPending} days pending (target: 2 days)</span>
+                  </div>
+                </div>
+              )}
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Left Column: Profile Info -->
+                <div>
+                  <h3 class="text-lg font-semibold mb-4 text-texas-blue-600">Profile Being Claimed</h3>
+
                   <div class="flex items-start gap-4 mb-4">
                     {profile.photo_url ? (
                       <img
@@ -85,95 +132,152 @@ const pageDescription = 'Review and approve lobbyist profiles.';
                     )}
 
                     <div class="flex-1">
-                      <h3 class="text-xl font-bold mb-1">
+                      <h4 class="text-xl font-bold mb-1">
                         {profile.first_name} {profile.last_name}
-                      </h3>
-                      <p class="text-sm text-muted-foreground mb-2">
-                        {profile.users.email}
+                      </h4>
+                      <p class="text-sm text-muted-foreground">
+                        Profile Email: {profile.email || 'Not set'}
                       </p>
-                      <div class="flex flex-wrap gap-2 mb-3">
-                        {profile.cities?.slice(0, 3).map((city: string) => (
+                    </div>
+                  </div>
+
+                  {profile.cities && profile.cities.length > 0 && (
+                    <div class="mb-3">
+                      <p class="text-sm font-medium text-muted-foreground mb-1">Cities:</p>
+                      <div class="flex flex-wrap gap-2">
+                        {profile.cities.slice(0, 5).map((city: string) => (
                           <span class="inline-flex items-center rounded-full bg-texas-blue-100 px-2.5 py-0.5 text-xs font-medium text-texas-blue-800">
                             {city}
                           </span>
                         ))}
-                        {profile.cities?.length > 3 && (
-                          <span class="text-xs text-muted-foreground">
-                            +{profile.cities.length - 3} more
-                          </span>
-                        )}
                       </div>
                     </div>
-                  </div>
-
-                  {profile.bio && (
-                    <p class="text-sm text-muted-foreground line-clamp-3 mb-3">
-                      {profile.bio}
-                    </p>
                   )}
 
-                  <div class="flex flex-wrap gap-4 text-sm">
-                    {profile.phone && (
-                      <div class="flex items-center gap-1 text-muted-foreground">
-                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                        </svg>
-                        {profile.phone}
-                      </div>
-                    )}
-                    {profile.website && (
-                      <a href={profile.website} target="_blank" class="flex items-center gap-1 text-texas-blue-500 hover:underline">
-                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd" />
-                        </svg>
-                        Website
-                      </a>
-                    )}
-                    <div class="text-muted-foreground">
-                      Submitted {new Date(profile.created_at).toLocaleDateString()}
+                  <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium">Claimant:</span>
+                      <span class="text-muted-foreground">{claimant.email}</span>
                     </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium">Submitted:</span>
+                      <span class="text-muted-foreground">{new Date(claim.submitted_at).toLocaleString()}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium">Days Pending:</span>
+                      <span class={`font-semibold ${isOverdue ? 'text-red-600' : 'text-green-600'}`}>{daysPending} days</span>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <a
+                      href={`/lobbyists/${profile.slug}`}
+                      target="_blank"
+                      class="text-sm text-texas-blue-500 hover:underline flex items-center gap-1"
+                    >
+                      View Public Profile →
+                    </a>
                   </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex flex-col gap-2">
-                  <a
-                    href={`/admin/pending/${profile.id}`}
-                    class="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
-                  >
-                    Review Details
-                  </a>
-                  <form method="POST" action="/api/admin/approve-profile" class="inline">
-                    <input type="hidden" name="lobbyist_id" value={profile.id} />
-                    <button
-                      type="submit"
-                      class="w-full inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
-                    >
-                      ✓ Approve
-                    </button>
-                  </form>
-                  <form method="POST" action="/api/admin/reject-profile" class="inline">
-                    <input type="hidden" name="lobbyist_id" value={profile.id} />
-                    <button
-                      type="submit"
-                      class="w-full inline-flex items-center justify-center rounded-md border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      ✗ Reject
-                    </button>
-                  </form>
+                <!-- Right Column: ID Verification -->
+                <div>
+                  <h3 class="text-lg font-semibold mb-4 text-texas-blue-600">ID Verification Document</h3>
+
+                  <div class="rounded-lg border-2 border-border p-4 bg-muted/30">
+                    {claim.verification_document_url && (
+                      claim.verification_document_url.endsWith('.pdf') ? (
+                        <div class="text-center">
+                          <div class="inline-flex items-center justify-center w-32 h-32 rounded-lg bg-red-50 border border-red-200 mb-3">
+                            <svg class="h-16 w-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <a
+                            href={claim.verification_document_url}
+                            target="_blank"
+                            class="inline-flex items-center gap-2 text-sm text-texas-blue-500 hover:underline font-medium"
+                          >
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View PDF Document
+                          </a>
+                        </div>
+                      ) : (
+                        <div>
+                          <img
+                            src={claim.verification_document_url}
+                            alt="ID Verification"
+                            class="w-full rounded-md border border-border mb-3"
+                          />
+                          <a
+                            href={claim.verification_document_url}
+                            target="_blank"
+                            class="text-sm text-texas-blue-500 hover:underline flex items-center justify-center gap-1"
+                          >
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                            View Full Size
+                          </a>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p class="text-xs text-blue-800">
+                      <strong>Verification Checklist:</strong>
+                    </p>
+                    <ul class="text-xs text-blue-700 mt-1 space-y-0.5 list-disc list-inside">
+                      <li>Name matches profile name</li>
+                      <li>Photo is clearly visible</li>
+                      <li>Document appears authentic</li>
+                      <li>Not expired (if visible)</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
+
+              <!-- Actions -->
+              <div class="mt-6 pt-6 border-t border-border flex gap-3">
+                <form method="POST" action="/api/admin/approve-claim" class="flex-1">
+                  <input type="hidden" name="claim_id" value={claim.id} />
+                  <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 transition-colors shadow-sm"
+                  >
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Approve Claim
+                  </button>
+                </form>
+                <form method="POST" action="/api/admin/reject-claim" class="flex-1">
+                  <input type="hidden" name="claim_id" value={claim.id} />
+                  <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-md border-2 border-red-600 px-6 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Reject Claim
+                  </button>
+                </form>
+              </div>
             </div>
-          ))}
+          )})}
         </div>
       ) : (
         <div class="rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
           <svg class="mx-auto h-12 w-12 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <h3 class="text-lg font-semibold mb-2">No Pending Profiles</h3>
+          <h3 class="text-lg font-semibold mb-2">No Pending Claim Requests</h3>
           <p class="text-muted-foreground">
-            All profiles have been reviewed. Great work!
+            All claim requests have been reviewed. Great work!
           </p>
         </div>
       )}

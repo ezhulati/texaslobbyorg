@@ -1,0 +1,119 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import SearchableList from '@/components/react/SearchableList';
+import { createServerAuthClient } from '@/lib/supabase';
+
+// Require authentication using cookie-based session
+const supabase = createServerAuthClient(Astro.cookies);
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (error || !user) {
+  return Astro.redirect('/login?redirect=/dashboard/favorites');
+}
+
+// Fetch user's favorited lobbyists
+const { data: favorites, error: favoritesError } = await supabase
+  .from('favorites')
+  .select(`
+    id,
+    created_at,
+    lobbyist:lobbyists (
+      id,
+      first_name,
+      last_name,
+      slug,
+      bio,
+      profile_image_url,
+      cities,
+      subject_areas,
+      subscription_tier,
+      view_count,
+      is_active
+    )
+  `)
+  .eq('user_id', user.id)
+  .order('created_at', { ascending: false });
+
+// Transform the data to match SearchableList's expected format
+const favoritedLobbyists = favorites
+  ?.filter(f => f.lobbyist && Array.isArray(f.lobbyist) === false)
+  .map(f => {
+    const lobbyist = f.lobbyist as any;
+    return {
+      id: lobbyist.id,
+      first_name: lobbyist.first_name,
+      last_name: lobbyist.last_name,
+      slug: lobbyist.slug,
+      bio: lobbyist.bio,
+      profile_image_url: lobbyist.profile_image_url,
+      cities: lobbyist.cities || [],
+      subject_areas: lobbyist.subject_areas || [],
+      subscription_tier: lobbyist.subscription_tier,
+      view_count: lobbyist.view_count || 0,
+    };
+  }) || [];
+
+// Get all favorite lobbyist IDs
+const favoriteLobbyistIds = favoritedLobbyists.map(l => l.id);
+
+const pageTitle = 'My Favorites';
+const pageDescription = 'View and manage your favorite Texas lobbyists.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 min-h-[calc(100vh-4rem)] bg-gray-50">
+    <div class="container max-w-7xl">
+      {/* Page Header */}
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-2">
+          <h1 class="text-4xl font-bold">My Favorites</h1>
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center gap-2 text-texas-blue-500 hover:text-texas-blue-600 font-medium transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Find More Lobbyists
+          </a>
+        </div>
+        <p class="text-muted-foreground">
+          {favoritedLobbyists.length > 0
+            ? `You have ${favoritedLobbyists.length} ${favoritedLobbyists.length === 1 ? 'lobbyist' : 'lobbyists'} saved to your favorites`
+            : 'Start building your network by favoriting lobbyists'
+          }
+        </p>
+      </div>
+
+
+      {/* Favorites List */}
+      {favoritedLobbyists.length > 0 ? (
+        <SearchableList
+          lobbyists={favoritedLobbyists}
+          hideSearch={false}
+          favoriteLobbyistIds={favoriteLobbyistIds}
+          isAuthenticated={true}
+          client:load
+        />
+      ) : (
+        <div class="bg-white rounded-lg border border-border p-12 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 mb-4">
+            <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">No favorites yet</h3>
+          <p class="text-muted-foreground mb-6 max-w-md mx-auto">
+            Start building your network by favoriting lobbyists you want to work with or keep track of.
+          </p>
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
+          >
+            Browse Lobbyists
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

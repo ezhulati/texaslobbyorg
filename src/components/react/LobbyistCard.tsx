@@ -52,8 +52,8 @@ export default function LobbyistCard({
           subscriptionTier === 'free' && 'border-border hover:shadow-lg'
         )}
       >
-        {/* Favorite Button - positioned in top-right */}
-        <div className="absolute top-3 right-3 z-20">
+        {/* Favorite Button - positioned in top-left to avoid badge overlap */}
+        <div className="absolute top-3 left-3 z-20">
           <FavoriteButton
             lobbyistId={id}
             lobbyistName={fullName}

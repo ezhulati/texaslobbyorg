@@ -1,0 +1,230 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { createServerClient } from '@/lib/supabase';
+import { SUBSCRIPTION_TIERS } from '@/lib/stripe';
+import { Check, CreditCard, Calendar, AlertCircle } from 'lucide-react';
+
+// Require authentication
+const user = await getCurrentUser();
+
+if (!user) {
+  return Astro.redirect('/login?redirect=/dashboard/subscription');
+}
+
+const supabase = createServerClient();
+
+// Get user's subscription details
+const { data: userData, error: userError } = await supabase
+  .from('users')
+  .select('subscription_tier, subscription_status, subscription_current_period_end, stripe_customer_id')
+  .eq('id', user.id)
+  .single();
+
+if (userError || !userData) {
+  console.error('Error fetching user data:', userError);
+}
+
+const subscriptionTier = userData?.subscription_tier || 'free';
+const subscriptionStatus = userData?.subscription_status;
+const periodEnd = userData?.subscription_current_period_end
+  ? new Date(userData.subscription_current_period_end)
+  : null;
+
+const isSubscribed = subscriptionTier !== 'free';
+const hasStripeCustomer = !!userData?.stripe_customer_id;
+
+const tierData = subscriptionTier !== 'free' ? SUBSCRIPTION_TIERS[subscriptionTier as 'premium' | 'featured'] : null;
+
+const pageTitle = 'Subscription Management - TexasLobby.org';
+const pageDescription = 'Manage your TexasLobby.org subscription and billing';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Subscription Management</h1>
+        <p class="text-gray-600">Manage your subscription, billing, and payment methods</p>
+      </div>
+
+      <!-- Current Plan Card -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 mb-1">Current Plan</h2>
+            <div class="flex items-center gap-2">
+              <span class:list={[
+                'text-2xl font-bold',
+                subscriptionTier === 'featured' && 'text-red-600',
+                subscriptionTier === 'premium' && 'text-blue-600',
+                subscriptionTier === 'free' && 'text-gray-600',
+              ]}>
+                {subscriptionTier === 'free' ? 'Free' : subscriptionTier === 'premium' ? 'Premium' : 'Featured'}
+              </span>
+              {subscriptionStatus && subscriptionStatus !== 'active' && (
+                <span class:list={[
+                  'px-2 py-1 text-xs font-medium rounded-full',
+                  subscriptionStatus === 'past_due' && 'bg-yellow-100 text-yellow-800',
+                  subscriptionStatus === 'canceled' && 'bg-gray-100 text-gray-800',
+                  subscriptionStatus === 'incomplete' && 'bg-orange-100 text-orange-800',
+                ]}>
+                  {subscriptionStatus.replace('_', ' ')}
+                </span>
+              )}
+            </div>
+          </div>
+          {isSubscribed && tierData && (
+            <div class="text-right">
+              <p class="text-3xl font-bold text-gray-900">${tierData.price}</p>
+              <p class="text-sm text-gray-500">per month</p>
+            </div>
+          )}
+        </div>
+
+        {isSubscribed && tierData && (
+          <div class="space-y-3 mb-6">
+            <h3 class="font-medium text-gray-900">Your Benefits:</h3>
+            <ul class="space-y-2">
+              {tierData.features.map((feature) => (
+                <li class="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span class="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {periodEnd && subscriptionStatus === 'active' && (
+          <div class="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+            <Calendar className="h-4 w-4" />
+            <span>Next billing date: {periodEnd.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </div>
+        )}
+
+        {!isSubscribed && (
+          <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+            <p class="text-blue-800 mb-3">
+              Upgrade to Premium or Featured to unlock enhanced visibility and analytics.
+            </p>
+            <a
+              href="/pricing"
+              class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              View Pricing Plans
+            </a>
+          </div>
+        )}
+      </div>
+
+      <!-- Action Buttons -->
+      {isSubscribed && hasStripeCustomer && (
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Manage Subscription</h2>
+
+          <div class="space-y-3">
+            <button
+              id="manage-billing-btn"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
+            >
+              <CreditCard className="h-5 w-5" />
+              Manage Billing & Payment Methods
+            </button>
+
+            <button
+              id="cancel-subscription-btn"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
+            >
+              <AlertCircle className="h-5 w-5" />
+              Cancel Subscription
+            </button>
+          </div>
+
+          <p class="text-xs text-gray-500 mt-4 text-center">
+            Cancelling will keep your benefits until the end of your current billing period
+          </p>
+        </div>
+      )}
+
+      <!-- FAQ -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Frequently Asked Questions</h2>
+
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-medium text-gray-900 mb-1">Can I change my plan?</h3>
+            <p class="text-sm text-gray-600">
+              Yes! You can upgrade or downgrade at any time. Click "Manage Billing & Payment Methods" above to change your plan.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-gray-900 mb-1">What happens when I cancel?</h3>
+            <p class="text-sm text-gray-600">
+              Your subscription will remain active until the end of your current billing period. After that, your profile will revert to the free tier.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-gray-900 mb-1">Can I get a refund?</h3>
+            <p class="text-sm text-gray-600">
+              We offer a 14-day money-back guarantee on all new subscriptions. Contact support@texaslobby.org for refund requests.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Manage Billing button
+    document.getElementById('manage-billing-btn')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/stripe/create-portal-session', {
+          method: 'POST',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create portal session');
+        }
+
+        // Redirect to Stripe Customer Portal
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error instanceof Error ? error.message : 'Something went wrong');
+      }
+    });
+
+    // Cancel Subscription button
+    document.getElementById('cancel-subscription-btn')?.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to cancel your subscription? You will keep your benefits until the end of your current billing period.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/stripe/cancel-subscription', {
+          method: 'POST',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to cancel subscription');
+        }
+
+        alert('Your subscription has been cancelled. You will keep your benefits until the end of your current billing period.');
+        window.location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error instanceof Error ? error.message : 'Something went wrong');
+      }
+    });
+  </script>
+</Layout>

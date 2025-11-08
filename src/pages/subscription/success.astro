@@ -1,0 +1,91 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { Check, ArrowRight } from 'lucide-react';
+
+const pageTitle = 'Subscription Successful - TexasLobby.org';
+const pageDescription = 'Your subscription has been activated successfully.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="bg-white py-16 sm:py-24">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8 text-center">
+      <!-- Success Icon -->
+      <div class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+        <Check className="h-12 w-12 text-green-600" />
+      </div>
+
+      <!-- Heading -->
+      <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6">
+        Subscription Successful!
+      </h1>
+
+      <p class="text-xl text-gray-600 mb-12">
+        Your subscription has been activated. Your enhanced profile is now live and visible to
+        potential clients across Texas.
+      </p>
+
+      <!-- What's Next Section -->
+      <div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-left mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">What's Next?</h2>
+
+        <ul class="space-y-4">
+          <li class="flex items-start">
+            <Check className="mr-3 h-6 w-6 flex-shrink-0 text-green-600 mt-0.5" />
+            <div>
+              <p class="font-semibold text-gray-900">Complete Your Profile</p>
+              <p class="text-gray-600">
+                Add a custom bio, showcase your clients, and highlight your expertise to stand out.
+              </p>
+            </div>
+          </li>
+
+          <li class="flex items-start">
+            <Check className="mr-3 h-6 w-6 flex-shrink-0 text-green-600 mt-0.5" />
+            <div>
+              <p class="font-semibold text-gray-900">Track Your Analytics</p>
+              <p class="text-gray-600">
+                Monitor profile views, search appearances, and engagement in your analytics dashboard.
+              </p>
+            </div>
+          </li>
+
+          <li class="flex items-start">
+            <Check className="mr-3 h-6 w-6 flex-shrink-0 text-green-600 mt-0.5" />
+            <div>
+              <p class="font-semibold text-gray-900">Check Your Email</p>
+              <p class="text-gray-600">
+                We've sent you a receipt and welcome email with tips to maximize your subscription.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/dashboard"
+          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700 transition-colors"
+        >
+          Go to Dashboard
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </a>
+
+        <a
+          href="/lobbyists"
+          class="inline-flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Browse Lobbyists
+        </a>
+      </div>
+
+      <!-- Support Link -->
+      <p class="mt-12 text-sm text-gray-500">
+        Questions or need help?
+        <a href="mailto:support@texaslobby.org" class="font-medium text-blue-600 hover:text-blue-700">
+          Contact our support team
+        </a>
+      </p>
+    </div>
+  </div>
+</Layout>

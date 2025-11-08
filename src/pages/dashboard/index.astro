@@ -1,201 +1,46 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { getCurrentUser, getUserRole } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import LobbyistDashboard from '@/components/react/LobbyistDashboard';
+import { createServerAuthClient } from '@/lib/supabase';
 
-// Require authentication
-const user = await getCurrentUser();
-if (!user) {
+// Require authentication using cookie-based session
+const supabase = createServerAuthClient(Astro.cookies);
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (error || !user) {
   return Astro.redirect('/login');
 }
 
-// Get user role
-const userRole = await getUserRole(user.id);
+// Fetch lobbyist profile
+const { data: lobbyistProfile, error: profileError } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', user.id)
+  .single();
 
-// If user is a lobbyist, get their profile
-let lobbyistProfile = null;
-if (userRole === 'lobbyist') {
-  const { data } = await supabase
-    .from('lobbyists')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  lobbyistProfile = data;
+// If user doesn't have a lobbyist profile, redirect to claim profile
+if (profileError || !lobbyistProfile) {
+  return Astro.redirect('/claim-profile');
 }
 
-const pageTitle = 'Dashboard';
-const pageDescription = 'Manage your TexasLobby.org account and profile.';
+// Count clients for this lobbyist
+const { count: clientCount } = await supabase
+  .from('clients')
+  .select('*', { count: 'exact', head: true })
+  .eq('lobbyist_id', lobbyistProfile.id);
+
+const pageTitle = `Dashboard - ${lobbyistProfile.first_name} ${lobbyistProfile.last_name}`;
+const pageDescription = 'Manage your TexasLobby.org lobbyist profile and account.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <!-- Dashboard -->
-  <section class="py-12">
-    <div class="container max-w-6xl">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-2">Welcome back{user.user_metadata?.first_name ? `, ${user.user_metadata.first_name}` : ''}</h1>
-        <p class="text-lg text-muted-foreground">
-          {userRole === 'lobbyist' ? 'Manage your profile and view analytics' : 'Manage your account and saved lobbyists'}
-        </p>
-      </div>
-
-      <!-- Content -->
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
-          {lobbyistProfile ? (
-            <!-- Lobbyist Dashboard -->
-            <>
-              <!-- Profile Status Card -->
-              <div class="rounded-lg border border-border bg-white p-6">
-                <div class="flex items-start justify-between mb-4">
-                  <div>
-                    <h2 class="text-2xl font-bold">{lobbyistProfile.first_name} {lobbyistProfile.last_name}</h2>
-                    <p class="text-sm text-muted-foreground mt-1">
-                      {lobbyistProfile.cities?.join(', ')}
-                    </p>
-                  </div>
-                  <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                    lobbyistProfile.subscription_tier === 'featured' ? 'bg-texas-blue text-white' :
-                    lobbyistProfile.subscription_tier === 'premium' ? 'bg-texas-gold-500 text-white' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    {lobbyistProfile.subscription_tier === 'featured' ? 'Featured' :
-                     lobbyistProfile.subscription_tier === 'premium' ? 'Premium' : 'Free'}
-                  </span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mt-6">
-                  <div class="rounded-lg bg-muted/50 p-4">
-                    <div class="text-2xl font-bold">{lobbyistProfile.view_count || 0}</div>
-                    <div class="text-sm text-muted-foreground">Profile Views</div>
-                  </div>
-                  <div class="rounded-lg bg-muted/50 p-4">
-                    <div class="text-2xl font-bold">{lobbyistProfile.subject_areas?.length || 0}</div>
-                    <div class="text-sm text-muted-foreground">Expertise Areas</div>
-                  </div>
-                </div>
-
-                <div class="mt-6 flex gap-3">
-                  <a
-                    href={`/lobbyists/${lobbyistProfile.slug}`}
-                    class="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
-                  >
-                    View Public Profile
-                  </a>
-                  <a
-                    href="/dashboard/profile"
-                    class="inline-flex items-center justify-center rounded-md bg-texas-blue px-4 py-2 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
-                  >
-                    Edit Profile
-                  </a>
-                </div>
-              </div>
-
-              <!-- Quick Actions -->
-              <div class="rounded-lg border border-border bg-white p-6">
-                <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
-                <div class="grid gap-3">
-                  <a
-                    href="/dashboard/clients"
-                    class="flex items-center justify-between rounded-md border border-border p-4 hover:bg-accent transition-colors"
-                  >
-                    <div>
-                      <div class="font-medium">Manage Clients</div>
-                      <div class="text-sm text-muted-foreground">Add or update your client list</div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                  </a>
-
-                  {lobbyistProfile.subscription_tier === 'free' && (
-                    <a
-                      href="/upgrade"
-                      class="flex items-center justify-between rounded-md border-2 border-texas-gold-500 bg-texas-gold-500/5 p-4 hover:bg-texas-gold-500/10 transition-colors"
-                    >
-                      <div>
-                        <div class="font-medium text-texas-gold-500">Upgrade to Premium</div>
-                        <div class="text-sm text-muted-foreground">Get priority placement and analytics</div>
-                      </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <!-- Regular User Dashboard -->
-            <div class="rounded-lg border border-border bg-white p-8 text-center">
-              <h2 class="text-2xl font-bold mb-3">Welcome to TexasLobby.org</h2>
-              <p class="text-muted-foreground mb-6">
-                You're all set! Start browsing our directory to find the perfect lobbyist for your business needs.
-              </p>
-              <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href="/lobbyists"
-                  class="inline-flex items-center justify-center rounded-md bg-texas-blue px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
-                >
-                  Browse Lobbyists
-                </a>
-                <a
-                  href="/claim-profile"
-                  class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
-                >
-                  Are you a lobbyist? Claim Your Profile
-                </a>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-          <!-- Account Info -->
-          <div class="rounded-lg border border-border bg-white p-6 sticky top-6">
-            <h3 class="text-lg font-semibold mb-4">Account</h3>
-            <div class="space-y-3 text-sm">
-              <div>
-                <div class="text-muted-foreground">Email</div>
-                <div class="font-medium">{user.email}</div>
-              </div>
-              <div>
-                <div class="text-muted-foreground">Account Type</div>
-                <div class="font-medium capitalize">{userRole || 'Searcher'}</div>
-              </div>
-              <div>
-                <div class="text-muted-foreground">Member Since</div>
-                <div class="font-medium">{new Date(user.created_at).toLocaleDateString()}</div>
-              </div>
-            </div>
-
-            <div class="mt-6 pt-6 border-t border-border space-y-2">
-              <a
-                href="/dashboard/settings"
-                class="block text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Account Settings
-              </a>
-              <button
-                id="logout-button"
-                class="block w-full text-left text-sm text-red-600 hover:text-red-700 transition-colors"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+  <section class="py-12 min-h-[calc(100vh-4rem)] bg-gray-50">
+    <div class="container max-w-7xl">
+      <LobbyistDashboard
+        profile={lobbyistProfile}
+        clientCount={clientCount || 0}
+        client:load
+      />
     </div>
   </section>
 </Layout>
-
-<script>
-  import { supabase } from '@/lib/supabase';
-
-  const logoutButton = document.getElementById('logout-button');
-
-  logoutButton?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
-  });
-</script>

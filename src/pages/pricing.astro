@@ -1,9 +1,17 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import { Check, X, Star, TrendingUp, Eye, Award, Zap } from 'lucide-react';
+import { PricingCard } from '@/components/react/PricingCard';
+import { SUBSCRIPTION_TIERS } from '@/lib/stripe';
+import { getCurrentUser } from '@/lib/auth-helpers';
 
 const pageTitle = 'Pricing - TexasLobby.org';
 const pageDescription = 'Transparent pricing for Texas lobbyists. Free basic listings, or upgrade to Premium ($297/mo) or Featured ($597/mo) for maximum visibility.';
+
+// Get current user for checkout
+const currentUser = await getCurrentUser();
+const userId = currentUser?.id;
+const userEmail = currentUser?.email;
 
 const pricingFeatures = {
   free: [
@@ -137,12 +145,14 @@ const pricingFeatures = {
             ))}
           </ul>
 
-          <a
-            href="/claim-profile"
+          <button
+            id="premium-subscribe-btn"
+            data-tier="premium"
+            data-price-id={SUBSCRIPTION_TIERS.premium.priceId}
             class="block w-full text-center px-6 py-3 text-sm font-medium text-white bg-texas-blue-500 rounded-lg hover:bg-texas-blue-600 transition-colors shadow-md"
           >
             Start Premium Trial
-          </a>
+          </button>
         </div>
 
         <!-- Featured Tier -->
@@ -173,12 +183,14 @@ const pricingFeatures = {
             ))}
           </ul>
 
-          <a
-            href="/claim-profile"
+          <button
+            id="featured-subscribe-btn"
+            data-tier="featured"
+            data-price-id={SUBSCRIPTION_TIERS.featured.priceId}
             class="block w-full text-center px-6 py-3 text-sm font-medium text-texas-red-600 bg-white rounded-lg hover:bg-gray-100 transition-colors shadow-md"
           >
             Go Featured
-          </a>
+          </button>
         </div>
       </div>
 
@@ -339,4 +351,54 @@ const pricingFeatures = {
       </p>
     </div>
   </section>
+
+  <script define:vars={{ userId, userEmail }}>
+    // Handle subscription button clicks
+    async function handleSubscribe(tier) {
+      // Redirect to login if not authenticated
+      if (!userId || !userEmail) {
+        window.location.href = '/login?redirect=/pricing';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/stripe/create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tier,
+            userId,
+            email: userEmail,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create checkout session');
+        }
+
+        // Redirect to Stripe Checkout
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL returned');
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+      }
+    }
+
+    // Attach event listeners
+    document.getElementById('premium-subscribe-btn')?.addEventListener('click', () => {
+      handleSubscribe('premium');
+    });
+
+    document.getElementById('featured-subscribe-btn')?.addEventListener('click', () => {
+      handleSubscribe('featured');
+    });
+  </script>
 </Layout>

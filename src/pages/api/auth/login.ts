@@ -3,7 +3,9 @@ import { supabase, createServerClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
+    console.log('[Login API] POST request received');
     const { email, password, firstName, lastName } = await request.json();
+    console.log('[Login API] Attempting login for email:', email);
 
     // Sign in with Supabase (use public client for auth)
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -12,6 +14,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (signInError) {
+      console.error('[Login API] Supabase sign in error:', signInError.message);
       return new Response(JSON.stringify({ error: signInError.message }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -19,17 +22,22 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     if (!data.session) {
+      console.error('[Login API] No session created');
       return new Response(JSON.stringify({ error: 'No session created' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
+    console.log('[Login API] Sign in successful, setting cookies');
     // Store session tokens in HTTP-only cookies
+    const isProduction = import.meta.env.PROD || process.env.NODE_ENV === 'production';
+    console.log('[Login API] Is production:', isProduction, 'Secure cookies:', isProduction);
+
     cookies.set('sb-access-token', data.session.access_token, {
       path: '/',
       httpOnly: true,
-      secure: true,
+      secure: isProduction, // Only require HTTPS in production
       sameSite: 'lax',
       maxAge: data.session.expires_in,
     });
@@ -37,7 +45,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     cookies.set('sb-refresh-token', data.session.refresh_token, {
       path: '/',
       httpOnly: true,
-      secure: true,
+      secure: isProduction, // Only require HTTPS in production
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
@@ -74,6 +82,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // If user exists, don't modify their role
 
     // Return success
+    console.log('[Login API] Login complete, returning success response');
     return new Response(JSON.stringify({
       success: true,
       user: {

@@ -18,8 +18,8 @@ export default defineConfig({
     port: 4321,
   },
   vite: {
-    optimizeDeps: {
-      exclude: ['@supabase/supabase-js'],
+    ssr: {
+      noExternal: ['@supabase/supabase-js'],
     },
   },
 });

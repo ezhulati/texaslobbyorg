@@ -69,6 +69,9 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
         }
       } else {
         // Sign in via API endpoint (server-side auth with cookies)
+        console.log('[AuthForm] Starting login with email:', email);
+        console.log('[AuthForm] Redirect target:', redirectTo);
+
         const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: {
@@ -77,12 +80,17 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
           body: JSON.stringify({ email, password }),
         });
 
+        console.log('[AuthForm] Login API response status:', response.status);
+
         const result = await response.json();
+        console.log('[AuthForm] Login API result:', result);
 
         if (!response.ok) {
+          console.error('[AuthForm] Login failed with error:', result.error);
           throw new Error(result.error || 'Login failed');
         }
 
+        console.log('[AuthForm] Login successful, redirecting to:', redirectTo);
         // Redirect on successful login
         window.location.href = redirectTo;
       }
@@ -134,7 +142,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-react-hydrated="true">
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === 'signup' && (
           <>

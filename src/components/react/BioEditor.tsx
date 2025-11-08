@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 interface BioEditorProps {
   userId: string;
   currentBio?: string | null;
+  currentYearsExperience?: number | null;
   onSave?: (bio: string) => void;
 }
 
-export default function BioEditor({ userId, currentBio, onSave }: BioEditorProps) {
+export default function BioEditor({ userId, currentBio, currentYearsExperience, onSave }: BioEditorProps) {
   const [bio, setBio] = useState(currentBio || '');
+  const [yearsExperience, setYearsExperience] = useState<number | string>(currentYearsExperience || '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
@@ -31,9 +33,15 @@ export default function BioEditor({ userId, currentBio, onSave }: BioEditorProps
 
     setSaving(true);
     try {
+      // Parse years experience as number or null
+      const yearsExpNum = yearsExperience === '' ? null : Number(yearsExperience);
+
       const { error: updateError } = await supabase
         .from('lobbyists')
-        .update({ bio: bio.trim() })
+        .update({
+          bio: bio.trim(),
+          years_experience: yearsExpNum
+        })
         .eq('user_id', userId);
 
       if (updateError) throw updateError;
@@ -61,7 +69,28 @@ export default function BioEditor({ userId, currentBio, onSave }: BioEditorProps
 
   return (
     <div className="space-y-4">
-      {/* Editor */}
+      {/* Years of Experience */}
+      <div>
+        <label htmlFor="years-experience" className="block text-sm font-medium mb-2">
+          Years of Experience
+        </label>
+        <input
+          id="years-experience"
+          type="number"
+          min="0"
+          max="70"
+          className="flex h-10 w-full max-w-xs rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          placeholder="e.g., 15"
+          value={yearsExperience}
+          onChange={(e) => setYearsExperience(e.target.value)}
+          disabled={saving}
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          How many years have you been lobbying in Texas?
+        </p>
+      </div>
+
+      {/* Bio Editor */}
       <div>
         <label htmlFor="bio" className="block text-sm font-medium mb-2">
           Professional Bio <span className="text-red-500">*</span>

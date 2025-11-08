@@ -1,0 +1,115 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { X, ArrowLeft, HelpCircle } from 'lucide-react';
+
+const pageTitle = 'Subscription Cancelled - TexasLobby.org';
+const pageDescription = 'Your subscription checkout was cancelled.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="bg-white py-16 sm:py-24">
+    <div class="mx-auto max-w-3xl px-6 lg:px-8 text-center">
+      <!-- Cancel Icon -->
+      <div class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
+        <X className="h-12 w-12 text-gray-600" />
+      </div>
+
+      <!-- Heading -->
+      <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6">
+        Checkout Cancelled
+      </h1>
+
+      <p class="text-xl text-gray-600 mb-12">
+        Your subscription checkout was cancelled. No charges have been made to your account.
+      </p>
+
+      <!-- Why Subscribe Section -->
+      <div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-left mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Why Upgrade?</h2>
+
+        <ul class="space-y-4">
+          <li class="flex items-start">
+            <div class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 mt-0.5">
+              <span class="text-sm font-bold text-blue-600">1</span>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">Get More Visibility</p>
+              <p class="text-gray-600">
+                Premium and Featured listings appear higher in search results, increasing your chances of being contacted.
+              </p>
+            </div>
+          </li>
+
+          <li class="flex items-start">
+            <div class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 mt-0.5">
+              <span class="text-sm font-bold text-blue-600">2</span>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">Stand Out from Competition</p>
+              <p class="text-gray-600">
+                Showcase your expertise with custom bios, client testimonials, and professional badges.
+              </p>
+            </div>
+          </li>
+
+          <li class="flex items-start">
+            <div class="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 mt-0.5">
+              <span class="text-sm font-bold text-blue-600">3</span>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">Track Your Performance</p>
+              <p class="text-gray-600">
+                Access detailed analytics to see who's viewing your profile and optimize your listing.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <a
+          href="/pricing"
+          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700 transition-colors"
+        >
+          <ArrowLeft className="mr-2 h-5 w-5" />
+          Back to Pricing
+        </a>
+
+        <a
+          href="/lobbyists"
+          class="inline-flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Browse Lobbyists
+        </a>
+      </div>
+
+      <!-- Help Section -->
+      <div class="rounded-lg border border-blue-200 bg-blue-50 p-6">
+        <div class="flex items-start">
+          <HelpCircle className="mr-3 h-6 w-6 flex-shrink-0 text-blue-600 mt-0.5" />
+          <div class="text-left">
+            <h3 class="font-semibold text-gray-900 mb-2">Have Questions?</h3>
+            <p class="text-sm text-gray-600 mb-3">
+              We're here to help you choose the right plan and answer any questions about features, pricing, or the checkout process.
+            </p>
+            <a
+              href="mailto:support@texaslobby.org"
+              class="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Contact Support →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Link -->
+      <p class="mt-8 text-sm text-gray-500">
+        Learn more about our
+        <a href="/pricing#faq" class="font-medium text-blue-600 hover:text-blue-700">
+          pricing and features
+        </a>
+      </p>
+    </div>
+  </div>
+</Layout>

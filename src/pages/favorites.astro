@@ -1,6 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { supabase } from '@/lib/supabase';
+import { createServerAuthClient } from '@/lib/supabase';
 
 // Check if user is authenticated (from middleware)
 const user = Astro.locals.user;
@@ -9,6 +9,9 @@ if (!user) {
   // Not authenticated, redirect to login with return URL
   return Astro.redirect(`/login?redirect=${encodeURIComponent('/favorites')}`);
 }
+
+// Create auth client with cookies to bypass RLS properly
+const supabase = createServerAuthClient(Astro.cookies);
 
 // Fetch user's favorited lobbyists
 const { data: favorites, error: favError } = await supabase

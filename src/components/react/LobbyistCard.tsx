@@ -52,8 +52,8 @@ export default function LobbyistCard({
           subscriptionTier === 'free' && 'border-border hover:shadow-lg'
         )}
       >
-        {/* Favorite Button - positioned in top-left to avoid badge overlap */}
-        <div className="absolute top-3 left-3 z-20">
+        {/* Favorite Button - positioned in top-right corner above content */}
+        <div className="absolute top-2 right-2 z-20">
           <FavoriteButton
             lobbyistId={id}
             lobbyistName={fullName}
@@ -64,7 +64,7 @@ export default function LobbyistCard({
             className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-sm"
           />
         </div>
-      <div className="flex items-start space-x-4">
+      <div className="flex items-start space-x-4 mt-2">
         {/* Avatar */}
         <div
           className={cn(
@@ -85,16 +85,16 @@ export default function LobbyistCard({
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0 relative z-10">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-lg font-semibold text-foreground line-clamp-1">
+        {/* Content - add padding-right to avoid overlap with heart button */}
+        <div className="flex-1 min-w-0 relative z-10 pr-10">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-lg font-semibold text-foreground">
               {fullName}
             </h3>
             {subscriptionTier !== 'free' && (
               <span
                 className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold shadow-sm',
+                  'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold shadow-sm whitespace-nowrap',
                   subscriptionTier === 'featured' && 'bg-gradient-to-r from-texas-red-500 to-texas-red-600 text-white ring-2 ring-texas-red-500/30',
                   subscriptionTier === 'premium' && 'bg-gradient-to-r from-texas-gold-500 to-texas-gold-600 text-white ring-2 ring-texas-gold-500/30'
                 )}

@@ -22,9 +22,17 @@ interface SearchableListProps {
   lobbyists: Lobbyist[];
   hideSearch?: boolean;
   showIndustryBadges?: boolean;
+  favoriteLobbyistIds?: string[];
+  isAuthenticated?: boolean;
 }
 
-export default function SearchableList({ lobbyists, hideSearch = false, showIndustryBadges = false }: SearchableListProps) {
+export default function SearchableList({
+  lobbyists,
+  hideSearch = false,
+  showIndustryBadges = false,
+  favoriteLobbyistIds = [],
+  isAuthenticated = false
+}: SearchableListProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLobbyists = useMemo(() => {
@@ -122,6 +130,8 @@ export default function SearchableList({ lobbyists, hideSearch = false, showIndu
               viewCount={lobbyist.view_count}
               matchingSubjects={showIndustryBadges ? lobbyist.matchingSubjects : undefined}
               industryClientCount={showIndustryBadges ? lobbyist.industryClientCount : undefined}
+              isFavorited={favoriteLobbyistIds.includes(lobbyist.id)}
+              isAuthenticated={isAuthenticated}
             />
           ))}
         </div>

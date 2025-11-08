@@ -592,14 +592,26 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
   </section>
 </Layout>
 
-<script>
-  // Track page view (client-side)
-  // This would be enhanced with actual user session tracking
+<script define:vars={{ lobbyistId: lobbyist.id }}>
+  // Track page view when user lands on profile
   const trackView = async () => {
-    // Get lobbyist ID from page (you'd pass this via data attribute)
-    // For now, this is a placeholder
-    console.log('Page view tracked');
+    try {
+      const response = await fetch('/api/track-view', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lobbyistId }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to track view');
+      }
+    } catch (error) {
+      console.error('Error tracking view:', error);
+    }
   };
 
-  trackView();
+  // Track view after a short delay to ensure real page view
+  setTimeout(trackView, 1000);
 </script>

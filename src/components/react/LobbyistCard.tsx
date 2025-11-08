@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { MapPin, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import FavoriteButton from './FavoriteButton';
+import AuthModal from './AuthModal';
 
 interface LobbyistCardProps {
   id: string;
@@ -14,9 +17,12 @@ interface LobbyistCardProps {
   viewCount: number;
   matchingSubjects?: string[];
   industryClientCount?: number;
+  isFavorited?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export default function LobbyistCard({
+  id,
   firstName,
   lastName,
   slug,
@@ -28,20 +34,36 @@ export default function LobbyistCard({
   viewCount,
   matchingSubjects,
   industryClientCount,
+  isFavorited = false,
+  isAuthenticated = false,
 }: LobbyistCardProps) {
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`;
   const fullName = `${firstName || ''} ${lastName || ''}`.trim();
 
   return (
-    <a
-      href={`/lobbyists/${slug}`}
-      className={cn(
-        'block rounded-lg border bg-white p-6 transition-all relative overflow-hidden',
-        subscriptionTier === 'featured' && 'border-texas-red-500 shadow-xl ring-2 ring-texas-red-500/30 hover:shadow-2xl hover:ring-texas-red-500/40',
-        subscriptionTier === 'premium' && 'border-texas-gold-500 shadow-lg ring-2 ring-texas-gold-500/20 hover:shadow-xl hover:ring-texas-gold-500/30',
-        subscriptionTier === 'free' && 'border-border hover:shadow-lg'
-      )}
-    >
+    <>
+      <a
+        href={`/lobbyists/${slug}`}
+        className={cn(
+          'block rounded-lg border bg-white p-6 transition-all relative overflow-hidden',
+          subscriptionTier === 'featured' && 'border-texas-red-500 shadow-xl ring-2 ring-texas-red-500/30 hover:shadow-2xl hover:ring-texas-red-500/40',
+          subscriptionTier === 'premium' && 'border-texas-gold-500 shadow-lg ring-2 ring-texas-gold-500/20 hover:shadow-xl hover:ring-texas-gold-500/30',
+          subscriptionTier === 'free' && 'border-border hover:shadow-lg'
+        )}
+      >
+        {/* Favorite Button - positioned in top-right */}
+        <div className="absolute top-3 right-3 z-20">
+          <FavoriteButton
+            lobbyistId={id}
+            lobbyistName={fullName}
+            initialIsFavorited={isFavorited}
+            isAuthenticated={isAuthenticated}
+            onAuthRequired={() => setShowAuthModal(true)}
+            variant="icon"
+            className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-sm"
+          />
+        </div>
       <div className="flex items-start space-x-4">
         {/* Avatar */}
         <div
@@ -159,6 +181,14 @@ export default function LobbyistCard({
           </div>
         </div>
       </div>
-    </a>
+      </a>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        message={`Sign in to save ${fullName} to your favorites and get personalized lobbyist recommendations`}
+      />
+    </>
   );
 }

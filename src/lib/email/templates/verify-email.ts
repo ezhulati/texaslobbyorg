@@ -8,7 +8,6 @@ export interface VerifyEmailData {
 export function getVerifyEmailTemplate(data: VerifyEmailData): { subject: string; html: string } {
   const content = `
     <h1>Welcome to TexasLobby.org!</h1>
-
     <p>Thank you for creating an account with TexasLobby.org, the premier directory for finding experienced Texas lobbyists.</p>
 
     <p>To get started and access all features, please verify your email address by clicking the button below:</p>

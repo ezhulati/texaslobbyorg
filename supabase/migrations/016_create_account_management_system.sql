@@ -33,8 +33,8 @@ CREATE INDEX IF NOT EXISTS idx_merge_requests_pending ON public.account_merge_re
 CREATE TABLE IF NOT EXISTS public.role_upgrade_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  current_role user_role NOT NULL,
-  requested_role user_role NOT NULL,
+  from_role user_role NOT NULL,
+  to_role user_role NOT NULL,
   reason TEXT,
   status TEXT NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
   admin_notes TEXT,

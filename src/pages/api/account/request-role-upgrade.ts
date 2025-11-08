@@ -95,8 +95,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .from('role_upgrade_requests')
       .insert({
         user_id: user.id,
-        current_role: userData.role,
-        requested_role: 'lobbyist',
+        from_role: userData.role,
+        to_role: 'lobbyist',
         reason: reason,
         status: 'pending',
         submitted_at: new Date().toISOString(),

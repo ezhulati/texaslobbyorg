@@ -2,6 +2,7 @@
 import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
 import { createServerClient } from '@/lib/supabase';
+import { getUserRole } from '@/lib/auth';
 
 // Check if user is authenticated (from middleware)
 const user = Astro.locals.user;
@@ -11,46 +12,72 @@ if (!user) {
   return Astro.redirect('/login?redirect=/dashboard');
 }
 
-// Fetch user's lobbyist profile
+// Get user's role to determine dashboard type
+const userRole = await getUserRole(user.id);
+
+// Fetch user data from users table for searcher dashboard
+const serverClient = createServerClient();
+const { data: userData } = await serverClient
+  .from('users')
+  .select('*')
+  .eq('id', user.id)
+  .single();
+
+// Fetch user's lobbyist profile if they have one
 const { data: lobbyist, error: lobbyistError } = await supabase
   .from('lobbyists')
   .select('*')
-  .eq('user_id', user.id)
+  .eq('claimed_by', user.id)
   .single();
 
-if (lobbyistError || !lobbyist) {
-  // User doesn't have a profile, redirect to claim or create
-  console.error('[Dashboard] No profile found for user:', user.id);
-  return Astro.redirect('/claim-profile');
+// Check for pending role upgrade request (for searchers)
+let pendingRoleUpgrade = null;
+if (userRole === 'searcher') {
+  const { data: upgrade } = await serverClient
+    .from('role_upgrade_requests')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'pending')
+    .single();
+  pendingRoleUpgrade = upgrade;
 }
 
-// Check profile status for conditional rendering
-const isPending = lobbyist.is_pending === true;
-const isActive = lobbyist.is_active === true;
-const isClaimed = lobbyist.is_claimed === true;
+// Lobbyist-specific data (only load if user has a profile)
+let isPending = false;
+let isActive = false;
+let isClaimed = false;
+let duplicates = [];
+let pendingMerge = null;
 
-// Check for duplicate profiles using fuzzy matching
-const serverClient = createServerClient();
-const { data: potentialDuplicates } = await serverClient.rpc('find_potential_duplicates', {
-  p_first_name: lobbyist.first_name,
-  p_last_name: lobbyist.last_name,
-  p_email: user.email
-});
+if (lobbyist) {
+  // Check profile status for conditional rendering
+  isPending = lobbyist.is_pending === true;
+  isActive = lobbyist.is_active === true;
+  isClaimed = lobbyist.is_claimed === true;
 
-// Filter out the current profile and only show high-confidence matches
-const duplicates = potentialDuplicates?.filter((d: any) =>
-  d.id !== lobbyist.id &&
-  d.similarity_score > 0.7 &&
-  !d.deleted_at
-) || [];
+  // Check for duplicate profiles using fuzzy matching
+  const { data: potentialDuplicates } = await serverClient.rpc('find_potential_duplicates', {
+    p_first_name: lobbyist.first_name,
+    p_last_name: lobbyist.last_name,
+    p_email: user.email
+  });
 
-// Check if user already has a pending merge request
-const { data: pendingMerge } = await serverClient
-  .from('account_merge_requests')
-  .select('id')
-  .eq('user_id', user.id)
-  .eq('status', 'pending')
-  .single();
+  // Filter out the current profile and only show high-confidence matches
+  duplicates = potentialDuplicates?.filter((d: any) =>
+    d.id !== lobbyist.id &&
+    d.similarity_score > 0.7 &&
+    !d.deleted_at
+  ) || [];
+
+  // Check if user already has a pending merge request
+  const { data: merge } = await serverClient
+    .from('account_merge_requests')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('status', 'pending')
+    .single();
+  pendingMerge = merge;
+}
 
 // SEO
 const pageTitle = 'Lobbyist Dashboard | TexasLobby.org';
@@ -58,16 +85,167 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <!-- Dashboard -->
-  <section class="py-8 min-h-[calc(100vh-4rem)]">
-    <div class="container max-w-6xl">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-2">Dashboard</h1>
-        <p class="text-lg text-muted-foreground">
-          Welcome back, {lobbyist.first_name}!
-        </p>
+  <!-- Searcher Dashboard -->
+  {userRole === 'searcher' && !lobbyist && (
+    <section class="py-8 min-h-[calc(100vh-4rem)]">
+      <div class="container max-w-5xl">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Dashboard</h1>
+          <p class="text-lg text-muted-foreground">
+            Welcome back, {userData?.full_name || user.email}!
+          </p>
+        </div>
+
+        <!-- Pending Role Upgrade Notice -->
+        {pendingRoleUpgrade && (
+          <div class="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-6">
+            <div class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="flex-1">
+                <h3 class="font-semibold text-amber-900 mb-2">Role Upgrade Request Pending</h3>
+                <p class="text-sm text-amber-800 mb-2">
+                  Your request to become a lobbyist is currently under review. We'll notify you once it's been processed.
+                </p>
+                <p class="text-xs text-amber-700">
+                  Submitted: {new Date(pendingRoleUpgrade.submitted_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <!-- Become a Lobbyist CTA -->
+        {!pendingRoleUpgrade && (
+          <div class="mb-8 rounded-lg border-2 border-texas-blue-200 bg-gradient-to-br from-texas-blue-50 to-white p-8">
+            <div class="flex flex-col md:flex-row items-start gap-6">
+              <div class="flex-shrink-0">
+                <div class="rounded-full bg-texas-blue-100 p-4">
+                  <svg class="h-12 w-12 text-texas-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-3 text-texas-blue-900">Are You a Texas Lobbyist?</h2>
+                <p class="text-muted-foreground mb-4">
+                  Upgrade your account to create a professional lobbyist profile and get discovered by Texas businesses looking for your expertise.
+                </p>
+                <ul class="space-y-2 mb-6 text-sm">
+                  <li class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Get discovered by businesses searching for lobbyists</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Showcase your experience, clients, and areas of expertise</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Track profile views and engagement metrics</span>
+                  </li>
+                </ul>
+                <a
+                  href="/become-lobbyist"
+                  class="inline-flex items-center gap-2 rounded-md bg-texas-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-700 transition-colors shadow-sm"
+                >
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Become a Lobbyist
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <!-- Searcher Stats -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <div class="rounded-lg border border-border bg-white p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-semibold">Account Type</h3>
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 uppercase">
+                Searcher
+              </span>
+            </div>
+            <p class="text-sm text-muted-foreground">
+              You can search and save favorite lobbyists
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-border bg-white p-6">
+            <h3 class="font-semibold mb-4">Quick Actions</h3>
+            <div class="space-y-2">
+              <a
+                href="/lobbyists"
+                class="block text-sm text-texas-blue-500 hover:underline"
+              >
+                Browse Lobbyists →
+              </a>
+              <a
+                href="/favorites"
+                class="block text-sm text-texas-blue-500 hover:underline"
+              >
+                View Favorites →
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-border bg-white p-6">
+            <h3 class="font-semibold mb-4">Account Settings</h3>
+            <div class="space-y-2">
+              <a
+                href="/account/settings"
+                class="block text-sm text-texas-blue-500 hover:underline"
+              >
+                Edit Profile →
+              </a>
+              <a
+                href="/account/security"
+                class="block text-sm text-texas-blue-500 hover:underline"
+              >
+                Security Settings →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="rounded-lg border border-border bg-muted/30 p-6">
+          <h3 class="font-semibold mb-3">Need Help?</h3>
+          <p class="text-sm text-muted-foreground mb-4">
+            Have questions about upgrading to a lobbyist account? Our support team is here to help.
+          </p>
+          <a
+            href="mailto:support@texaslobby.org"
+            class="inline-flex items-center text-sm text-texas-blue-500 hover:underline"
+          >
+            Contact Support →
+          </a>
+        </div>
       </div>
+    </section>
+  )}
+
+  <!-- Lobbyist Dashboard -->
+  {lobbyist && (
+    <section class="py-8 min-h-[calc(100vh-4rem)]">
+      <div class="container max-w-6xl">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Dashboard</h1>
+          <p class="text-lg text-muted-foreground">
+            Welcome back, {lobbyist.first_name}!
+          </p>
+        </div>
 
       <!-- Pending Approval Banner -->
       {isPending && (
@@ -320,4 +498,5 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
       </div>
     </div>
   </section>
+  )}
 </Layout>

@@ -54,8 +54,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .select(`
         id,
         user_id,
-        current_role,
-        requested_role,
+        from_role,
+        to_role,
         status,
         users!inner (
           email,
@@ -102,7 +102,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // STEP 2: Update the user's role to lobbyist
     const { error: updateRoleError } = await serverClient
       .from('users')
-      .update({ role: upgradeRequest.requested_role })
+      .update({ role: upgradeRequest.to_role })
       .eq('id', upgradeRequest.user_id);
 
     if (updateRoleError) {

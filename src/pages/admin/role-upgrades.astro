@@ -22,8 +22,8 @@ const { data: pendingUpgrades } = await serverClient
   .from('role_upgrade_requests')
   .select(`
     id,
-    current_role,
-    requested_role,
+    from_role,
+    to_role,
     reason,
     admin_notes,
     submitted_at,
@@ -129,13 +129,13 @@ const pageDescription = 'Review and approve account role upgrade requests.';
                     <div>
                       <p class="text-xs text-muted-foreground mb-0.5">Current Role</p>
                       <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold uppercase">
-                        {upgrade.current_role}
+                        {upgrade.from_role}
                       </span>
                     </div>
                     <div>
                       <p class="text-xs text-muted-foreground mb-0.5">Requested Role</p>
                       <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 uppercase">
-                        {upgrade.requested_role}
+                        {upgrade.to_role}
                       </span>
                     </div>
                     <div>

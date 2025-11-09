@@ -1,0 +1,310 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { SUBSCRIPTION_TIERS } from '@/lib/stripe';
+
+// Require authentication
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect('/login?redirect=/dashboard/upgrade');
+}
+
+const pageTitle = 'Upgrade Your Profile - TexasLobby.org';
+const pageDescription = 'Upgrade to Premium or Featured to maximize your visibility and reach more clients';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Upgrade Your Profile</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Stand out from the competition and connect with more clients
+        </p>
+      </div>
+
+      <!-- Pricing Cards -->
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
+        <!-- Premium Tier -->
+        <div class="bg-white rounded-lg border-2 border-blue-200 shadow-lg p-8 relative">
+          <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
+            Popular
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Premium Listing</h2>
+            <div class="flex items-baseline gap-2 mb-4">
+              <span class="text-5xl font-bold text-gray-900">${SUBSCRIPTION_TIERS.premium.price}</span>
+              <span class="text-gray-600">/month</span>
+            </div>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            {SUBSCRIPTION_TIERS.premium.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <svg class="h-6 w-6 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-gray-700">{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            class="upgrade-btn w-full py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg"
+            data-tier="premium"
+            data-price-id={SUBSCRIPTION_TIERS.premium.priceId}
+          >
+            Upgrade to Premium
+          </button>
+        </div>
+
+        <!-- Featured Tier -->
+        <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg border-2 border-purple-300 shadow-lg p-8 relative">
+          <div class="absolute top-0 right-0 bg-purple-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
+            Best Value
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Featured Listing</h2>
+            <div class="flex items-baseline gap-2 mb-4">
+              <span class="text-5xl font-bold text-gray-900">${SUBSCRIPTION_TIERS.featured.price}</span>
+              <span class="text-gray-600">/month</span>
+            </div>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            {SUBSCRIPTION_TIERS.featured.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <svg class="h-6 w-6 text-purple-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-gray-700">{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            class="upgrade-btn w-full py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg"
+            data-tier="featured"
+            data-price-id={SUBSCRIPTION_TIERS.featured.priceId}
+          >
+            Upgrade to Featured
+          </button>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 mb-12">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Feature Comparison</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th class="text-left py-4 px-4 font-semibold text-gray-900">Feature</th>
+                <th class="text-center py-4 px-4 font-semibold text-gray-600">Free</th>
+                <th class="text-center py-4 px-4 font-semibold text-blue-600">Premium</th>
+                <th class="text-center py-4 px-4 font-semibold text-purple-600">Featured</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Basic profile listing</td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Search visibility</td>
+                <td class="py-4 px-4 text-center text-gray-600">Standard</td>
+                <td class="py-4 px-4 text-center text-blue-600 font-semibold">Enhanced</td>
+                <td class="py-4 px-4 text-center text-purple-600 font-semibold">Maximum</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Priority placement</td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Homepage featured</td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Analytics dashboard</td>
+                <td class="py-4 px-4 text-center text-gray-600">Basic</td>
+                <td class="py-4 px-4 text-center text-blue-600 font-semibold">Detailed</td>
+                <td class="py-4 px-4 text-center text-purple-600 font-semibold">Comprehensive</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Profile badge</td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Client testimonials</td>
+                <td class="py-4 px-4 text-center text-gray-600">Up to 3</td>
+                <td class="py-4 px-4 text-center text-blue-600 font-semibold">Up to 10</td>
+                <td class="py-4 px-4 text-center text-purple-600 font-semibold">Unlimited</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 text-gray-700">Priority support</td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <svg class="h-5 w-5 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 max-w-3xl mx-auto">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h3>
+        <div class="space-y-6">
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-2">How does billing work?</h4>
+            <p class="text-gray-600">
+              You'll be billed monthly on the date you subscribe. You can cancel anytime and keep your benefits until the end of your billing period.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-2">Can I switch plans later?</h4>
+            <p class="text-gray-600">
+              Yes! You can upgrade or downgrade at any time. If you upgrade, you'll be charged the prorated difference immediately. If you downgrade, the change takes effect at the end of your current billing period.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-2">What payment methods do you accept?</h4>
+            <p class="text-gray-600">
+              We accept all major credit cards (Visa, Mastercard, American Express, Discover) through our secure payment processor, Stripe.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-2">Do you offer refunds?</h4>
+            <p class="text-gray-600">
+              Yes, we offer a 14-day money-back guarantee on all new subscriptions. Contact support@texaslobby.org for refund requests.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-2">How quickly will I see results?</h4>
+            <p class="text-gray-600">
+              Your profile is updated immediately upon upgrading. Most lobbyists see increased visibility and client inquiries within the first week.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to Dashboard -->
+      <div class="text-center mt-8">
+        <a href="/dashboard" class="text-blue-600 hover:text-blue-700 font-medium">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.upgrade-btn').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const btn = e.target as HTMLButtonElement;
+        const tier = btn.dataset.tier;
+        const priceId = btn.dataset.priceId;
+
+        if (!priceId) {
+          alert('Subscription pricing is not configured yet. Please contact support.');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Processing...';
+
+        try {
+          const response = await fetch('/api/stripe/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ priceId, tier })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to create checkout session');
+          }
+
+          // Redirect to Stripe Checkout
+          if (data.url) {
+            window.location.href = data.url;
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+          btn.disabled = false;
+          btn.textContent = `Upgrade to ${tier === 'premium' ? 'Premium' : 'Featured'}`;
+        }
+      });
+    });
+  </script>
+</Layout>

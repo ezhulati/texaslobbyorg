@@ -6,12 +6,14 @@ import { supabase } from '@/lib/supabase';
 interface CreateProfileFormProps {
   userId: string;
   userEmail?: string;
+  userFirstName?: string;
+  userLastName?: string;
 }
 
-export default function CreateProfileForm({ userId, userEmail }: CreateProfileFormProps) {
+export default function CreateProfileForm({ userId, userEmail, userFirstName, userLastName }: CreateProfileFormProps) {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstName: userFirstName || '',
+    lastName: userLastName || '',
     email: userEmail || '',
     phone: '',
     website: '',

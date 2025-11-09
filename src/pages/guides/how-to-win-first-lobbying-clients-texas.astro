@@ -1,0 +1,1104 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { supabase } from '@/lib/supabase';
+
+// Fetch real data
+const { data: lobbyists } = await supabase
+  .from('lobbyists')
+  .select('*')
+  .eq('is_active', true);
+
+const totalLobbyists = lobbyists?.length || 0;
+
+const pageTitle = 'How to Win Your First Lobbying Clients in Texas: The Honest Guide';
+const pageDescription = 'Insider strategies for new lobbyists—where clients come from, how to price your services, and which first clients set you up for success (or failure).';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: 'Byron Campbell'
+  },
+  datePublished: '2025-01-08',
+  dateModified: '2025-01-08',
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
+        <a
+          href="/guides"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to all guides
+        </a>
+      </div>
+
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        For Lobbyists
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        How to Win Your First Lobbying Clients in Texas
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl">
+        You've built relationships at the Capitol for years. You understand the legislative process. Now you need someone to pay you. This is where promising lobbying careers stall—and where smart strategies separate those who build thriving practices from those who give up.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="font-medium">By Byron Campbell, Texas Lobbyist</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">18 min read</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
+
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <p class="text-lg leading-relaxed">
+          I watched a former committee clerk with six years of Capitol experience struggle for eight months to land her first lobbying client. She had everything—deep relationships with House leadership, expertise in education policy, and a reputation for being smart and ethical. What she didn't have was a strategy for converting those assets into paying work.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Meanwhile, a former legislator who served one term signed three clients at $15,000/month each within two weeks of leaving office. Different networks. Different value propositions. Different understanding of where clients come from.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Landing your first lobbying client is fundamentally different from landing your tenth. You have no track record to point to. You can't say "I passed HB 2847 last session" because you haven't passed anything yet. This requires a different playbook—one focused on leveraging what you do have instead of apologizing for what you don't.
+        </p>
+      </div>
+
+      <!-- Where Clients Actually Come From -->
+      <section id="client-sources" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Where Clients Come From (Not Where You Think)</h2>
+          <p class="text-texas-blue-700 font-medium">Understanding the client acquisition landscape</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            New lobbyists waste months trying strategies that never work. They build websites, send cold emails, and wonder why nobody responds. Meanwhile, successful new practitioners are landing clients through five proven channels that leverage their existing relationships and credibility.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <!-- Source 1 -->
+            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-500 p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0">1</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">Former Colleagues and the Organizations They Now Work For</h3>
+                  <div class="inline-flex items-center rounded-full bg-green-600 text-white px-3 py-1 text-xs font-medium mb-4">
+                    HIGHEST SUCCESS RATE
+                  </div>
+                  <p class="text-muted-foreground mb-4">
+                    Your former committee staffer colleague who now works at a healthcare trade association? That's your first call. The chief of staff who left to run a nonprofit? That's your second call. These people know your competence firsthand and trust you enough to recommend you to their board.
+                  </p>
+
+                  <div class="bg-white rounded-lg border border-green-300 p-4 mb-4">
+                    <p class="text-sm font-semibold text-green-900 mb-2">Why this works better than anything else:</p>
+                    <p class="text-sm text-green-800">
+                      They've seen you work. They know you're reliable. They understand the value of Capitol relationships. When their organization needs a lobbyist, you're not a stranger making a pitch—you're someone they already respect. That cuts the sales cycle from months to days.
+                    </p>
+                  </div>
+
+                  <div class="bg-green-50 rounded-lg p-4">
+                    <p class="text-xs text-green-900">
+                      <strong>Real example:</strong> Sarah spent four years as education committee clerk. When she launched her practice, she called every former colleague who'd left the Capitol for education organizations. Within three weeks, one connection led to a $7,500/month contract with a school district association. The executive director trusted her because they'd worked together during two legislative sessions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Source 2 -->
+            <div class="bg-white rounded-lg border-2 border-blue-500 p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0">2</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">Trade Associations Looking for Specialized Help</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Texas has hundreds of industry associations—professional groups, business coalitions, advocacy organizations. Many already have government affairs staff but need additional contract lobbyists for specific bills or overflow work during session. They're constantly evaluating new talent.
+                  </p>
+
+                  <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold text-blue-900 mb-2">How to position yourself:</p>
+                    <p class="text-sm text-blue-800">
+                      Offer to handle their "second priority" issues—the bills that matter but don't justify their senior lobbyist's time. Propose monitoring work at a lower retainer. Suggest contract support during peak session weeks. You're not competing with their primary lobbyist; you're supplementing their capacity.
+                    </p>
+                  </div>
+
+                  <div class="bg-white rounded-lg border border-blue-300 p-4">
+                    <p class="text-xs text-blue-900">
+                      <strong>The pitch:</strong> "I know your organization focuses primarily on tax policy, but I noticed you also track healthcare bills that affect your members. I specialized in healthcare during my time at HHSC. Would it be helpful to have someone monitor those bills and flag issues before they become problems—without pulling your senior team away from tax fights?"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Source 3 -->
+            <div class="bg-white rounded-lg border-2 border-purple-500 p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0">3</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">Law Firms with Government Relations Needs</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Law firms frequently need lobbyists for client matters—regulatory changes, bill analysis, strategic positioning. They don't employ full-time lobbyists, so they contract specialists. If you can demonstrate expertise in a policy area their clients care about, you become a valuable referral partner.
+                  </p>
+
+                  <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-purple-50 rounded-lg p-4">
+                      <p class="text-sm font-semibold text-purple-900 mb-2">Target these practice areas:</p>
+                      <ul class="text-xs space-y-1 text-purple-900 ml-4">
+                        <li>• Healthcare and medical malpractice</li>
+                        <li>• Environmental and regulatory</li>
+                        <li>• Energy and utilities</li>
+                        <li>• Insurance and financial services</li>
+                        <li>• Real estate and land use</li>
+                      </ul>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-4">
+                      <p class="text-sm font-semibold text-purple-900 mb-2">What law firms value:</p>
+                      <ul class="text-xs space-y-1 text-purple-900 ml-4">
+                        <li>• Quick response times</li>
+                        <li>• Clear written analysis</li>
+                        <li>• No conflicts with their clients</li>
+                        <li>• Professional communication</li>
+                        <li>• Transparent billing</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Source 4 -->
+            <div class="bg-white rounded-lg border-2 border-orange-500 p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-orange-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0">4</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">Former Legislators' Instant Client Advantage</h3>
+                  <p class="text-muted-foreground mb-4">
+                    If you served in the Legislature, you have structural advantages no staffer can match—and Texas has zero cooling-off period. The day after you leave office, you can lobby former colleagues. Organizations know this, which is why former legislators often sign clients before their last day in office.
+                  </p>
+
+                  <div class="bg-orange-50 border border-orange-300 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-orange-900 mb-2">
+                      <strong>Your built-in advantages:</strong> Name recognition with organizations, direct relationships with current members, understanding of leadership dynamics, credibility with business groups wanting "insider access," and immediate ability to lobby without waiting periods.
+                    </p>
+                  </div>
+
+                  <div class="bg-red-50 border border-red-300 rounded-lg p-4">
+                    <p class="text-sm text-red-900">
+                      <strong>The trap to avoid:</strong> Trading on your former title without delivering strategic value. Being a former legislator opens doors, but you still need to demonstrate you understand how to navigate issues, build coalitions, and deliver results. Name recognition alone doesn't retain clients past the first contract renewal.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Source 5 -->
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-muted text-foreground rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0">5</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">Small Businesses with Defined Legislative Problems</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Small to mid-size companies ($5M-$50M revenue) face specific legislative threats but can't afford big-firm retainers. They need competent, affordable representation for narrow issues. If you can demonstrate you understand their problem and have the relationships to address it, these become excellent first clients.
+                  </p>
+
+                  <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-blue-900">
+                      <strong>Ideal first-client profile:</strong> Established business facing a specific bill or regulatory change, budget of $3K-$8K/month, realistic expectations, willing to make strategic political contributions, located in or serving Texas markets.
+                    </p>
+                  </div>
+
+                  <div class="bg-amber-50 rounded-lg p-4">
+                    <p class="text-sm text-amber-900">
+                      <strong>Where to find them:</strong> Industry conferences, chamber events, business associations, attorney referrals, accountant networks. They're not searching "Texas lobbyist" on Google—they're asking trusted advisors "Do you know anyone who can help with this legislative issue?"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-red-900 mb-2">What Doesn't Work for New Lobbyists</h3>
+            <p class="text-sm text-red-900 mb-3">
+              Save yourself the wasted effort. Cold outreach to Fortune 500 companies gets ignored—they already have lobbyists. Google advertising generates unqualified leads. LinkedIn spam annoys people you might need relationships with later. Promising results you can't guarantee destroys credibility.
+            </p>
+            <p class="text-sm text-red-900 font-bold">
+              Clients come through relationships, referrals, and demonstrated expertise—not marketing tactics. Build those three things and clients will find you.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Strategy -->
+      <section id="pricing" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Pricing Your Services When You Have No Track Record</h2>
+          <p class="text-texas-blue-700 font-medium">The strategic sweet spot for new lobbyists</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The pricing trap new lobbyists fall into: they undercut themselves trying to compete on price, then struggle to raise rates later. Or they price like experienced practitioners and get no clients because they can't justify premium rates without proven results.
+          </p>
+
+          <p>
+            The strategic approach is pricing in the middle—high enough to signal competence, low enough to be accessible to organizations taking a chance on unproven talent.
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white rounded-lg border-2 border-texas-blue-500 p-6">
+              <h3 class="text-xl font-bold mb-4">The New Lobbyist Pricing Framework</h3>
+
+              <div class="space-y-4">
+                <div class="bg-green-50 rounded-lg border-2 border-green-500 p-6">
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="bg-green-600 text-white rounded-full px-4 py-2 font-bold">RECOMMENDED</div>
+                    <h4 class="text-lg font-bold text-green-900">$3,000-$5,000/month starting retainer</h4>
+                  </div>
+                  <p class="text-sm text-green-800 mb-3">
+                    This range signals you're a professional while remaining accessible to small trade associations, boutique firms, and growing businesses. You're not the cheapest option (which raises quality concerns), but you're not pricing like you have 15 years of wins to point to.
+                  </p>
+                  <div class="bg-white rounded-lg border border-green-300 p-4">
+                    <p class="text-xs text-green-900">
+                      <strong>What this buys clients:</strong> Legislative monitoring, bill analysis, strategic guidance, relationship access, hearing attendance, basic coalition coordination. Essentially everything except high-stakes bill passage or complex multi-committee advocacy.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg border border-blue-300 p-4">
+                  <h4 class="text-sm font-bold text-blue-900 mb-2">Alternative: Tiered Pricing</h4>
+                  <div class="space-y-2 text-sm text-blue-800">
+                    <div><strong>Monitoring only:</strong> $2,000-$3,000/month during session</div>
+                    <div><strong>Active advocacy:</strong> $5,000-$8,000/month during session</div>
+                    <div><strong>Interim retainer:</strong> $1,500-$2,500/month between sessions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold mb-4 mt-8">Strategic Pricing Decisions That Matter</h3>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h4 class="font-bold mb-2">Fixed Fees vs. Hourly Billing</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Fixed monthly retainers are strongly preferred. Clients like budget predictability. You avoid the awkwardness of billing for every phone call. Most importantly, you're paid for your relationships and strategic judgment—not just billable hours.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-3">
+                <p class="text-xs text-blue-900">
+                  <strong>The strategic difference:</strong> That 2-minute text to a committee clerk at 9 PM on Sunday might be worth $5,000 to your client, but you can't bill it at $400/hour. Retainers align compensation with value delivered, not time spent.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h4 class="font-bold mb-2">When to Discount (and When Not To)</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Smart discounting is strategic. You discount for clients who help you build credibility, provide referrals, or give you experience in high-value policy areas. You don't discount just because someone asks or you're desperate.
+              </p>
+              <div class="grid md:grid-cols-2 gap-3">
+                <div class="bg-green-50 rounded-lg p-3">
+                  <p class="text-xs font-semibold text-green-900 mb-1">Good reasons to discount:</p>
+                  <ul class="text-xs text-green-800 space-y-1 ml-4">
+                    <li>• Prestigious client builds your resume</li>
+                    <li>• Nonprofit with limited budget, great cause</li>
+                    <li>• Multi-year commitment at lower rate</li>
+                    <li>• Referral source for future clients</li>
+                  </ul>
+                </div>
+                <div class="bg-red-50 rounded-lg p-3">
+                  <p class="text-xs font-semibold text-red-900 mb-1">Bad reasons to discount:</p>
+                  <ul class="text-xs text-red-800 space-y-1 ml-4">
+                    <li>• They said your competitor is cheaper</li>
+                    <li>• You need cash flow this month</li>
+                    <li>• They're "testing you out"</li>
+                    <li>• You lack confidence in your value</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h4 class="font-bold mb-2">Managing the 1-Year Commitment Conversation</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Large firms often require year-long minimums ($60K-$300K+ commitment). You can't demand that as a new lobbyist. Instead, propose session-plus-interim structure with renewal options.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-3">
+                <p class="text-xs text-purple-900">
+                  <strong>Recommended structure:</strong> "Let's start with a 5-month session engagement at $4,500/month, with the option to continue at $2,000/month during the interim if we're both satisfied with the relationship. This gives you flexibility and gives me the opportunity to prove value before asking for a longer commitment."
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h4 class="font-bold mb-2">Why Undercutting Established Lobbyists Backfires</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Offering to do for $2,000/month what experienced lobbyists charge $15,000 for signals one of two things: you don't understand the value of the work, or you're not capable of delivering it. Neither inspires confidence.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-3">
+                <p class="text-xs text-orange-900">
+                  <strong>Better positioning:</strong> "I'm newer to independent practice, so my rates are more accessible than firms with 20-year track records. But I bring direct relationships from my five years on the House Appropriations Committee that larger firms can't match for budget issues. For organizations that value specialized access over broad experience, I'm an excellent fit."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-2 border-amber-400 rounded-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-amber-900 mb-3">Pricing Reality for Year One</h3>
+            <p class="text-sm text-amber-900 mb-3">
+              <strong>If you sign three clients at $4,000/month each for session only (5 months):</strong> That's $60,000 gross revenue. Subtract marketing costs (10-15%), Texas Ethics Commission fees, insurance, software, and overhead—your take-home is probably $45,000-$50,000. Not great, but enough to survive while building your practice.
+            </p>
+            <p class="text-sm text-amber-900">
+              <strong>Year two, with track record and referrals:</strong> Five clients at $6,000/month average across the full year = $360,000 gross. Now you're building a real practice. This is the trajectory to plan for.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- First Meeting -->
+      <section id="first-meeting" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">The First Meeting That Wins (or Loses) Clients</h2>
+          <p class="text-texas-blue-700 font-medium">What to say when you have no legislative wins to point to</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            You can't say "I passed HB 2847" because you haven't passed anything as an independent lobbyist yet. You can't point to case studies or testimonials. This is where new lobbyists panic and either oversell or undersell themselves.
+          </p>
+
+          <p>
+            The strategic approach focuses on what you do have: relationships, Capitol knowledge, policy expertise, and availability. Frame these assets in terms of client value, not your resume.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-500 p-6">
+              <h3 class="text-xl font-bold text-green-900 mb-4">Opening Frame: Lead with Relationships, Not Experience</h3>
+
+              <div class="bg-white rounded-lg border border-green-300 p-4 mb-4">
+                <p class="text-sm font-semibold text-green-900 mb-2">Instead of:</p>
+                <p class="text-sm text-green-800 italic mb-3">
+                  "I'm starting my lobbying practice after five years as a legislative staffer. I'm looking for clients who need Capitol representation."
+                </p>
+                <p class="text-sm font-semibold text-green-900 mb-2">Say this:</p>
+                <p class="text-sm text-green-800 font-medium">
+                  "For the past five years, I worked directly with the Senate Finance Committee as senior policy advisor. I have direct relationships with every member of that committee, the committee clerk who manages hearing schedules, and the staff who draft amendments. For organizations with tax or budget priorities, those relationships provide access that takes other lobbyists years to build."
+                </p>
+              </div>
+
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-xs text-green-900">
+                  <strong>Why this works:</strong> You're not apologizing for being new. You're highlighting the specific relationships and access you bring that established lobbyists might not have. Committee staff relationships are undervalued by clients but incredibly valuable in practice.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-blue-500 p-6">
+              <h3 class="text-xl font-bold mb-4">The Questions That Demonstrate Value</h3>
+              <p class="text-muted-foreground mb-4">
+                Don't pitch—diagnose. Ask questions that prove you understand their world and can think strategically about their challenges.
+              </p>
+
+              <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-blue-900 mb-3">Strategic questions to ask:</p>
+                <ul class="text-sm text-blue-800 space-y-2 ml-4">
+                  <li>• "What specific legislative or regulatory changes would most impact your business model?"</li>
+                  <li>• "Are you more concerned about defensive work—killing bad bills—or offensive work—passing favorable legislation?"</li>
+                  <li>• "Which committees and legislators have jurisdiction over your issues? Do you have existing relationships there?"</li>
+                  <li>• "What's your organization's risk tolerance? Some clients want aggressive advocacy, others prefer quiet positioning."</li>
+                  <li>• "Have you worked with lobbyists before? What worked well, and what didn't?"</li>
+                </ul>
+              </div>
+
+              <div class="bg-white rounded-lg border border-blue-300 p-4">
+                <p class="text-xs text-blue-900">
+                  <strong>What these questions accomplish:</strong> They show you understand lobbying is about strategy, not just Capitol access. They reveal whether the client has realistic expectations. They help you assess if this is a client you can serve well. And they position you as a strategic advisor, not a commodity service provider.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-xl font-bold mb-4">Setting Realistic Expectations Without Losing the Client</h3>
+              <p class="text-muted-foreground mb-4">
+                Promising outcomes you can't control destroys credibility. But being too cautious makes clients wonder why they'd pay you. The balance is honest about challenges while confident about your ability to navigate them.
+              </p>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-red-50 rounded-lg p-4">
+                  <p class="text-sm font-semibold text-red-900 mb-2">Never say:</p>
+                  <ul class="text-xs text-red-800 space-y-1 ml-4">
+                    <li>• "I guarantee we can pass this"</li>
+                    <li>• "This will be easy"</li>
+                    <li>• "I know the Speaker personally" (unless you do)</li>
+                    <li>• "Don't worry, I've got this covered"</li>
+                  </ul>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                  <p class="text-sm font-semibold text-green-900 mb-2">Instead say:</p>
+                  <ul class="text-xs text-green-800 space-y-1 ml-4">
+                    <li>• "Based on current dynamics, here's what I see as realistic..."</li>
+                    <li>• "The path exists, but these obstacles need addressing"</li>
+                    <li>• "I can position us for success, but legislative outcomes depend on factors beyond any lobbyist's control"</li>
+                    <li>• "Let me walk you through the strategy and timeline"</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-purple-500 p-6">
+              <h3 class="text-xl font-bold mb-4">The Political Contribution Conversation</h3>
+              <p class="text-muted-foreground mb-4">
+                This is awkward for everyone, but it needs addressing up front. Strategic campaign contributions often matter—not because they buy votes, but because they ensure access and build goodwill with legislators who control your issues.
+              </p>
+
+              <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-purple-900 mb-2">
+                  <strong>How to frame it:</strong> "I want to be transparent about campaign contributions. While I never require clients to donate, the reality is that strategic contributions to key legislators help ensure we have access when we need it. For budget of $5K-$15K over the biennium, you'd target 5-10 legislators who chair or serve on committees relevant to your issues. I can provide guidance, but the decision to contribute is entirely yours."
+                </p>
+              </div>
+
+              <div class="bg-white rounded-lg border border-purple-300 p-4">
+                <p class="text-xs text-purple-900">
+                  <strong>Why this matters:</strong> Being honest about political dynamics builds trust. Pretending contributions don't matter makes you seem naive. Requiring them as a condition of engagement is unethical. Give clients the information to make informed decisions, then let them decide.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-blue-900 mb-2">The Close: What Separates Meetings That Lead to Contracts</h3>
+            <p class="text-sm text-blue-900 mb-3">
+              End with clear next steps and a timeline for decision-making. "I'd like to send you a proposal outlining scope of work, pricing structure, and our communication plan by Thursday. Would it be helpful if I included 2-3 references from former colleagues who can speak to my Capitol relationships and work quality? When would you ideally make a decision about representation for next session?"
+            </p>
+            <p class="text-sm text-blue-900 font-bold">
+              Confident, professional, specific. Don't leave it vague. Don't let weeks pass without follow-up. Winning clients requires being responsive and decisive—qualities clients value in lobbyists.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clients to Pursue vs Avoid -->
+      <section id="client-selection" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Clients to Pursue (And Clients That Destroy Careers)</h2>
+          <p class="text-texas-blue-700 font-medium">Strategic client selection for long-term success</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The temptation when starting out is to take any client who'll pay you. This is how promising lobbying careers implode before they start. One bad client—unethical, unrealistic, or conflicted—can damage your reputation in ways that take years to repair.
+          </p>
+
+          <p>
+            Smart client selection builds your practice. Poor client selection destroys it. Here's how to tell the difference.
+          </p>
+
+          <h3 class="text-xl font-bold mb-4 mt-8">Ideal First Clients: What to Look For</h3>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h4 class="font-bold text-green-900 mb-2">Trade Associations and Business Groups</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Established organizations with governance structures, defined policy priorities, and multi-year advocacy needs. They understand the legislative process, have realistic timelines, and value long-term relationships over quick wins.
+              </p>
+              <div class="bg-green-50 rounded-lg p-3">
+                <p class="text-xs text-green-900">
+                  <strong>Why they're excellent first clients:</strong> They provide steady retainers, referrals to other organizations, and credibility when you can say "I represent the Texas Association of [Industry]." They also tend to have clear decision-making processes and reasonable expectations.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h4 class="font-bold text-blue-900 mb-2">Established Businesses with Defined Issues</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Companies that have been operating for 5+ years, understand their regulatory environment, and face specific legislative or agency challenges. They're not asking you to "build relationships with the Legislature"—they're asking you to solve a particular problem.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-3">
+                <p class="text-xs text-blue-900">
+                  <strong>Green flags:</strong> They've researched the legislative process, understand what lobbying can and can't do, have budget allocated for advocacy, and view you as a strategic advisor rather than a miracle worker. These clients help you build wins you can point to later.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h4 class="font-bold text-purple-900 mb-2">Nonprofits and Mission-Driven Organizations</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Organizations with clear social missions, established reputations, and specific policy goals. They often have limited budgets but provide experience in policy areas and coalition work that builds your expertise.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-3">
+                <p class="text-xs text-purple-900">
+                  <strong>Strategic value beyond fees:</strong> Working with respected nonprofits builds credibility, expands your network into advocacy communities, and demonstrates you're not just chasing money. Many successful lobbyists maintain 1-2 nonprofit clients throughout their careers for exactly these reasons.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold mb-4 mt-12">Red Flags: Clients That Destroy New Lobbyists</h3>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+              <div class="flex items-start gap-3">
+                <div class="text-red-600 text-2xl font-bold flex-shrink-0">×</div>
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold text-red-900 mb-2">Conflicting Positions with Existing Clients</h4>
+                  <p class="text-sm text-red-900 mb-3">
+                    You represent a healthcare provider association. Someone offers to pay you to lobby against a bill that association supports. This is the Jack Abramoff scenario—lobbying both sides of the same issue, which is career-ending unethical behavior.
+                  </p>
+                  <div class="bg-red-100 rounded-lg p-3">
+                    <p class="text-xs text-red-900">
+                      <strong>The rule:</strong> Never represent conflicting interests. Never lobby against your own clients. Never take money from both sides of an issue. Check conflicts before every client engagement, and when in doubt, walk away. Your reputation isn't worth any retainer.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+              <div class="flex items-start gap-3">
+                <div class="text-red-600 text-2xl font-bold flex-shrink-0">×</div>
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold text-red-900 mb-2">Unrealistic Expectations About Results</h4>
+                  <p class="text-sm text-red-900 mb-3">
+                    "I need this bill passed by February" (session hasn't started). "Can you get us $10 million in the state budget?" (you have no appropriations experience). "We need to change this regulation by next month" (rulemaking takes 6-12 months minimum).
+                  </p>
+                  <div class="bg-red-100 rounded-lg p-3">
+                    <p class="text-xs text-red-900">
+                      <strong>Why these clients fail:</strong> When unrealistic expectations aren't met—and they won't be—they'll blame you, refuse to pay, damage your reputation, and tell others you didn't deliver. No amount of money is worth this headache. Educate them or decline the engagement.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+              <div class="flex items-start gap-3">
+                <div class="text-red-600 text-2xl font-bold flex-shrink-0">×</div>
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold text-red-900 mb-2">Unwilling to Make Strategic Political Contributions</h4>
+                  <p class="text-sm text-red-900 mb-3">
+                    "We want you to lobby these 15 legislators heavily, but we absolutely won't make any campaign contributions because we don't believe in that system."
+                  </p>
+                  <div class="bg-red-100 rounded-lg p-3">
+                    <p class="text-xs text-red-900">
+                      <strong>The honest answer:</strong> While you can lobby without contributions, refusing to participate in the campaign finance system while expecting results puts you at a structural disadvantage. If a client's values prevent strategic contributions, that's fine—but they need to understand it limits certain types of advocacy, and you need to decide if you can be effective under those constraints.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+              <div class="flex items-start gap-3">
+                <div class="text-red-600 text-2xl font-bold flex-shrink-0">×</div>
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold text-red-900 mb-2">Asking You to Circumvent Ethics Rules</h4>
+                  <p class="text-sm text-red-900 mb-3">
+                    "Can you give this gift to the committee chair without disclosing it?" "Don't put our lobbying on your registration, we want to stay under the radar." "Can you funnel campaign money through someone else?"
+                  </p>
+                  <div class="bg-red-100 rounded-lg p-3">
+                    <p class="text-xs text-red-900">
+                      <strong>Zero tolerance:</strong> The first time a potential client asks you to do anything ethically questionable, end the conversation and walk away. Don't explain. Don't negotiate. Don't assume they didn't understand. Just decline politely and move on. Ethics violations end careers—full stop.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-amber-900 mb-2">The Jack Abramoff Warning</h3>
+            <p class="text-sm text-amber-900 mb-3">
+              Jack Abramoff, once one of Washington's most powerful lobbyists, went to prison for fraud and corruption—including lobbying against his own clients while claiming to represent them. His name became synonymous with lobbying corruption.
+            </p>
+            <p class="text-sm text-amber-900 font-bold">
+              The lesson: Never represent conflicting interests. Never lobby both sides of an issue. Never take money from clients with opposing positions. One lapse in judgment can end your career and land you in federal prison. Not worth it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Building Reputation -->
+      <section id="reputation" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Building Your Reputation Before You Have One</h2>
+          <p class="text-green-700 font-medium">The 18-month groundwork that wins clients</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The Texas Legislature meets for 140 days every two years. That leaves 18 months of interim where most aspiring lobbyists disappear. Smart practitioners use this time to build the reputation and relationships that convert into clients when session approaches.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border-2 border-blue-500 p-6">
+              <h3 class="text-xl font-bold mb-4">Interim Relationship Building Strategy</h3>
+              <p class="text-muted-foreground mb-4">
+                The 18 months between sessions is when you differentiate yourself. Legislators are in their districts. Staff have time for coffee. Committees are studying issues for next session. Use this time strategically.
+              </p>
+
+              <div class="space-y-3">
+                <div class="bg-blue-50 rounded-lg p-4">
+                  <h4 class="text-sm font-bold text-blue-900 mb-2">Monthly: Committee Staff Coffee Strategy</h4>
+                  <p class="text-xs text-blue-800">
+                    Reach out to committee clerks and policy advisors in your subject areas. Offer to buy coffee and learn about issues they're studying for next session. Don't ask for anything—just build rapport. Within 6 months, you'll have relationships most lobbyists take years to develop.
+                  </p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-4">
+                  <h4 class="text-sm font-bold text-blue-900 mb-2">Quarterly: Industry Conference Presence</h4>
+                  <p class="text-xs text-blue-800">
+                    Attend trade association events in your policy areas. Speak on panels about legislative trends. Network with attendees who might need lobbying help next session. You're not selling—you're establishing yourself as knowledgeable and helpful.
+                  </p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-4">
+                  <h4 class="text-sm font-bold text-blue-900 mb-2">During Interim Hearings: Be Visible Without Testifying</h4>
+                  <p class="text-xs text-blue-800">
+                    Committees hold interim hearings to study issues. Attend these—even when you have no client paying you to be there. Sign in on the attendance sheet. Introduce yourself to committee members and staff. You're showing commitment to the issue and building visibility. When organizations need a lobbyist who "knows the committee," your name will come up.
+                  </p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-4">
+                  <h4 class="text-sm font-bold text-blue-900 mb-2">Year-Round: TexasLobby.org Profile Optimization</h4>
+                  <p class="text-xs text-blue-800">
+                    Claim your profile on TexasLobby.org early. List your subject area expertise, cities covered, and background. When businesses search for lobbyists by specialty, you need to appear in results. Free visibility that drives client inquiries.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-green-500 p-6">
+              <h3 class="text-xl font-bold mb-4">Proving Value Before Asking for Money</h3>
+              <p class="text-muted-foreground mb-4">
+                The fastest way to land your first client is demonstrating competence before they hire you. This sounds counterintuitive—free work—but strategic pro bono builds credibility that converts to paid contracts.
+              </p>
+
+              <div class="bg-green-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-green-900 mb-2">High-Value Free Work Examples:</p>
+                <ul class="text-sm text-green-800 space-y-2 ml-4">
+                  <li>• Write detailed bill analysis for organizations in your policy area and send it unprompted</li>
+                  <li>• Offer to brief nonprofit boards on legislative trends affecting their mission</li>
+                  <li>• Track bills for a small trade association for one session with no charge</li>
+                  <li>• Provide strategic guidance to businesses on how to engage the legislative process</li>
+                </ul>
+              </div>
+
+              <div class="bg-white rounded-lg border border-green-300 p-4">
+                <p class="text-xs text-green-900">
+                  <strong>Real example:</strong> Michael spent six months doing unpaid bill tracking for a small industry coalition. Every week during session, he sent detailed updates on relevant bills—committee assignments, amendments, floor action. After session, the coalition's board asked what his retainer would be for next session. He quoted $8,000/month. They signed immediately because they'd already seen his value. That's $96,000 in revenue from strategic pro bono work.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-purple-500 p-6">
+              <h3 class="text-xl font-bold mb-4">Trade Association Involvement</h3>
+              <p class="text-muted-foreground mb-4">
+                Join the trade associations in your policy areas—not as a lobbyist, but as a professional member. Volunteer for government affairs committees. Attend advocacy training. Speak at conferences. Within 2-3 years, you become a recognized name.
+              </p>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <p class="text-sm font-semibold text-purple-900 mb-2">Short-term benefits:</p>
+                  <ul class="text-xs text-purple-800 space-y-1 ml-4">
+                    <li>• Direct access to potential clients</li>
+                    <li>• Understanding of industry challenges</li>
+                    <li>• Credibility as someone invested in the field</li>
+                    <li>• Referral networks</li>
+                  </ul>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <p class="text-sm font-semibold text-purple-900 mb-2">Long-term payoff:</p>
+                  <ul class="text-xs text-purple-800 space-y-1 ml-4">
+                    <li>• When boards need lobbyists, they ask members</li>
+                    <li>• Your name comes up in conversations</li>
+                    <li>• Thought leadership compounds over time</li>
+                    <li>• Clients come to you, not vice versa</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-blue-900 mb-2">The Long Game Mindset</h3>
+            <p class="text-sm text-blue-900 mb-3">
+              Every successful lobbyist I know spent 2-5 years building reputation before they had the client base they wanted. You attend hearings nobody pays you to attend. You help people with no immediate benefit. You invest in relationships that might not pay off for years.
+            </p>
+            <p class="text-sm text-blue-900 font-bold">
+              This is the opposite of instant gratification. But when you're three years in and your calendar is full of client meetings while competitors are cold-calling, you'll understand why patience and strategic relationship-building win over short-term hustling.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ethics Compliance -->
+      <section id="ethics" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Ethics Compliance That Protects Your Career</h2>
+          <p class="text-red-700 font-medium">The rules you cannot afford to break</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            One ethics violation ends careers. I've watched promising lobbyists lose everything—clients, reputation, registration—because they missed a filing deadline, accepted an improper gift, or failed to disclose a conflict. The Texas Ethics Commission does not forgive easily, and the lobbying community has a long memory.
+          </p>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Registration Timing: Don't Miss Deadlines</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                You must register with the Texas Ethics Commission within 5 days of meeting either threshold: receiving more than $1,000 in compensation for lobbying in a calendar quarter, or spending more than $500 on expenditures benefiting state officials for lobbying purposes.
+              </p>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-xs text-red-900">
+                  <strong>Common mistake:</strong> New lobbyists sign a client on March 15, don't register until April 1, and get hit with late penalties. File within 5 days or face fines and a public record of non-compliance that shows up when clients Google you. Set calendar reminders. Miss no deadlines.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Gift Rules and Entertainment Limits</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                Texas law prohibits lobbyists from giving gifts worth more than $50 to legislators, their staff, or state officials. Meals, entertainment, and travel are heavily regulated. Anything of value must be disclosed on your quarterly reports.
+              </p>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-xs text-red-900">
+                  <strong>The bright line:</strong> Don't give gifts. Don't pay for expensive meals. Don't offer tickets to sporting events unless you're 100% certain it's properly disclosed and within limits. When in doubt, don't do it. Your reputation isn't worth a $75 dinner tab that violates gift rules.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Disclosure Requirements: Radical Transparency</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                Your quarterly activity reports are public records. You must disclose every client, every dollar of compensation, subject matter lobbied, and expenditures made. Failing to report, underreporting income, or filing incomplete disclosures triggers investigations.
+              </p>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-xs text-red-900">
+                  <strong>Best practice:</strong> Track every dollar in real-time. Use software or spreadsheets. Review reports before filing. File early—don't wait until the deadline. Accuracy and transparency protect you. Sloppiness destroys careers.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Conflicts of Interest Management</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                You cannot represent clients with directly conflicting interests. You cannot lobby both sides of the same issue. You cannot fail to disclose relationships that might influence your advocacy.
+              </p>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-xs text-red-900">
+                  <strong>Conflicts check process:</strong> Before signing any client, review your existing client list. Are there any potential conflicts? Could lobbying for Client A harm Client B? When in doubt, disclose the potential conflict to both parties and get written consent—or decline one of the engagements. Never hide conflicts.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-2 border-red-400 rounded-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-red-900 mb-3">Zero-Tolerance Violations</h3>
+            <p class="text-sm text-red-900 mb-3">
+              These violations will end your lobbying career immediately:
+            </p>
+            <ul class="text-sm text-red-900 space-y-2 ml-6">
+              <li>• Providing false information on ethics filings</li>
+              <li>• Giving prohibited gifts to legislators or staff</li>
+              <li>• Failing to register when required</li>
+              <li>• Causing a public official to violate ethics rules</li>
+              <li>• Representing conflicting interests without disclosure</li>
+              <li>• Making political contributions in someone else's name</li>
+            </ul>
+            <p class="text-sm text-red-900 font-bold mt-4">
+              Read the Texas Ethics Commission's complete lobbying guide. Know the rules. Follow them exactly. When in doubt, call the Ethics Commission for guidance—they provide advisory opinions. Ignorance is not a defense.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Client Retention -->
+      <section id="retention" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">The Long Game: Turning First Clients Into Career Foundations</h2>
+          <p class="text-green-700 font-medium">Client retention strategies that compound</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Landing your first client is hard. Keeping that client for five years is harder—and far more valuable. A client who renews annually at increasing rates generates 10x more revenue than one who leaves after one session. Strategic retention transforms your practice from constant client acquisition to compounding relationships.
+          </p>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Delivering Bad News (And Keeping Clients)</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                Your bill is dead. The committee chair won't hear it. You don't have the votes. The amendment you needed got stripped. How you communicate failures determines whether clients renew or fire you.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-xs text-blue-900">
+                  <strong>Framework for delivering losses:</strong> "We didn't get the outcome we wanted, but here's what we accomplished—positioned you for next session, built relationships with three new legislators, identified the specific opposition and their concerns, and developed a coalition strategy for 2027. This session was laying groundwork. Next session is when we execute." Contextualize losses within long-term strategy. Clients accept setbacks if they see you're playing the long game strategically.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Interim Communication: Monthly Minimum</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                The biggest mistake new lobbyists make is disappearing between sessions. You go dark for 18 months, then expect clients to renew for next session. Meanwhile, competitors are staying in touch, providing value, and positioning to steal your clients.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-xs text-green-900">
+                  <strong>Minimum interim communication:</strong> Monthly email updates on legislative developments, relevant committee hearings, regulatory changes, and political dynamics. Quarterly strategy calls. Annual in-person meetings to review the year and plan ahead. You're not charging full retainer during interim, but you're staying top-of-mind and demonstrating ongoing value.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Building Referral Networks</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                Your best source of new clients is existing happy clients. Ask satisfied clients for referrals—not in a pushy way, but strategically. "If you know other organizations in your industry who could benefit from Capitol representation, I'd appreciate introductions." One client referring two others triples your practice.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4">
+                <p class="text-xs text-purple-900">
+                  <strong>Making referrals easy:</strong> Send clients a one-page summary of your services they can forward to colleagues. Offer to speak at their industry association events. Ask if they'd be willing to serve as a reference for prospective clients. The easier you make it to refer you, the more referrals you'll get.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-3">Strategic Rate Increases</h3>
+              <p class="text-sm text-muted-foreground mb-3">
+                If you keep rates flat for five years, you're leaving money on the table and signaling you haven't grown in value. Strategic rate increases—tied to expanded services, proven results, or market adjustments—are expected and accepted when communicated properly.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4">
+                <p class="text-xs text-orange-900">
+                  <strong>Rate increase framework:</strong> After your first successful session, raise rates 10-15% for renewals. Position it as: "Based on our results last session and the expanded scope of work for next session, my rate will be $X,XXX/month. I wanted to give you advance notice so you can budget accordingly." Most clients accept reasonable increases when you've delivered value. Those who balk probably weren't great clients anyway.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-green-900 mb-2">The Compounding Value of Long-Term Clients</h3>
+            <p class="text-sm text-green-900 mb-3">
+              <strong>Client who stays five years at increasing rates:</strong> Year 1 ($4K/month × 12 months = $48K) + Year 2 ($5K × 12 = $60K) + Year 3 ($6K × 12 = $72K) + Year 4 ($7K × 12 = $84K) + Year 5 ($8K × 12 = $96K) = <strong>$360,000 total revenue</strong> from one client relationship.
+            </p>
+            <p class="text-sm text-green-900 font-bold">
+              Plus referrals they provide. Plus the track record you build. Plus the expertise you develop in their industry. Client retention is where lobbying practices become financially sustainable. Acquisition gets you started. Retention builds wealth.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Strategic Positioning -->
+      <section id="positioning" class="mb-16 scroll-mt-8">
+        <div class="bg-purple-50 border-l-4 border-purple-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Strategic Positioning for Year Two and Beyond</h2>
+          <p class="text-purple-700 font-medium">Building the practice you want, not just the one you can get</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Your first year is about survival—landing any reasonable clients who'll pay you. Year two is about strategic positioning—building toward the practice you want long-term. This requires saying no to clients that don't fit your vision and investing in the expertise and relationships that compound.
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white rounded-lg border-2 border-purple-500 p-6">
+              <h3 class="text-xl font-bold mb-4">The 3-Year Practice Building Arc</h3>
+
+              <div class="space-y-4">
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <h4 class="font-bold text-purple-900 mb-2">Year 1: Prove You Can Win Clients and Deliver</h4>
+                  <p class="text-sm text-purple-800 mb-2">
+                    Sign 2-4 clients at $3K-$5K/month. Deliver excellent service. Build track record. Ask for referrals. Survive financially while establishing credibility.
+                  </p>
+                  <p class="text-xs text-purple-700 italic">
+                    Target revenue: $50K-$80K. Goal: Survive and prove competence.
+                  </p>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <h4 class="font-bold text-purple-900 mb-2">Year 2: Specialize and Increase Rates</h4>
+                  <p class="text-sm text-purple-800 mb-2">
+                    Focus on 2-3 policy areas. Become the recognized expert. Raise rates to $5K-$8K/month. Add 3-5 new clients through referrals. Start saying no to clients outside your specialty or below your rate floor.
+                  </p>
+                  <p class="text-xs text-purple-700 italic">
+                    Target revenue: $120K-$200K. Goal: Build expertise and reputation.
+                  </p>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <h4 class="font-bold text-purple-900 mb-2">Year 3: Premium Positioning and Selectivity</h4>
+                  <p class="text-sm text-purple-800 mb-2">
+                    You now have proven results, specialized expertise, and strong relationships. Charge $8K-$15K/month. Be selective about clients. Focus on organizations where you can deliver exceptional value. Build toward the practice you want long-term.
+                  </p>
+                  <p class="text-xs text-purple-700 italic">
+                    Target revenue: $250K-$400K+. Goal: Sustainable, high-value practice.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold mb-4 mt-8">Investment Areas That Compound</h3>
+
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h4 class="font-bold mb-2">Deep Policy Expertise</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Attend every committee hearing in your areas. Read every bill filed. Write analysis. Speak at conferences. Publish thought leadership. Within 3-5 years, you should know more about your policy areas than 90% of Capitol staff. That expertise becomes your moat.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h4 class="font-bold mb-2">Leadership Relationships</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Committee chairs, Speaker's office, Lt. Governor's staff—these relationships take years to build but open doors no amount of subject matter expertise can. Invest time in these relationships even when you can't immediately monetize them.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h4 class="font-bold mb-2">Industry Credibility</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Being known as THE lobbyist for healthcare, or energy, or education means clients come to you instead of you chasing them. Invest in industry association involvement, speaking opportunities, and thought leadership that builds this positioning.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h4 class="font-bold mb-2">Referral Networks</h4>
+              <p class="text-sm text-muted-foreground mb-3">
+                Relationships with attorneys, accountants, consultants, and other lobbyists who refer clients to you. These networks compound—one referral source can generate 3-5 clients over five years. Nurture these relationships like clients.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold text-blue-900 mb-2">The Five-Year Vision</h3>
+            <p class="text-sm text-blue-900 mb-3">
+              Five years from starting your practice, you should have 8-12 retained clients, specialized expertise in 2-3 policy areas, recognized industry credibility, strong relationships with legislative leadership, and annual revenue of $300K-$500K+. You're no longer struggling to find clients—you're selective about which ones you take.
+            </p>
+            <p class="text-sm text-blue-900 font-bold">
+              This doesn't happen by accident. It requires strategic decision-making from day one—which clients to pursue, which policy areas to specialize in, which relationships to prioritize, and which opportunities to decline. Build toward the practice you want, not just the clients you can get today.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12">
+          <h2 class="text-3xl font-bold mb-6">Your First Client Is the Hardest. Your Tenth Is Inevitable.</h2>
+
+          <div class="prose prose-lg max-w-none mb-8">
+            <p>
+              Landing your first lobbying client requires everything this guide covers—relationship leverage, strategic pricing, professional positioning, ethical compliance, and patience. It's harder than winning your tenth client because you have no track record, no testimonials, and no wins to point to.
+            </p>
+
+            <p>
+              But every successful Texas lobbyist started exactly where you are. They leveraged relationships from their Capitol years. They priced strategically. They proved value before asking for premium rates. They built expertise in specific policy areas. They played the long game.
+            </p>
+
+            <p>
+              The difference between lobbyists who build thriving practices and those who give up after a year isn't talent or connections—it's strategy, patience, and ethical discipline. You don't need to be the most experienced or best-connected lobbyist in Texas. You need to be competent, strategic, and trustworthy enough that one organization takes a chance on you. Then another. Then another.
+            </p>
+
+            <p>
+              Within three years, if you deliver results and build relationships, your challenge won't be finding clients—it will be deciding which ones to take.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg border-2 border-texas-blue-500 p-6">
+            <h3 class="text-xl font-bold mb-4">Ready to Build Your Practice?</h3>
+            <p class="text-muted-foreground mb-6">
+              Claim your profile on TexasLobby.org to increase visibility with potential clients searching for lobbyists by subject area expertise and city coverage. {totalLobbyists.toLocaleString()} Texas lobbyists are already listed—make sure you're discoverable.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a
+                href="/lobbyists"
+                class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 px-6 py-3 text-base font-semibold text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                Browse Texas Lobbyists
+              </a>
+              <a
+                href="/guides/how-to-become-a-lobbyist-in-texas"
+                class="inline-flex items-center justify-center rounded-lg border-2 border-texas-blue-500 px-6 py-3 text-base font-semibold text-texas-blue-600 hover:bg-texas-blue-50 transition-colors"
+              >
+                How to Become a Texas Lobbyist
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Guides -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <h2 class="text-2xl font-bold mb-8">Related Guides</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href="/guides/how-to-become-a-lobbyist-in-texas" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              How to Become a Lobbyist in Texas
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Complete career roadmap from Capitol intern to independent practice—the real paths that work.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+
+          <a href="/guides/how-much-does-a-lobbyist-cost" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              How Much Does a Lobbyist Cost?
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Real pricing data and what drives costs up or down—essential context for pricing your services.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </article>
+
+  <!-- Back to Guides -->
+  <section class="py-8 border-t border-border">
+    <div class="container max-w-4xl">
+      <a
+        href="/guides"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
+      >
+        ← Back to all guides
+      </a>
+    </div>
+  </section>
+</Layout>

@@ -140,8 +140,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   } catch (error: any) {
     console.error('[Approve Profile API] Unexpected error:', error);
+    console.error('[Approve Profile API] Error stack:', error?.stack);
+    console.error('[Approve Profile API] Error message:', error?.message);
     return new Response(JSON.stringify({
-      error: 'Internal server error'
+      error: 'Internal server error',
+      details: error?.message || 'Unknown error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

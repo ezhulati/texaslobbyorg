@@ -30,11 +30,17 @@ export default function PendingProfileActions({
       const response = await fetch('/api/admin/approve-profile', {
         method: 'POST',
         body: formData,
+        credentials: 'include', // Ensure cookies are sent
       });
 
       if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || 'Failed to approve profile');
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.error || errorData.details || 'Failed to approve profile');
+        } catch (parseError) {
+          const text = await response.text();
+          throw new Error(text || 'Failed to approve profile');
+        }
       }
 
       // Reload page to show updated list

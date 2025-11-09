@@ -36,6 +36,7 @@ const pageTitle = 'Manage Users | Admin';
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Email</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Role</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Created</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
@@ -59,6 +60,20 @@ const pageTitle = 'Manage Users | Admin';
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(u.created_at).toLocaleDateString()}
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                  {u.role !== 'admin' && (
+                    <button
+                      data-user-id={u.id}
+                      data-user-name={u.full_name || u.email}
+                      class="promote-admin-btn text-purple-600 hover:text-purple-800 font-medium"
+                    >
+                      Promote to Admin
+                    </button>
+                  )}
+                  {u.role === 'admin' && u.id === user.id && (
+                    <span class="text-xs text-muted-foreground italic">You</span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -67,3 +82,61 @@ const pageTitle = 'Manage Users | Admin';
     </div>
   </section>
 </Layout>
+
+<script>
+  // Handle promote to admin button clicks
+  document.addEventListener('DOMContentLoaded', () => {
+    const promoteButtons = document.querySelectorAll('.promote-admin-btn');
+
+    promoteButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        // Confirm promotion
+        const confirmed = confirm(
+          `Are you sure you want to promote "${userName}" to admin?\n\n` +
+          `This will give them full access to:\n` +
+          `• Approve/reject profiles\n` +
+          `• Manage all users\n` +
+          `• Access all admin features`
+        );
+
+        if (!confirmed) return;
+
+        // Disable button
+        target.disabled = true;
+        target.textContent = 'Promoting...';
+
+        try {
+          const response = await fetch('/api/admin/promote-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(`✓ ${userName} has been promoted to admin!`);
+            window.location.reload();
+          } else {
+            alert(`Failed to promote user: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Promote to Admin';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Promote to Admin';
+        }
+      });
+    });
+  });
+</script>

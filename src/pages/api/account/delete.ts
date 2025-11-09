@@ -64,6 +64,37 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Use service role client for deletion operations
     const supabase = createServerClient();
 
+    // Get user's role
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', userId)
+      .single();
+
+    // CRITICAL: Prevent last admin from deleting account
+    if (userData?.role === 'admin') {
+      // Check if this is the last admin
+      const { count: adminCount } = await supabase
+        .from('users')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'admin')
+        .is('deleted_at', null);
+
+      if (adminCount === 1) {
+        console.error('[Delete Account] Cannot delete last admin account');
+        return new Response(
+          JSON.stringify({
+            error: 'Cannot delete the last admin account. Please promote another user to admin first.',
+            isLastAdmin: true
+          }),
+          {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
+
     if (immediate) {
       // IMMEDIATE PERMANENT DELETION (no grace period)
       console.log('[Delete Account] Performing immediate permanent deletion for user:', userId);

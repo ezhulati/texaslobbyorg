@@ -1,53 +1,195 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-
 import { createServerClient } from '@/lib/supabase';
+
 const serverClient = createServerClient();
 
 // Require admin
 const user = Astro.locals.user;
 if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
-
-// Role check using middleware
 if (user.role !== 'admin') return Astro.redirect('/dashboard');
 
-// Get all lobbyists
+// Get all lobbyists with user info
 const { data: lobbyists } = await serverClient
   .from('lobbyists')
-  .select('*')
+  .select(`
+    *,
+    user:user_id (
+      email,
+      full_name
+    )
+  `)
   .order('created_at', { ascending: false });
+
+// Get statistics
+const { count: totalCount } = await serverClient
+  .from('lobbyists')
+  .select('*', { count: 'exact', head: true });
+
+const { count: activeCount } = await serverClient
+  .from('lobbyists')
+  .select('*', { count: 'exact', head: true })
+  .eq('is_active', true);
+
+const { count: pendingCount } = await serverClient
+  .from('lobbyists')
+  .select('*', { count: 'exact', head: true })
+  .eq('is_pending', true);
+
+const { count: premiumCount } = await serverClient
+  .from('lobbyists')
+  .select('*', { count: 'exact', head: true })
+  .in('subscription_tier', ['premium', 'featured']);
 
 const pageTitle = 'Manage Lobbyists | Admin';
 ---
 
 <Layout title={pageTitle} description="Manage all lobbyist profiles">
   <section class="py-12">
-    <div class="container max-w-6xl">
+    <div class="container max-w-7xl">
+      <!-- Header -->
       <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold">Manage Lobbyists</h1>
+        <div>
+          <h1 class="text-3xl font-bold mb-2">Manage Lobbyists</h1>
+          <p class="text-muted-foreground">Comprehensive lobbyist profile management</p>
+        </div>
         <a href="/admin" class="text-texas-blue-500 hover:underline">← Back to Admin</a>
       </div>
 
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg border p-4">
+          <p class="text-sm text-muted-foreground mb-1">Total Lobbyists</p>
+          <p class="text-2xl font-bold">{totalCount || 0}</p>
+        </div>
+        <div class="bg-white rounded-lg border p-4">
+          <p class="text-sm text-muted-foreground mb-1">Active</p>
+          <p class="text-2xl font-bold text-green-600">{activeCount || 0}</p>
+        </div>
+        <div class="bg-white rounded-lg border p-4">
+          <p class="text-sm text-muted-foreground mb-1">Pending Approval</p>
+          <p class="text-2xl font-bold text-amber-600">{pendingCount || 0}</p>
+        </div>
+        <div class="bg-white rounded-lg border p-4">
+          <p class="text-sm text-muted-foreground mb-1">Paid Subscriptions</p>
+          <p class="text-2xl font-bold text-purple-600">{premiumCount || 0}</p>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="mb-6 space-y-4">
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by name, email, or city..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+            />
+          </div>
+          <select
+            id="status-filter"
+            class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+          >
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <select
+            id="tier-filter"
+            class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+          >
+            <option value="">All Tiers</option>
+            <option value="free">Free</option>
+            <option value="premium">Premium</option>
+            <option value="featured">Featured</option>
+          </select>
+          <select
+            id="approval-filter"
+            class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+          >
+            <option value="">All Approvals</option>
+            <option value="approved">Approved</option>
+            <option value="pending_approval">Pending Approval</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between text-sm text-muted-foreground">
+          <span id="results-count">{lobbyists?.length || 0} lobbyists</span>
+          <div class="flex items-center gap-4">
+            <span id="selected-count" class="hidden text-texas-blue-600 font-medium">0 selected</span>
+            <button
+              id="export-selected"
+              class="hidden px-3 py-1 bg-texas-blue-600 text-white rounded-md hover:bg-texas-blue-700 text-sm font-medium"
+            >
+              Export Selected
+            </button>
+            <button
+              id="export-all"
+              class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm font-medium"
+            >
+              Export All
+            </button>
+            <button
+              id="clear-filters"
+              class="text-texas-blue-600 hover:text-texas-blue-700 font-medium"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lobbyists Table -->
       <div class="rounded-lg border border-border bg-white overflow-hidden">
         <table class="min-w-full divide-y divide-border">
           <thead class="bg-muted">
             <tr>
+              <th class="px-4 py-3 text-left">
+                <input
+                  type="checkbox"
+                  id="select-all"
+                  class="rounded border-gray-300 text-texas-blue-600 focus:ring-texas-blue-500"
+                />
+              </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Name</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Status</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Tier</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Approval</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Cities</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Created</th>
               <th class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
             {lobbyists?.map((lobbyist) => (
-              <tr class="hover:bg-muted/50">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="font-medium">{lobbyist.first_name} {lobbyist.last_name}</div>
-                  <div class="text-sm text-muted-foreground">{lobbyist.email}</div>
+              <tr
+                class="hover:bg-muted/50 lobbyist-row"
+                data-name={`${lobbyist.first_name} ${lobbyist.last_name}`}
+                data-email={lobbyist.email || lobbyist.user?.email || ''}
+                data-status={lobbyist.is_pending ? 'pending' : lobbyist.is_active ? 'active' : 'inactive'}
+                data-tier={lobbyist.subscription_tier || 'free'}
+                data-approval={lobbyist.is_approved ? 'approved' : lobbyist.is_approved === false ? 'rejected' : 'pending_approval'}
+                data-cities={lobbyist.cities?.join(' ') || ''}
+                data-lobbyist-id={lobbyist.id}
+                data-created={lobbyist.created_at}
+              >
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    class="lobbyist-checkbox rounded border-gray-300 text-texas-blue-600 focus:ring-texas-blue-500"
+                    data-lobbyist-id={lobbyist.id}
+                  />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class={`inline-flex rounded-full px-2 text-xs font-semibold ${
+                  <a href={`/admin/lobbyists/${lobbyist.id}`} class="block hover:text-texas-blue-600">
+                    <div class="font-medium">{lobbyist.first_name} {lobbyist.last_name}</div>
+                    <div class="text-sm text-muted-foreground">{lobbyist.email || lobbyist.user?.email}</div>
+                  </a>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                     lobbyist.is_pending ? 'bg-amber-100 text-amber-800' :
                     lobbyist.is_active ? 'bg-green-100 text-green-800' :
                     'bg-gray-100 text-gray-800'
@@ -55,14 +197,42 @@ const pageTitle = 'Manage Lobbyists | Admin';
                     {lobbyist.is_pending ? 'Pending' : lobbyist.is_active ? 'Active' : 'Inactive'}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                  {lobbyist.subscription_tier || 'free'}
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                    lobbyist.subscription_tier === 'featured' ? 'bg-purple-100 text-purple-800' :
+                    lobbyist.subscription_tier === 'premium' ? 'bg-blue-100 text-blue-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {lobbyist.subscription_tier || 'free'}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                    lobbyist.is_approved ? 'bg-green-100 text-green-800' :
+                    lobbyist.is_approved === false ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {lobbyist.is_approved ? 'Approved' : lobbyist.is_approved === false ? 'Rejected' : 'Pending'}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <div class="max-w-xs truncate" title={lobbyist.cities?.join(', ')}>
+                    {lobbyist.cities?.slice(0, 2).join(', ')}
+                    {lobbyist.cities && lobbyist.cities.length > 2 && ` +${lobbyist.cities.length - 2}`}
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(lobbyist.created_at).toLocaleDateString()}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                  <a href={`/lobbyists/${lobbyist.slug}`} class="text-texas-blue-500 hover:underline">View</a>
+                  <div class="flex items-center justify-end gap-2">
+                    <a href={`/lobbyists/${lobbyist.slug}`} target="_blank" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium">
+                      View
+                    </a>
+                    <a href={`/admin/lobbyists/${lobbyist.id}`} class="text-gray-600 hover:text-gray-700 font-medium">
+                      Manage
+                    </a>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -72,3 +242,199 @@ const pageTitle = 'Manage Lobbyists | Admin';
     </div>
   </section>
 </Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Search and filter functionality
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
+    const tierFilter = document.getElementById('tier-filter') as HTMLSelectElement;
+    const approvalFilter = document.getElementById('approval-filter') as HTMLSelectElement;
+    const clearFiltersBtn = document.getElementById('clear-filters') as HTMLButtonElement;
+    const resultsCount = document.getElementById('results-count') as HTMLSpanElement;
+    const lobbyistRows = document.querySelectorAll('.lobbyist-row') as NodeListOf<HTMLElement>;
+
+    function filterLobbyists() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const statusValue = statusFilter.value.toLowerCase();
+      const tierValue = tierFilter.value.toLowerCase();
+      const approvalValue = approvalFilter.value.toLowerCase();
+
+      let visibleCount = 0;
+
+      lobbyistRows.forEach(row => {
+        const name = row.dataset.name?.toLowerCase() || '';
+        const email = row.dataset.email?.toLowerCase() || '';
+        const cities = row.dataset.cities?.toLowerCase() || '';
+        const status = row.dataset.status?.toLowerCase() || '';
+        const tier = row.dataset.tier?.toLowerCase() || '';
+        const approval = row.dataset.approval?.toLowerCase() || '';
+
+        // Check search term
+        const matchesSearch = !searchTerm ||
+          name.includes(searchTerm) ||
+          email.includes(searchTerm) ||
+          cities.includes(searchTerm);
+
+        // Check status filter
+        const matchesStatus = !statusValue || status === statusValue;
+
+        // Check tier filter
+        const matchesTier = !tierValue || tier === tierValue;
+
+        // Check approval filter
+        const matchesApproval = !approvalValue || approval === approvalValue;
+
+        // Show/hide row
+        if (matchesSearch && matchesStatus && matchesTier && matchesApproval) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Update results count
+      resultsCount.textContent = `${visibleCount} lobbyist${visibleCount !== 1 ? 's' : ''}`;
+    }
+
+    function clearFilters() {
+      searchInput.value = '';
+      statusFilter.value = '';
+      tierFilter.value = '';
+      approvalFilter.value = '';
+      filterLobbyists();
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterLobbyists);
+    statusFilter.addEventListener('change', filterLobbyists);
+    tierFilter.addEventListener('change', filterLobbyists);
+    approvalFilter.addEventListener('change', filterLobbyists);
+    clearFiltersBtn.addEventListener('click', clearFilters);
+
+    // Bulk selection functionality
+    const selectAllCheckbox = document.getElementById('select-all') as HTMLInputElement;
+    const lobbyistCheckboxes = document.querySelectorAll('.lobbyist-checkbox') as NodeListOf<HTMLInputElement>;
+    const selectedCount = document.getElementById('selected-count') as HTMLSpanElement;
+    const exportSelectedBtn = document.getElementById('export-selected') as HTMLButtonElement;
+    const exportAllBtn = document.getElementById('export-all') as HTMLButtonElement;
+
+    function updateSelectionUI() {
+      const checkedBoxes = Array.from(lobbyistCheckboxes).filter(cb => cb.checked);
+      const count = checkedBoxes.length;
+
+      if (count > 0) {
+        selectedCount.classList.remove('hidden');
+        exportSelectedBtn.classList.remove('hidden');
+        selectedCount.textContent = `${count} selected`;
+      } else {
+        selectedCount.classList.add('hidden');
+        exportSelectedBtn.classList.add('hidden');
+      }
+
+      // Update select-all checkbox state
+      const visibleCheckboxes = Array.from(lobbyistCheckboxes).filter(cb => {
+        const row = cb.closest('tr');
+        return row && row.style.display !== 'none';
+      });
+
+      if (visibleCheckboxes.length > 0) {
+        const allChecked = visibleCheckboxes.every(cb => cb.checked);
+        const someChecked = visibleCheckboxes.some(cb => cb.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = someChecked && !allChecked;
+      }
+    }
+
+    selectAllCheckbox.addEventListener('change', () => {
+      const isChecked = selectAllCheckbox.checked;
+      lobbyistCheckboxes.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        if (row && row.style.display !== 'none') {
+          checkbox.checked = isChecked;
+        }
+      });
+      updateSelectionUI();
+    });
+
+    lobbyistCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updateSelectionUI);
+    });
+
+    // Export functionality
+    function exportToCSV(lobbyists: any[]) {
+      const headers = ['Name', 'Email', 'Status', 'Tier', 'Approval', 'Cities', 'Phone', 'Created'];
+      const rows = lobbyists.map(lob => [
+        lob.name || '',
+        lob.email || '',
+        lob.status || '',
+        lob.tier || '',
+        lob.approval || '',
+        lob.cities || '',
+        lob.phone || '',
+        lob.created || ''
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `lobbyists_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    exportSelectedBtn.addEventListener('click', () => {
+      const checkedBoxes = Array.from(lobbyistCheckboxes).filter(cb => cb.checked);
+      const selectedLobbyists = checkedBoxes.map(cb => {
+        const row = cb.closest('tr') as HTMLElement;
+        return {
+          name: row.dataset.name || '',
+          email: row.dataset.email || '',
+          status: row.dataset.status || '',
+          tier: row.dataset.tier || '',
+          approval: row.dataset.approval || '',
+          cities: row.dataset.cities || '',
+          phone: '', // Not in dataset
+          created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : ''
+        };
+      });
+
+      if (selectedLobbyists.length === 0) {
+        alert('Please select at least one lobbyist to export.');
+        return;
+      }
+
+      exportToCSV(selectedLobbyists);
+    });
+
+    exportAllBtn.addEventListener('click', () => {
+      const visibleRows = Array.from(lobbyistRows).filter(row => row.style.display !== 'none');
+      const allLobbyists = visibleRows.map(row => ({
+        name: row.dataset.name || '',
+        email: row.dataset.email || '',
+        status: row.dataset.status || '',
+        tier: row.dataset.tier || '',
+        approval: row.dataset.approval || '',
+        cities: row.dataset.cities || '',
+        phone: '', // Not in dataset
+        created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : ''
+      }));
+
+      if (allLobbyists.length === 0) {
+        alert('No lobbyists to export.');
+        return;
+      }
+
+      exportToCSV(allLobbyists);
+    });
+  });
+</script>

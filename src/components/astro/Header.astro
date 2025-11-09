@@ -83,8 +83,8 @@ if (isAdmin) {
                 class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 aria-label="User menu"
               >
-                <div class="h-8 w-8 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold">
-                  {currentUser.full_name?.[0]?.toUpperCase() || currentUser.email[0].toUpperCase()}
+                <div class="h-8 w-8 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold text-xs">
+                  {((currentUser.first_name?.[0] || '') + (currentUser.last_name?.[0] || '')).toUpperCase() || currentUser.email[0].toUpperCase()}
                 </div>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -113,8 +113,8 @@ if (isAdmin) {
                 class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 aria-label="User menu"
               >
-                <div class="h-8 w-8 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold">
-                  {currentUser.full_name?.[0]?.toUpperCase() || currentUser.email[0].toUpperCase()}
+                <div class="h-8 w-8 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold text-xs">
+                  {((currentUser.first_name?.[0] || '') + (currentUser.last_name?.[0] || '')).toUpperCase() || currentUser.email[0].toUpperCase()}
                 </div>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -151,8 +151,8 @@ if (isAdmin) {
                 class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 aria-label="User menu"
               >
-                <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-semibold">
-                  {currentUser.full_name?.[0]?.toUpperCase() || currentUser.email[0].toUpperCase()}
+                <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-semibold text-xs">
+                  {((currentUser.first_name?.[0] || '') + (currentUser.last_name?.[0] || '')).toUpperCase() || currentUser.email[0].toUpperCase()}
                 </div>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />

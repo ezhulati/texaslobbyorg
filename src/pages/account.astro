@@ -49,6 +49,7 @@ if (!isAuthenticated || !currentUser) {
                 id="first_name"
                 name="first_name"
                 value={currentUser.first_name || ''}
+                autocomplete="given-name"
                 class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
                 placeholder="First name"
               />
@@ -63,6 +64,7 @@ if (!isAuthenticated || !currentUser) {
                 id="last_name"
                 name="last_name"
                 value={currentUser.last_name || ''}
+                autocomplete="family-name"
                 class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
                 placeholder="Last name"
               />
@@ -70,9 +72,9 @@ if (!isAuthenticated || !currentUser) {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-muted-foreground mb-2">
+            <div class="block text-sm font-medium text-muted-foreground mb-2">
               Email Address
-            </label>
+            </div>
             <p class="text-foreground">{currentUser.email}</p>
             <p class="text-xs text-muted-foreground mt-1">
               Contact support to change your email address
@@ -80,9 +82,9 @@ if (!isAuthenticated || !currentUser) {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-muted-foreground mb-2">
+            <div class="block text-sm font-medium text-muted-foreground mb-2">
               Account Type
-            </label>
+            </div>
             <p class="text-foreground capitalize">{currentUser.role}</p>
           </div>
 
@@ -114,6 +116,7 @@ if (!isAuthenticated || !currentUser) {
               type="password"
               id="current_password"
               name="current_password"
+              autocomplete="current-password"
               class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
               placeholder="Enter current password"
               required
@@ -128,6 +131,7 @@ if (!isAuthenticated || !currentUser) {
               type="password"
               id="new_password"
               name="new_password"
+              autocomplete="new-password"
               class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
               placeholder="Enter new password (min 8 characters)"
               minlength="8"
@@ -146,6 +150,7 @@ if (!isAuthenticated || !currentUser) {
               type="password"
               id="confirm_password"
               name="confirm_password"
+              autocomplete="new-password"
               class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-texas-blue-500"
               placeholder="Confirm new password"
               minlength="8"
@@ -236,6 +241,7 @@ if (!isAuthenticated || !currentUser) {
           <input
             type="password"
             id="delete-password"
+            autocomplete="current-password"
             class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-red-500"
             placeholder="Enter your password"
             required

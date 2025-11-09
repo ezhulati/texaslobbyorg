@@ -76,6 +76,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     console.log('[Signup API] User created:', data.user.id);
+    console.log('[Signup API] Session created:', data.session ? 'Yes' : 'No (email verification required)');
 
     // STEP 4: Create user record in database
     // If unclaimed profile exists, set role to 'lobbyist' automatically
@@ -114,10 +115,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       console.log('[Signup API] Searcher account, redirecting to directory');
     }
 
-    console.log('[Signup API] Signup complete, returning success with redirect:', redirectTo);
+    // Check if email verification is needed (no session = verification required)
+    const needsEmailVerification = !data.session;
+
+    console.log('[Signup API] Signup complete, needsEmailVerification:', needsEmailVerification, 'redirect:', redirectTo);
     return new Response(JSON.stringify({
       success: true,
       redirectTo,
+      needsEmailVerification,
       hasUnclaimedProfile: !!unclaimedProfile,
       user: {
         id: data.user.id,

@@ -1,13 +1,5 @@
 import { Resend } from 'resend';
 
-const resendApiKey = import.meta.env.RESEND_API_KEY;
-
-if (!resendApiKey) {
-  console.warn('RESEND_API_KEY not found - email sending will fail');
-}
-
-const resend = new Resend(resendApiKey);
-
 interface EmailOptions {
   to: string;
   subject: string;
@@ -15,12 +7,17 @@ interface EmailOptions {
 }
 
 export async function sendEmail({ to, subject, html }: EmailOptions) {
+  const resendApiKey = import.meta.env.RESEND_API_KEY;
+
   if (!resendApiKey) {
     console.error('Cannot send email - RESEND_API_KEY not configured');
     return { error: 'Email service not configured' };
   }
 
   try {
+    // Initialize Resend only when sending email
+    const resend = new Resend(resendApiKey);
+
     const { data, error } = await resend.emails.send({
       from: 'TexasLobby.org <noreply@texaslobby.org>',
       to: [to],

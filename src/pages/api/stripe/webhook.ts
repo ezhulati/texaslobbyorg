@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
-import { stripe, SUBSCRIPTION_TIERS } from '@/lib/stripe';
+import { getStripeClient, SUBSCRIPTION_TIERS } from '@/lib/stripe';
 import { createServerClient } from '@/lib/supabase';
 import {
   sendEmail,
@@ -43,6 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   // Verify webhook signature
   try {
+    const stripe = getStripeClient();
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
@@ -134,6 +135,7 @@ async function handleCheckoutSessionCompleted(
   console.log(`Checkout completed for user ${userId}, tier: ${tier}`);
 
   // Get the subscription details from Stripe
+  const stripe = getStripeClient();
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   // Update user's subscription in database
@@ -333,6 +335,7 @@ async function handlePaymentFailed(
   }
 
   // Get subscription to find user
+  const stripe = getStripeClient();
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const userId = subscription.metadata?.userId;
 

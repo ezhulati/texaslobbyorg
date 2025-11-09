@@ -1,0 +1,138 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { createServerClient, createServerAuthClient } from '@/lib/supabase';
+
+// Get authenticated user
+const supabaseAuth = createServerAuthClient(Astro.cookies);
+const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+
+// If not authenticated, redirect to login
+if (authError || !user) {
+  return Astro.redirect('/login');
+}
+
+// Get user profile and check if actually suspended
+const serverClient = createServerClient();
+const { data: profile } = await serverClient
+  .from('users')
+  .select('id, email, full_name, is_suspended')
+  .eq('id', user.id)
+  .single();
+
+// If not suspended, redirect to dashboard
+if (!profile?.is_suspended) {
+  return Astro.redirect('/dashboard');
+}
+
+// Get active suspension details
+const { data: suspension } = await serverClient
+  .rpc('get_active_suspension', { p_user_id: user.id })
+  .single();
+
+const pageTitle = 'Account Suspended';
+---
+
+<Layout title={pageTitle} description="Your account has been suspended">
+  <section class="py-12 min-h-[60vh] flex items-center">
+    <div class="container max-w-2xl">
+      <div class="rounded-lg border border-red-200 bg-red-50 p-8">
+        <!-- Icon -->
+        <div class="flex justify-center mb-6">
+          <div class="rounded-full bg-red-100 p-4">
+            <svg class="h-12 w-12 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-6">
+          <h1 class="text-2xl font-bold text-red-900 mb-2">Account Suspended</h1>
+          <p class="text-red-700">
+            Your account has been suspended and you cannot access TexasLobby.org at this time.
+          </p>
+        </div>
+
+        <!-- Suspension Details -->
+        {suspension && (
+          <div class="bg-white rounded-lg p-6 mb-6 border border-red-200">
+            <div class="space-y-4">
+              <!-- Reason -->
+              <div>
+                <h2 class="text-sm font-semibold text-gray-700 mb-1">Reason:</h2>
+                <p class="text-gray-900">{suspension.reason}</p>
+              </div>
+
+              <!-- Duration -->
+              <div>
+                <h2 class="text-sm font-semibold text-gray-700 mb-1">Duration:</h2>
+                {suspension.is_permanent ? (
+                  <p class="text-red-900 font-medium">Permanent suspension</p>
+                ) : (
+                  <p class="text-gray-900">
+                    Temporary suspension until{' '}
+                    <span class="font-medium">
+                      {new Date(suspension.expires_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </p>
+                )}
+              </div>
+
+              <!-- Suspended Date -->
+              <div>
+                <h2 class="text-sm font-semibold text-gray-700 mb-1">Suspended on:</h2>
+                <p class="text-gray-600 text-sm">
+                  {new Date(suspension.suspended_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <!-- Contact Support -->
+        <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+          <h2 class="text-sm font-semibold text-gray-700 mb-2">Questions about your suspension?</h2>
+          <p class="text-gray-600 text-sm mb-3">
+            If you believe this suspension was made in error or would like to appeal, please contact our support team.
+          </p>
+          <a
+            href="mailto:support@texaslobby.org?subject=Account%20Suspension%20Inquiry"
+            class="inline-flex items-center text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm"
+          >
+            Contact Support
+            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="text-center">
+          <form action="/api/auth/signout" method="POST">
+            <button
+              type="submit"
+              class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-texas-blue-500"
+            >
+              <svg class="mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Sign Out
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

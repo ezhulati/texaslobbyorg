@@ -1,0 +1,221 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { createServerClient } from '@/lib/supabase';
+
+// Require admin
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
+if (user.role !== 'admin') return Astro.redirect('/dashboard');
+
+const { id: targetUserId } = Astro.params;
+
+if (!targetUserId) {
+  return Astro.redirect('/admin/users');
+}
+
+const serverClient = createServerClient();
+
+// Get target user details
+const { data: targetUser } = await serverClient
+  .from('users')
+  .select('id, email, full_name, role, is_suspended')
+  .eq('id', targetUserId)
+  .single();
+
+if (!targetUser) {
+  return Astro.redirect('/admin/users');
+}
+
+// Get all suspensions for this user (active and inactive)
+const { data: suspensions } = await serverClient
+  .from('user_suspensions')
+  .select(`
+    id,
+    reason,
+    reason_category,
+    internal_notes,
+    suspended_at,
+    expires_at,
+    is_active,
+    unsuspended_at,
+    suspended_by,
+    unsuspended_by
+  `)
+  .eq('user_id', targetUserId)
+  .order('suspended_at', { ascending: false });
+
+// Get admin names for suspended_by and unsuspended_by
+const adminIds = new Set<string>();
+suspensions?.forEach(s => {
+  if (s.suspended_by) adminIds.add(s.suspended_by);
+  if (s.unsuspended_by) adminIds.add(s.unsuspended_by);
+});
+
+let adminNames: Record<string, string> = {};
+if (adminIds.size > 0) {
+  const { data: admins } = await serverClient
+    .from('users')
+    .select('id, full_name, email')
+    .in('id', Array.from(adminIds));
+
+  adminNames = admins?.reduce((acc, admin) => {
+    acc[admin.id] = admin.full_name || admin.email;
+    return acc;
+  }, {} as Record<string, string>) || {};
+}
+
+const pageTitle = `Suspension History - ${targetUser.full_name || targetUser.email}`;
+---
+
+<Layout title={pageTitle} description="View user suspension history">
+  <section class="py-12">
+    <div class="container max-w-5xl">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">Suspension History</h1>
+          <p class="text-muted-foreground">
+            {targetUser.full_name || 'User'} ({targetUser.email})
+          </p>
+        </div>
+        <a href="/admin/users" class="text-texas-blue-500 hover:underline">← Back to Users</a>
+      </div>
+
+      <!-- Current Status -->
+      <div class="mb-8 p-6 rounded-lg border bg-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-semibold mb-1">Current Status</h2>
+            <div class="flex items-center gap-2">
+              {targetUser.is_suspended ? (
+                <span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold bg-red-100 text-red-800">
+                  Suspended
+                </span>
+              ) : (
+                <span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold bg-green-100 text-green-800">
+                  Active
+                </span>
+              )}
+              <span class="text-sm text-muted-foreground">
+                • Role: {targetUser.role || 'searcher'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suspension History -->
+      <div class="rounded-lg border bg-white overflow-hidden">
+        <div class="px-6 py-4 border-b bg-muted">
+          <h2 class="text-lg font-semibold">
+            All Suspensions ({suspensions?.length || 0})
+          </h2>
+        </div>
+
+        {!suspensions || suspensions.length === 0 ? (
+          <div class="px-6 py-12 text-center text-muted-foreground">
+            <p>No suspension history found for this user.</p>
+          </div>
+        ) : (
+          <div class="divide-y divide-border">
+            {suspensions.map((suspension, index) => (
+              <div class="px-6 py-6">
+                <!-- Suspension Header -->
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <span class="text-lg font-semibold text-gray-900">
+                      Suspension #{suspensions.length - index}
+                    </span>
+                    {suspension.is_active ? (
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800">
+                        Active
+                      </span>
+                    ) : (
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-800">
+                        Inactive
+                      </span>
+                    )}
+                    <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800">
+                      {suspension.reason_category || 'other'}
+                    </span>
+                  </div>
+                  <div class="text-right text-sm text-muted-foreground">
+                    {suspension.expires_at ? (
+                      <span>Expires: {new Date(suspension.expires_at).toLocaleDateString()}</span>
+                    ) : (
+                      <span class="font-medium text-red-600">Permanent</span>
+                    )}
+                  </div>
+                </div>
+
+                <!-- Suspension Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <!-- Reason -->
+                  <div class="col-span-2">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-1">Reason (visible to user):</h3>
+                    <p class="text-gray-900 bg-gray-50 rounded p-3 border">
+                      {suspension.reason}
+                    </p>
+                  </div>
+
+                  <!-- Internal Notes -->
+                  {suspension.internal_notes && (
+                    <div class="col-span-2">
+                      <h3 class="text-sm font-semibold text-gray-700 mb-1">Internal Notes (admin only):</h3>
+                      <p class="text-gray-700 bg-yellow-50 rounded p-3 border border-yellow-200">
+                        {suspension.internal_notes}
+                      </p>
+                    </div>
+                  )}
+
+                  <!-- Suspended Info -->
+                  <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-1">Suspended:</h3>
+                    <p class="text-gray-900">
+                      {new Date(suspension.suspended_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                      by {adminNames[suspension.suspended_by] || 'Unknown Admin'}
+                    </p>
+                  </div>
+
+                  <!-- Unsuspended Info -->
+                  {suspension.unsuspended_at && (
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-700 mb-1">Unsuspended:</h3>
+                      <p class="text-gray-900">
+                        {new Date(suspension.unsuspended_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                      {suspension.unsuspended_by && (
+                        <p class="text-sm text-gray-600">
+                          by {adminNames[suspension.unsuspended_by] || 'System'}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <!-- Timeline Info -->
+                <div class="text-xs text-gray-500 pt-3 border-t">
+                  ID: {suspension.id}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+</Layout>

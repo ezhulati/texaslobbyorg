@@ -1,0 +1,644 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import { createServerClient } from '@/lib/supabase';
+
+// Require admin
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
+if (user.role !== 'admin') return Astro.redirect('/dashboard');
+
+const { id: targetUserId } = Astro.params;
+
+if (!targetUserId) {
+  return Astro.redirect('/admin/users');
+}
+
+const serverClient = createServerClient();
+
+// Get target user details
+const { data: targetUser } = await serverClient
+  .from('users')
+  .select('*')
+  .eq('id', targetUserId)
+  .single();
+
+if (!targetUser) {
+  return Astro.redirect('/admin/users');
+}
+
+// Get user's lobbyist profile if they have one
+const { data: lobbyistProfile } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .eq('user_id', targetUserId)
+  .single();
+
+// Get user's favorites count
+const { count: favoritesCount } = await serverClient
+  .from('favorites')
+  .select('*', { count: 'exact', head: true })
+  .eq('user_id', targetUserId);
+
+// Get user's page views count
+const { count: pageViewsCount } = await serverClient
+  .from('page_views')
+  .select('*', { count: 'exact', head: true })
+  .eq('user_id', targetUserId);
+
+// Get active suspension if any
+const { data: activeSuspension } = await serverClient
+  .rpc('get_active_suspension', { p_user_id: targetUserId })
+  .single();
+
+// Get total suspensions count
+const { count: suspensionsCount } = await serverClient
+  .from('user_suspensions')
+  .select('*', { count: 'exact', head: true })
+  .eq('user_id', targetUserId);
+
+// Get recent favorites
+const { data: recentFavorites } = await serverClient
+  .from('favorites')
+  .select(`
+    id,
+    created_at,
+    lobbyist:lobbyist_id (
+      first_name,
+      last_name,
+      slug
+    )
+  `)
+  .eq('user_id', targetUserId)
+  .order('created_at', { ascending: false })
+  .limit(5);
+
+// Get recent page views
+const { data: recentPageViews } = await serverClient
+  .from('page_views')
+  .select('lobbyist_slug, created_at')
+  .eq('user_id', targetUserId)
+  .order('created_at', { ascending: false })
+  .limit(10);
+
+const pageTitle = `User Details - ${targetUser.full_name || targetUser.email}`;
+---
+
+<Layout title={pageTitle} description="View user details and activity">
+  <section class="py-12">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">User Details</h1>
+          <p class="text-muted-foreground">Comprehensive view of user account and activity</p>
+        </div>
+        <a href="/admin/users" class="text-texas-blue-500 hover:underline">← Back to Users</a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: User Info & Stats -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- User Profile Card -->
+          <div class="rounded-lg border bg-white p-6">
+            <div class="flex items-start justify-between mb-6">
+              <div class="flex items-center gap-4">
+                <div class="h-16 w-16 rounded-full bg-texas-blue-100 flex items-center justify-center">
+                  <span class="text-2xl font-bold text-texas-blue-700">
+                    {(targetUser.full_name?.[0] || targetUser.email[0]).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <h2 class="text-2xl font-bold">{targetUser.full_name || 'No name set'}</h2>
+                  <p class="text-muted-foreground">{targetUser.email}</p>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                      targetUser.role === 'admin' ? 'bg-purple-100 text-purple-800' :
+                      targetUser.role === 'lobbyist' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {targetUser.role || 'searcher'}
+                    </span>
+                    {targetUser.is_suspended ? (
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800">
+                        Suspended
+                      </span>
+                    ) : (
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-green-100 text-green-800">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="grid grid-cols-2 gap-4 pt-6 border-t">
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">User ID</p>
+                <p class="font-mono text-xs">{targetUser.id}</p>
+              </div>
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Created</p>
+                <p class="text-sm font-medium">
+                  {new Date(targetUser.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Last Updated</p>
+                <p class="text-sm font-medium">
+                  {new Date(targetUser.updated_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+              {targetUser.last_sign_in_at && (
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Last Sign In</p>
+                  <p class="text-sm font-medium">
+                    {new Date(targetUser.last_sign_in_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <!-- Activity Stats -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="rounded-lg border bg-white p-6 text-center">
+              <p class="text-3xl font-bold text-texas-blue-600">{favoritesCount || 0}</p>
+              <p class="text-sm text-muted-foreground mt-1">Favorites</p>
+            </div>
+            <div class="rounded-lg border bg-white p-6 text-center">
+              <p class="text-3xl font-bold text-texas-blue-600">{pageViewsCount || 0}</p>
+              <p class="text-sm text-muted-foreground mt-1">Page Views</p>
+            </div>
+            <div class="rounded-lg border bg-white p-6 text-center">
+              <p class="text-3xl font-bold text-texas-blue-600">{suspensionsCount || 0}</p>
+              <p class="text-sm text-muted-foreground mt-1">Suspensions</p>
+            </div>
+          </div>
+
+          <!-- Active Suspension Alert -->
+          {activeSuspension && (
+            <div class="rounded-lg border border-red-200 bg-red-50 p-6">
+              <div class="flex items-start gap-3">
+                <svg class="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-red-900 mb-2">Active Suspension</h3>
+                  <p class="text-sm text-red-800 mb-3">{activeSuspension.reason}</p>
+                  <div class="flex items-center gap-4 text-sm">
+                    <span class="text-red-700">
+                      Category: <strong>{activeSuspension.reason_category}</strong>
+                    </span>
+                    {activeSuspension.is_permanent ? (
+                      <span class="text-red-900 font-semibold">Permanent</span>
+                    ) : (
+                      <span class="text-red-700">
+                        Expires: {new Date(activeSuspension.expires_at).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <!-- Lobbyist Profile -->
+          {lobbyistProfile && (
+            <div class="rounded-lg border bg-white p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">Lobbyist Profile</h3>
+                <a
+                  href={`/lobbyists/${lobbyistProfile.slug}`}
+                  target="_blank"
+                  class="text-texas-blue-600 hover:text-texas-blue-700 text-sm font-medium"
+                >
+                  View Profile →
+                </a>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Status</p>
+                  <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                    lobbyistProfile.is_approved ? 'bg-green-100 text-green-800' :
+                    lobbyistProfile.is_approved === false ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {lobbyistProfile.is_approved ? 'Approved' :
+                     lobbyistProfile.is_approved === false ? 'Rejected' : 'Pending'}
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Subscription</p>
+                  <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                    lobbyistProfile.subscription_tier === 'featured' ? 'bg-purple-100 text-purple-800' :
+                    lobbyistProfile.subscription_tier === 'premium' ? 'bg-blue-100 text-blue-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {lobbyistProfile.subscription_tier || 'free'}
+                  </span>
+                </div>
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Cities</p>
+                  <p class="text-sm">{lobbyistProfile.cities?.join(', ') || 'None'}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-muted-foreground mb-1">Phone</p>
+                  <p class="text-sm">{lobbyistProfile.phone || 'Not set'}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <!-- Recent Favorites -->
+          <div class="rounded-lg border bg-white overflow-hidden">
+            <div class="px-6 py-4 border-b bg-muted">
+              <h3 class="text-lg font-semibold">Recent Favorites</h3>
+            </div>
+            {!recentFavorites || recentFavorites.length === 0 ? (
+              <div class="px-6 py-8 text-center text-muted-foreground">
+                <p>No favorites yet</p>
+              </div>
+            ) : (
+              <div class="divide-y divide-border">
+                {recentFavorites.map((fav: any) => (
+                  <div class="px-6 py-4 flex items-center justify-between hover:bg-muted/50">
+                    <div>
+                      <p class="font-medium">
+                        {fav.lobbyist?.first_name} {fav.lobbyist?.last_name}
+                      </p>
+                      <p class="text-sm text-muted-foreground">
+                        {new Date(fav.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {fav.lobbyist?.slug && (
+                      <a
+                        href={`/lobbyists/${fav.lobbyist.slug}`}
+                        target="_blank"
+                        class="text-texas-blue-600 hover:text-texas-blue-700 text-sm"
+                      >
+                        View →
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <!-- Recent Page Views -->
+          <div class="rounded-lg border bg-white overflow-hidden">
+            <div class="px-6 py-4 border-b bg-muted">
+              <h3 class="text-lg font-semibold">Recent Page Views</h3>
+            </div>
+            {!recentPageViews || recentPageViews.length === 0 ? (
+              <div class="px-6 py-8 text-center text-muted-foreground">
+                <p>No page views tracked</p>
+              </div>
+            ) : (
+              <div class="divide-y divide-border">
+                {recentPageViews.map((view: any) => (
+                  <div class="px-6 py-3 flex items-center justify-between hover:bg-muted/50">
+                    <div class="flex items-center gap-3">
+                      <svg class="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      <p class="text-sm font-medium">{view.lobbyist_slug}</p>
+                    </div>
+                    <p class="text-xs text-muted-foreground">
+                      {new Date(view.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Right Column: Quick Actions -->
+        <div class="space-y-6">
+          <div class="rounded-lg border bg-white p-6">
+            <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div class="space-y-3">
+              <a
+                href={`/admin/users/${targetUserId}/edit`}
+                class="block w-full px-4 py-2 text-center bg-texas-blue-600 text-white rounded-md hover:bg-texas-blue-700 font-medium text-sm"
+              >
+                Edit User Information
+              </a>
+
+              <a
+                href={`/admin/users/${targetUserId}/suspensions`}
+                class="block w-full px-4 py-2 text-center border border-gray-300 rounded-md hover:bg-gray-50 font-medium text-sm"
+              >
+                View Suspension History
+              </a>
+
+              {targetUser.id !== user.id && (
+                <>
+                  {targetUser.is_suspended ? (
+                    <button
+                      data-user-id={targetUser.id}
+                      data-user-name={targetUser.full_name || targetUser.email}
+                      class="unsuspend-user-btn block w-full px-4 py-2 text-center bg-green-600 text-white rounded-md hover:bg-green-700 font-medium text-sm"
+                    >
+                      Unsuspend User
+                    </button>
+                  ) : (
+                    <button
+                      data-user-id={targetUser.id}
+                      data-user-name={targetUser.full_name || targetUser.email}
+                      class="suspend-user-btn block w-full px-4 py-2 text-center bg-orange-600 text-white rounded-md hover:bg-orange-700 font-medium text-sm"
+                    >
+                      Suspend User
+                    </button>
+                  )}
+
+                  {targetUser.role !== 'admin' && (
+                    <button
+                      data-user-id={targetUser.id}
+                      data-user-name={targetUser.full_name || targetUser.email}
+                      class="promote-admin-btn block w-full px-4 py-2 text-center bg-purple-600 text-white rounded-md hover:bg-purple-700 font-medium text-sm"
+                    >
+                      Promote to Admin
+                    </button>
+                  )}
+
+                  <button
+                    data-user-id={targetUser.id}
+                    data-user-name={targetUser.full_name || targetUser.email}
+                    data-user-email={targetUser.email}
+                    data-user-role={targetUser.role}
+                    class="delete-user-btn block w-full px-4 py-2 text-center bg-red-600 text-white rounded-md hover:bg-red-700 font-medium text-sm"
+                  >
+                    Delete User
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {lobbyistProfile && (
+            <div class="rounded-lg border bg-white p-6">
+              <h3 class="text-lg font-semibold mb-4">Lobbyist Actions</h3>
+              <div class="space-y-3">
+                <a
+                  href={`/admin/lobbyists?id=${lobbyistProfile.id}`}
+                  class="block w-full px-4 py-2 text-center border border-gray-300 rounded-md hover:bg-gray-50 font-medium text-sm"
+                >
+                  Manage Profile
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Reuse handlers from users page
+  document.addEventListener('DOMContentLoaded', () => {
+    // Promote to admin handler
+    const promoteBtn = document.querySelector('.promote-admin-btn');
+    if (promoteBtn) {
+      promoteBtn.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        const confirmed = confirm(
+          `Are you sure you want to promote "${userName}" to admin?\\n\\n` +
+          `This will give them full access to all admin features.`
+        );
+
+        if (!confirmed) return;
+
+        target.disabled = true;
+        target.textContent = 'Promoting...';
+
+        try {
+          const response = await fetch('/api/admin/promote-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(`✓ ${userName} has been promoted to admin!`);
+            window.location.reload();
+          } else {
+            alert(`Failed: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Promote to Admin';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Promote to Admin';
+        }
+      });
+    }
+
+    // Delete user handler
+    const deleteBtn = document.querySelector('.delete-user-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+        const userEmail = target.dataset.userEmail;
+        const userRole = target.dataset.userRole;
+
+        if (!userId) return;
+
+        const confirmed = confirm(
+          `⚠️ PERMANENT DELETION WARNING ⚠️\\n\\n` +
+          `You are about to PERMANENTLY delete:\\n` +
+          `Name: ${userName}\\n` +
+          `Email: ${userEmail}\\n` +
+          `Role: ${userRole}\\n\\n` +
+          `This CANNOT BE UNDONE. Continue?`
+        );
+
+        if (!confirmed) return;
+
+        const doubleCheck = confirm(`Final confirmation: Delete ${userEmail} permanently?`);
+        if (!doubleCheck) return;
+
+        target.disabled = true;
+        target.textContent = 'Deleting...';
+
+        try {
+          const response = await fetch('/api/admin/delete-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(`✓ ${userName} has been permanently deleted.`);
+            window.location.href = '/admin/users';
+          } else {
+            alert(`Failed: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Delete User';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Delete User';
+        }
+      });
+    }
+
+    // Suspend user handler
+    const suspendBtn = document.querySelector('.suspend-user-btn');
+    if (suspendBtn) {
+      suspendBtn.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        const reason = prompt(
+          `Suspend ${userName}\\n\\n` +
+          `Enter reason (min 10 characters):`
+        );
+
+        if (!reason || reason.trim().length < 10) {
+          if (reason !== null) alert('Reason must be at least 10 characters.');
+          return;
+        }
+
+        const category = prompt(
+          `Category:\\n1. spam\\n2. abuse\\n3. terms_violation\\n4. fraud\\n5. other\\n\\nType category name:`
+        );
+
+        const validCategories = ['spam', 'abuse', 'terms_violation', 'fraud', 'other'];
+        if (!category || !validCategories.includes(category.toLowerCase())) {
+          alert('Invalid category.');
+          return;
+        }
+
+        const duration = prompt(
+          `Duration:\\nEnter days (e.g., "7", "30") or "permanent":`
+        );
+
+        if (!duration) return;
+
+        const internalNotes = prompt(`Internal notes (optional):`);
+
+        const confirmed = confirm(
+          `Confirm suspension:\\n` +
+          `User: ${userName}\\n` +
+          `Reason: ${reason}\\n` +
+          `Duration: ${duration === 'permanent' ? 'Permanent' : duration + ' days'}`
+        );
+
+        if (!confirmed) return;
+
+        target.disabled = true;
+        target.textContent = 'Suspending...';
+
+        try {
+          const response = await fetch('/api/admin/suspend-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              userId,
+              reason: reason.trim(),
+              reasonCategory: category.toLowerCase(),
+              duration,
+              internalNotes: internalNotes?.trim() || null
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message || 'User suspended successfully.');
+            window.location.reload();
+          } else {
+            alert(`Failed: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Suspend User';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Suspend User';
+        }
+      });
+    }
+
+    // Unsuspend user handler
+    const unsuspendBtn = document.querySelector('.unsuspend-user-btn');
+    if (unsuspendBtn) {
+      unsuspendBtn.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        const confirmed = confirm(`Unsuspend ${userName}?\\n\\nThis will restore their access.`);
+        if (!confirmed) return;
+
+        target.disabled = true;
+        target.textContent = 'Unsuspending...';
+
+        try {
+          const response = await fetch('/api/admin/unsuspend-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message || 'User unsuspended successfully.');
+            window.location.reload();
+          } else {
+            alert(`Failed: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Unsuspend User';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Unsuspend User';
+        }
+      });
+    }
+  });
+</script>

@@ -11,7 +11,7 @@ if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
 // Role check using middleware
 if (user.role !== 'admin') return Astro.redirect('/dashboard');
 
-// Get all users
+// Get all users with suspension status
 const { data: users } = await serverClient
   .from('users')
   .select('*')
@@ -28,22 +28,102 @@ const pageTitle = 'Manage Users | Admin';
         <a href="/admin" class="text-texas-blue-500 hover:underline">← Back to Admin</a>
       </div>
 
+      <!-- Search and Filters -->
+      <div class="mb-6 space-y-4">
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by name or email..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+            />
+          </div>
+          <select
+            id="role-filter"
+            class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+          >
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="lobbyist">Lobbyist</option>
+            <option value="searcher">Searcher</option>
+          </select>
+          <select
+            id="status-filter"
+            class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
+          >
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between text-sm text-muted-foreground">
+          <span id="results-count">{users?.length || 0} users</span>
+          <div class="flex items-center gap-4">
+            <span id="selected-count" class="hidden text-texas-blue-600 font-medium">0 selected</span>
+            <button
+              id="export-selected"
+              class="hidden px-3 py-1 bg-texas-blue-600 text-white rounded-md hover:bg-texas-blue-700 text-sm font-medium"
+            >
+              Export Selected
+            </button>
+            <button
+              id="export-all"
+              class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm font-medium"
+            >
+              Export All
+            </button>
+            <button
+              id="clear-filters"
+              class="text-texas-blue-600 hover:text-texas-blue-700 font-medium"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="rounded-lg border border-border bg-white overflow-hidden">
         <table class="min-w-full divide-y divide-border">
           <thead class="bg-muted">
             <tr>
+              <th class="px-4 py-3 text-left">
+                <input
+                  type="checkbox"
+                  id="select-all"
+                  class="rounded border-gray-300 text-texas-blue-600 focus:ring-texas-blue-500"
+                />
+              </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Name</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Email</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Role</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Status</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Created</th>
               <th class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
             {users?.map((u) => (
-              <tr class="hover:bg-muted/50">
+              <tr
+                class="hover:bg-muted/50 user-row"
+                data-name={u.full_name || ''}
+                data-email={u.email}
+                data-role={u.role || 'searcher'}
+                data-status={u.is_suspended ? 'suspended' : 'active'}
+                data-user-id={u.id}
+                data-created={u.created_at}
+              >
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    class="user-checkbox rounded border-gray-300 text-texas-blue-600 focus:ring-texas-blue-500"
+                    data-user-id={u.id}
+                  />
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap font-medium">
-                  {u.full_name || 'N/A'}
+                  <a href={`/admin/users/${u.id}`} class="text-texas-blue-600 hover:text-texas-blue-700 hover:underline">
+                    {u.full_name || 'N/A'}
+                  </a>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {u.email}
@@ -57,6 +137,17 @@ const pageTitle = 'Manage Users | Admin';
                     {u.role || 'searcher'}
                   </span>
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {u.is_suspended ? (
+                    <span class="inline-flex rounded-full px-2 text-xs font-semibold bg-red-100 text-red-800">
+                      Suspended
+                    </span>
+                  ) : (
+                    <span class="inline-flex rounded-full px-2 text-xs font-semibold bg-green-100 text-green-800">
+                      Active
+                    </span>
+                  )}
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(u.created_at).toLocaleDateString()}
                 </td>
@@ -64,25 +155,50 @@ const pageTitle = 'Manage Users | Admin';
                   {u.id === user.id ? (
                     <span class="text-xs text-muted-foreground italic">You</span>
                   ) : (
-                    <div class="flex items-center justify-end gap-3">
-                      {u.role !== 'admin' && (
+                    <div class="flex flex-col items-end gap-2">
+                      <div class="flex items-center gap-3">
+                        {u.role !== 'admin' && (
+                          <button
+                            data-user-id={u.id}
+                            data-user-name={u.full_name || u.email}
+                            class="promote-admin-btn text-purple-600 hover:text-purple-800 font-medium"
+                          >
+                            Promote to Admin
+                          </button>
+                        )}
+                        {u.is_suspended ? (
+                          <button
+                            data-user-id={u.id}
+                            data-user-name={u.full_name || u.email}
+                            class="unsuspend-user-btn text-green-600 hover:text-green-800 font-medium"
+                          >
+                            Unsuspend
+                          </button>
+                        ) : (
+                          <button
+                            data-user-id={u.id}
+                            data-user-name={u.full_name || u.email}
+                            class="suspend-user-btn text-orange-600 hover:text-orange-800 font-medium"
+                          >
+                            Suspend
+                          </button>
+                        )}
                         <button
                           data-user-id={u.id}
                           data-user-name={u.full_name || u.email}
-                          class="promote-admin-btn text-purple-600 hover:text-purple-800 font-medium"
+                          data-user-email={u.email}
+                          data-user-role={u.role}
+                          class="delete-user-btn text-red-600 hover:text-red-800 font-medium"
                         >
-                          Promote to Admin
+                          Delete
                         </button>
-                      )}
-                      <button
-                        data-user-id={u.id}
-                        data-user-name={u.full_name || u.email}
-                        data-user-email={u.email}
-                        data-user-role={u.role}
-                        class="delete-user-btn text-red-600 hover:text-red-800 font-medium"
+                      </div>
+                      <a
+                        href={`/admin/users/${u.id}/suspensions`}
+                        class="text-xs text-gray-500 hover:text-gray-700 hover:underline"
                       >
-                        Delete
-                      </button>
+                        View History
+                      </a>
                     </div>
                   )}
                 </td>
@@ -220,6 +336,341 @@ const pageTitle = 'Manage Users | Admin';
           target.textContent = 'Delete';
         }
       });
+    });
+
+    // Handle suspend user button clicks
+    const suspendButtons = document.querySelectorAll('.suspend-user-btn');
+
+    suspendButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        // Prompt for suspension details
+        const reason = prompt(
+          `Suspend ${userName}\n\n` +
+          `Please enter the reason for suspension (visible to user, min 10 characters):`
+        );
+
+        if (!reason || reason.trim().length < 10) {
+          if (reason !== null) {
+            alert('Suspension reason must be at least 10 characters.');
+          }
+          return;
+        }
+
+        // Prompt for category
+        const category = prompt(
+          `Select reason category:\n\n` +
+          `Enter one of:\n` +
+          `1. spam\n` +
+          `2. abuse\n` +
+          `3. terms_violation\n` +
+          `4. fraud\n` +
+          `5. other\n\n` +
+          `Type the category name:`
+        );
+
+        const validCategories = ['spam', 'abuse', 'terms_violation', 'fraud', 'other'];
+        if (!category || !validCategories.includes(category.toLowerCase())) {
+          alert('Invalid category. Please use one of: spam, abuse, terms_violation, fraud, other');
+          return;
+        }
+
+        // Prompt for duration
+        const durationInput = prompt(
+          `Suspension duration:\n\n` +
+          `Enter number of days (e.g., "7", "30")\n` +
+          `Or type "permanent" for permanent suspension:`
+        );
+
+        if (!durationInput) return;
+
+        const duration = durationInput.toLowerCase() === 'permanent' ? 'permanent' : durationInput;
+
+        // Optional internal notes
+        const internalNotes = prompt(
+          `Internal notes (optional, only visible to admins):\n\n` +
+          `Add any private notes about this suspension:`
+        );
+
+        // Confirm suspension
+        const confirmed = confirm(
+          `Confirm suspension of ${userName}:\n\n` +
+          `Reason: ${reason}\n` +
+          `Category: ${category}\n` +
+          `Duration: ${duration === 'permanent' ? 'Permanent' : duration + ' days'}\n\n` +
+          `This will immediately log them out and prevent access.`
+        );
+
+        if (!confirmed) return;
+
+        // Disable button
+        target.disabled = true;
+        target.textContent = 'Suspending...';
+
+        try {
+          const response = await fetch('/api/admin/suspend-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              userId,
+              reason: reason.trim(),
+              reasonCategory: category.toLowerCase(),
+              duration,
+              internalNotes: internalNotes?.trim() || null
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message || `${userName} has been suspended successfully.`);
+            window.location.reload();
+          } else {
+            alert(`Failed to suspend user: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Suspend';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Suspend';
+        }
+      });
+    });
+
+    // Handle unsuspend user button clicks
+    const unsuspendButtons = document.querySelectorAll('.unsuspend-user-btn');
+
+    unsuspendButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+
+        if (!userId) return;
+
+        // Confirm unsuspension
+        const confirmed = confirm(
+          `Unsuspend ${userName}?\n\n` +
+          `This will lift the suspension and allow them to log in again.`
+        );
+
+        if (!confirmed) return;
+
+        // Disable button
+        target.disabled = true;
+        target.textContent = 'Unsuspending...';
+
+        try {
+          const response = await fetch('/api/admin/unsuspend-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message || `${userName} has been unsuspended successfully.`);
+            window.location.reload();
+          } else {
+            alert(`Failed to unsuspend user: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Unsuspend';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Unsuspend';
+        }
+      });
+    });
+
+    // Search and Filter functionality
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const roleFilter = document.getElementById('role-filter') as HTMLSelectElement;
+    const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
+    const clearFiltersBtn = document.getElementById('clear-filters') as HTMLButtonElement;
+    const resultsCount = document.getElementById('results-count') as HTMLSpanElement;
+    const userRows = document.querySelectorAll('.user-row') as NodeListOf<HTMLElement>;
+
+    function filterUsers() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const roleValue = roleFilter.value.toLowerCase();
+      const statusValue = statusFilter.value.toLowerCase();
+
+      let visibleCount = 0;
+
+      userRows.forEach(row => {
+        const name = row.dataset.name?.toLowerCase() || '';
+        const email = row.dataset.email?.toLowerCase() || '';
+        const role = row.dataset.role?.toLowerCase() || '';
+        const status = row.dataset.status?.toLowerCase() || '';
+
+        // Check search term
+        const matchesSearch = !searchTerm ||
+          name.includes(searchTerm) ||
+          email.includes(searchTerm);
+
+        // Check role filter
+        const matchesRole = !roleValue || role === roleValue;
+
+        // Check status filter
+        const matchesStatus = !statusValue || status === statusValue;
+
+        // Show/hide row
+        if (matchesSearch && matchesRole && matchesStatus) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Update results count
+      resultsCount.textContent = `${visibleCount} user${visibleCount !== 1 ? 's' : ''}`;
+    }
+
+    function clearFilters() {
+      searchInput.value = '';
+      roleFilter.value = '';
+      statusFilter.value = '';
+      filterUsers();
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterUsers);
+    roleFilter.addEventListener('change', filterUsers);
+    statusFilter.addEventListener('change', filterUsers);
+    clearFiltersBtn.addEventListener('click', clearFilters);
+
+    // Bulk selection functionality
+    const selectAllCheckbox = document.getElementById('select-all') as HTMLInputElement;
+    const userCheckboxes = document.querySelectorAll('.user-checkbox') as NodeListOf<HTMLInputElement>;
+    const selectedCount = document.getElementById('selected-count') as HTMLSpanElement;
+    const exportSelectedBtn = document.getElementById('export-selected') as HTMLButtonElement;
+    const exportAllBtn = document.getElementById('export-all') as HTMLButtonElement;
+
+    function updateSelectionUI() {
+      const checkedBoxes = Array.from(userCheckboxes).filter(cb => cb.checked);
+      const count = checkedBoxes.length;
+
+      if (count > 0) {
+        selectedCount.classList.remove('hidden');
+        exportSelectedBtn.classList.remove('hidden');
+        selectedCount.textContent = `${count} selected`;
+      } else {
+        selectedCount.classList.add('hidden');
+        exportSelectedBtn.classList.add('hidden');
+      }
+
+      // Update select-all checkbox state
+      const visibleCheckboxes = Array.from(userCheckboxes).filter(cb => {
+        const row = cb.closest('tr');
+        return row && row.style.display !== 'none';
+      });
+
+      if (visibleCheckboxes.length > 0) {
+        const allChecked = visibleCheckboxes.every(cb => cb.checked);
+        const someChecked = visibleCheckboxes.some(cb => cb.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = someChecked && !allChecked;
+      }
+    }
+
+    selectAllCheckbox.addEventListener('change', () => {
+      const isChecked = selectAllCheckbox.checked;
+      userCheckboxes.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        if (row && row.style.display !== 'none') {
+          checkbox.checked = isChecked;
+        }
+      });
+      updateSelectionUI();
+    });
+
+    userCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updateSelectionUI);
+    });
+
+    // Export functionality
+    function exportToCSV(users: any[]) {
+      const headers = ['Name', 'Email', 'Role', 'Status', 'Created', 'Last Sign In'];
+      const rows = users.map(user => [
+        user.name || '',
+        user.email || '',
+        user.role || 'searcher',
+        user.status || '',
+        user.created || '',
+        user.lastSignIn || ''
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `users_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    exportSelectedBtn.addEventListener('click', () => {
+      const checkedBoxes = Array.from(userCheckboxes).filter(cb => cb.checked);
+      const selectedUsers = checkedBoxes.map(cb => {
+        const row = cb.closest('tr') as HTMLElement;
+        return {
+          name: row.dataset.name || '',
+          email: row.dataset.email || '',
+          role: row.dataset.role || '',
+          status: row.dataset.status || '',
+          created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : '',
+          lastSignIn: '' // Not available in current dataset
+        };
+      });
+
+      if (selectedUsers.length === 0) {
+        alert('Please select at least one user to export.');
+        return;
+      }
+
+      exportToCSV(selectedUsers);
+    });
+
+    exportAllBtn.addEventListener('click', () => {
+      const visibleRows = Array.from(userRows).filter(row => row.style.display !== 'none');
+      const allUsers = visibleRows.map(row => ({
+        name: row.dataset.name || '',
+        email: row.dataset.email || '',
+        role: row.dataset.role || '',
+        status: row.dataset.status || '',
+        created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : '',
+        lastSignIn: '' // Not available in current dataset
+      }));
+
+      if (allUsers.length === 0) {
+        alert('No users to export.');
+        return;
+      }
+
+      exportToCSV(allUsers);
     });
   });
 </script>

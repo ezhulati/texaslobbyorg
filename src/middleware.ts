@@ -29,7 +29,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const serverClient = createServerClient();
     const { data: profile, error: profileError } = await serverClient
       .from('users')
-      .select('id, email, role, full_name')
+      .select('id, email, role, full_name, is_suspended')
       .eq('id', user.id)
       .single();
 
@@ -46,6 +46,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
       // User found in database
       context.locals.user = profile;
       context.locals.isAuthenticated = true;
+
+      // Check if user is suspended
+      if (profile.is_suspended) {
+        // Don't redirect if already on suspended page or logout
+        const pathname = context.url.pathname;
+        if (pathname !== '/suspended' && pathname !== '/api/auth/signout') {
+          console.log('[Middleware] User is suspended, redirecting to /suspended:', user.id);
+          return context.redirect('/suspended');
+        }
+      }
     }
   } catch (error) {
     console.error('[Middleware] Error getting user:', error);

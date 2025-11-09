@@ -99,10 +99,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         bio: formData.bio || null,
         cities: cities.length > 0 ? cities : [],
         subject_areas: subjectAreas.length > 0 ? subjectAreas : [],
+        id_verification_url: formData.idVerificationUrl || null,
         is_claimed: true,
         is_active: false, // Not active until approved by admin
         is_pending: true, // Awaiting admin review
-        pending_reason: 'New lobbyist registration',
+        pending_reason: 'New lobbyist registration - ID verification required',
         subscription_tier: 'free',
       })
       .select('id, slug')

@@ -150,6 +150,25 @@ const pageDescription = 'Review and approve pending lobbyist profiles.';
                       <p class="text-sm text-yellow-800">{profile.pending_reason}</p>
                     </div>
                   )}
+
+                  {/* ID Verification Document */}
+                  {profile.id_verification_url && (
+                    <div class="mt-4 rounded-lg bg-blue-50 border border-blue-200 p-4">
+                      <p class="text-xs font-medium text-blue-900 mb-2">ID Verification Document</p>
+                      <a
+                        href={profile.id_verification_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                        View ID Document
+                      </a>
+                      <p class="text-xs text-blue-700 mt-2">Driver's license, passport, or state-issued ID</p>
+                    </div>
+                  )}
                 </div>
 
                 <!-- Actions -->

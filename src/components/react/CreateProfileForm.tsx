@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
+import IDUpload from '@/components/react/IDUpload';
 
 interface CreateProfileFormProps {
   userId: string;
@@ -21,10 +22,12 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
     bio: '',
     cities: '',
     subjectAreas: '',
+    idVerificationUrl: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +38,11 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
       // Validate required fields
       if (!formData.firstName || !formData.lastName || !formData.email) {
         throw new Error('Please fill in all required fields');
+      }
+
+      // Validate ID verification
+      if (!formData.idVerificationUrl) {
+        throw new Error('Please upload your ID verification document');
       }
 
       console.log('[CreateProfileForm] Submitting profile creation');
@@ -248,6 +256,26 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
         <p className="mt-1 text-xs text-muted-foreground">
           Enter expertise areas separated by commas
         </p>
+      </div>
+
+      {/* ID Verification - REQUIRED */}
+      <div className="border-t border-border pt-6">
+        <label className="block text-sm font-medium mb-2">
+          ID Verification <span className="text-red-500">*</span>
+        </label>
+        <IDUpload
+          userId={userId}
+          onUploadComplete={(url) => {
+            setFormData({ ...formData, idVerificationUrl: url });
+            setUploadError('');
+          }}
+          onError={(err) => setUploadError(err)}
+        />
+        {uploadError && (
+          <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3">
+            <p className="text-sm text-red-800">{uploadError}</p>
+          </div>
+        )}
       </div>
 
       {error && (

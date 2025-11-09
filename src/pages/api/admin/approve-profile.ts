@@ -1,81 +1,148 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 import { sendEmail, profileApprovedEmail } from '@/lib/email';
 
-export const POST: APIRoute = async ({ request, cookies, redirect }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
-    // Verify admin
-    const accessToken = cookies.get('sb-access-token')?.value;
-    if (!accessToken) {
-      return redirect('/login');
-    }
+    console.log('[Approve Profile API] POST request received');
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken);
+    // Get authenticated user and verify admin role
+    const serverClient = createServerClient();
+
+    const { data: { user }, error: authError } = await serverClient.auth.getUser();
     if (authError || !user) {
-      return redirect('/login');
+      console.error('[Approve Profile API] Not authenticated');
+      return new Response(JSON.stringify({
+        error: 'Authentication required'
+      }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const { data: userData } = await supabase
+    const { data: userData } = await serverClient
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
 
     if (userData?.role !== 'admin') {
-      return new Response('Unauthorized', { status: 403 });
+      console.error('[Approve Profile API] User is not admin');
+      return new Response(JSON.stringify({
+        error: 'Admin access required'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    // Get form data
+    // Get form data (sent from PendingProfileActions component)
     const formData = await request.formData();
-    const lobbyistId = formData.get('lobbyist_id') as string;
+    const profileId = formData.get('profileId') as string;
 
-    if (!lobbyistId) {
-      return new Response('Missing lobbyist ID', { status: 400 });
+    if (!profileId) {
+      console.error('[Approve Profile API] Missing profileId');
+      return new Response(JSON.stringify({
+        error: 'Missing profile ID'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
+
+    console.log('[Approve Profile API] Approving profile:', profileId);
 
     // Get lobbyist profile
-    const { data: lobbyist, error: fetchError } = await supabase
+    const { data: lobbyist, error: fetchError } = await serverClient
       .from('lobbyists')
-      .select('*, users!inner(email)')
-      .eq('id', lobbyistId)
+      .select('*')
+      .eq('id', profileId)
       .single();
 
     if (fetchError || !lobbyist) {
-      return new Response('Profile not found', { status: 404 });
+      console.error('[Approve Profile API] Profile not found:', fetchError);
+      return new Response(JSON.stringify({
+        error: 'Profile not found'
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    // Approve profile
-    const { error: updateError } = await supabase
+    // Approve profile and clear any rejection state
+    const { error: updateError } = await serverClient
       .from('lobbyists')
       .update({
         is_pending: false,
         is_active: true,
         is_verified: true,
         pending_reason: null,
+        // Clear rejection fields if profile was previously rejected
+        is_rejected: false,
+        rejection_reason: null,
+        rejection_category: null,
+        rejected_at: null,
+        rejected_by: null,
+        // Don't reset rejection_count or last_resubmission_at (keep for audit trail)
       })
-      .eq('id', lobbyistId);
+      .eq('id', profileId);
 
     if (updateError) {
-      console.error('Error approving profile:', updateError);
-      return new Response('Error approving profile', { status: 500 });
+      console.error('[Approve Profile API] Error approving profile:', updateError);
+      return new Response(JSON.stringify({
+        error: 'Error approving profile'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    // Send approval email
-    const profileUrl = `${new URL(request.url).origin}/lobbyists/${lobbyist.slug}`;
-    const emailTemplate = profileApprovedEmail(
-      `${lobbyist.first_name} ${lobbyist.last_name}`,
-      profileUrl
-    );
+    console.log('[Approve Profile API] Profile approved successfully');
 
-    await sendEmail({
-      to: lobbyist.users.email,
-      subject: emailTemplate.subject,
-      html: emailTemplate.html,
+    // Send approval email
+    let emailSent = false;
+    if (lobbyist.email) {
+      try {
+        const profileUrl = `${import.meta.env.PUBLIC_SITE_URL}/lobbyists/${lobbyist.slug}`;
+        const emailTemplate = profileApprovedEmail(
+          `${lobbyist.first_name} ${lobbyist.last_name}`,
+          profileUrl
+        );
+
+        const emailResult = await sendEmail({
+          to: lobbyist.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html,
+        });
+
+        if (emailResult.error) {
+          console.error('[Approve Profile API] Error sending email:', emailResult.error);
+        } else {
+          emailSent = true;
+          console.log('[Approve Profile API] Approval email sent to:', lobbyist.email);
+        }
+      } catch (emailError) {
+        console.error('[Approve Profile API] Email sending failed:', emailError);
+        // Don't fail the approval if email fails
+      }
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Profile approved successfully',
+      emailSent,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    return redirect('/admin/pending?success=approved');
   } catch (error: any) {
-    console.error('Approve profile error:', error);
-    return new Response('Internal server error', { status: 500 });
+    console.error('[Approve Profile API] Unexpected error:', error);
+    return new Response(JSON.stringify({
+      error: 'Internal server error'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 };

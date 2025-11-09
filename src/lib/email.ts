@@ -359,3 +359,68 @@ export function paymentFailedEmail(lobbyistName: string, tier: 'premium' | 'feat
     `,
   };
 }
+
+export function subscriptionDowngradedEmail(
+  lobbyistName: string,
+  fromTier: 'featured',
+  toTier: 'premium',
+  newPrice: number
+) {
+  const fromTierName = 'Featured';
+  const toTierName = 'Premium';
+
+  return {
+    subject: `Subscription Changed to ${toTierName} - TexasLobby.org`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #3b82f6; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">Subscription Updated</h1>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <p>Hi ${lobbyistName},</p>
+
+            <p>Your subscription has been changed from ${fromTierName} to ${toTierName}.</p>
+
+            <div style="background-color: white; padding: 20px; border-left: 4px solid #3b82f6; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0;"><strong>Your New ${toTierName} Benefits:</strong></p>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li>Enhanced visibility in search results</li>
+                <li>Priority placement in listings</li>
+                <li>Detailed analytics dashboard</li>
+                <li>Profile badge</li>
+                <li>Up to 10 client testimonials</li>
+              </ul>
+            </div>
+
+            <div style="background-color: #f0f9ff; padding: 15px; border-radius: 6px; margin: 20px 0;">
+              <p style="margin: 0; font-size: 14px;"><strong>New Subscription Details:</strong></p>
+              <p style="margin: 5px 0; font-size: 14px;">Plan: ${toTierName} ($${newPrice}/month)</p>
+              <p style="margin: 5px 0; font-size: 14px;">Your card will be charged $${newPrice} on your next billing date</p>
+            </div>
+
+            <p>You can upgrade back to Featured or manage your subscription anytime from your dashboard.</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://texaslobby.org/dashboard/subscription" style="display: inline-block; background-color: #003f87; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600;">Manage Subscription</a>
+            </div>
+
+            <p>If you have any questions, please contact us at <a href="mailto:support@texaslobby.org" style="color: #003f87;">support@texaslobby.org</a>.</p>
+
+            <p style="margin-top: 30px;">Best regards,<br><strong>The TexasLobby.org Team</strong></p>
+          </div>
+
+          <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+            <p>TexasLobby.org - Connecting Texas Businesses with Experienced Lobbyists</p>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+}

@@ -7,6 +7,7 @@ import {
   subscriptionConfirmationEmail,
   subscriptionCancelledEmail,
   paymentFailedEmail,
+  subscriptionDowngradedEmail,
 } from '@/lib/email';
 
 /**
@@ -203,23 +204,55 @@ async function handleSubscriptionUpdated(
   eventId: string
 ) {
   const userId = subscription.metadata?.userId;
-  const tier = subscription.metadata?.tier as 'premium' | 'featured';
 
   if (!userId) {
     console.error('Missing userId in subscription metadata');
     return;
   }
 
-  console.log(`Subscription updated for user ${userId}, status: ${subscription.status}`);
+  // Get current user data to detect tier changes
+  const { data: userData } = await supabase
+    .from('users')
+    .select('subscription_tier, cancel_at_period_end, email, full_name')
+    .eq('id', userId)
+    .single();
 
-  // Update user's subscription status
+  const previousTier = userData?.subscription_tier || 'free';
+  const previousCancelState = userData?.cancel_at_period_end ?? false;
+
+  // Detect tier from actual price ID (not metadata, which may be stale)
+  const priceId = subscription.items.data[0]?.price?.id;
+  let tier: 'free' | 'premium' | 'featured' = 'free';
+
+  // Look up tier based on price ID
+  if (priceId === SUBSCRIPTION_TIERS.premium.priceId) {
+    tier = 'premium';
+  } else if (priceId === SUBSCRIPTION_TIERS.featured.priceId) {
+    tier = 'featured';
+  } else {
+    console.warn(`Unknown price ID: ${priceId}, defaulting to free tier`);
+  }
+
+  const isDowngrade = previousTier === 'featured' && tier === 'premium';
+  const isCancellation = !previousCancelState && subscription.cancel_at_period_end;
+
+  console.log(`Subscription updated for user ${userId}, status: ${subscription.status}, tier: ${tier}, downgrade: ${isDowngrade}, cancellation: ${isCancellation}`);
+
+  // Update user's subscription status (gracefully handle missing cancel_at_period_end column)
+  const updateData: any = {
+    subscription_status: subscription.status,
+    subscription_current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+    subscription_tier: tier,
+  };
+
+  // Only update cancel_at_period_end if the column exists
+  if (userData && 'cancel_at_period_end' in userData) {
+    updateData.cancel_at_period_end = subscription.cancel_at_period_end || false;
+  }
+
   const { error: userError } = await supabase
     .from('users')
-    .update({
-      subscription_status: subscription.status,
-      subscription_current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-      subscription_tier: tier,
-    })
+    .update(updateData)
     .eq('id', userId);
 
   if (userError) {
@@ -227,21 +260,57 @@ async function handleSubscriptionUpdated(
     throw userError;
   }
 
-  // If subscription is no longer active, downgrade lobbyist to free
-  if (subscription.status !== 'active' && subscription.status !== 'trialing') {
-    const { error: lobbyistError } = await supabase
-      .from('lobbyists')
-      .update({
-        subscription_tier: 'free',
-      })
-      .eq('user_id', userId);
+  // Update lobbyist profile tier (always sync with subscription tier)
+  const lobbyistTier = (subscription.status === 'active' || subscription.status === 'trialing') ? tier : 'free';
 
-    if (lobbyistError) {
-      console.error('Error downgrading lobbyist tier:', lobbyistError);
-    }
+  const { error: lobbyistError } = await supabase
+    .from('lobbyists')
+    .update({
+      subscription_tier: lobbyistTier,
+    })
+    .eq('user_id', userId);
+
+  if (lobbyistError) {
+    console.error('Error updating lobbyist tier:', lobbyistError);
   }
 
-  console.log(`Successfully updated subscription for user ${userId}`);
+  // Send downgrade email if applicable
+  if (isDowngrade && userData?.email) {
+    const emailTemplate = subscriptionDowngradedEmail(
+      userData.full_name || 'there',
+      'featured',
+      'premium',
+      SUBSCRIPTION_TIERS.premium.price
+    );
+    await sendEmail({
+      to: userData.email,
+      subject: emailTemplate.subject,
+      html: emailTemplate.html,
+    });
+    console.log(`Sent downgrade confirmation email to ${userData.email}`);
+  }
+
+  // Send cancellation email if subscription was just set to cancel
+  if (isCancellation && userData?.email && tier !== 'free') {
+    const endDate = new Date(subscription.current_period_end * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    const emailTemplate = subscriptionCancelledEmail(
+      userData.full_name || 'there',
+      tier as 'premium' | 'featured',
+      endDate
+    );
+    await sendEmail({
+      to: userData.email,
+      subject: emailTemplate.subject,
+      html: emailTemplate.html,
+    });
+    console.log(`Sent cancellation confirmation email to ${userData.email}`);
+  }
+
+  console.log(`Successfully updated subscription for user ${userId} to ${tier}`);
 }
 
 /**
@@ -262,14 +331,27 @@ async function handleSubscriptionDeleted(
 
   console.log(`Subscription cancelled for user ${userId}`);
 
-  // Update user to free tier
+  // Update user to free tier (gracefully handle missing cancel_at_period_end column)
+  const updateData: any = {
+    subscription_tier: 'free',
+    subscription_status: 'canceled',
+    subscription_current_period_end: null,
+  };
+
+  // Check if we should include cancel_at_period_end
+  const { data: checkData } = await supabase
+    .from('users')
+    .select('cancel_at_period_end')
+    .eq('id', userId)
+    .single();
+
+  if (checkData && 'cancel_at_period_end' in checkData) {
+    updateData.cancel_at_period_end = false;
+  }
+
   const { error: userError } = await supabase
     .from('users')
-    .update({
-      subscription_tier: 'free',
-      subscription_status: 'canceled',
-      subscription_current_period_end: null,
-    })
+    .update(updateData)
     .eq('id', userId);
 
   if (userError) {

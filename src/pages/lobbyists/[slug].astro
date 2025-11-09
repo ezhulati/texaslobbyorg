@@ -73,10 +73,10 @@ const fullName = `${lobbyist.first_name} ${lobbyist.last_name}`;
 
 // Build SEO-optimized title (55-60 chars)
 let titleParts = [fullName];
-if (lobbyist.subject_areas.length > 0) {
+if (lobbyist.subject_areas.length > 0 && lobbyist.subject_areas[0]) {
   titleParts.push(lobbyist.subject_areas[0]);
 }
-if (lobbyist.cities.length > 0 && titleParts.join(' | ').length < 45) {
+if (lobbyist.cities.length > 0 && lobbyist.cities[0] && titleParts.join(' | ').length < 45) {
   titleParts.push(lobbyist.cities[0]);
 }
 const pageTitle = `${titleParts.join(' | ')} | Texas Lobbyist`;
@@ -479,65 +479,111 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
           {/* Contact Information */}
           <div class="rounded-lg border border-border bg-white p-6">
             <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
-            <div class="space-y-3">
-              {lobbyist.email && (
-                <a
-                  href={`mailto:${lobbyist.email}`}
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
-                >
-                  <Mail className="mr-3 h-5 w-5 flex-shrink-0" />
-                  <span class="truncate">{lobbyist.email}</span>
-                </a>
-              )}
 
-              {lobbyist.phone && (
-                <a
-                  href={`tel:${lobbyist.phone}`}
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
-                >
-                  <Phone className="mr-3 h-5 w-5 flex-shrink-0" />
-                  <span>{lobbyist.phone}</span>
-                </a>
-              )}
+            {isAuthenticated ? (
+              <>
+                <div class="space-y-3">
+                  {lobbyist.email && (
+                    <a
+                      href={`mailto:${lobbyist.email}`}
+                      class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
+                    >
+                      <Mail className="mr-3 h-5 w-5 flex-shrink-0" />
+                      <span class="truncate">{lobbyist.email}</span>
+                    </a>
+                  )}
 
-              {lobbyist.website && (
-                <a
-                  href={lobbyist.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
-                >
-                  <Globe className="mr-3 h-5 w-5 flex-shrink-0" />
-                  <span class="truncate">Website</span>
-                </a>
-              )}
+                  {lobbyist.phone && (
+                    <a
+                      href={`tel:${lobbyist.phone}`}
+                      class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
+                    >
+                      <Phone className="mr-3 h-5 w-5 flex-shrink-0" />
+                      <span>{lobbyist.phone}</span>
+                    </a>
+                  )}
 
-              {lobbyist.linkedin_url && (
-                <a
-                  href={lobbyist.linkedin_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center text-sm text-muted-foreground hover:text-[#0A66C2] transition-colors"
-                >
-                  <Linkedin className="mr-3 h-5 w-5 flex-shrink-0" />
-                  <span class="truncate">LinkedIn Profile</span>
-                </a>
-              )}
+                  {lobbyist.website && (
+                    <a
+                      href={lobbyist.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 transition-colors"
+                    >
+                      <Globe className="mr-3 h-5 w-5 flex-shrink-0" />
+                      <span class="truncate">Website</span>
+                    </a>
+                  )}
 
-              {!lobbyist.email && !lobbyist.phone && !lobbyist.website && !lobbyist.linkedin_url && (
-                <p class="text-sm text-muted-foreground">
-                  {lobbyist.is_claimed ? 'No contact information provided' : 'Contact information will be added when the lobbyist claims this profile'}
-                </p>
-              )}
-            </div>
+                  {(lobbyist as any).linkedin_url && (
+                    <a
+                      href={(lobbyist as any).linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center text-sm text-muted-foreground hover:text-[#0A66C2] transition-colors"
+                    >
+                      <Linkedin className="mr-3 h-5 w-5 flex-shrink-0" />
+                      <span class="truncate">LinkedIn Profile</span>
+                    </a>
+                  )}
 
-            {lobbyist.is_claimed && (
-              <a
-                href={`mailto:${lobbyist.email}`}
-                class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
-              >
-                Send Message
-              </a>
+                  {!lobbyist.email && !lobbyist.phone && !lobbyist.website && !(lobbyist as any).linkedin_url && (
+                    <p class="text-sm text-muted-foreground">
+                      {lobbyist.is_claimed ? 'No contact information provided' : 'Contact information will be added when the lobbyist claims this profile'}
+                    </p>
+                  )}
+                </div>
+
+                {lobbyist.is_claimed && lobbyist.email && (
+                  <a
+                    href={`mailto:${lobbyist.email}`}
+                    class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
+                  >
+                    Send Message
+                  </a>
+                )}
+              </>
+            ) : (
+              <>
+                {/* Non-authenticated user view */}
+                <div class="space-y-4">
+                  <div class="rounded-lg bg-texas-blue-50 border border-texas-blue-200 p-4">
+                    <div class="flex items-start gap-3">
+                      <svg class="h-5 w-5 text-texas-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <div class="flex-1">
+                        <p class="text-sm font-medium text-texas-blue-900 mb-1">Sign in to view contact details</p>
+                        <p class="text-xs text-texas-blue-700">Create a free account to connect with {fullName} and other Texas lobbyists.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <a
+                      href={`/login?redirect=/lobbyists/${slug}`}
+                      class="inline-flex w-full items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-600 transition-colors"
+                    >
+                      <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                      </svg>
+                      Connect with {fullName}
+                    </a>
+                    <a
+                      href={`/signup?redirect=/lobbyists/${slug}`}
+                      class="inline-flex w-full items-center justify-center rounded-md border border-texas-blue-500 bg-white px-4 py-2.5 text-sm font-medium text-texas-blue-500 hover:bg-texas-blue-50 transition-colors"
+                    >
+                      Create Free Account
+                    </a>
+                  </div>
+
+                  <div class="pt-3 border-t border-border">
+                    <p class="text-xs text-center text-muted-foreground">
+                      Free account • No credit card required
+                    </p>
+                  </div>
+                </div>
+              </>
             )}
           </div>
 

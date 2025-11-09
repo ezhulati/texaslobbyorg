@@ -15,7 +15,7 @@ const supabase = createServerClient();
 // Get user's subscription details
 const { data: userData, error: userError } = await supabase
   .from('users')
-  .select('subscription_tier, subscription_status, subscription_current_period_end, stripe_customer_id')
+  .select('subscription_tier, subscription_status, subscription_current_period_end, stripe_customer_id, cancel_at_period_end')
   .eq('id', user.id)
   .single();
 
@@ -28,6 +28,8 @@ const subscriptionStatus = userData?.subscription_status;
 const periodEnd = userData?.subscription_current_period_end
   ? new Date(userData.subscription_current_period_end)
   : null;
+// Gracefully handle missing cancel_at_period_end column
+const cancelAtPeriodEnd = userData?.cancel_at_period_end ?? false;
 
 const isSubscribed = subscriptionTier !== 'free';
 const hasStripeCustomer = !!userData?.stripe_customer_id;
@@ -49,6 +51,32 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
 
       <!-- Current Plan Card -->
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+        <!-- Cancellation Warning (shown when subscription is set to cancel) -->
+        {cancelAtPeriodEnd && periodEnd && (
+          <div class="mb-6 bg-orange-50 border-2 border-orange-200 rounded-lg p-4">
+            <div class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-orange-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-orange-900 mb-1">Subscription Cancelled</h3>
+                <p class="text-orange-800 mb-3">
+                  Your subscription has been cancelled but remains active until <strong>{periodEnd.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>. You'll continue to have access to all {subscriptionTier === 'premium' ? 'Premium' : 'Featured'} features until then.
+                </p>
+                <button
+                  id="reactivate-subscription-btn"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors font-medium"
+                >
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Reactivate Subscription
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div class="flex items-start justify-between mb-4">
           <div>
             <h2 class="text-xl font-semibold text-gray-900 mb-1">Current Plan</h2>
@@ -151,20 +179,24 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
               Manage Billing & Payment Methods
             </button>
 
-            <button
-              id="cancel-subscription-btn"
-              class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
-            >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              Cancel Subscription
-            </button>
+            {!cancelAtPeriodEnd && (
+              <button
+                id="cancel-subscription-btn"
+                class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Cancel Subscription
+              </button>
+            )}
           </div>
 
-          <p class="text-xs text-gray-500 mt-4 text-center">
-            Cancelling will keep your benefits until the end of your current billing period
-          </p>
+          {!cancelAtPeriodEnd && (
+            <p class="text-xs text-gray-500 mt-4 text-center">
+              Cancelling will keep your benefits until the end of your current billing period
+            </p>
+          )}
         </div>
       )}
 
@@ -240,6 +272,31 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
         }
 
         alert('Your subscription has been cancelled. You will keep your benefits until the end of your current billing period.');
+        window.location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error instanceof Error ? error.message : 'Something went wrong');
+      }
+    });
+
+    // Reactivate Subscription button
+    document.getElementById('reactivate-subscription-btn')?.addEventListener('click', async () => {
+      if (!confirm('Would you like to reactivate your subscription?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/stripe/reactivate-subscription', {
+          method: 'POST',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to reactivate subscription');
+        }
+
+        alert('Your subscription has been reactivated!');
         window.location.reload();
       } catch (error) {
         console.error('Error:', error);

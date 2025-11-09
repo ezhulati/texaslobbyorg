@@ -294,7 +294,7 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
   <script define:vars={{ currentTier }}>
     document.querySelectorAll('.upgrade-btn').forEach(button => {
       button.addEventListener('click', async (e) => {
-        const btn = e.target as HTMLButtonElement;
+        const btn = e.currentTarget;
         const tier = btn.dataset.tier;
 
         // Check if user has an existing subscription

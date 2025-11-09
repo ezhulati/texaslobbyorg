@@ -24,10 +24,11 @@ const { data: userData } = await serverClient
   .single();
 
 // Fetch user's lobbyist profile if they have one
-const { data: lobbyist, error: lobbyistError } = await supabase
+// Check both user_id (created profiles) and claimed_by (claimed profiles)
+const { data: lobbyist, error: lobbyistError } = await serverClient
   .from('lobbyists')
   .select('*')
-  .eq('claimed_by', user.id)
+  .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
   .single();
 
 // Check for pending role upgrade request (for searchers)
@@ -249,24 +250,77 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
 
       <!-- Pending Approval Banner -->
       {isPending && (
-        <div class="mb-8 rounded-lg border-2 border-yellow-200 bg-yellow-50 p-6">
-          <div class="flex gap-4">
+        <div class="mb-8 rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-white p-8 shadow-sm">
+          <div class="flex gap-6">
             <div class="flex-shrink-0">
-              <svg class="h-8 w-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-              </svg>
+              <div class="rounded-full bg-blue-100 p-4">
+                <svg class="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
             </div>
             <div class="flex-1">
-              <h3 class="text-lg font-semibold text-yellow-900 mb-2">Profile Pending Approval</h3>
-              <p class="text-sm text-yellow-800 mb-3">
-                {lobbyist.pending_reason || 'Your profile is currently under review by our team. We\'ll notify you once it\'s approved and live on the site.'}
+              <h3 class="text-2xl font-bold text-blue-900 mb-3">
+                🎉 Profile Submitted Successfully!
+              </h3>
+              <p class="text-base text-blue-800 mb-4">
+                Thank you for creating your lobbyist profile! Your submission is now being reviewed by our team to ensure quality and authenticity.
               </p>
-              <div class="flex flex-wrap gap-2 text-sm">
-                <div class="inline-flex items-center gap-2 rounded-md bg-yellow-100 px-3 py-1.5">
-                  <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+
+              <div class="bg-white rounded-lg border border-blue-200 p-4 mb-4">
+                <h4 class="font-semibold text-blue-900 mb-3">What Happens Next:</h4>
+                <div class="space-y-3">
+                  <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 mt-0.5">
+                      <div class="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span class="text-xs font-bold text-blue-600">1</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium text-foreground">ID Verification</p>
+                      <p class="text-xs text-muted-foreground">Our team reviews your submitted identification document</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 mt-0.5">
+                      <div class="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span class="text-xs font-bold text-blue-600">2</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium text-foreground">Profile Review</p>
+                      <p class="text-xs text-muted-foreground">We verify your information for accuracy and completeness</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 mt-0.5">
+                      <div class="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span class="text-xs font-bold text-blue-600">3</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium text-foreground">Approval & Go Live</p>
+                      <p class="text-xs text-muted-foreground">You'll receive an email when your profile is approved and published</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3 items-center">
+                <div class="inline-flex items-center gap-2 rounded-lg bg-blue-100 px-4 py-2.5 border border-blue-200">
+                  <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                   </svg>
-                  <span class="font-medium text-yellow-900">Typically reviewed within 24-48 hours</span>
+                  <div class="text-left">
+                    <p class="text-xs font-medium text-blue-700">Typical Review Time</p>
+                    <p class="text-sm font-bold text-blue-900">24-48 hours</p>
+                  </div>
+                </div>
+                <div class="inline-flex items-center gap-2 text-sm text-blue-700">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>We'll notify you at <strong>{lobbyist.email}</strong></span>
                 </div>
               </div>
             </div>

@@ -15,6 +15,11 @@ if (!user) {
 // Get user's role to determine dashboard type
 const userRole = await getUserRole(user.id);
 
+// Redirect admins to admin dashboard
+if (userRole === 'admin') {
+  return Astro.redirect('/admin');
+}
+
 // Fetch user data from users table for searcher dashboard
 const serverClient = createServerClient();
 const { data: userData } = await serverClient

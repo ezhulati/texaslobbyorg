@@ -3,10 +3,18 @@ import Layout from '@/components/astro/Layout.astro';
 import AuthForm from '@/components/react/AuthForm';
 import { supabase } from '@/lib/supabase';
 
+// Get redirect parameter from URL
+const redirectParam = Astro.url.searchParams.get('redirect');
+
 // Redirect if already logged in (use middleware auth)
 const user = Astro.locals.user;
 if (user) {
-  // Smart redirect based on user role and status
+  // If there's a redirect parameter, use it
+  if (redirectParam) {
+    return Astro.redirect(redirectParam);
+  }
+
+  // Otherwise, smart redirect based on user role and status
   if (user.role === 'admin') {
     return Astro.redirect('/admin');
   } else if (user.role === 'lobbyist') {
@@ -57,7 +65,7 @@ const pageDescription = 'Sign in to your TexasLobby.org account. Manage your lob
 
       <!-- Login Form -->
       <div class="rounded-lg border border-border bg-white p-8 shadow-sm">
-        <AuthForm client:load mode="login" redirectTo="/dashboard" />
+        <AuthForm client:load mode="login" redirectTo={redirectParam || "/dashboard"} />
       </div>
 
       <!-- Additional Info -->

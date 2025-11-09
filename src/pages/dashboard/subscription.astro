@@ -1,12 +1,10 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { getCurrentUser } from '@/lib/auth-helpers';
 import { createServerClient } from '@/lib/supabase';
 import { SUBSCRIPTION_TIERS } from '@/lib/stripe';
-import { Check, CreditCard, Calendar, AlertCircle } from 'lucide-react';
 
-// Require authentication
-const user = await getCurrentUser();
+// Require authentication - use middleware user
+const user = Astro.locals.user;
 
 if (!user) {
   return Astro.redirect('/login?redirect=/dashboard/subscription');
@@ -89,7 +87,9 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
             <ul class="space-y-2">
               {tierData.features.map((feature) => (
                 <li class="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
                   <span class="text-gray-700">{feature}</span>
                 </li>
               ))}
@@ -99,7 +99,9 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
 
         {periodEnd && subscriptionStatus === 'active' && (
           <div class="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-            <Calendar className="h-4 w-4" />
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
             <span>Next billing date: {periodEnd.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
         )}
@@ -129,7 +131,9 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
               id="manage-billing-btn"
               class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
             >
-              <CreditCard className="h-5 w-5" />
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
               Manage Billing & Payment Methods
             </button>
 
@@ -137,7 +141,9 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
               id="cancel-subscription-btn"
               class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
             >
-              <AlertCircle className="h-5 w-5" />
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
               Cancel Subscription
             </button>
           </div>

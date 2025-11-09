@@ -34,11 +34,11 @@ export default function PendingProfileActions({
       });
 
       if (!response.ok) {
+        const text = await response.text();
         try {
-          const errorData = await response.json();
-          throw new Error(errorData.error || errorData.details || 'Failed to approve profile');
+          const errorData = JSON.parse(text);
+          throw new Error(errorData.error || errorData.details || text || 'Failed to approve profile');
         } catch (parseError) {
-          const text = await response.text();
           throw new Error(text || 'Failed to approve profile');
         }
       }

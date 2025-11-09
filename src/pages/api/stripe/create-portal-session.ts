@@ -7,10 +7,10 @@ import { createServerClient } from '@/lib/supabase';
  * Create a Stripe Customer Portal session
  * This allows users to manage their subscription and payment methods
  */
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request, url, cookies }) => {
   try {
     // Get current user
-    const user = await getCurrentUser();
+    const user = await getCurrentUser(cookies);
 
     if (!user) {
       return new Response(

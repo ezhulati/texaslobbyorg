@@ -1,0 +1,73 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import TestimonialsManager from '@/components/react/TestimonialsManager';
+import { requireAuth } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await requireAuth().catch(() => {
+  return Astro.redirect('/login?redirect=/dashboard/testimonials');
+});
+
+// Get user's lobbyist profile
+const { data: lobbyist, error: lobbyistError } = await supabase
+  .from('lobbyists')
+  .select('id, subscription_tier')
+  .eq('user_id', user.id)
+  .single();
+
+// If no lobbyist profile, redirect to claim
+if (lobbyistError || !lobbyist) {
+  return Astro.redirect('/claim-profile');
+}
+
+const pageTitle = 'Manage Testimonials';
+const pageDescription = 'Add, edit, and manage client testimonials for your profile.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-2">
+          <a
+            href="/dashboard"
+            class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Dashboard
+          </a>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Manage Testimonials</h1>
+        <p class="text-lg text-muted-foreground">
+          Showcase client feedback to build credibility and trust
+        </p>
+      </div>
+
+      <!-- Info Banner -->
+      <div class="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <div class="flex gap-3">
+          <svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div>
+            <h3 class="font-semibold text-blue-900 mb-1">Testimonials require approval</h3>
+            <p class="text-sm text-blue-800">
+              All testimonials must be approved by our team before appearing on your public profile. This helps maintain quality and authenticity.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonials Manager -->
+      <TestimonialsManager
+        client:load
+        lobbyistId={lobbyist.id}
+        subscriptionTier={lobbyist.subscription_tier}
+      />
+    </div>
+  </section>
+</Layout>

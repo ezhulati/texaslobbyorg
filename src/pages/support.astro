@@ -1,0 +1,101 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import SupportTicketForm from '@/components/react/SupportTicketForm';
+import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Try to get current user (optional)
+let userEmail = '';
+let userName = '';
+
+try {
+  const user = await getCurrentUser();
+  if (user) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('email, first_name, last_name')
+      .eq('id', user.id)
+      .single();
+
+    if (userData) {
+      userEmail = userData.email || '';
+      userName = [userData.first_name, userData.last_name].filter(Boolean).join(' ');
+    }
+  }
+} catch (err) {
+  // User not logged in, continue with empty values
+}
+
+const pageTitle = 'Contact Support';
+const pageDescription = 'Get help with your TexasLobby.org account, billing, or technical issues.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 bg-gray-50">
+    <div class="container max-w-3xl">
+      <!-- Support Ticket Form -->
+      <div class="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+        <SupportTicketForm client:load userEmail={userEmail} userName={userName} />
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+
+        <div class="space-y-4">
+          <details class="rounded-lg border border-gray-200 bg-white p-4">
+            <summary class="font-semibold text-gray-900 cursor-pointer">
+              How long does it take to get a response?
+            </summary>
+            <p class="mt-3 text-gray-700">
+              We aim to respond to all support tickets within 24-48 hours. Premium and Featured tier members receive priority support with faster response times.
+            </p>
+          </details>
+
+          <details class="rounded-lg border border-gray-200 bg-white p-4">
+            <summary class="font-semibold text-gray-900 cursor-pointer">
+              Can I cancel my subscription anytime?
+            </summary>
+            <p class="mt-3 text-gray-700">
+              Yes, you can cancel your subscription at any time from your account dashboard. Your access will continue until the end of your current billing period.
+            </p>
+          </details>
+
+          <details class="rounded-lg border border-gray-200 bg-white p-4">
+            <summary class="font-semibold text-gray-900 cursor-pointer">
+              How do I update my profile information?
+            </summary>
+            <p class="mt-3 text-gray-700">
+              Log in to your account and navigate to Dashboard → Edit Profile to update your contact information, expertise areas, and bio.
+            </p>
+          </details>
+
+          <details class="rounded-lg border border-gray-200 bg-white p-4">
+            <summary class="font-semibold text-gray-900 cursor-pointer">
+              What payment methods do you accept?
+            </summary>
+            <p class="mt-3 text-gray-700">
+              We accept all major credit cards (Visa, Mastercard, American Express, Discover) through our secure payment processor, Stripe.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Contact Methods -->
+      <div class="mt-12 text-center">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Other Ways to Reach Us</h3>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="mailto:support@texaslobby.org"
+            class="inline-flex items-center justify-center gap-2 text-texas-blue-600 hover:text-texas-blue-700"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            support@texaslobby.org
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

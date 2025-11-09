@@ -5,6 +5,7 @@ import CollapsibleClients from '@/components/react/CollapsibleClients';
 import CollapsibleBio from '@/components/react/CollapsibleBio';
 import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
 import FavoriteButton from '@/components/react/FavoriteButton';
+import TestimonialsDisplay from '@/components/react/TestimonialsDisplay';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
 import { supabase } from '@/lib/supabase';
@@ -601,6 +602,13 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  {/* Client Testimonials */}
+  <section class="py-12 bg-gray-50">
+    <div class="container">
+      <TestimonialsDisplay client:load lobbyistId={lobbyist.id} />
     </div>
   </section>
 

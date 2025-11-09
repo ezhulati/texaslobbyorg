@@ -1,0 +1,50 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import AnalyticsDashboard from '@/components/react/AnalyticsDashboard';
+import { requireAuth } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+
+// Require authentication
+const user = await requireAuth().catch(() => {
+  return Astro.redirect('/login?redirect=/dashboard/analytics');
+});
+
+// Get user's lobbyist profile
+const { data: lobbyist, error: lobbyistError } = await supabase
+  .from('lobbyists')
+  .select('subscription_tier')
+  .eq('user_id', user.id)
+  .single();
+
+// If no lobbyist profile, redirect to claim
+if (lobbyistError || !lobbyist) {
+  return Astro.redirect('/claim-profile');
+}
+
+const pageTitle = 'Profile Analytics';
+const pageDescription = 'View detailed analytics about your profile views and visitor engagement.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12">
+    <div class="container max-w-6xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-2">
+          <a
+            href="/dashboard"
+            class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Analytics Dashboard -->
+      <AnalyticsDashboard client:load subscriptionTier={lobbyist.subscription_tier} />
+    </div>
+  </section>
+</Layout>

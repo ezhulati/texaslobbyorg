@@ -7,10 +7,10 @@ import { createServerClient } from '@/lib/supabase';
  * Cancel a user's subscription
  * This will cancel at the end of the current billing period
  */
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Get current user
-    const user = await getCurrentUser();
+    const user = await getCurrentUser(cookies);
 
     if (!user) {
       return new Response(

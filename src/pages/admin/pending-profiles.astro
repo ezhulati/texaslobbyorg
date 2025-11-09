@@ -1,7 +1,7 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import PendingProfileActions from '@/components/react/PendingProfileActions';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 
 // Require authentication and admin role (from middleware)
 const user = Astro.locals.user;
@@ -13,8 +13,9 @@ if (user.role !== 'admin') {
   return Astro.redirect('/dashboard');
 }
 
-// Get all pending profiles
-const { data: pendingProfiles } = await supabase
+// Use server client to bypass RLS and see pending profiles
+const serverClient = createServerClient();
+const { data: pendingProfiles } = await serverClient
   .from('lobbyists')
   .select('*')
   .eq('is_pending', true)

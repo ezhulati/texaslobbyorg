@@ -1,16 +1,34 @@
 import Stripe from 'stripe';
 
-if (!import.meta.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing STRIPE_SECRET_KEY environment variable');
-}
-
 /**
- * Server-side Stripe client
+ * Server-side Stripe client (lazy initialization)
  * Only use this in API routes and server-side code
  */
-export const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
+let _stripe: Stripe | null = null;
+
+export const getStripeClient = (): Stripe => {
+  if (!import.meta.env.STRIPE_SECRET_KEY) {
+    throw new Error('Missing STRIPE_SECRET_KEY environment variable');
+  }
+
+  if (!_stripe) {
+    _stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-12-18.acacia',
+      typescript: true,
+    });
+  }
+
+  return _stripe;
+};
+
+/**
+ * Legacy export for backward compatibility
+ * @deprecated Use getStripeClient() instead
+ */
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    return (getStripeClient() as any)[prop];
+  }
 });
 
 /**

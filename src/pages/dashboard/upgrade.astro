@@ -271,12 +271,6 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
       button.addEventListener('click', async (e) => {
         const btn = e.target as HTMLButtonElement;
         const tier = btn.dataset.tier;
-        const priceId = btn.dataset.priceId;
-
-        if (!priceId) {
-          alert('Subscription pricing is not configured yet. Please contact support.');
-          return;
-        }
 
         btn.disabled = true;
         btn.textContent = 'Processing...';
@@ -285,7 +279,7 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           const response = await fetch('/api/stripe/create-checkout-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId, tier })
+            body: JSON.stringify({ tier })
           });
 
           const data = await response.json();

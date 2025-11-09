@@ -1,10 +1,22 @@
 import type { APIRoute } from 'astro';
-import { stripe, SUBSCRIPTION_TIERS, type SubscriptionTier } from '@/lib/stripe';
+import { getStripeClient, SUBSCRIPTION_TIERS, type SubscriptionTier } from '@/lib/stripe';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request, url, cookies }) => {
   try {
+    // Get authenticated user
+    const supabase = createServerAuthClient(cookies);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     const body = await request.json();
-    const { tier, userId, email } = body;
+    const { tier } = body;
 
     // Validate tier
     if (!tier || !(tier in SUBSCRIPTION_TIERS)) {
@@ -14,18 +26,35 @@ export const POST: APIRoute = async ({ request, url }) => {
       );
     }
 
-    // Validate required fields
-    if (!userId || !email) {
+    // Get user's email from database
+    const serverClient = createServerClient();
+    const { data: userData, error: userError } = await serverClient
+      .from('users')
+      .select('email')
+      .eq('id', user.id)
+      .single();
+
+    if (userError || !userData) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: userId and email' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'User not found' }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     const tierData = SUBSCRIPTION_TIERS[tier as SubscriptionTier];
 
+    if (!tierData.priceId) {
+      return new Response(
+        JSON.stringify({ error: 'Subscription pricing is not configured yet. Please contact support.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Get the base URL for redirects
     const baseUrl = import.meta.env.PUBLIC_SITE_URL || url.origin;
+
+    // Get Stripe client (lazy initialization)
+    const stripe = getStripeClient();
 
     // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
@@ -37,20 +66,20 @@ export const POST: APIRoute = async ({ request, url }) => {
           quantity: 1,
         },
       ],
-      customer_email: email,
-      client_reference_id: userId,
+      customer_email: userData.email,
+      client_reference_id: user.id,
       metadata: {
-        userId,
+        userId: user.id,
         tier,
       },
       subscription_data: {
         metadata: {
-          userId,
+          userId: user.id,
           tier,
         },
       },
-      success_url: `${baseUrl}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/subscription/cancel`,
+      success_url: `${baseUrl}/dashboard/subscription?success=true`,
+      cancel_url: `${baseUrl}/dashboard/upgrade?canceled=true`,
       allow_promotion_codes: true,
     });
 

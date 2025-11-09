@@ -291,31 +291,45 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
     </div>
   </div>
 
-  <script>
+  <script define:vars={{ currentTier }}>
     document.querySelectorAll('.upgrade-btn').forEach(button => {
       button.addEventListener('click', async (e) => {
         const btn = e.target as HTMLButtonElement;
         const tier = btn.dataset.tier;
 
+        // Check if user has an existing subscription
+        const hasSubscription = currentTier === 'premium' || currentTier === 'featured';
+
         btn.disabled = true;
         btn.textContent = 'Processing...';
 
         try {
-          const response = await fetch('/api/stripe/create-checkout-session', {
+          // Use different API based on whether user has existing subscription
+          const endpoint = hasSubscription
+            ? '/api/stripe/upgrade-subscription'
+            : '/api/stripe/create-checkout-session';
+
+          const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tier })
+            body: JSON.stringify(hasSubscription ? { newTier: tier } : { tier })
           });
 
           const data = await response.json();
 
           if (!response.ok) {
-            throw new Error(data.error || 'Failed to create checkout session');
+            throw new Error(data.error || 'Failed to process request');
           }
 
-          // Redirect to Stripe Checkout
-          if (data.url) {
-            window.location.href = data.url;
+          if (hasSubscription) {
+            // Subscription was upgraded - reload to show new tier
+            alert(`Successfully upgraded to ${tier === 'premium' ? 'Premium' : 'Featured'}! Check your email for confirmation.`);
+            window.location.href = '/dashboard/subscription?upgraded=true';
+          } else {
+            // Redirect to Stripe Checkout for new subscription
+            if (data.url) {
+              window.location.href = data.url;
+            }
           }
         } catch (error) {
           console.error('Error:', error);

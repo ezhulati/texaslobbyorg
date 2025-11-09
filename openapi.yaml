@@ -1,0 +1,1272 @@
+openapi: 3.0.3
+info:
+  title: TexasLobby.org API
+  description: |
+    Complete API documentation for TexasLobby.org - Texas's premier lobbyist directory and marketplace.
+
+    ## Authentication
+    Most endpoints require authentication via Supabase session cookies set during login.
+
+    ## Base URL
+    - **Production:** https://texaslobby.org
+    - **Development:** http://localhost:4321
+
+  version: 1.0.0
+  contact:
+    email: enrizhulati@gmail.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://texaslobby.org/api
+    description: Production server
+  - url: http://localhost:4321/api
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Profile
+    description: Lobbyist profile management and claims
+  - name: Favorites
+    description: User favorites management
+  - name: Filters
+    description: Dynamic filter data for search
+  - name: Stripe
+    description: Payment and subscription management
+  - name: Onboarding
+    description: Lobbyist onboarding workflow
+  - name: Account
+    description: User account management
+  - name: Admin
+    description: Admin operations (requires admin role)
+  - name: Analytics
+    description: Page view tracking
+
+paths:
+  # ==================== AUTHENTICATION ====================
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: |
+        Authenticates user and creates session. Returns smart redirect based on user role:
+        - **Admin:** `/admin`
+        - **Lobbyist (with profile):** `/dashboard`
+        - **Lobbyist (no profile):** `/claim-profile`
+        - **Searcher (with favorites):** `/favorites`
+        - **Searcher (no favorites):** `/lobbyists`
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: SecurePass123!
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  redirectTo:
+                    type: string
+                    example: /dashboard
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      email:
+                        type: string
+                      role:
+                        type: string
+                        enum: [searcher, lobbyist, admin]
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Create new user account
+      description: Registers a new user with email confirmation required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - firstName
+                - lastName
+                - userType
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                userType:
+                  type: string
+                  enum: [searcher, lobbyist]
+      responses:
+        '200':
+          description: Signup successful, email confirmation required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  redirectTo:
+                    type: string
+        '400':
+          description: Invalid input or user already exists
+        '500':
+          description: Server error
+
+  /auth/signout:
+    post:
+      tags:
+        - Authentication
+      summary: Sign out user
+      description: Destroys user session and clears cookies
+      responses:
+        '200':
+          description: Signout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  redirectTo:
+                    type: string
+                    example: /
+
+  # ==================== PROFILE MANAGEMENT ====================
+  /profile/claim:
+    post:
+      tags:
+        - Profile
+      summary: Submit claim request for existing profile
+      description: |
+        Lobbyist submits claim request with ID verification document.
+        Requires admin approval before profile is linked to user account.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+                - verificationDocumentUrl
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+                verificationDocumentUrl:
+                  type: string
+                  format: uri
+                  description: URL to uploaded ID verification document (driver's license, passport, etc.)
+      responses:
+        '200':
+          description: Claim request submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  redirectTo:
+                    type: string
+                  profileSlug:
+                    type: string
+        '400':
+          description: Profile already claimed or user already has a profile
+        '401':
+          description: Not authenticated
+        '404':
+          description: Profile not found
+
+  /profile/create:
+    post:
+      tags:
+        - Profile
+      summary: Create new lobbyist profile
+      description: |
+        Creates a new lobbyist profile (for lobbyists not in TEC registry).
+        Requires admin approval before profile goes live.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - cities
+                - verificationDocumentUrl
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                cities:
+                  type: array
+                  items:
+                    type: string
+                subjectAreas:
+                  type: array
+                  items:
+                    type: string
+                bio:
+                  type: string
+                verificationDocumentUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Profile created and pending approval
+        '400':
+          description: Invalid input or user already has a profile
+        '401':
+          description: Not authenticated
+
+  /profile/update:
+    post:
+      tags:
+        - Profile
+      summary: Update lobbyist profile
+      description: Updates profile information for claimed profiles
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                bio:
+                  type: string
+                cities:
+                  type: array
+                  items:
+                    type: string
+                subjectAreas:
+                  type: array
+                  items:
+                    type: string
+                websiteUrl:
+                  type: string
+                  format: uri
+                linkedinUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Profile updated successfully
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized to update this profile
+
+  /profile/update-field:
+    post:
+      tags:
+        - Profile
+      summary: Update single profile field
+      description: Atomic update of a single profile field
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - field
+                - value
+              properties:
+                field:
+                  type: string
+                  enum: [phone, email, bio, cities, subject_areas, website_url, linkedin_url]
+                value:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: Field updated successfully
+        '400':
+          description: Invalid field or value
+        '401':
+          description: Not authenticated
+
+  # ==================== FAVORITES ====================
+  /favorites/toggle:
+    post:
+      tags:
+        - Favorites
+      summary: Toggle lobbyist favorite status
+      description: Adds or removes a lobbyist from user's favorites
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Favorite toggled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      lobbyistId:
+                        type: string
+                        format: uuid
+                      lobbyistName:
+                        type: string
+                      isFavorited:
+                        type: boolean
+                      action:
+                        type: string
+                        enum: [added, removed]
+                  message:
+                    type: string
+        '401':
+          description: Not authenticated
+        '404':
+          description: Lobbyist not found
+
+  /favorites/add:
+    post:
+      tags:
+        - Favorites
+      summary: Add lobbyist to favorites
+      description: Adds a lobbyist to user's favorites (idempotent)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Added to favorites
+        '401':
+          description: Not authenticated
+
+  /favorites/remove:
+    post:
+      tags:
+        - Favorites
+      summary: Remove lobbyist from favorites
+      description: Removes a lobbyist from user's favorites
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Removed from favorites
+        '401':
+          description: Not authenticated
+
+  # ==================== FILTERS ====================
+  /filters/cities:
+    get:
+      tags:
+        - Filters
+      summary: Get cities for filters
+      description: |
+        Returns cities filtered by current search context.
+        If subject or client filters are applied, only returns cities with matching lobbyists.
+      parameters:
+        - name: subject
+          in: query
+          description: Subject area slug to filter by
+          schema:
+            type: string
+        - name: client
+          in: query
+          description: Client name to filter by
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    slug:
+                      type: string
+
+  /filters/subjects:
+    get:
+      tags:
+        - Filters
+      summary: Get subject areas for filters
+      description: Returns subject areas filtered by current search context
+      parameters:
+        - name: city
+          in: query
+          description: City slug to filter by
+          schema:
+            type: string
+        - name: client
+          in: query
+          description: Client name to filter by
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of subject areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    slug:
+                      type: string
+
+  /filters/clients:
+    get:
+      tags:
+        - Filters
+      summary: Get clients for autocomplete
+      description: Returns client names matching search query
+      parameters:
+        - name: query
+          in: query
+          required: true
+          description: Search query (minimum 2 characters)
+          schema:
+            type: string
+            minLength: 2
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of matching clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    lobbyistCount:
+                      type: integer
+
+  # ==================== STRIPE ====================
+  /stripe/create-checkout-session:
+    post:
+      tags:
+        - Stripe
+      summary: Create Stripe checkout session
+      description: Creates a Stripe checkout session for Premium or Featured tier subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tier
+                - userId
+                - email
+              properties:
+                tier:
+                  type: string
+                  enum: [premium, featured]
+                userId:
+                  type: string
+                  format: uuid
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+        '400':
+          description: Invalid tier or missing fields
+
+  /stripe/cancel-subscription:
+    post:
+      tags:
+        - Stripe
+      summary: Cancel subscription
+      description: Cancels active Stripe subscription at period end
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subscriptionId
+              properties:
+                subscriptionId:
+                  type: string
+      responses:
+        '200':
+          description: Subscription cancelled
+        '400':
+          description: Invalid subscription ID
+
+  /stripe/create-portal-session:
+    post:
+      tags:
+        - Stripe
+      summary: Create customer portal session
+      description: Creates a Stripe customer portal session for subscription management
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customerId
+              properties:
+                customerId:
+                  type: string
+      responses:
+        '200':
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+
+  /stripe/webhook:
+    post:
+      tags:
+        - Stripe
+      summary: Stripe webhook handler
+      description: |
+        Handles Stripe webhook events:
+        - `checkout.session.completed` - Activates subscription
+        - `customer.subscription.updated` - Updates subscription status
+        - `customer.subscription.deleted` - Cancels subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed
+        '400':
+          description: Invalid signature or event
+
+  # ==================== ANALYTICS ====================
+  /track-view:
+    post:
+      tags:
+        - Analytics
+      summary: Track profile view
+      description: Increments view count for a lobbyist profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: View tracked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Missing lobbyist ID
+
+  # ==================== ONBOARDING ====================
+  /onboarding/update-step:
+    post:
+      tags:
+        - Onboarding
+      summary: Update onboarding step
+      description: Saves progress on a specific onboarding step
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - step
+                - data
+              properties:
+                step:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                data:
+                  type: object
+      responses:
+        '200':
+          description: Step updated
+        '401':
+          description: Not authenticated
+
+  /onboarding/submit:
+    post:
+      tags:
+        - Onboarding
+      summary: Submit completed onboarding
+      description: Finalizes onboarding and creates/updates lobbyist profile
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Onboarding completed
+        '401':
+          description: Not authenticated
+
+  # ==================== ACCOUNT MANAGEMENT ====================
+  /account/update-profile:
+    post:
+      tags:
+        - Account
+      summary: Update user account profile
+      description: Updates user's account information (name, email, etc.)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Profile updated
+        '401':
+          description: Not authenticated
+
+  /account/update-password:
+    post:
+      tags:
+        - Account
+      summary: Update password
+      description: Updates user's password
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        '200':
+          description: Password updated
+        '400':
+          description: Invalid current password
+        '401':
+          description: Not authenticated
+
+  /account/delete:
+    post:
+      tags:
+        - Account
+      summary: Delete account
+      description: |
+        Soft-deletes user account and associated data.
+        Can be recovered within 30 days via `/account/recover`.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Account deleted
+        '400':
+          description: Invalid password
+        '401':
+          description: Not authenticated
+
+  /account/recover:
+    post:
+      tags:
+        - Account
+      summary: Recover deleted account
+      description: Restores a soft-deleted account within 30-day grace period
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Account recovered
+        '400':
+          description: Account not found or recovery period expired
+
+  /account/export-data:
+    post:
+      tags:
+        - Account
+      summary: Export user data (GDPR)
+      description: Generates downloadable export of all user data
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Data export ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
+        '401':
+          description: Not authenticated
+
+  /account/request-merge:
+    post:
+      tags:
+        - Account
+      summary: Request account merge
+      description: Requests merging two user accounts (requires admin approval)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - targetEmail
+              properties:
+                targetEmail:
+                  type: string
+                  format: email
+                  description: Email of account to merge with
+      responses:
+        '200':
+          description: Merge request submitted
+        '401':
+          description: Not authenticated
+
+  /account/request-role-upgrade:
+    post:
+      tags:
+        - Account
+      summary: Request role upgrade
+      description: Requests upgrade from searcher to lobbyist role
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Upgrade request submitted
+        '401':
+          description: Not authenticated
+
+  # ==================== ADMIN ====================
+  /admin/approve-claim:
+    post:
+      tags:
+        - Admin
+      summary: Approve profile claim request
+      description: Admin approves a pending profile claim and links profile to user
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - claimRequestId
+              properties:
+                claimRequestId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Claim approved
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized (admin only)
+
+  /admin/reject-claim:
+    post:
+      tags:
+        - Admin
+      summary: Reject profile claim request
+      description: Admin rejects a pending profile claim with reason
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - claimRequestId
+                - reason
+              properties:
+                claimRequestId:
+                  type: string
+                  format: uuid
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Claim rejected
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+
+  /admin/approve-profile:
+    post:
+      tags:
+        - Admin
+      summary: Approve new profile
+      description: Admin approves a newly created profile (makes it live)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Profile approved
+        '403':
+          description: Not authorized
+
+  /admin/reject-profile:
+    post:
+      tags:
+        - Admin
+      summary: Reject new profile
+      description: Admin rejects a newly created profile with reason
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lobbyistId
+                - reason
+              properties:
+                lobbyistId:
+                  type: string
+                  format: uuid
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Profile rejected
+        '403':
+          description: Not authorized
+
+  /admin/approve-merge:
+    post:
+      tags:
+        - Admin
+      summary: Approve account merge request
+      description: Admin approves and executes account merge
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mergeRequestId
+              properties:
+                mergeRequestId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Accounts merged
+        '403':
+          description: Not authorized
+
+  /admin/reject-merge:
+    post:
+      tags:
+        - Admin
+      summary: Reject account merge request
+      description: Admin rejects account merge with reason
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mergeRequestId
+                - reason
+              properties:
+                mergeRequestId:
+                  type: string
+                  format: uuid
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Merge rejected
+        '403':
+          description: Not authorized
+
+  /admin/approve-role-upgrade:
+    post:
+      tags:
+        - Admin
+      summary: Approve role upgrade request
+      description: Admin approves searcher → lobbyist role upgrade
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Role upgraded
+        '403':
+          description: Not authorized
+
+  /admin/reject-role-upgrade:
+    post:
+      tags:
+        - Admin
+      summary: Reject role upgrade request
+      description: Admin rejects role upgrade with reason
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - reason
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Upgrade rejected
+        '403':
+          description: Not authorized
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sb-access-token
+      description: Supabase session cookie set during login
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+      required:
+        - error
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [searcher, lobbyist, admin]
+        fullName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Lobbyist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        bio:
+          type: string
+        cities:
+          type: array
+          items:
+            type: string
+        subjectAreas:
+          type: array
+          items:
+            type: string
+        websiteUrl:
+          type: string
+          format: uri
+        linkedinUrl:
+          type: string
+          format: uri
+        subscriptionTier:
+          type: string
+          enum: [free, premium, featured]
+        isClaimed:
+          type: boolean
+        isActive:
+          type: boolean
+        viewCount:
+          type: integer

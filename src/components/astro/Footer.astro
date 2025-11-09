@@ -20,7 +20,7 @@ const footerLinks = {
     { label: 'About Us', href: '/about' },
     { label: 'Blog', href: '/blog' },
     { label: 'FAQs', href: '/faqs' },
-    { label: 'Texas Ethics Commission', href: 'https://ethics.state.tx.us/search/lobby/', external: true },
+    { label: 'TEC', href: 'https://ethics.state.tx.us/search/lobby/', external: true },
   ],
   'Legal': [
     { label: 'Terms of Service', href: '/terms' },
@@ -78,16 +78,29 @@ const footerLinks = {
     <div class="mt-12 pt-8 border-t border-white/20">
       <div class="bg-white/5 rounded-lg p-6 text-center">
         <p class="text-sm text-white/80 max-w-4xl mx-auto">
-          <strong class="text-white">Independent Service Notice:</strong> TexasLobby.org is an independent directory service and is not affiliated with, endorsed by, or connected to the Texas Ethics Commission or any Texas state agency. For official lobbyist filings and compliance information, please visit <a href="https://ethics.state.tx.us/search/lobby/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-300 hover:text-white underline">ethics.state.tx.us</a>.
+          TexasLobby.org is an independent directory service and is not affiliated with, endorsed by, or connected to the Texas Ethics Commission or any Texas state agency. For official lobbyist filings and compliance information, please visit <a href="https://ethics.state.tx.us/search/lobby/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-300 hover:text-white underline">ethics.state.tx.us</a>.
         </p>
       </div>
     </div>
 
     <!-- Bottom Bar -->
     <div class="mt-8 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center">
-      <p class="text-sm text-white/70">
-        &copy; {currentYear} TexasLobby.org. All rights reserved.
-      </p>
+      <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+        <p class="text-sm text-white/70">
+          &copy; {currentYear} TexasLobby.org. All rights reserved.
+        </p>
+        <a
+          href="https://enrizhulati.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-white/70 hover:text-white transition-colors flex items-center gap-1.5"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          Made in Texas
+        </a>
+      </div>
       <div class="flex items-center space-x-4 mt-4 md:mt-0">
         <a
           href="#"

@@ -1,0 +1,174 @@
+---
+// API Documentation page using Swagger UI
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>TexasLobby.org API Documentation</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow-y: scroll;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .swagger-ui .topbar {
+      background-color: #003f87;
+    }
+
+    .swagger-ui .topbar .download-url-wrapper {
+      display: none;
+    }
+
+    .custom-header {
+      background: linear-gradient(135deg, #003f87 0%, #0056b3 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .custom-header p {
+      margin: 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .custom-header .links {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .custom-header .links a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border: 2px solid white;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .custom-header .links a:hover {
+      background: white;
+      color: #003f87;
+    }
+
+    .info-banner {
+      background: #f8f9fa;
+      border-left: 4px solid #003f87;
+      padding: 1rem 2rem;
+      margin: 2rem;
+      border-radius: 4px;
+    }
+
+    .info-banner h3 {
+      margin: 0 0 0.5rem 0;
+      color: #003f87;
+    }
+
+    .info-banner p {
+      margin: 0;
+      color: #666;
+    }
+
+    .info-banner ul {
+      margin: 0.5rem 0 0 0;
+      padding-left: 1.5rem;
+      color: #666;
+    }
+
+    .info-banner code {
+      background: #e9ecef;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="custom-header">
+    <h1>🏛️ TexasLobby.org API</h1>
+    <p>Complete REST API documentation for Texas's premier lobbyist directory</p>
+    <div class="links">
+      <a href="/">← Back to Site</a>
+      <a href="/openapi.yaml" download>Download OpenAPI Spec</a>
+      <a href="https://github.com/anthropics/claude-code" target="_blank">View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="info-banner">
+    <h3>📋 Quick Start</h3>
+    <p><strong>Base URLs:</strong></p>
+    <ul>
+      <li><strong>Production:</strong> <code>https://texaslobby.org/api</code></li>
+      <li><strong>Development:</strong> <code>http://localhost:4321/api</code></li>
+    </ul>
+    <p style="margin-top: 1rem;"><strong>Authentication:</strong> Most endpoints require authentication via Supabase session cookies (set during login).</p>
+    <p style="margin-top: 0.5rem;"><strong>Total Endpoints:</strong> 38 REST API endpoints across 9 functional areas</p>
+  </div>
+
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js" charset="UTF-8"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+  <script>
+    window.onload = function() {
+      // Build a system
+      const ui = SwaggerUIBundle({
+        url: "/openapi.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 1,
+        docExpansion: 'list',
+        filter: true,
+        tryItOutEnabled: true,
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        // Customize theme
+        syntaxHighlight: {
+          activate: true,
+          theme: "agate"
+        }
+      });
+
+      window.ui = ui;
+    };
+  </script>
+</body>
+</html>

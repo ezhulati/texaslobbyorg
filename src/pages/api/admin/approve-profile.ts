@@ -1,17 +1,17 @@
 import type { APIRoute } from 'astro';
-import { createServerClient } from '@/lib/supabase';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 import { sendEmail, profileApprovedEmail } from '@/lib/email';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     console.log('[Approve Profile API] POST request received');
 
-    // Get authenticated user and verify admin role
-    const serverClient = createServerClient();
+    // Get authenticated user using cookies
+    const supabase = createServerAuthClient(cookies);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    const { data: { user }, error: authError } = await serverClient.auth.getUser();
     if (authError || !user) {
-      console.error('[Approve Profile API] Not authenticated');
+      console.error('[Approve Profile API] Not authenticated:', authError);
       return new Response(JSON.stringify({
         error: 'Authentication required'
       }), {
@@ -20,6 +20,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Verify admin role using service client
+    const serverClient = createServerClient();
     const { data: userData } = await serverClient
       .from('users')
       .select('role')

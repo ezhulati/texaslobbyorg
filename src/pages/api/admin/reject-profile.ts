@@ -1,16 +1,24 @@
 import type { APIRoute } from 'astro';
-import { createServerClient } from '@/lib/supabase';
+import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   try {
-    // Verify admin authentication
-    const serverClient = createServerClient();
+    // Get authenticated user using cookies
+    const supabase = createServerAuthClient(cookies);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    const { data: { user }, error: authError } = await serverClient.auth.getUser();
     if (authError || !user) {
-      return redirect('/login');
+      console.error('[Reject Profile API] Not authenticated:', authError);
+      return new Response(JSON.stringify({
+        error: 'Authentication required'
+      }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
+    // Verify admin role using service client
+    const serverClient = createServerClient();
     const { data: userData } = await serverClient
       .from('users')
       .select('role')
@@ -18,7 +26,13 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       .single();
 
     if (userData?.role !== 'admin') {
-      return new Response('Unauthorized', { status: 403 });
+      console.error('[Reject Profile API] User is not admin');
+      return new Response(JSON.stringify({
+        error: 'Admin access required'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     // Parse request body (JSON from modal)

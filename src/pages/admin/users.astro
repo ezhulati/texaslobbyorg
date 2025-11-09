@@ -12,7 +12,7 @@ if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
 if (user.role !== 'admin') return Astro.redirect('/dashboard');
 
 // Get all users
-const { data: users } = await supabase
+const { data: users } = await serverClient
   .from('users')
   .select('*')
   .order('created_at', { ascending: false });

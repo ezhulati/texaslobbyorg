@@ -194,19 +194,53 @@ if (!isAuthenticated || !currentUser) {
       <!-- Danger Zone -->
       <div class="bg-card border border-red-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-red-600 mb-2">Delete Account</h2>
-        <p class="text-sm text-muted-foreground mb-4">
-          Deleting your account will schedule it for permanent deletion in 30 days. You can recover your account during this grace period by logging back in.
-        </p>
 
-        <div class="space-y-2 mb-4">
-          <h3 class="text-sm font-medium text-foreground">What will be deleted:</h3>
-          <ul class="text-sm text-muted-foreground space-y-1 ml-4">
-            <li>• Your profile and account information</li>
-            <li>• Your saved favorites</li>
-            <li>• Your browsing history</li>
-            {currentUser.role === 'lobbyist' && <li>• Your lobbyist profile and listing</li>}
-          </ul>
-        </div>
+        {currentUser.role === 'admin' ? (
+          <>
+            <p class="text-sm text-muted-foreground mb-4">
+              Deleting your admin account will schedule it for permanent deletion in 30 days. You can recover your account during this grace period by logging back in.
+            </p>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-md p-3 mb-4">
+              <div class="flex items-start gap-2">
+                <svg class="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-amber-900 mb-1">Admin Account Warning</p>
+                  <p class="text-xs text-amber-800">
+                    If you are the last admin, you must promote another user to admin before you can delete your account. This prevents the system from becoming inaccessible.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+              <h3 class="text-sm font-medium text-foreground">What will be deleted:</h3>
+              <ul class="text-sm text-muted-foreground space-y-1 ml-4">
+                <li>• Your admin account and access privileges</li>
+                <li>• Your profile and account information</li>
+                <li>• All associated account data</li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <>
+            <p class="text-sm text-muted-foreground mb-4">
+              Deleting your account will schedule it for permanent deletion in 30 days. You can recover your account during this grace period by logging back in.
+            </p>
+
+            <div class="space-y-2 mb-4">
+              <h3 class="text-sm font-medium text-foreground">What will be deleted:</h3>
+              <ul class="text-sm text-muted-foreground space-y-1 ml-4">
+                <li>• Your profile and account information</li>
+                <li>• Your saved favorites</li>
+                <li>• Your browsing history</li>
+                {currentUser.role === 'lobbyist' && <li>• Your lobbyist profile and listing</li>}
+              </ul>
+            </div>
+          </>
+        )}
 
         <button
           type="button"

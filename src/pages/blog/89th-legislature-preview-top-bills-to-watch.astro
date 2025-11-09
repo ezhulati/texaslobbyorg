@@ -1,11 +1,11 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 
-const pageTitle = '89th Texas Legislature: Top 10 Bills Every Business Should Watch';
-const pageDescription = 'The 89th Texas Legislature convenes in January 2025. Here are the most impactful bills that could reshape your industry, from healthcare reform to energy policy.';
+const pageTitle = '89th Texas Legislature: The Bills That Will Define Your 2025 (And How to Position Yourself)';
+const pageDescription = 'Insider analysis of the power dynamics, committee relationships, and strategic timing behind the 10 bills that will shape Texas business in 2025. By Byron Campbell, Texas Lobbyist.';
 const publishedDate = '2025-01-06';
-const author = 'TexasLobby.org Editorial Team';
-const category = 'Legislative Updates';
+const author = 'By Byron Campbell, Texas Lobbyist';
+const category = 'Legislative Analysis';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -14,8 +14,8 @@ const schema = {
   description: pageDescription,
   datePublished: publishedDate,
   author: {
-    '@type': 'Organization',
-    name: author
+    '@type': 'Person',
+    name: 'Byron Campbell'
   },
   publisher: {
     '@type': 'Organization',
@@ -29,389 +29,940 @@ const schema = {
 ---
 
 <Layout title={pageTitle} description={pageDescription} schema={schema}>
-  <!-- Article Header -->
-  <article class="py-16">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
-        <!-- Meta Info -->
-        <div class="mb-8">
-          <a href="/blog" class="inline-flex items-center text-texas-blue-500 hover:underline text-sm mb-6">
-            ← Back to Blog
-          </a>
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
-              {category}
-            </span>
-            <span class="text-sm text-muted-foreground">8 min read</span>
-          </div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-6">
-            {pageTitle}
-          </h1>
-          <div class="flex items-center gap-4 text-sm text-muted-foreground">
-            <time datetime={publishedDate}>
-              {new Date(publishedDate).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </time>
-            <span>•</span>
-            <span>{author}</span>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Legislative Analysis
+        </a>
+      </div>
+
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        89th Legislature Preview
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        The Bills That Will Define Your 2025
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
+        The reality that catches businesses off guard: the 89th Legislature will be defined not by the headlines, but by the power dynamics, committee relationships, and strategic timing that determine which bills pass and which die quiet deaths in committee.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="font-medium">{author}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">18 min read</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="font-medium">Session begins January 14, 2025</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
+
+      <!-- Session Update Notice -->
+      <div class="mb-12 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6">
+        <div class="flex gap-3">
+          <svg class="h-6 w-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-semibold text-blue-900 mb-2">Session Update</h3>
+            <p class="text-sm text-blue-800 mb-3">
+              The 89th Legislature adjourned on June 2, 2025. This preview article captured what we expected heading into session—now see what actually happened.
+            </p>
+            <a
+              href="/blog/89th-legislature-recap-what-passed-failed-and-why"
+              class="inline-flex items-center text-sm font-medium text-blue-700 hover:text-blue-900 transition-colors group"
+            >
+              Read the full recap: What passed, what failed, and who won
+              <svg class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
           </div>
         </div>
+      </div>
 
-        <!-- Featured Alert -->
-        <div class="bg-amber-50 border-l-4 border-amber-500 p-6 mb-12">
-          <div class="flex gap-3">
-            <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <h3 class="font-semibold text-amber-900 mb-1">Session Begins January 14, 2025</h3>
-              <p class="text-sm text-amber-800">
-                The 89th Texas Legislature convenes on Tuesday, January 14, 2025, for a 140-day regular session.
-                Bills can be pre-filed starting November 11, 2024. This analysis is based on pre-filed legislation,
-                interim committee recommendations, and public statements from legislative leadership.
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-16">
+        <p class="text-lg leading-relaxed">
+          The 89th Texas Legislature convenes January 14, 2025. Between now and sine die in late May, 181 legislators will file thousands of bills, hold hundreds of committee hearings, and make decisions that reshape entire industries.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Most businesses wait until mid-session to pay attention. By then, committee assignments are set, coalitions are formed, and the strategic positioning work that determines outcomes is already done.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Here's what you need to understand: legislative success isn't about having the best policy argument. It's about relationships with the right committee members, strategic timing on when to push your bill, and coalition dynamics that line up votes before hearings happen.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Let's break down the ten issue areas that will define this session—not just what the bills say, but who controls them, what the real dynamics are, and how smart business owners position themselves to influence outcomes.
+        </p>
+      </div>
+
+      <!-- Strategic Context Box -->
+      <div class="mb-16 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6">
+        <div class="flex gap-3">
+          <svg class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-semibold text-amber-900 mb-2">Why This Session Is Different</h3>
+            <p class="text-sm text-amber-800 mb-3">
+              Governor Abbott and Lt. Governor Patrick are aligned on their top priorities for the first time in years. The Republican supermajority is secure. And the interim has been dominated by property tax and border security discussions.
+            </p>
+            <p class="text-sm text-amber-800 m-0">
+              Translation: Leadership has the votes to move their agenda. If your issue conflicts with their priorities, you're playing defense. If it aligns, you have a narrow window to catch the momentum.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bill #1: Property Tax -->
+      <section id="property-tax" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-texas-blue-600 mb-1">ISSUE #1</div>
+          <h2 class="text-3xl font-bold mb-2">The Governor's Non-Negotiable Priority on Property Tax</h2>
+          <p class="text-texas-blue-700 font-medium">Why this determines everything else that happens this session</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Property tax reduction is the only issue both Governor Abbott and Lt. Governor Patrick have publicly declared a must-pass priority. That means it gets first-mover advantage on legislative bandwidth, consumes enormous political capital, and creates the fiscal constraint for every other spending bill.
+          </p>
+
+          <p>
+            The surface-level debate is about caps on appraisal increases versus using state surplus to buy down local tax rates. The insider reality: this is about who gets credit (legislators or the Governor), which local governments take the revenue hit, and whether school finance reform gets bundled in or left for another day.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Who Really Controls This Issue</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate:</strong> Morgan LaMantia (D-South Padre Island) will likely chair the Senate Property Tax Committee. She's moderate, detail-oriented, and has relationships across the aisle. Watch her negotiations with Paul Bettencourt (R-Houston), the tax policy wonk who's been pushing appraisal caps for years.
+              </p>
+              <p>
+                <strong>House:</strong> The Ways & Means Committee will handle the mechanics. Chairman still TBD as of this writing, but expect someone loyal to Speaker Phelan who can navigate the rural-urban divide on school funding impact.
+              </p>
+              <p class="mb-0">
+                <strong>Real power center:</strong> The Governor's office and LG Patrick's staff will negotiate the framework before bills ever get filed. Committee chairs will implement that agreement, not design it from scratch.
               </p>
             </div>
           </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach for Business Owners</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>If you own commercial property:</strong> You're not the target of relief (homeowners are), so advocate for provisions that include commercial appraisal caps or at minimum don't shift more tax burden your direction.</p>
+              <p><strong>If you depend on school funding:</strong> Tax compression using state dollars could mean more state control over local school budgets. Get positioned with the education committees early.</p>
+              <p><strong>If you're in local government:</strong> You're taking a revenue hit either way. Your play is damage control—preserving local control and minimizing the cuts to essential services.</p>
+              <p class="mb-0"><strong>Timing:</strong> This moves fast. Expect pre-filed bills in November, committee hearings by late January, and floor votes by March. Position yourself during the interim or you're too late.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-purple-900 mb-3">Coalition Dynamics</h3>
+            <p class="text-sm text-purple-800 mb-0">
+              <strong>Supporting:</strong> Texas Public Policy Foundation (driving the appraisal cap narrative), homebuilders (want predictable growth costs), realtors (political muscle behind homeowner relief)<br><br>
+              <strong>Opposing:</strong> School districts (fear revenue loss), counties (same), cities (same), tax appraisers (protect current system)<br><br>
+              <strong>Wild card:</strong> Texas Association of Business may split the difference—support relief but advocate for revenue replacement mechanisms.
+            </p>
+          </div>
+
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">What Success Looks Like</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• 5-10% annual appraisal increase caps on homesteads</li>
+                <li>• $2-4 billion in state funds for school M&O rate compression</li>
+                <li>• Increased homestead exemption ($125K-$150K range)</li>
+                <li>• Minimal shift of burden to commercial property</li>
+                <li>• Passes by end of March, allowing focus on other issues</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">What to Watch For</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• House-Senate conference committee negotiations (where deals die)</li>
+                <li>• Last-minute amendments shifting burden to businesses</li>
+                <li>• School finance provisions bundled in</li>
+                <li>• Local government lobbying for revenue replacement</li>
+                <li>• Voter approval requirements (constitutional amendment = November ballot)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #2: Border Security -->
+      <section id="border-security" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-red-600 mb-1">ISSUE #2</div>
+          <h2 class="text-3xl font-bold mb-2">The $5 Billion Border Security Question</h2>
+          <p class="text-red-700 font-medium">Immigration enforcement expansion and the industries caught in the crossfire</p>
         </div>
 
-        <!-- Article Content -->
         <div class="prose prose-lg max-w-none">
-
-          <p class="lead">
-            Every two years, the Texas Legislature convenes in Austin for 140 days that can reshape industries,
-            create new regulations, shift billions in spending, and determine which businesses win or lose.
-            The 89th Legislature promises to be particularly consequential.
+          <p>
+            Texas has spent over $11 billion on Operation Lone Star since 2015. The 89th Legislature will allocate another $3-5 billion—but the money is the easy part. The real battles are over E-Verify mandates, employer penalties for hiring undocumented workers, and whether "sanctuary city" definitions get expanded to include any local government that doesn't fully cooperate with immigration enforcement.
           </p>
 
           <p>
-            With a Republican supermajority, renewed focus on border security and property tax relief, and
-            hundreds of pre-filed bills already in the hopper, businesses that aren't paying attention will
-            get caught flat-footed. Here are the ten bills and issue areas that deserve your immediate attention.
-          </p>
-
-          <h2>1. Property Tax Relief: The Legislature's Top Priority</h2>
-
-          <p><strong>Why it matters:</strong> Property taxes have become politically radioactive in Texas.
-          Governor Abbott and Lt. Governor Patrick have both declared property tax reduction a top priority.
-          Expect significant legislation aimed at capping appraisal increases and providing homestead exemptions.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>
-              <strong>Appraisal caps:</strong> Proposals to limit annual property value increases to 5% or less
-            </li>
-            <li>
-              <strong>Homestead exemption increases:</strong> Raising the exemption from $100,000 to $150,000+
-            </li>
-            <li>
-              <strong>School district M&O tax compression:</strong> Using state surplus to buy down local tax rates
-            </li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Real estate developers, property management companies, local governments,
-          school districts, and any business owning commercial property.</p>
-
-          <div class="not-prose bg-blue-50 border border-blue-200 rounded-lg p-6 my-8">
-            <p class="text-sm text-blue-900 m-0">
-              <strong>Legislative Intel:</strong> The House and Senate are aligned on the goal but may differ on
-              the mechanism. Watch for tension between those wanting caps on appraisals versus those preferring
-              to compress tax rates using state revenue.
-            </p>
-          </div>
-
-          <h2>2. Border Security and Immigration Enforcement</h2>
-
-          <p><strong>Why it matters:</strong> Texas has spent over $11 billion on border security operations since 2015.
-          The 89th Legislature is expected to allocate another $3-5 billion for Operation Lone Star continuation,
-          infrastructure, and enhanced enforcement measures.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Continued funding for DPS border operations</li>
-            <li>Construction of new barriers and infrastructure</li>
-            <li>E-Verify mandates for employers</li>
-            <li>Penalties for employers hiring undocumented workers</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Construction companies, agriculture, hospitality, landscaping,
-          and any industry relying on immigrant labor. Also: border communities, counties, and local governments.</p>
-
-          <h2>3. Electric Grid Reliability and Energy Infrastructure</h2>
-
-          <p><strong>Why it matters:</strong> Winter Storm Uri's 2021 blackout killed over 200 people and cost
-          the Texas economy an estimated $130 billion. Grid reliability remains a live political issue,
-          and ERCOT reforms continue.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Weatherization requirements for power generation facilities</li>
-            <li>Electricity market redesign proposals</li>
-            <li>Backup power requirements for critical infrastructure</li>
-            <li>Renewable energy transmission and interconnection rules</li>
-            <li>Cryptocurrency mining regulations</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Energy producers, utilities, renewable developers, data centers,
-          industrial manufacturers, and large electricity consumers.</p>
-
-          <h2>4. Public Education Funding and School Choice</h2>
-
-          <p><strong>Why it matters:</strong> Governor Abbott has made school choice his signature issue.
-          After multiple failed attempts, he's expected to push hard for Education Savings Accounts (ESAs)
-          or voucher programs that allow public money to follow students to private schools.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>ESA/voucher program proposals</li>
-            <li>Per-pupil funding increases to sweeten the deal for rural districts</li>
-            <li>Teacher pay raises</li>
-            <li>Charter school expansion</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Public school districts, private schools, charter operators,
-          education technology companies, and real estate developers in school-dependent communities.</p>
-
-          <div class="not-prose bg-green-50 border border-green-200 rounded-lg p-6 my-8">
-            <p class="text-sm text-green-900 m-0">
-              <strong>Political Context:</strong> This is the most divisive issue facing the Legislature.
-              Rural Republicans traditionally opposed vouchers fearing damage to small-town schools.
-              Abbott successfully primaried several anti-voucher incumbents, but resistance remains.
-            </p>
-          </div>
-
-          <h2>5. Healthcare Access and Medicaid Expansion</h2>
-
-          <p><strong>Why it matters:</strong> Texas leads the nation in uninsured residents (16.6% of the population).
-          Medicaid expansion remains a Democratic priority but faces Republican opposition. Expect battles over
-          reimbursement rates, provider networks, and rural hospital funding.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Medicaid expansion proposals (unlikely to pass but will be debated)</li>
-            <li>Rural hospital funding and support programs</li>
-            <li>Medicaid reimbursement rate increases</li>
-            <li>Telehealth regulations and reimbursement</li>
-            <li>Certificate of Need reforms</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Hospitals, clinics, insurance companies, telehealth providers,
-          pharmaceutical companies, and healthcare staffing agencies.</p>
-
-          <h2>6. Water Infrastructure and Drought Preparedness</h2>
-
-          <p><strong>Why it matters:</strong> Texas water supplies are strained by population growth and climate
-          variability. The 2025 session is expected to allocate billions for new reservoirs, desalination,
-          and water conservation infrastructure.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>$1B+ appropriation for new reservoir construction</li>
-            <li>Desalination plant funding</li>
-            <li>Groundwater conservation district reforms</li>
-            <li>Agricultural water use regulations</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Agriculture, real estate developers, municipalities,
-          water utilities, and construction companies.</p>
-
-          <h2>7. Artificial Intelligence Regulation</h2>
-
-          <p><strong>Why it matters:</strong> Texas wants to lead in AI innovation while preventing misuse.
-          Expect first-of-their-kind regulations on AI transparency, bias, and use in criminal justice
-          and hiring decisions.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>AI disclosure requirements for hiring algorithms</li>
-            <li>Deepfake regulations and penalties</li>
-            <li>Use of AI in law enforcement and courts</li>
-            <li>Consumer data protection related to AI</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Tech companies, HR platforms, law enforcement, financial services,
-          and any business using algorithmic decision-making.</p>
-
-          <h2>8. Occupational Licensing Reform</h2>
-
-          <p><strong>Why it matters:</strong> Texas requires licenses for hundreds of occupations, creating
-          barriers to entry and limiting workforce flexibility. Reformers want to eliminate unnecessary
-          licenses and create reciprocity with other states.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Elimination of low-risk occupation licenses (shampooers, auctioneers, etc.)</li>
-            <li>Universal recognition of out-of-state licenses</li>
-            <li>Reduction of continuing education requirements</li>
-            <li>Online license application streamlining</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Professional associations, training programs, cosmetology schools,
-          real estate, and construction trades.</p>
-
-          <h2>9. Data Privacy and Consumer Protection</h2>
-
-          <p><strong>Why it matters:</strong> Following California, Virginia, and Colorado, Texas is considering
-          comprehensive data privacy legislation. Unlike California's stringent CCPA, Texas proposals tend to
-          be more business-friendly but still create compliance obligations.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Consumer data rights (access, deletion, opt-out)</li>
-            <li>Business obligations for data collection and use</li>
-            <li>Biometric data protections</li>
-            <li>Children's online privacy</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> E-commerce, retail, social media, advertising, healthcare,
-          and any business collecting customer data.</p>
-
-          <h2>10. Criminal Justice Reform and Bail</h2>
-
-          <p><strong>Why it matters:</strong> Cash bail reform has divided the Legislature. Progressive activists
-          push for eliminating cash bail, while conservatives argue it endangers public safety. The 89th session
-          will likely revisit these debates.</p>
-
-          <p><strong>What to watch:</strong></p>
-          <ul>
-            <li>Cash bail elimination or reform proposals</li>
-            <li>Pretrial detention standards</li>
-            <li>Bail bond industry regulations</li>
-            <li>Criminal penalties for retail theft and organized crime</li>
-          </ul>
-
-          <p><strong>Who's affected:</strong> Bail bond companies, retailers (concerned about theft),
-          criminal defense attorneys, and local governments managing jails.</p>
-
-          <h2>What Businesses Should Do Now</h2>
-
-          <p>Don't wait until mid-session to engage. Here's your action plan:</p>
-
-          <ol>
-            <li>
-              <strong>Identify your priority bills.</strong> Which of these issues directly affect your operations?
-              Track them using the <a href="https://capitol.texas.gov" target="_blank" rel="noopener noreferrer" class="text-texas-blue-500 hover:underline">Texas Legislature Online</a> database.
-            </li>
-            <li>
-              <strong>Join industry coalitions.</strong> Trade associations amplify your voice. If your industry
-              doesn't have coordinated representation, create it.
-            </li>
-            <li>
-              <strong>Build relationships now.</strong> Legislators are more receptive before session chaos begins.
-              Schedule meetings in December and early January.
-            </li>
-            <li>
-              <strong>Consider hiring a lobbyist.</strong> If the stakes are high, professional representation pays for itself.
-              Browse <a href="/lobbyists" class="text-texas-blue-500 hover:underline">Texas lobbyists by expertise</a> on our directory.
-            </li>
-            <li>
-              <strong>Monitor committee assignments.</strong> Once committees are announced (usually late January),
-              identify which chairs control your issues and focus efforts there.
-            </li>
-          </ol>
-
-          <h2>The Bottom Line</h2>
-
-          <p>
-            The 89th Legislature will address fundamental questions about Texas's future: How do we fix property taxes?
-            How do we keep the lights on? How do we manage rapid growth while preserving what makes Texas attractive?
-            The answers will create winners and losers.
+            Here's the dynamic most business owners miss: border security polling is popular across the political spectrum, which gives leadership cover to push aggressive enforcement measures. But the business community—especially construction, hospitality, and agriculture—relies on immigrant labor and quietly opposes measures that disrupt workforce access.
           </p>
 
           <p>
-            Businesses that engage early, build relationships, and make their case effectively will shape these
-            outcomes. Those that ignore Austin until it's too late will be stuck with whatever passes.
+            This creates a strange coalition: Republican legislators supporting border "security" funding while privately working to kill provisions that penalize employers. Watch for provisions that sound tough in press releases but include enough carve-outs and enforcement discretion to be minimally disruptive in practice.
           </p>
 
-          <p>
-            We'll be tracking all 140 days of the session with updates, analysis, and insights.
-            <a href="/blog" class="text-texas-blue-500 hover:underline">Follow our blog</a> to stay informed.
-          </p>
-
-          <!-- CTA Box -->
-          <div class="not-prose mt-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg p-8 text-white">
-            <h3 class="text-2xl font-bold mb-4 text-white">Need Help Navigating the Session?</h3>
-            <p class="mb-6 text-blue-50">
-              Connect with experienced Texas lobbyists who can represent your interests in Austin.
-            </p>
-            <div class="flex flex-wrap gap-4">
-              <a
-                href="/lobbyists"
-                class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-600 hover:bg-gray-100 transition-colors"
-              >
-                Find a Lobbyist
-              </a>
-              <a
-                href="/guides/how-to-hire-a-lobbyist-in-texas"
-                class="inline-flex items-center justify-center rounded-md border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors"
-              >
-                Hiring Guide
-              </a>
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">The Players Who Matter</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate:</strong> Juan "Chuy" Hinojosa (D-McAllen) chairs Border Security. He represents the Valley, understands border economies, and will push back on measures that sound good in Dallas but devastate border communities. But he's working with a Republican majority that doesn't need his votes.
+              </p>
+              <p>
+                <strong>House:</strong> Homeland Security & Public Safety Committee handles this. Expect someone from a border district who can credibly claim expertise but is loyal enough to leadership to move their agenda.
+              </p>
+              <p class="mb-0">
+                <strong>Behind the scenes:</strong> The Texas Border Coalition (mayors and county judges from border communities) has relationships built over decades. They can't stop border funding, but they can shape implementation to minimize economic disruption. If you're affected, align with them.
+              </p>
             </div>
           </div>
 
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach for Affected Industries</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Construction companies:</strong> You can't publicly oppose border security, but you can advocate for workforce provisions, grace periods for E-Verify compliance, and safe harbors for good-faith verification efforts.</p>
+              <p><strong>Agriculture:</strong> Push for H-2A visa program expansions as the alternative to enforcement-only approaches. Frame it as "legal pathway" rather than opposing enforcement.</p>
+              <p><strong>Hospitality:</strong> Work through the Texas Restaurant Association and Hotel & Lodging Association. They have the political relationships to negotiate workable compliance timelines.</p>
+              <p class="mb-0"><strong>Timing critical:</strong> E-Verify amendments get added in committee. If you're not at the table during markup, you won't have a seat for negotiations.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-amber-50 border border-amber-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-amber-900 mb-3">The Truth Is</h3>
+            <p class="text-sm text-amber-800 mb-0">
+              Border security legislation <em>will</em> pass. The only question is how onerous the employer provisions are. Smart positioning now—building relationships with committee members, joining industry coalitions, and providing practical feedback on unintended consequences—shapes whether you face workable compliance requirements or business-killing penalties. Wait until the bill hits the floor and it's too late to influence the details that matter.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #3: Electric Grid -->
+      <section id="electric-grid" class="mb-16 scroll-mt-8">
+        <div class="bg-orange-50 border-l-4 border-orange-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-orange-600 mb-1">ISSUE #3</div>
+          <h2 class="text-3xl font-bold mb-2">ERCOT's Reckoning Continues</h2>
+          <p class="text-orange-700 font-medium">Weatherization, market redesign, and the fight over who pays for reliability</p>
         </div>
 
-        <!-- Article Footer -->
-        <div class="mt-12 pt-8 border-t border-border">
-          <div class="flex items-center justify-between">
-            <a href="/blog" class="inline-flex items-center text-texas-blue-500 hover:underline">
-              ← Back to Blog
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Winter Storm Uri killed over 200 people and cost Texas an estimated $130 billion in February 2021. Four years later, ERCOT reform is still unfinished business. The 89th Legislature will address weatherization mandates, backup power requirements, and fundamental electricity market redesign.
+          </p>
+
+          <p>
+            The policy debate is complex: capacity markets versus energy-only markets, renewable integration, weatherization standards, demand response programs. But here's the real dynamic—every change to the electricity market creates winners and losers measured in billions of dollars.
+          </p>
+
+          <p>
+            Natural gas generators want capacity payments (guaranteed revenue for being available). Renewable developers want transmission build-out and storage incentives. Industrial consumers want cheap power and don't want to subsidize residential reliability. And the Public Utility Commission, which regulates ERCOT, wants flexibility to implement changes without legislative micromanagement.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee to Watch</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Business & Commerce:</strong> Charles Schwertner (R-Georgetown) chairs this committee and knows energy policy cold. He's data-driven, willing to challenge conventional wisdom, and has the Governor's ear on ERCOT issues.
+              </p>
+              <p>
+                <strong>House State Affairs:</strong> This committee handles the big structural changes. Watch for technical amendments during markup—they look boring but shift billions in revenue between generators, transmission companies, and consumers.
+              </p>
+              <p class="mb-0">
+                <strong>Insider insight:</strong> PUC staff will draft most of the technical language. If you're in the energy sector, relationships with PUC commissioners and staff directors matter more than relationships with most legislators. They're implementing whatever framework the Legislature passes.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach by Stakeholder</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Energy producers:</strong> Your play is shaping the capacity market design (if Texas adopts one) or preserving the energy-only market with scarcity pricing. Build coalition with other generators early.</p>
+              <p><strong>Large industrial consumers:</strong> You want cheap, reliable power without subsidizing residential backup. Advocate for interruptible rate programs and demand response that rewards flexibility.</p>
+              <p><strong>Renewable developers:</strong> Transmission and storage are your priorities. Frame it as reliability and grid modernization, not climate policy. Partner with reliability advocates, not environmental groups.</p>
+              <p><strong>Utilities:</strong> You're implementing whatever passes. Focus on cost recovery mechanisms and flexibility in compliance timelines.</p>
+              <p class="mb-0"><strong>Data centers and crypto miners:</strong> You're the new villains in the "grid strain" narrative. Get ahead of it with voluntary demand response programs and economic impact data showing job creation and tax revenue.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Likely Outcomes</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• Mandatory weatherization for all generation facilities (with cost recovery)</li>
+                <li>• Enhanced backup power requirements for critical infrastructure (hospitals, water, emergency services)</li>
+                <li>• Some form of capacity market or reliability mechanism (details TBD in conference committee)</li>
+                <li>• Cryptocurrency mining regulations tied to grid impact and demand response participation</li>
+                <li>• Transmission planning authority expanded for renewable integration</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Amendment Battles</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• Who pays for weatherization (generators, consumers, or state subsidies)</li>
+                <li>• Renewable energy mandates or incentives (politically fraught)</li>
+                <li>• Nuclear power provisions (small modular reactors gaining traction)</li>
+                <li>• Coal plant retirement timelines (affects grid reliability but also emissions)</li>
+                <li>• ERCOT governance reforms (board composition, PUC authority)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #4: School Choice -->
+      <section id="school-choice" class="mb-16 scroll-mt-8">
+        <div class="bg-purple-50 border-l-4 border-purple-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-purple-600 mb-1">ISSUE #4</div>
+          <h2 class="text-3xl font-bold mb-2">Abbott's All-In Gamble on School Choice</h2>
+          <p class="text-purple-700 font-medium">Education Savings Accounts, vouchers, and the rural revolt that's not dead yet</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Governor Abbott made school choice his signature issue. After multiple failed attempts, he spent the interim primarying Republicans who opposed vouchers—and won. But the fundamental tension remains: rural legislators fear Education Savings Accounts will devastate small-town school districts that serve as community anchors and major employers.
+          </p>
+
+          <p>
+            The policy is straightforward—allow parents to use public dollars ($10,000-$12,000 per student) for private school tuition, homeschool expenses, or tutoring. But the politics are brutal. Private school advocates frame it as parental choice and educational freedom. Public school defenders frame it as defunding public education and abandoning rural communities.
+          </p>
+
+          <p>
+            Here's the insider reality: Abbott has the votes in the Senate (Republicans are unified on this). The House is the problem. Even after primaries, enough rural Republicans remain uncomfortable that passage requires near-perfect attendance and potentially some Democratic support (unlikely).
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Who Decides This Battle</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>The Governor's pressure:</strong> Abbott has made this the litmus test for his support. House members know he'll campaign against them if they vote no. That's enormous leverage.
+              </p>
+              <p>
+                <strong>Speaker Phelan's position:</strong> He supports school choice but has to manage his caucus. Expect him to negotiate sweeteners—per-pupil funding increases for public schools, teacher pay raises, facility funding—to bring rural members along.
+              </p>
+              <p class="mb-0">
+                <strong>Senate Education Committee:</strong> Brandon Creighton (R-Conroe) chairs this committee and is a true believer on school choice. He'll move a clean bill with minimal compromise. The real negotiations happen in the House.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Positioning by Industry</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Private schools:</strong> You're winning but stay quiet. Let advocacy groups (Texas Public Policy Foundation, Texans for Educational Freedom) do the public fighting. Avoid looking like you're profiting from public dollars.</p>
+              <p><strong>Charter school operators:</strong> You benefit from expanded choice but need to navigate relationships with traditional public schools. Position as "public school choice" rather than aligning fully with private school vouchers.</p>
+              <p><strong>Education technology companies:</strong> ESA programs create massive markets for tutoring, online learning, and educational services. Get positioned with program administrators and private schools now.</p>
+              <p><strong>Public school districts:</strong> You can't stop this, but you can negotiate the terms. Push for revenue replacement, rural district protections, and accountability standards for private schools receiving public dollars.</p>
+              <p class="mb-0"><strong>Real estate developers:</strong> School quality drives property values. Understand how ESAs might affect public school funding in your development areas.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-red-50 border border-red-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-red-900 mb-3">The Floor Fight to Watch</h3>
+            <p class="text-sm text-red-800 mb-0">
+              If this makes it to the House floor, expect the longest debate of the session. Amendments will focus on accountability (testing requirements for private schools), income caps (limiting ESAs to low/middle-income families), rural protections (minimum district size exemptions), and disability accommodations (ensuring special needs students can participate). Each amendment is a negotiation point—and an opportunity for business owners affected by education policy to shape implementation details.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #5: Healthcare Access -->
+      <section id="healthcare" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-green-600 mb-1">ISSUE #5</div>
+          <h2 class="text-3xl font-bold mb-2">The Fight Over Who Pays for Healthcare Access</h2>
+          <p class="text-green-700 font-medium">Medicaid expansion politics, rural hospital collapse, and telehealth's unfinished business</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Texas leads the nation in uninsured residents at 16.6% of the population. Democrats will file Medicaid expansion bills. Republicans will oppose them on ideological grounds. This script is as predictable as the sunrise.
+          </p>
+
+          <p>
+            But beneath the expansion debate, real policy work is happening: rural hospital funding to prevent closures, Medicaid reimbursement rate increases to maintain provider networks, telehealth regulations that balance access and quality, and Certificate of Need reforms that determine who can open new healthcare facilities where.
+          </p>
+
+          <p>
+            The dynamic to understand: rural Republican legislators represent communities losing hospitals. They can't support Medicaid expansion politically, but they desperately need solutions for healthcare access. This creates opportunities for targeted programs that thread the ideological needle—not "expansion" but "rural healthcare sustainability initiatives" or "provider network preservation funding."
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee Power Centers</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Health & Human Services:</strong> Lois Kolkhorst (R-Brenham) represents a rural district and understands hospital closure dynamics personally. She's conservative on Medicaid expansion but open to creative solutions for rural access. She's the key relationship for healthcare providers.
+              </p>
+              <p>
+                <strong>House Public Health Committee:</strong> Handles the detailed policy work. Watch for members from districts with hospital closures—they're the swing votes on funding bills.
+              </p>
+              <p class="mb-0">
+                <strong>Appropriations Committees:</strong> Healthcare funding happens here. HHSC (Health and Human Services Commission) budget determines reimbursement rates, rural hospital grants, and program funding. Staff directors on Appropriations are the people who matter.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach by Stakeholder</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Hospitals and health systems:</strong> Focus on rural facility funding and reimbursement rate increases, not Medicaid expansion (you won't win that fight). Build coalition with rural legislators—provide data on economic impact and jobs in their districts.</p>
+              <p><strong>Telehealth providers:</strong> Push for permanent reimbursement parity with in-person care and reduced licensing barriers for out-of-state providers. Frame as rural access solution.</p>
+              <p><strong>Insurance companies:</strong> You're negotiating narrow networks and rate changes. Work with the Department of Insurance quietly—avoid high-profile legislative battles that politicize technical policy.</p>
+              <p><strong>Pharmaceutical companies:</strong> Prescription drug pricing is politically toxic right now. Lay low unless directly threatened. If targeted, emphasize patient assistance programs and research investment.</p>
+              <p class="mb-0"><strong>Medical staffing agencies:</strong> Provider shortages create opportunities. Support loan forgiveness programs, licensing reciprocity, and workforce development funding.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-amber-50 border border-amber-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-amber-900 mb-3">The Quiet Wins Available</h3>
+            <p class="text-sm text-amber-800 mb-0">
+              While Medicaid expansion dominates headlines, smart healthcare advocates are securing $200M+ in rural hospital grants, 10-15% reimbursement rate increases, Certificate of Need reforms that enable expansion, and permanent telehealth parity. These provisions get added in conference committee or Appropriations markup—not on the House floor. If you wait for public hearings, you're too late to shape the details that determine your economic outcomes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #6: Water Infrastructure -->
+      <section id="water" class="mb-16 scroll-mt-8">
+        <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-blue-600 mb-1">ISSUE #6</div>
+          <h2 class="text-3xl font-bold mb-2">The Water Crisis Everyone Ignores</h2>
+          <p class="text-blue-700 font-medium">Reservoir funding, groundwater wars, and who controls Texas water in 2050</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Texas population is projected to double by 2050. Current water supplies can't support that growth. The 89th Legislature will allocate over $1 billion for new reservoirs, desalination plants, and conservation infrastructure.
+          </p>
+
+          <p>
+            But water policy is where every Texas conflict converges: rural versus urban, agriculture versus development, surface water rights versus groundwater pumping, environmental protection versus economic growth. Battles over water are proxy wars for who controls Texas's future.
+          </p>
+
+          <p>
+            Here's the dynamic to understand: every new reservoir requires 10+ years of planning, billions in bonding capacity, and political coalition-building across multiple legislative sessions. The real work is securing initial study funding and planning authorization. Construction funding comes later.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee Structure and Power</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Water, Agriculture & Rural Affairs:</strong> Charles Perry (R-Lubbock) chairs this committee. He represents agricultural interests, understands groundwater/surface water tensions, and has relationships with water districts across the state. This committee controls policy direction.
+              </p>
+              <p>
+                <strong>House Natural Resources:</strong> Handles House-side policy. Watch for members from fast-growing suburban districts (they need water for development) and members from agricultural districts (they're protecting existing allocations).
+              </p>
+              <p class="mb-0">
+                <strong>Real power:</strong> Texas Water Development Board allocates funding and approves projects. Their staff and board members determine which projects get study authorization. Relationships with TWDB matter more than relationships with most legislators for specific project funding.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Positioning by Stakeholder</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Real estate developers:</strong> Water availability determines development feasibility. Secure water commitments from municipal utilities early. Support regional water planning and infrastructure bonding authority.</p>
+              <p><strong>Agriculture:</strong> You control huge water allocations. Protect existing rights while supporting conservation funding that improves efficiency without reducing allocations. Groundwater conservation district governance is your focus.</p>
+              <p><strong>Municipalities:</strong> You need long-term water contracts and infrastructure funding. Build coalition with other cities in your region—regional approaches win funding. Compete over allocations and you all lose.</p>
+              <p><strong>Water utilities:</strong> Rate structures and bonding authority are your legislative priorities. Advocate for cost recovery mechanisms and streamlined permitting for infrastructure projects.</p>
+              <p class="mb-0"><strong>Construction companies:</strong> $1B+ in reservoir and pipeline construction is coming. Relationships with TWDB and water districts determine who gets contracts. Start building those relationships now.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Likely Funding Priorities</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• $500M-$1B for new reservoir construction (3-5 priority projects)</li>
+                <li>• $200M-$400M for desalination plant development (Gulf Coast focus)</li>
+                <li>• $100M-$200M for agricultural water conservation programs</li>
+                <li>• $50M-$100M for municipal infrastructure (pipes, treatment plants)</li>
+                <li>• Groundwater conservation district reform (contested, likely status quo)</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Battleground Issues</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• Groundwater ownership (private property rights vs. public resource)</li>
+                <li>• Agricultural water use restrictions (efficiency mandates)</li>
+                <li>• Eminent domain for pipelines (development vs. landowner rights)</li>
+                <li>• Environmental flow requirements (Endangered Species Act conflicts)</li>
+                <li>• Inter-basin water transfers (rural areas exporting to cities)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #7: AI Regulation -->
+      <section id="ai-regulation" class="mb-16 scroll-mt-8">
+        <div class="bg-indigo-50 border-l-4 border-indigo-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-indigo-600 mb-1">ISSUE #7</div>
+          <h2 class="text-3xl font-bold mb-2">First-Mover Risk and Opportunity in AI Regulation</h2>
+          <p class="text-indigo-700 font-medium">Texas wants to lead in AI innovation while preventing misuse—threading that needle is harder than it looks</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Texas wants to be the destination for AI companies leaving California. But recent deepfake incidents, hiring algorithm discrimination claims, and concerns about AI in criminal justice have created political pressure to regulate before problems escalate.
+          </p>
+
+          <p>
+            The challenge: most legislators don't understand AI beyond chatbots and deepfakes. That knowledge gap creates both opportunity (industry can shape reasonable regulation) and risk (poorly drafted bills that sound good but create unworkable compliance burdens).
+          </p>
+
+          <p>
+            Here's the dynamic to watch: California, Colorado, and the EU have passed AI regulations. Texas legislators will want to avoid being "behind" but also want to avoid California's regulatory approach that they view as anti-business. The sweet spot they're looking for: transparency and accountability requirements without innovation-killing restrictions.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Who's Drafting This Legislation</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate:</strong> Expect the Business & Commerce Committee to handle AI regulation (Schwertner again). He's tech-friendly and data-driven—he'll listen to industry input on workable versus unworkable requirements.
+              </p>
+              <p>
+                <strong>House:</strong> Could go to State Affairs or a newly created technology committee. Watch for early bill filings to see which committee gets jurisdiction—that tells you who controls the conversation.
+              </p>
+              <p class="mb-0">
+                <strong>What you need to know:</strong> This is new territory for the Legislature. There are no entrenched interests yet, which means the first stakeholders to provide thoughtful policy frameworks will shape the default approach. If you're in AI/tech, engage early with education and practical alternatives to bad proposals.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach by Sector</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>AI/tech companies:</strong> Don't oppose regulation outright (politically tone-deaf). Instead, advocate for principles-based standards rather than prescriptive rules, safe harbors for good-faith efforts, and preemption of local regulations (avoid 50 different city ordinances).</p>
+              <p><strong>HR tech and hiring platforms:</strong> You're the poster child for "algorithmic bias" concerns. Get ahead of it with transparency commitments, bias auditing, and appeals processes. Show you're self-regulating responsibly.</p>
+              <p><strong>Healthcare AI:</strong> You're already regulated by HIPAA and FDA in many cases. Advocate for recognizing existing frameworks rather than duplicative state requirements.</p>
+              <p><strong>Financial services:</strong> Same as healthcare—existing regulations cover AI uses in credit, fraud detection, and risk assessment. Coordinate with banking associations to avoid conflicting state requirements.</p>
+              <p class="mb-0"><strong>Law enforcement:</strong> Facial recognition and predictive policing are politically sensitive. Support transparency requirements (public reporting on usage) and accuracy standards, but preserve operational flexibility.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-amber-50 border border-amber-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-amber-900 mb-3">The Deepfake Wild Card</h3>
+            <p class="text-sm text-amber-800 mb-0">
+              Expect aggressive deepfake regulation—criminal penalties for sexual deepfakes, political ad disclosure requirements, and platform liability for hosting non-consensual deepfakes. This has bipartisan support and will move fast. If your business creates, hosts, or distributes AI-generated content, you need clear labeling, takedown procedures, and age verification systems. The first high-profile incident during session will accelerate whatever bills are pending.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #8: Occupational Licensing -->
+      <section id="licensing" class="mb-16 scroll-mt-8">
+        <div class="bg-emerald-50 border-l-4 border-emerald-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-emerald-600 mb-1">ISSUE #8</div>
+          <h2 class="text-3xl font-bold mb-2">The Quiet Deregulation Wave in Occupational Licensing</h2>
+          <p class="text-emerald-700 font-medium">Eliminating barriers to entry without starting professional association wars</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Texas requires licenses for over 200 occupations. Reformers argue many licenses create barriers to entry without protecting public safety—do you need 1,500 hours of training to shampoo hair? Conservative and libertarian groups want to eliminate low-risk licenses and create universal recognition of out-of-state credentials.
+          </p>
+
+          <p>
+            But every license has a professional association defending it. Cosmetology boards, auctioneers, landscape irrigators—they all have political relationships and argue their license protects consumers. Reforming these requires navigating political minefields where the policy case is clear but the lobbying resistance is organized.
+          </p>
+
+          <p>
+            The strategic path forward: pick the lowest-hanging fruit (occupations with minimal public safety risk), grandfather existing license holders (they keep their credentials, just don't require them for new entrants), and phase implementation over multiple years. This minimizes opposition while achieving the policy goal.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee Dynamics</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Business & Commerce:</strong> This has been Charles Schwertner's pet project. He's philosophically committed to reducing regulatory barriers and has the data to back up reform arguments.
+              </p>
+              <p>
+                <strong>House Licensing & Administrative Procedures:</strong> This committee handles the detailed work of reviewing each occupation. Expect incremental progress—eliminating 10-20 low-risk licenses rather than wholesale deregulation.
+              </p>
+              <p class="mb-0">
+                <strong>Opposition strategy:</strong> Professional associations will testify about consumer protection, safety risks, and economic harm to existing businesses. They'll mobilize license holders to contact legislators. Reformers need countervailing stories—people denied jobs due to licensing barriers, economic studies showing no safety difference, states that eliminated licenses without problems.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Positioning</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>If your occupation is targeted for elimination:</strong> Don't fight to keep the license requirement—you'll lose and look anti-competitive. Instead, advocate for voluntary certification, industry self-regulation, or minimal competency standards. Frame it as protecting consumers while reducing barriers.</p>
+              <p><strong>If you employ licensed workers:</strong> Support reciprocity for out-of-state licenses (expands your hiring pool) and streamlined application processes. You benefit from workforce flexibility.</p>
+              <p><strong>Training programs and schools:</strong> Licensing requirements drive enrollment. If licenses are eliminated, pivot to voluntary certification programs, continuing education, and professional development. The demand for training doesn't disappear, it just becomes market-driven instead of mandatory.</p>
+              <p class="mb-0"><strong>Professional associations:</strong> Your leverage is mobilizing members to contact legislators. Provide personal stories and local economic impact data—not just national talking points. Legislators respond to constituents, not lobbyists for national organizations.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-purple-900 mb-3">Likely Targets for Reform</h3>
+            <div class="text-sm text-purple-800 space-y-2">
+              <p><strong>High probability eliminations:</strong> Shampoo specialists, auctioneers, landscape irrigators, motor vehicle dealers (license reform, not elimination), massage therapists (reduced hour requirements)</p>
+              <p><strong>Reciprocity/universal recognition:</strong> Nurses, teachers, real estate agents, contractors—allowing out-of-state credentials to transfer with minimal additional requirements</p>
+              <p class="mb-0"><strong>Safe from reform:</strong> Medical professionals, lawyers, accountants, engineers—public safety justifications are too strong and political muscle too organized</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #9: Data Privacy -->
+      <section id="data-privacy" class="mb-16 scroll-mt-8">
+        <div class="bg-violet-50 border-l-4 border-violet-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-violet-600 mb-1">ISSUE #9</div>
+          <h2 class="text-3xl font-bold mb-2">Will Texas Adopt California's Data Privacy Model?</h2>
+          <p class="text-violet-700 font-medium">Consumer rights, business obligations, and the fight over private right of action</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Texas is watching California's CCPA create compliance nightmares for businesses. Virginia and Colorado have passed more business-friendly alternatives. Texas will follow the Virginia/Colorado model—consumer data rights (access, deletion, opt-out) without California's aggressive enforcement and private right of action.
+          </p>
+
+          <p>
+            The business community's position: we support reasonable privacy standards, but not California's approach that generates class-action lawsuits and forces businesses to hire compliance attorneys. Consumer advocates want stronger enforcement and penalties that actually deter violations.
+          </p>
+
+          <p>
+            The likely compromise: consumer rights with state Attorney General enforcement (not private lawsuits), tiered requirements based on business size (small businesses get safe harbors), and 12-18 month implementation timeline to build compliance systems.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee Jurisdiction</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Business & Commerce:</strong> Yes, Schwertner again. Data privacy fits his committee's jurisdiction and he's interested in balancing consumer protection and business flexibility.
+              </p>
+              <p>
+                <strong>House:</strong> Could go to State Affairs or Business & Industry. Watch early bill filings to see who takes the lead.
+              </p>
+              <p class="mb-0">
+                <strong>Lobbying dynamic:</strong> Tech industry and retailers will push for Virginia-style law. Consumer groups will push for California-style enforcement. The business community will win this battle—question is how much consumer protection makes it into the final bill.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Approach by Business Type</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>E-commerce and retail:</strong> You collect tons of consumer data. Advocate for clear safe harbors, reasonable compliance timelines, and preemption of local ordinances (you can't comply with 50 different city privacy laws).</p>
+              <p><strong>Tech companies and platforms:</strong> You're already complying with CCPA for California users. Support a Texas law that aligns with Virginia/Colorado so you can use existing compliance infrastructure. Push for federal preemption language.</p>
+              <p><strong>Healthcare providers:</strong> HIPAA already regulates your data practices. Make sure the Texas law explicitly defers to HIPAA rather than creating conflicting requirements.</p>
+              <p><strong>Financial services:</strong> Same as healthcare—GLBA and federal banking regulations already cover you. Coordinate with industry associations to preserve existing regulatory frameworks.</p>
+              <p class="mb-0"><strong>Small businesses:</strong> Advocate for exemptions or simplified compliance for businesses under certain revenue/data volume thresholds. You can't afford enterprise compliance systems.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-red-50 border border-red-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-red-900 mb-3">The Private Right of Action Battle</h3>
+            <p class="text-sm text-red-800 mb-0">
+              This is the make-or-break issue. Private right of action means consumers can sue for violations, creating class-action lawsuit exposure. Business will fight this to the death—and will likely win. Consumer advocates will push hard for it. The compromise might be limited private action for specific violations (like data breaches with proven harm) but not broad enforcement authority. Watch conference committee negotiations—this gets decided behind closed doors.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bill #10: Criminal Justice Reform -->
+      <section id="criminal-justice" class="mb-16 scroll-mt-8">
+        <div class="bg-slate-50 border-l-4 border-slate-500 rounded-r-lg p-6 mb-6">
+          <div class="text-sm font-semibold text-slate-600 mb-1">ISSUE #10</div>
+          <h2 class="text-3xl font-bold mb-2">The Bail Bond Wars Continue</h2>
+          <p class="text-slate-700 font-medium">Cash bail, retail theft, and the ideological divide that won't resolve</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Cash bail reform divides the Legislature like few other issues. Progressives argue it's a wealth-based detention system—poor defendants stay in jail awaiting trial while wealthy defendants go free. Conservatives argue eliminating cash bail releases dangerous criminals and increases crime.
+          </p>
+
+          <p>
+            Both sides have data. Both sides have horror stories. And both sides have organized advocacy groups running campaigns. This makes compromise nearly impossible.
+          </p>
+
+          <p>
+            The business angle: retailers are experiencing organized retail theft at scale. They want enhanced criminal penalties and prosecution resources. The bail reform debate intersects with this—if theft suspects are released without bail, retailers argue crime increases. Criminal justice advocates say cash bail doesn't affect organized crime (those operations post bail easily) and criminalizing poverty makes the problem worse.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3">Committee Structure</h3>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Senate Criminal Justice:</strong> John Whitmire (D-Houston) has chaired this committee for years and understands the system's complexities. He's progressive on some issues but tough on violent crime. He retired, so watch for new chair—likely a conservative Republican.
+              </p>
+              <p>
+                <strong>House Criminal Jurisprudence:</strong> This committee handles bail reform bills. Membership tends toward law-and-order Republicans, making progressive reform difficult.
+              </p>
+              <p class="mb-0">
+                <strong>Outside pressure:</strong> Harris County (Houston) has been ground zero for bail reform litigation. Whatever passes statewide will be influenced by how Harris County's experiments are perceived—success or failure narratives matter more than actual data.
+              </p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-3">Strategic Positioning</h3>
+            <div class="text-sm text-green-800 space-y-2">
+              <p><strong>Bail bond companies:</strong> You're fighting for your industry's survival. Frame opposition to bail elimination as public safety, not economic interest. Partner with law enforcement and crime victims' advocates.</p>
+              <p><strong>Retailers:</strong> Organized retail theft is your entry point. Advocate for enhanced penalties, dedicated prosecution units, and fencing operation crackdowns. Link to bail reform by arguing release without financial accountability enables repeat offenses.</p>
+              <p><strong>Criminal defense attorneys:</strong> You support bail reform but have limited political leverage. Partner with civil rights organizations and provide data on pretrial detention's economic costs to taxpayers (housing inmates awaiting trial).</p>
+              <p><strong>Local governments:</strong> Jail costs are a huge budget item. Support alternatives to incarceration (monitoring, supervision) that reduce pretrial detention without eliminating bail. Frame as fiscal responsibility.</p>
+              <p class="mb-0"><strong>Technology companies:</strong> Ankle monitors, GPS tracking, and case management software create opportunities if Texas expands pretrial supervision programs. Position solutions as public safety enablers.</p>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Likely Outcomes</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• Status quo on bail largely preserved (reform bills won't pass)</li>
+                <li>• Enhanced penalties for organized retail theft ($750 threshold lowered)</li>
+                <li>• Increased funding for pretrial services (supervision, monitoring)</li>
+                <li>• Data collection requirements on bail outcomes (studying the issue)</li>
+                <li>• Local control preserved (no statewide mandates either direction)</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-base font-bold mb-3">Watch for Amendments</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• Violent crime exclusions (even reform bills will exempt violent offenses)</li>
+                <li>• Judicial discretion provisions (letting judges set terms case-by-case)</li>
+                <li>• Risk assessment tool requirements (algorithmic bail decisions)</li>
+                <li>• Victim notification requirements (informing victims of release)</li>
+                <li>• Retail theft penalty enhancements (bipartisan support possible)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What Business Owners Should Do -->
+      <section class="mt-20 pt-16 border-t-2 border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12 mb-16">
+          <h2 class="text-3xl font-bold mb-6">How to Position Yourself Before It's Too Late</h2>
+
+          <div class="prose prose-lg max-w-none mb-8">
+            <p>
+              The majority of first-time lobbying clients wait until mid-session to engage. By then, committee assignments are set, bills are moving, and coalitions are formed. You're reacting, not shaping outcomes.
+            </p>
+
+            <p>
+              Here's what smart business owners do between now and January 14:
+            </p>
+          </div>
+
+          <div class="space-y-6">
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Map Your Legislative Exposure</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Which of these ten issue areas directly affect your business model, revenue, compliance costs, or competitive position? Be specific—not "healthcare affects us" but "Medicaid reimbursement rates determine whether our rural clinics stay open." That specificity drives strategy.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Identify the Committee Members Who Matter</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Committee assignments get announced in late January. But the likely chairs are already known. Build relationships with them now—before session chaos begins. A 30-minute meeting in December is worth ten meetings in March when they're drowning in hearings.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Join the Right Coalitions Now</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Every major industry has coalitions forming right now for the session. Texas Association of Business, industry-specific groups, regional chambers—they're planning strategy, pooling resources, and lining up legislative champions. Solo advocacy is expensive and ineffective. Coalition work amplifies your voice and shares costs.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Prepare Your Economic Impact Data</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Legislators vote based on constituent impact. "This bill will hurt my industry" is weak. "This bill will cost 150 jobs in your district, reduce property tax revenue by $2M annually, and force closure of the second-largest employer in [specific town]" is compelling. Gather that data now.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Evaluate Whether You Need Professional Representation</h3>
+                  <p class="text-sm text-muted-foreground mb-3">
+                    If the stakes are high (millions in revenue impact, existential regulatory threats, major appropriations), you need a lobbyist. Not in March when bills are moving—now, while positioning work can still happen.
+                  </p>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Use <a href="/lobbyists" class="text-texas-blue-600 hover:underline">TexasLobby.org's lobbyist directory</a> to find advocates with relevant committee relationships and subject matter expertise. Compare multiple candidates. Check their track records on similar issues.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Reality -->
+        <div class="bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 mb-12">
+          <h3 class="font-semibold text-amber-900 mb-2">The Reality of Legislative Timing</h3>
+          <p class="text-sm text-amber-800 mb-0">
+            By mid-February, most of the strategic positioning that determines outcomes is already done. Committee chairs have their priorities. Coalitions are formed. Bill language is drafted. Amendments are prepared. You can still influence floor votes and conference committee negotiations, but the framework is set. Engage now or spend the session playing catch-up.
+          </p>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="prose prose-lg max-w-none">
+          <h2 class="text-3xl font-bold mb-6">The Bottom Line</h2>
+
+          <p class="text-lg leading-relaxed">
+            The 89th Texas Legislature will make decisions that reshape industries, create new compliance requirements, shift billions in spending, and determine which businesses thrive and which struggle for the next two years.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            The bills I've outlined here aren't predictions—they're the priorities already being telegraphed by legislative leadership, the issues dominating interim hearings, and the coalitions forming right now. These fights are happening whether you engage or not.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            The difference between businesses that succeed in this environment and those that get blindsided? Strategic positioning before session starts. Building relationships with committee members. Joining coalitions. Preparing data. Understanding the power dynamics that shape outcomes.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            You have eight weeks until session convenes. Use them wisely.
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="not-prose mt-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg p-8 text-white">
+          <h3 class="text-2xl font-bold mb-4 text-white">Need Help Positioning Your Business for the Session?</h3>
+          <p class="mb-6 text-blue-50">
+            Connect with experienced Texas lobbyists who have the committee relationships and strategic expertise to protect your interests at the Capitol.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="/lobbyists"
+              class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-600 hover:bg-gray-100 transition-colors"
+            >
+              Find a Lobbyist
             </a>
-            <div class="text-sm text-muted-foreground">
-              Last updated: {new Date(publishedDate).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </div>
+            <a
+              href="/guides/how-to-hire-a-lobbyist-in-texas"
+              class="inline-flex items-center justify-center rounded-md border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              How to Hire Guide
+            </a>
           </div>
         </div>
+      </section>
 
-        <!-- Sources & Disclaimer -->
-        <div class="mt-8 bg-muted/30 rounded-lg p-6 text-sm text-muted-foreground">
-          <h3 class="font-semibold text-foreground mb-2">Sources & Methodology</h3>
-          <p class="mb-2">
-            This analysis is based on pre-filed legislation, public statements from legislative leadership,
-            interim committee reports, and analysis of past legislative sessions. Bill numbers and specific
-            provisions are subject to change as the session progresses.
-          </p>
-          <p class="mb-0">
-            <strong>Disclaimer:</strong> This article provides general information and analysis for educational
-            purposes. It does not constitute legal advice or lobbying services. Consult with legal counsel or
-            professional lobbyists for specific guidance on legislative matters affecting your business.
-          </p>
-        </div>
-
-      </div>
     </div>
   </article>
 
-  <!-- Related Content -->
+  <!-- Related Guides Section -->
   <section class="py-16 bg-muted/30 border-t border-border">
-    <div class="container">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="text-2xl font-bold mb-8">Related Resources</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-          <a href="/guides/how-to-hire-a-lobbyist-in-texas" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <div class="text-sm font-medium text-texas-blue-600 mb-2">Guide</div>
-            <h3 class="font-semibold mb-2">How to Hire a Lobbyist in Texas</h3>
-            <p class="text-sm text-muted-foreground">Complete guide to finding and engaging professional representation</p>
-          </a>
-          <a href="/reports/2025" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <div class="text-sm font-medium text-texas-blue-600 mb-2">Report</div>
-            <h3 class="font-semibold mb-2">State of Texas Lobbying 2025</h3>
-            <p class="text-sm text-muted-foreground">Comprehensive data on lobbying activity and trends</p>
-          </a>
-          <a href="/lobbyists" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <div class="text-sm font-medium text-texas-blue-600 mb-2">Directory</div>
-            <h3 class="font-semibold mb-2">Find Texas Lobbyists</h3>
-            <p class="text-sm text-muted-foreground">Search 1,600+ lobbyists by expertise and location</p>
-          </a>
-        </div>
+    <div class="container max-w-4xl">
+      <h2 class="text-2xl font-bold mb-8">Related Legislative Resources</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <a href="/guides/how-to-hire-a-lobbyist-in-texas" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+          <div class="text-sm font-medium text-texas-blue-600 mb-2">Guide</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+            How to Hire a Lobbyist in Texas
+          </h3>
+          <p class="text-muted-foreground mb-4 text-sm">
+            Complete guide to finding, evaluating, and working with Texas legislative advocates before session starts.
+          </p>
+          <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+            Read guide →
+          </span>
+        </a>
+
+        <a href="/guides/how-much-does-a-lobbyist-cost" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+          <div class="text-sm font-medium text-texas-blue-600 mb-2">Pricing Guide</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+            How Much Does a Lobbyist Cost?
+          </h3>
+          <p class="text-muted-foreground mb-4 text-sm">
+            Transparent breakdown of lobbying costs, fee structures, and how to calculate ROI on legislative advocacy.
+          </p>
+          <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+            Read guide →
+          </span>
+        </a>
       </div>
+    </div>
+  </section>
+
+  <!-- Back to Blog -->
+  <section class="py-8 border-t border-border">
+    <div class="container max-w-4xl">
+      <a
+        href="/blog"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
+      >
+        ← Back to Legislative Analysis
+      </a>
     </div>
   </section>
 </Layout>

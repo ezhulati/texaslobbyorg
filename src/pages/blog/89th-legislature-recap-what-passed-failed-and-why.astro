@@ -1,0 +1,978 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = '89th Texas Legislature Recap: What Passed, What Failed, and Who Won';
+const pageDescription = 'Insider analysis of the 89th Legislature - which bills passed, which died, and the power dynamics that determined everything. By Byron Campbell, Texas Lobbyist.';
+const publishedDate = '2025-06-10';
+const author = 'By Byron Campbell, Texas Lobbyist';
+const category = 'Legislative Analysis';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: pageTitle,
+  description: pageDescription,
+  datePublished: publishedDate,
+  author: {
+    '@type': 'Person',
+    name: 'Byron Campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/images/texas-lobby-logo.svg'
+    }
+  }
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Legislative Analysis
+        </a>
+      </div>
+
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        89th Legislature Recap
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        What Passed, What Failed, and Who Won
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
+        The 89th Legislature adjourned June 2 after passing over 1,300 bills—far fewer than typical sessions. But the numbers miss the real story: Abbott and Patrick aligned for the first time in years, rural Republican resistance collapsed on vouchers, and the coalition dynamics that defined Texas politics for a decade got completely rewritten.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="font-medium">{author}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">22 min read</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="font-medium">Sine die: June 2, 2025</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
+
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-16">
+        <p class="text-lg leading-relaxed">
+          When I wrote my <a href="/blog/89th-legislature-preview-top-bills-to-watch" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium underline">preview of the 89th Legislature</a> in January, I told you the power dynamics—not the policy arguments—would determine outcomes. Committee relationships would matter more than public testimony. Coalition strength would beat individual advocacy.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Five months and 1,300 bills later, that prediction held true. But even veteran observers missed how completely the landscape would shift.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Governor Abbott and Lieutenant Governor Patrick operated as a unified team for the first time since 2017. The rural Republican-Democrat coalition that killed school vouchers in 2023 disintegrated after Abbott spent millions primarying his opponents. And the passage rate—just 14% compared to the typical 20%—revealed how concentrated power became.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Let me walk you through what happened, who controlled it, and what the outcomes mean for Texas business owners heading into the next biennium.
+        </p>
+      </div>
+
+      <!-- Context Box -->
+      <div class="mb-16 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6">
+        <div class="flex gap-3">
+          <svg class="h-6 w-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-semibold text-blue-900 mb-2">By the Numbers</h3>
+            <p class="text-sm text-blue-800 mb-3">
+              <strong>140 days:</strong> From January 14 to June 2<br>
+              <strong>8,000+ bills filed:</strong> Over 1,300 passed (14% success rate)<br>
+              <strong>86 of 88 House Republicans:</strong> Voted for school vouchers<br>
+              <strong>$10 billion:</strong> Property tax relief package<br>
+              <strong>$3.3 billion:</strong> Border security funding
+            </p>
+            <p class="text-sm text-blue-800 m-0">
+              The low passage rate tells the real story—leadership moved their priorities and let everything else die in committee. If your issue wasn't on Abbott's or Patrick's shortlist, it never had a chance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Big Wins -->
+      <section id="major-wins" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">The Major Wins</h2>
+          <p class="text-green-700 font-medium">Five legislative victories that reshaped Texas policy and politics</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <!-- Win #1: School Vouchers -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">School Vouchers: Abbott's Complete Victory</h3>
+
+            <p>
+              SB 2 passed with 86 of 88 House Republicans voting yes. Let that sink in—after three failed attempts, after years of rural Republican resistance, after the Democrat-rural GOP coalition held firm in 2023, Abbott got his signature win.
+            </p>
+
+            <p>
+              The bill creates $10,000 per student Education Savings Accounts for private school tuition, homeschool expenses, and tutoring. No income limits. No means testing. Universal access for all Texas families.
+            </p>
+
+            <p>
+              How did Abbott win? Primaries. He spent millions targeting Republican legislators who opposed vouchers in 2023. Most lost. The survivors got the message—vote with the Governor or find a new career.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">What Made This Different</h4>
+              <div class="text-sm text-blue-800 space-y-3">
+                <p>
+                  <strong>The coalition breakdown:</strong> Rural Republicans who fought vouchers in 2023 based on protecting small-town school districts had been replaced or intimidated. The Democrat-rural GOP alliance that killed previous bills simply didn't exist anymore.
+                </p>
+                <p>
+                  <strong>The sweetener:</strong> $7.7 billion in public school funding paired with the voucher bill. $3 billion for teacher raises, $1.5 billion for special education. Enough to neutralize some rural opposition by showing Abbott wasn't abandoning public schools entirely.
+                </p>
+                <p class="mb-0">
+                  <strong>Senate Education Chair Brandon Creighton's role:</strong> He moved a clean voucher bill with minimal compromise—exactly as predicted. The House negotiations happened, but Creighton held the line on Abbott's priorities.
+                </p>
+              </div>
+            </div>
+
+            <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-purple-900 mb-3">Strategic Lessons for Business Owners</h4>
+              <p class="text-sm text-purple-800 mb-0">
+                Abbott demonstrated that primary challenges work when you're willing to invest money and political capital. If you're facing a legislative threat and think "we'll just lobby harder," you're missing the power dynamic. Electoral pressure beats committee testimony every time. The private school industry stayed quiet and let advocacy groups do the fighting—smart positioning that avoided the "profiting from public dollars" narrative. When you're winning, don't gloat publicly.
+              </p>
+            </div>
+          </div>
+
+          <!-- Win #2: Property Tax Relief -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Property Tax Relief: $10 Billion and a Constitutional Amendment</h3>
+
+            <p>
+              SB 4 and SB 23 delivered the largest property tax relief package in Texas history. For homeowners, the homestead exemption jumped from $100,000 to $140,000. For seniors and disabled homeowners, the additional exemption increased from $10,000 to $60,000—creating a total exemption of $200,000.
+            </p>
+
+            <p>
+              The Governor's office claimed "the average senior homeowner will no longer pay any school property taxes." That math works in many parts of Texas, particularly outside major metro areas.
+            </p>
+
+            <p>
+              What the headlines missed: commercial property owners got minimal relief. The burden shift from residential to commercial was subtle but real. If you own business property, your comparative share of school funding just increased.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">How This Passed So Quickly</h4>
+              <div class="text-sm text-blue-800 space-y-3">
+                <p>
+                  <strong>The pre-session deal:</strong> Abbott and Patrick's staffs negotiated the framework in December. By the time bills were filed, the agreement was done. Committee hearings were theater—the votes were already secured.
+                </p>
+                <p>
+                  <strong>Morgan LaMantia's committee work:</strong> The new chair of the Senate Property Tax Committee moved bills efficiently, focusing on technical implementation rather than reopening political debates.
+                </p>
+                <p class="mb-0">
+                  <strong>Local government opposition failed:</strong> School districts, counties, and cities lobbied against revenue loss. They lost badly. The political momentum for relief overwhelmed concerns about local government budgets.
+                </p>
+              </div>
+            </div>
+
+            <div class="not-prose my-8 bg-amber-50 border border-amber-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-amber-900 mb-3">What You Need to Know</h4>
+              <p class="text-sm text-amber-800 mb-0">
+                Commercial property owners who didn't engage during interim got no carveouts, no appraisal caps, and no burden-shift protections. The lesson: when leadership has decided to move something fast, your window to influence details is before session starts. Once bills are filed with pre-negotiated terms, amendments that help businesses face impossible odds against populist homeowner relief.
+              </p>
+            </div>
+          </div>
+
+          <!-- Win #3: Border Security -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Border Security: $3.3 Billion and Mandatory Sheriff Cooperation</h3>
+
+            <p>
+              Border security funding passed with overwhelming bipartisan support—no surprise there. But SB 8 changed the enforcement landscape by requiring sheriffs to cooperate with ICE. The bill's sponsor called it "universal coverage" for immigration enforcement.
+            </p>
+
+            <p>
+              SB 36 created a Homeland Security Division within DPS, centralizing border operations and giving the state more direct control over enforcement activities.
+            </p>
+
+            <p>
+              What didn't pass: E-Verify mandates with teeth. Construction, hospitality, and agriculture lobbied quietly against employer penalties. They won—the enforcement provisions that made it into final bills included enough carve-outs and grace periods to be minimally disruptive.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">The Coalition That Shaped Enforcement Details</h4>
+              <div class="text-sm text-blue-800 space-y-3">
+                <p>
+                  <strong>Texas Border Coalition's quiet wins:</strong> Mayors and county judges from border communities couldn't stop border funding bills. But they shaped implementation—securing exemptions for border economies, protecting trade relationships, and ensuring enforcement didn't devastate communities that depend on cross-border commerce.
+                </p>
+                <p>
+                  <strong>Business community's behind-the-scenes work:</strong> Texas Association of Business, construction groups, and agriculture organizations never publicly opposed border security. Instead, they negotiated workable compliance timelines, safe harbors for good-faith verification efforts, and grandfather provisions for existing workers.
+                </p>
+                <p class="mb-0">
+                  <strong>Juan "Chuy" Hinojosa's positioning:</strong> As Senate Border Security Chair from the Valley, he provided political cover for reasonable implementation. His support lent bipartisan credibility while his negotiations protected border communities from the harshest provisions.
+                </p>
+              </div>
+            </div>
+
+            <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-purple-900 mb-3">Strategic Lessons</h4>
+              <p class="text-sm text-purple-800 mb-0">
+                When legislation has overwhelming political momentum, fighting it publicly is suicide. The business community's strategy—support the popular parts, negotiate the implementation details quietly, and shape enforcement to be workable—succeeded. Industries affected by enforcement provisions got what they needed without making themselves targets for "soft on immigration" attacks. That's professional coalition work.
+              </p>
+            </div>
+          </div>
+
+          <!-- Win #4: Grid and Energy -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Grid Reliability: $5 Billion More for the Texas Energy Fund</h3>
+
+            <p>
+              The Texas Energy Fund received an additional $5 billion, reaching its $10 billion statutory limit. This fund incentivizes natural gas generation capacity—basically paying power plants to be available during peak demand.
+            </p>
+
+            <p>
+              SB 6 overhauled interconnection rules for large electricity consumers (data centers, crypto miners, industrial facilities). The old system created years-long delays for new connections. The new framework prioritizes grid stability and requires demand response commitments from major users.
+            </p>
+
+            <p>
+              HB 14 created the Texas Advanced Nuclear Energy Office with a $350 million fund to support small modular reactor development. Nuclear is positioning as the long-term solution to baseload power needs—Texas is betting on it early.
+            </p>
+
+            <p>
+              SB 75 created the Grid Security Commission to oversee cybersecurity, physical security, and resilience planning. After years of treating ERCOT failures as technical problems, the Legislature finally acknowledged that grid security is a strategic vulnerability.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">Who Controlled the Energy Conversation</h4>
+              <div class="text-sm text-blue-800 space-y-3">
+                <p>
+                  <strong>Charles Schwertner's dominance:</strong> Senate Business & Commerce Chair Schwertner moved every major energy bill. He's data-driven, understands market dynamics, and has Abbott's ear on ERCOT issues. If you're in the energy sector and don't have a relationship with Schwertner's office, you're not positioned for the 90th Legislature.
+                </p>
+                <p>
+                  <strong>PUC's implementation authority:</strong> The Public Utility Commission got broad discretion to implement new requirements. PUC commissioners and staff directors will determine what the frameworks mean in practice—making those relationships critical for anyone subject to new regulations.
+                </p>
+                <p class="mb-0">
+                  <strong>Data centers and crypto as targets:</strong> Bills regulating cryptocurrency mining and data center grid usage passed—requiring demand response participation and grid impact assessments. The narrative shifted from "economic development" to "grid strain." Industries didn't get ahead of this politically and paid for it with new restrictions.
+                </p>
+              </div>
+            </div>
+
+            <div class="not-prose my-8 bg-green-50 border border-green-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-green-900 mb-3">Battery Storage Safety Bills Passed</h4>
+              <p class="text-sm text-green-800 mb-0">
+                HB 3809, HB 3229, and HB 3824 created decommissioning requirements and fire safety standards for battery energy storage systems (BESS). After several high-profile battery fires, regulation was inevitable. Storage developers who engaged early helped shape workable standards. Those who ignored the issue until bills were filed got regulations written by fire marshals and insurance companies—not a recipe for business-friendly rules.
+              </p>
+            </div>
+          </div>
+
+          <!-- Win #5: Water Infrastructure -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Water Infrastructure: The Quiet Billion-Dollar Commitment</h3>
+
+            <p>
+              SB 7 passed with funding for reservoirs, pipelines, and conservation projects. While property tax relief and vouchers dominated headlines, Texas quietly committed over $1 billion to water infrastructure—the unsexy policy work that determines whether fast-growing regions can sustain development.
+            </p>
+
+            <p>
+              The Texas Water Development Board now has authorization and funding for three priority reservoir projects, desalination plant studies, and agricultural conservation programs.
+            </p>
+
+            <p>
+              What didn't happen: groundwater regulation battles. The property rights crowd and agricultural interests ensured groundwater ownership and pumping rules stayed largely status quo. Environmental flow requirements got minimal changes. Major conflicts were postponed, not resolved.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">Charles Perry's Infrastructure Focus</h4>
+              <p class="text-sm text-blue-800 mb-0">
+                Senate Water, Agriculture & Rural Affairs Chair Charles Perry understands that water availability determines development feasibility across Texas. He moved infrastructure funding without reopening the ideological fights over groundwater ownership. That political skill—knowing when to advance policy and when to avoid battles you can't win—is why he's effective. Real estate developers and municipalities that built relationships with Perry's office during interim got their projects into funding priority lists. Those who waited until session were too late.
+              </p>
+            </div>
+
+            <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-purple-900 mb-3">Strategic Lessons for Developers</h4>
+              <p class="text-sm text-purple-800 mb-0">
+                Water infrastructure planning operates on 10+ year timelines. Securing study funding and planning authorization now determines what construction funding will be available in the 90th and 91st Legislatures. The developers who secured water commitments and infrastructure priority listings during this session are positioned for the next decade. Those who ignored water policy because "it's not urgent" will face development constraints in 2027-2030 when their competitors have secured allocations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Major Failures -->
+      <section id="major-failures" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">The Major Failures</h2>
+          <p class="text-red-700 font-medium">Bills that died despite strong advocacy—and what killed them</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <!-- Failure #1: Anti-Renewable Setbacks -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Anti-Renewable Setback Bills Died Quietly</h3>
+
+            <p>
+              SB 388, SB 383, HB 1378, HB 3056, and HB 3722 all proposed mandatory distance setbacks for wind and solar projects from property lines—ranging from 1,500 feet to over a mile. These bills would have effectively banned new renewable development across most of Texas.
+            </p>
+
+            <p>
+              They all died in committee.
+            </p>
+
+            <p>
+              Why? Because while fighting renewable energy polls well in Republican primaries, the economic reality is different. Landowners make $10,000+ per year per turbine in lease payments. Counties collect property taxes on wind farms. And major corporations with Texas operations (Amazon, Google, Microsoft) buy renewable power through long-term contracts.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">The Coalition That Killed These Bills</h4>
+              <div class="text-sm text-blue-800 space-y-3">
+                <p>
+                  <strong>Landowner rights groups:</strong> When rural Republican legislators heard from farmers and ranchers making $50,000+ annually from wind leases, the property rights argument overwhelmed anti-renewable ideology.
+                </p>
+                <p>
+                  <strong>Economic development offices:</strong> Counties showed legislators the property tax revenue from renewable projects—schools, roads, and emergency services funded by wind and solar. Cutting that revenue to score political points became untenable.
+                </p>
+                <p class="mb-0">
+                  <strong>Corporate buyers:</strong> Large employers who've committed to renewable power purchasing agreements lobbied quietly. They didn't make public statements—they had private conversations with committee chairs explaining that Texas's renewable energy market is why they're expanding operations here instead of other states.
+                </p>
+              </div>
+            </div>
+
+            <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-purple-900 mb-3">Strategic Lessons</h4>
+              <p class="text-sm text-purple-800 mb-0">
+                Ideological messaging doesn't always translate to votes when economic interests are clear. Renewable developers built coalitions with landowners, local governments, and corporate buyers—creating a political coalition strong enough to kill hostile bills in committee without floor fights. That's the gold standard for defensive lobbying: neutralize threats before they become public battles.
+              </p>
+            </div>
+          </div>
+
+          <!-- Failure #2: Hemp-Derived THC Regulation -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Hemp-Derived THC: Senate Passed, House Killed It</h3>
+
+            <p>
+              SB 6 would have regulated delta-8 THC, delta-10 THC, and other hemp-derived intoxicating cannabinoids that proliferated after the 2018 Farm Bill legalized hemp. The Senate passed it. The House never voted.
+            </p>
+
+            <p>
+              This failure reveals legislative dynamics most business owners miss. The Senate wanted to regulate an unregulated market creating consumer safety concerns. The House had two opposing factions: members who wanted prohibition (ban all intoxicating hemp products) and members who wanted Texas to preserve its hemp industry.
+            </p>
+
+            <p>
+              Unable to bridge that divide, House leadership let the bill die by inaction—avoiding a contentious floor fight that would have divided Republicans.
+            </p>
+
+            <div class="not-prose my-8 bg-amber-50 border border-amber-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-amber-900 mb-3">What This Means for Hemp Businesses</h4>
+              <p class="text-sm text-amber-800 mb-0">
+                You got two more years of an unregulated market. But don't celebrate—this issue will return in the 90th Legislature with more urgency. High-profile incidents (underage consumption, contaminated products, impaired driving cases) will create political pressure for either regulation or prohibition. Hemp businesses that spend the next two years self-regulating—age verification, product testing, dosage limits, clear labeling—can position regulation as the alternative to prohibition. Those who keep pushing boundaries will hand prohibitionists the ammunition they need.
+              </p>
+            </div>
+          </div>
+
+          <!-- Failure #3: Social Media Age Restrictions -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Social Media Age Bans Failed Despite Bipartisan Support</h3>
+
+            <p>
+              HB 186 would have required age verification for social media platforms and banned accounts for users under 14. It had bipartisan support, parent advocacy groups pushing hard, and compelling testimony about mental health harms.
+            </p>
+
+            <p>
+              It died in the House.
+            </p>
+
+            <p>
+              Why? Because technology companies lobbied on implementation impossibility—age verification systems either invade privacy massively (requiring ID uploads) or get easily circumvented. Free speech advocates raised First Amendment concerns. And the legal uncertainty about whether Texas could regulate national platforms without federal coordination made legislators nervous about passing a law that would get immediately challenged in court.
+            </p>
+
+            <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-900 mb-3">The Tech Industry's Defensive Strategy</h4>
+              <p class="text-sm text-blue-800 mb-0">
+                Rather than opposing child safety publicly (political suicide), tech companies focused on implementation challenges and offered alternative solutions: parental control tools, mental health resources, and algorithmic changes to reduce harmful content for minors. This "yes, but" strategy acknowledged the problem while making legislative solutions look unworkable. That's sophisticated lobbying—reframing the debate from "should we protect kids" to "how can we protect kids effectively" and then showing your proposal is better than legislation.
+              </p>
+            </div>
+          </div>
+
+          <!-- Failure #4: Brackish Desalination Studies -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Brackish Desalination Studies Died in Appropriations</h3>
+
+            <p>
+              HB 1501 and HB 3728 would have funded feasibility studies for brackish groundwater desalination—turning slightly salty groundwater into drinking water. This is considered a key long-term water source for Texas as population doubles by 2050.
+            </p>
+
+            <p>
+              Both bills passed committees. Both died when Appropriations didn't include study funding in the budget.
+            </p>
+
+            <p>
+              The lesson: authorization without appropriation is worthless. Legislators can vote "yes" on good policy and then quietly kill it by not funding implementation. If you're advocating for programs requiring state dollars, the Appropriations Committee battle matters more than the policy committee vote.
+            </p>
+          </div>
+
+          <!-- Failure #5: Police Transparency -->
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-4">Police Transparency Bill Went Nowhere</h3>
+
+            <p>
+              HB 15 would have required disclosure of officer disciplinary records and created public databases of misconduct complaints. Civil rights groups and police reform advocates pushed hard.
+            </p>
+
+            <p>
+              It died in committee without a vote.
+            </p>
+
+            <p>
+              Law enforcement opposition was absolute. Police unions, sheriffs' associations, and chiefs of police testified against it. In Texas's political environment, no Republican wanted to be accused of being "anti-police." The bill had no path forward.
+            </p>
+
+            <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-purple-900 mb-3">Coalition Strength Beats Public Opinion</h4>
+              <p class="text-sm text-purple-800 mb-0">
+                Polling showed public support for police accountability measures. Didn't matter. Law enforcement has organized political muscle, campaign contributions, and the ability to mobilize voters in Republican primaries. Reform advocates had public opinion but no comparable political infrastructure. That asymmetry determines outcomes—organized intensity beats diffuse public support every time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Special Session Drama -->
+      <section id="special-session" class="mb-16 scroll-mt-8">
+        <div class="bg-orange-50 border-l-4 border-orange-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">The Special Session That Revealed Power Dynamics</h2>
+          <p class="text-orange-700 font-medium">House Democrats broke quorum, Abbott issued arrest warrants, and one tragedy forced compromise</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            After sine die on June 2, Abbott called a special session to address congressional redistricting. House Democrats, unable to stop the maps through votes, left the state to break quorum and prevent a vote.
+          </p>
+
+          <p>
+            Abbott responded by authorizing civil arrest warrants. Texas DPS began searching for absent legislators. The standoff dominated national news for two weeks.
+          </p>
+
+          <p>
+            Then the July 4 flood tragedy occurred—multiple children died at an improperly supervised summer camp. Suddenly, camp safety legislation became urgent and bipartisan.
+          </p>
+
+          <p>
+            SB 1 (Heaven's 27 Act) passed with overwhelming support, creating new safety standards, inspection requirements, and enforcement mechanisms for youth camps. Democrats returned, the camp safety bill passed, and the redistricting maps followed.
+          </p>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 class="text-lg font-bold text-blue-900 mb-3">What the Special Session Revealed</h4>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>Quorum breaks as last resort:</strong> When minority parties have no other leverage, breaking quorum becomes the only tool. But it only works if the issue is important enough to justify the political cost—and if you can stay gone long enough to run out the clock.
+              </p>
+              <p>
+                <strong>Tragedy creates legislative opportunities:</strong> The camp safety bill had been filed during regular session but lacked urgency. The July 4 tragedy changed that—suddenly there was political will to act. This is how responsive legislation happens: public demand following visible crises.
+              </p>
+              <p class="mb-0">
+                <strong>Abbott's arrest warrant authority:</strong> The Governor demonstrated he'll use every available tool to advance priorities. Business owners facing legislative threats should understand—when leadership wants something badly enough, procedural obstacles get bulldozed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What Changed: Power Dynamics -->
+      <section id="power-dynamics" class="mb-16 scroll-mt-8">
+        <div class="bg-indigo-50 border-l-4 border-indigo-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">The Power Dynamics That Shifted</h2>
+          <p class="text-indigo-700 font-medium">Coalition breakdowns, alignment at the top, and what it means for the 90th Legislature</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">Abbott and Patrick Finally Aligned</h3>
+
+            <p>
+              For years, Governor Abbott and Lieutenant Governor Patrick operated as competing power centers. Patrick controlled the Senate. Abbott had veto power and primary endorsement leverage. They often worked at cross purposes.
+            </p>
+
+            <p>
+              Not this session. They presented unified priorities, coordinated messaging, and backed each other's flagship bills. That alignment—combined with Republican supermajorities in both chambers—created steamroller conditions for their agenda.
+            </p>
+
+            <p>
+              If you're a business owner trying to influence policy, this matters enormously. Unified leadership means you can't play one power center against another. You either align with their priorities or you're fighting both simultaneously.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">Rural Republican Resistance Collapsed</h3>
+
+            <p>
+              The Democrat-rural Republican coalition that killed school vouchers in 2023 disintegrated. Abbott's primary campaign targeted voucher opponents and won decisively. Survivors understood the message.
+            </p>
+
+            <p>
+              When SB 2 came to the House floor, 86 of 88 Republicans voted yes. That's not persuasion—that's power.
+            </p>
+
+            <p>
+              This breakdown has implications beyond education policy. Rural Republicans who previously allied with Democrats on issues affecting small-town economies (Medicaid expansion for rural hospitals, occupational licensing protecting local businesses, environmental rules affecting agriculture) now face enormous pressure to vote with Abbott on everything.
+            </p>
+
+            <p>
+              The coalition politics that defined Texas for a decade just got rewritten.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">The 14% Passage Rate Reveals Concentrated Power</h3>
+
+            <p>
+              Most legislative sessions see 20-25% of filed bills pass. This session: 14%. Over 8,000 bills died in committee.
+            </p>
+
+            <p>
+              That's not gridlock—that's selective advancement. Leadership moved their priorities and let everything else die. Committee chairs understood they had limited bandwidth and focused on governor-endorsed bills.
+            </p>
+
+            <p>
+              What this means for business owners: if your issue isn't on leadership's priority list, don't expect "bipartisan support" or "good policy" to carry it. You need a champion with power or you need to align your issue with something leadership already wants.
+            </p>
+          </div>
+
+          <div class="not-prose my-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
+            <h4 class="text-lg font-bold text-purple-900 mb-3">Strategic Implications for the 90th Legislature</h4>
+            <div class="text-sm text-purple-800 space-y-3">
+              <p>
+                <strong>Primary threats work:</strong> Abbott proved that primary challenges are effective tools for enforcing party discipline. Expect more aggressive primary campaigns targeting legislators who oppose leadership priorities in 2026. If you're banking on "my legislator will vote for my issue despite leadership opposition," reevaluate that assumption.
+              </p>
+              <p>
+                <strong>Coalition politics are harder:</strong> When rural Republicans and Democrats could form blocking coalitions, business owners could sometimes build bipartisan support against bad bills. That coalition doesn't exist anymore in its previous form. Defensive lobbying now requires either converting Republicans or finding issues where leadership doesn't have strong positions.
+              </p>
+              <p class="mb-0">
+                <strong>Committee relationships matter more:</strong> With passage rates dropping, getting your bill assigned to a friendly committee and getting a hearing scheduled became the critical bottleneck. Relationships with committee chairs and staff directors determine whether bills get traction. If you don't have those relationships built during interim, your odds of success drop dramatically.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Surprise Outcomes -->
+      <section id="surprises" class="mb-16 scroll-mt-8">
+        <div class="bg-violet-50 border-l-4 border-violet-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">The Surprise Outcomes</h2>
+          <p class="text-violet-700 font-medium">What we didn't see coming and what it reveals about Texas politics</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">Renewable Energy Setbacks Failed Completely</h3>
+
+            <p>
+              I expected at least one anti-renewable setback bill to pass. Strong Republican support, Abbott's skepticism about renewables, and primary season rhetoric about "California's green energy failures" suggested momentum.
+            </p>
+
+            <p>
+              Instead, all five major setback bills died in committee without floor votes.
+            </p>
+
+            <p>
+              The surprise wasn't that opposition existed—it was how completely the economic coalition (landowners, counties, corporate buyers) neutralized ideological momentum. Property rights and local tax revenue beat partisan messaging.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">ERS Retiree 13th Check Passed House, Got No Senate Funding</h3>
+
+            <p>
+              The House passed a "13th check" supplemental payment for state employee retirees—essentially a one-time bonus to help with inflation. Retiree groups lobbied hard. The bill had bipartisan support.
+            </p>
+
+            <p>
+              The Senate Appropriations Committee didn't include funding in the budget. Bill died.
+            </p>
+
+            <p>
+              This is a perfect example of symbolic votes versus actual outcomes. House members could tell retirees "I voted for your 13th check" while the Senate quietly killed it by not appropriating funds. Retirees got nothing, but House members got political credit for trying. That's how unfunded mandates work as political theater.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">AI Regulation Discussions Went Nowhere</h3>
+
+            <p>
+              I predicted Texas would pass Virginia-style AI regulation—consumer protections without California's enforcement mechanisms. Several bills were filed. None passed.
+            </p>
+
+            <p>
+              The issue simply wasn't urgent enough to compete with property taxes, vouchers, and border security for limited legislative bandwidth. AI regulation will return in the 90th Legislature—probably with more urgency after two more years of deepfake incidents and algorithmic discrimination claims.
+            </p>
+
+            <p>
+              For AI companies and users: you got a reprieve. Use it wisely by implementing voluntary standards, transparency measures, and accountability frameworks. Self-regulation now prevents punitive regulation later.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- What This Means for Business Owners -->
+      <section id="implications" class="mb-16 scroll-mt-8">
+        <div class="bg-emerald-50 border-l-4 border-emerald-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">What This Session Means for Your Business</h2>
+          <p class="text-emerald-700 font-medium">Translating legislative outcomes into strategic implications</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">If You Own Commercial Property</h3>
+
+            <p>
+              The property tax relief package increased homestead exemptions dramatically—which means schools will need to replace that revenue. Commercial property bears more of the burden.
+            </p>
+
+            <p>
+              Appraisal growth for commercial property continues uncapped. Homeowners got relief. You didn't.
+            </p>
+
+            <p>
+              Strategic response: Budget for higher property tax bills in the next appraisal cycle. Consider challenging appraisals more aggressively. And engage with the property tax debate during the next interim—commercial property owner coalitions need to organize before the 90th Legislature or you'll get the same result again.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">If You Operate in Education Markets</h3>
+
+            <p>
+              The $10,000 per student ESA creates enormous market opportunities for private schools, tutoring services, educational technology, homeschool curriculum providers, and testing services.
+            </p>
+
+            <p>
+              But implementation matters. The Texas Education Agency will write rules governing eligible expenses, provider qualifications, and program administration. Those rules determine who captures ESA dollars.
+            </p>
+
+            <p>
+              Strategic response: Build relationships with TEA staff and commissioner's office now. Participate in rulemaking processes. Ensure your services qualify as eligible ESA expenses. Position your business for parents who suddenly have $10,000 in state funding to spend on educational services.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">If You Depend on Immigrant Labor</h3>
+
+            <p>
+              Border security enforcement expanded, but E-Verify mandates with serious penalties didn't pass. You got workable compliance requirements instead of business-killing restrictions.
+            </p>
+
+            <p>
+              That said, immigration enforcement is escalating. SB 8's requirement for sheriff cooperation with ICE means more workplace raids are likely.
+            </p>
+
+            <p>
+              Strategic response: Audit I-9 compliance now. Implement E-Verify voluntarily to demonstrate good faith. Document hiring procedures. If you're in construction, hospitality, or agriculture, work with industry associations to advocate for H-2A visa expansion and legal workforce pathways during the next session—because enforcement-only approaches eventually make labor shortages critical.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">If You're in Energy or Data Center Operations</h3>
+
+            <p>
+              Grid reliability requirements just increased your compliance obligations. Interconnection rules changed. Demand response participation is now expected, not optional.
+            </p>
+
+            <p>
+              The Grid Security Commission will issue new cybersecurity and physical security standards. BESS operators face decommissioning and fire safety requirements.
+            </p>
+
+            <p>
+              Strategic response: Budget for compliance costs. Build relationships with PUC staff who will implement new rules. Participate in technical working groups that develop standards. And if you're planning major expansion requiring grid connection, understand that the old interconnection process is dead—new timelines and requirements apply.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold mb-4">If You're in Water-Dependent Industries</h3>
+
+            <p>
+              Real estate development, agriculture, manufacturing—water availability determines feasibility. The billion-dollar infrastructure commitment is good news, but specific allocations matter more than total funding.
+            </p>
+
+            <p>
+              Strategic response: Secure long-term water contracts and supply commitments now while projects are being prioritized. Work with regional water planning groups and municipal utilities to ensure your needs are included in infrastructure plans. Reservoir and pipeline construction operates on 10+ year timelines—positioning now determines 2030s availability.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Looking Ahead to the 90th Legislature -->
+      <section id="looking-ahead" class="mb-16 scroll-mt-8">
+        <div class="bg-slate-50 border-l-4 border-slate-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-3xl font-bold mb-2">Positioning for the 90th Legislature (2027)</h2>
+          <p class="text-slate-700 font-medium">Strategic guidance for the 18-month interim period</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The 90th Legislature convenes in January 2027. That's 18 months away. Business owners who use this interim effectively will shape outcomes. Those who ignore the interim and engage when session starts will react to frameworks already set.
+          </p>
+
+          <div class="not-prose my-12 space-y-6">
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-lg font-bold mb-3">What to Watch During Interim</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• <strong>Committee interim charges:</strong> Leadership assigns study topics to committees. These become session priorities. If your issue isn't assigned for study, it's not a priority.</li>
+                <li>• <strong>Interim hearings:</strong> Committees hold hearings between sessions to study assigned topics. Testifying during interim gives you influence over bill language before it's drafted.</li>
+                <li>• <strong>Sunset reviews:</strong> State agencies undergo periodic review and reauthorization. If you're regulated by an agency up for sunset, this is your chance to advocate for statutory changes.</li>
+                <li>• <strong>2026 elections:</strong> Primary and general elections reshape the Legislature. New members mean new committee assignments. Building relationships with likely winners during campaigns pays dividends when they take office.</li>
+                <li>• <strong>Budget forecasting:</strong> Comptroller revenue estimates in January 2027 determine how much money the Legislature has to spend. If you need appropriations, this number determines what's possible.</li>
+              </ul>
+            </div>
+
+            <div class="bg-white border border-border rounded-lg p-6">
+              <h4 class="text-lg font-bold mb-3">Predicted Priorities for the 90th Legislature</h4>
+              <ul class="text-sm text-muted-foreground space-y-2 ml-4">
+                <li>• <strong>School finance follow-up:</strong> Monitoring ESA implementation and addressing unintended consequences. Public school funding adjustments likely.</li>
+                <li>• <strong>Property tax round two:</strong> If constitutional amendment passes in November 2025, implementation details and potential commercial property relief discussions.</li>
+                <li>• <strong>Grid reliability continued:</strong> ERCOT performance during summer 2025 and 2026 will determine whether additional legislation is needed.</li>
+                <li>• <strong>AI regulation returns:</strong> After two more years of incidents, expect Virginia-style consumer protection framework with Texas-specific modifications.</li>
+                <li>• <strong>Hemp regulation:</strong> The issue didn't go away. Expect prohibition versus regulation battle with higher stakes after two more years of market growth.</li>
+                <li>• <strong>Healthcare access:</strong> Rural hospital closures will force legislative response even if Medicaid expansion remains off the table.</li>
+                <li>• <strong>Water infrastructure phase two:</strong> Continued funding for projects authorized this session plus new regional planning requirements.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 class="text-lg font-bold text-blue-900 mb-3">Strategic Positioning Actions for Interim</h4>
+            <div class="text-sm text-blue-800 space-y-3">
+              <p>
+                <strong>1. Participate in interim hearings:</strong> If committees are studying issues affecting your business, testify during interim hearings. Provide data, case studies, and specific policy recommendations. Bills get drafted based on interim testimony—this is your chance to shape language before it's filed.
+              </p>
+              <p>
+                <strong>2. Build relationships with new members:</strong> After the 2026 elections, new legislators will be assigned to committees. Building relationships before session starts—when they're still learning issues and forming positions—is far more effective than lobbying them during session when they're overwhelmed.
+              </p>
+              <p>
+                <strong>3. Join industry coalitions early:</strong> Coalitions form during interim to coordinate session strategy, pool resources, and align priorities. Joining in December 2026 is too late—the strategy is already set. Join in summer/fall 2025 when coalitions are organizing.
+              </p>
+              <p>
+                <strong>4. Monitor agency rulemaking:</strong> Bills passed this session require agency implementation. TEA rules on ESA program administration, PUC rules on grid interconnection, TCEQ rules on water permitting—these rules determine what the laws mean in practice. Participate in rulemaking to shape implementation.
+              </p>
+              <p class="mb-0">
+                <strong>5. Prepare economic impact analysis:</strong> When the 90th Legislature convenes, you'll need district-specific data showing how proposed legislation affects jobs, tax revenue, and local economies. Gathering that data takes months. Start now so it's ready when needed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Strategic Takeaways -->
+      <section class="mt-20 pt-16 border-t-2 border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12 mb-16">
+          <h2 class="text-3xl font-bold mb-6">The Five Strategic Lessons from the 89th Legislature</h2>
+
+          <div class="space-y-6">
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Primary Challenges Work</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Abbott proved that well-funded primary campaigns can enforce party discipline. If you're facing a legislative threat and assuming "legislators will vote their conscience," reevaluate. Electoral pressure beats policy arguments. Understanding who can credibly threaten primaries tells you who has real power.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Coalition Strength Beats Public Opinion</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Renewable setback bills had public support in polling but died because landowner groups, counties, and corporate buyers formed an economic coalition strong enough to kill them in committee. Police transparency bills had public support but died because law enforcement opposition was organized and intense. Diffuse public support loses to organized advocacy every time.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Authorization Without Appropriation Is Worthless</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Multiple bills passed policy committees only to die when Appropriations didn't include funding. Legislators can vote "yes" on good ideas knowing budget writers will kill them quietly. If you're advocating for programs requiring state dollars, winning the policy fight isn't enough—you need budget allocation. That requires relationships with Appropriations Committee members and staff.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Defensive Lobbying Requires Early Engagement</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    Border security enforcement bills could have devastated industries dependent on immigrant labor. But construction, hospitality, and agriculture groups engaged during interim, shaped bill language before filing, and negotiated implementation details in committee. They didn't fight border security publicly—they shaped it privately. By the time bills reached the floor, the worst provisions were already removed. That's professional defensive work.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Implementation Details Matter More Than Headlines</h3>
+                  <p class="text-sm text-muted-foreground mb-0">
+                    School vouchers passed—but TEA rules on eligible expenses will determine which education businesses capture ESA dollars. Property tax relief passed—but appraisal district implementation will determine actual tax bills. Grid reliability legislation passed—but PUC rules on compliance will determine costs for energy companies. The headline vote matters less than the administrative details that follow. Smart advocates focus on rulemaking, not just legislation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="prose prose-lg max-w-none">
+          <h2 class="text-3xl font-bold mb-6">What You Should Do Next</h2>
+
+          <p class="text-lg leading-relaxed">
+            The 89th Legislature reshaped Texas education policy, delivered the largest property tax relief in state history, expanded border security enforcement, and committed billions to grid reliability and water infrastructure.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            But the real story isn't what passed—it's how the power dynamics shifted. Abbott and Patrick aligned. Rural Republican resistance collapsed. Coalition politics got rewritten. And the low passage rate revealed how concentrated legislative power became.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            These dynamics will define the 90th Legislature. Primary threats will remain credible tools for enforcing party discipline. Unified leadership will make opposing Abbott-Patrick priorities nearly impossible. And committee chairs with limited bandwidth will focus exclusively on issues leadership designates as priorities.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            Business owners who understand these dynamics and position accordingly during the 18-month interim will shape outcomes. Those who wait until January 2027 to engage will spend the session reacting to frameworks already set.
+          </p>
+
+          <p class="text-lg leading-relaxed">
+            Your move.
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="not-prose mt-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg p-8 text-white">
+          <h3 class="text-2xl font-bold mb-4 text-white">Need Help Positioning for the 90th Legislature?</h3>
+          <p class="mb-6 text-blue-50">
+            Connect with experienced Texas lobbyists who have the committee relationships and strategic expertise to protect your interests during the interim and through the next session.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="/lobbyists"
+              class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-600 hover:bg-gray-100 transition-colors"
+            >
+              Find a Lobbyist
+            </a>
+            <a
+              href="/guides/how-to-hire-a-lobbyist-in-texas"
+              class="inline-flex items-center justify-center rounded-md border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              How to Hire Guide
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </article>
+
+  <!-- Related Guides Section -->
+  <section class="py-16 bg-muted/30 border-t border-border">
+    <div class="container max-w-4xl">
+      <h2 class="text-2xl font-bold mb-8">Related Legislative Resources</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <a href="/blog/89th-legislature-preview-top-bills-to-watch" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+          <div class="text-sm font-medium text-texas-blue-600 mb-2">Preview Article</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+            89th Legislature Preview
+          </h3>
+          <p class="text-muted-foreground mb-4 text-sm">
+            Read the January preview to see what we predicted versus what happened—and why some predictions held while others missed completely.
+          </p>
+          <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+            Read preview →
+          </span>
+        </a>
+
+        <a href="/guides/how-to-hire-a-lobbyist-in-texas" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+          <div class="text-sm font-medium text-texas-blue-600 mb-2">Guide</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+            How to Hire a Lobbyist
+          </h3>
+          <p class="text-muted-foreground mb-4 text-sm">
+            Complete guide to finding, evaluating, and working with Texas legislative advocates during interim and session.
+          </p>
+          <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+            Read guide →
+          </span>
+        </a>
+
+        <a href="/guides/how-much-does-a-lobbyist-cost" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+          <div class="text-sm font-medium text-texas-blue-600 mb-2">Pricing Guide</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+            Lobbyist Costs
+          </h3>
+          <p class="text-muted-foreground mb-4 text-sm">
+            Transparent breakdown of lobbying costs, fee structures, and how to calculate ROI on legislative advocacy investments.
+          </p>
+          <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+            Read guide →
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to Blog -->
+  <section class="py-8 border-t border-border">
+    <div class="container max-w-4xl">
+      <a
+        href="/blog"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
+      >
+        ← Back to Legislative Analysis
+      </a>
+    </div>
+  </section>
+</Layout>

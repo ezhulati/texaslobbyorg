@@ -12,30 +12,26 @@ const totalLobbyists = lobbyists?.length || 0;
 const claimedCount = lobbyists?.filter(l => l.is_claimed).length || 0;
 
 const pageTitle = 'How to Hire a Lobbyist in Texas: Complete 2025 Guide';
-const pageDescription = 'Everything you need to know about hiring a lobbyist in Texas. From finding the right advocate to understanding costs, contracts, and measuring success. Expert guidance for businesses, nonprofits, and organizations.';
+const pageDescription = 'Texas lobbyist Byron Campbell reveals exactly how to find, evaluate, and hire a lobbyist who actually delivers. What to look for, what questions expose pretenders, and what you should pay.';
 
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'How to Hire a Lobbyist in Texas',
+  '@type': 'Article',
+  headline: pageTitle,
   description: pageDescription,
-  step: [
-    { '@type': 'HowToStep', name: 'Determine if you need a lobbyist', text: 'Assess your legislative or regulatory needs' },
-    { '@type': 'HowToStep', name: 'Define your goals and budget', text: 'Set clear objectives and financial parameters' },
-    { '@type': 'HowToStep', name: 'Research potential lobbyists', text: 'Find lobbyists with relevant expertise and connections' },
-    { '@type': 'HowToStep', name: 'Interview candidates', text: 'Ask the right questions to evaluate fit' },
-    { '@type': 'HowToStep', name: 'Check references and track record', text: 'Verify experience and past results' },
-    { '@type': 'HowToStep', name: 'Negotiate contract terms', text: 'Agree on scope, deliverables, and compensation' },
-    { '@type': 'HowToStep', name: 'Establish communication protocols', text: 'Set expectations for updates and reporting' },
-    { '@type': 'HowToStep', name: 'Monitor progress and results', text: 'Track outcomes and measure ROI' }
-  ]
+  author: {
+    '@type': 'Person',
+    name: 'Byron Campbell'
+  },
+  datePublished: '2025-01-08',
+  dateModified: '2025-01-08'
 };
 ---
 
 <Layout title={pageTitle} description={pageDescription} schema={schema}>
   <!-- Hero Section -->
   <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
-    <div class="container max-w-3xl">
+    <div class="container max-w-4xl">
       <div class="mb-8">
         <a
           href="/guides"
@@ -56,637 +52,1194 @@ const schema = {
         How to Hire a Lobbyist in Texas
       </h1>
 
-      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
-        Your comprehensive guide to finding, evaluating, and working with professional advocates in the Lone Star State.
-        Whether you're a business, nonprofit, or trade association, learn how to navigate the hiring process with confidence.
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl">
+        The insider's guide to finding and working with a lobbyist who delivers results—not just promises and inflated invoices.
       </p>
 
       <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
         <div class="flex items-center gap-2">
           <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          <span class="font-medium">15 min read</span>
+          <span class="font-medium">By Byron Campbell, Texas Lobbyist</span>
         </div>
         <div class="flex items-center gap-2">
           <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span class="font-medium">Last updated: January 2025</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Table of Contents -->
-  <section class="py-12 bg-gradient-to-b from-muted/20 to-background border-b border-border">
-    <div class="container">
-      <div class="max-w-3xl mx-auto">
-        <div class="bg-white rounded-2xl border border-border shadow-sm p-8 lg:p-10">
-          <h2 class="text-lg font-bold mb-6 text-foreground">What You'll Learn</h2>
-          <nav class="grid md:grid-cols-2 gap-x-8 gap-y-3">
-            <a href="#do-you-need" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Do You Really Need a Lobbyist?</span>
-            </a>
-            <a href="#when-to-hire" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">When to Hire a Lobbyist</span>
-            </a>
-            <a href="#define-goals" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Define Your Goals & Budget</span>
-            </a>
-            <a href="#find-lobbyist" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">How to Find the Right Lobbyist</span>
-            </a>
-            <a href="#evaluate" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Evaluating Lobbyist Credentials</span>
-            </a>
-            <a href="#interview" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Questions to Ask During Interviews</span>
-            </a>
-            <a href="#red-flags" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Red Flags to Avoid</span>
-            </a>
-            <a href="#contracts" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Understanding Lobbying Contracts</span>
-            </a>
-            <a href="#costs" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">What You'll Pay</span>
-            </a>
-            <a href="#measure-success" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Measuring Success & ROI</span>
-            </a>
-          </nav>
+          <span class="font-medium">16 min read</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content -->
-  <article class="py-20 lg:py-24">
-    <div class="container">
-      <div class="max-w-3xl mx-auto article-content">
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
 
-        <!-- Introduction -->
-        <p class="lead">
-          You've got a problem in Austin. Maybe it's a proposed regulation that could devastate your industry.
-          Maybe it's a bill that's been stuck in committee for three sessions. Or maybe you just need someone who
-          knows which legislators will actually return your calls.
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <p class="text-lg leading-relaxed">
+          After two decades at the Capitol, I can tell you this: the lobbyists with the slickest websites and biggest promises are often the worst investment. Meanwhile, the lobbyist who saved your competitor $2 million last session probably has a LinkedIn profile from 2016 and returns calls from the Capitol parking garage.
         </p>
 
-        <p>
-          Whatever brought you here, you're probably asking the same question everyone asks:
-          <strong>"Do I really need to hire a lobbyist, and if so, how the hell do I find a good one?"</strong>
+        <p class="text-lg leading-relaxed">
+          I've watched hundreds of businesses hire their first lobbyist, and about half get it wrong. They focus on presentation over relationships, credentials over committee access, and marketing materials over track records. Then they're shocked when their $15,000/month retainer produces nothing but expensive lunches and vague status updates.
         </p>
 
-        <p>
-          Good news: you're in the right place. With {totalLobbyists.toLocaleString()} active lobbyists registered in Texas,
-          you've got options. The bad news? Not all of them are created equal, and hiring the wrong one can waste your money
-          faster than a budget debate in the House Appropriations Committee.
+        <p class="text-lg leading-relaxed">
+          The good news? If you know what matters—and what questions expose the pretenders—you can find a lobbyist who delivers results worth 10-50x what you pay them. Let's walk through exactly how to do that.
         </p>
+      </div>
 
-        <div class="not-prose bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
-          <p class="text-sm text-blue-900 m-0">
-            <strong>Quick Take:</strong> Hiring a lobbyist is like hiring a lawyer—you want someone who specializes in your issue,
-            knows the players, and has a track record of wins. This guide will walk you through the entire process, from
-            figuring out if you even need one to measuring whether they're worth what you're paying them.
-          </p>
+      <!-- Do You Need a Lobbyist? -->
+      <section id="do-you-need" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Do You Really Need a Lobbyist?</h2>
+          <p class="text-texas-blue-700 font-medium">Not everyone does—here's how to know</p>
         </div>
 
-        <!-- Section 1 -->
-        <h2 id="do-you-need">Do You Really Need a Lobbyist?</h2>
-
-        <p>
-          Let's be honest: lobbyists aren't cheap. Before you start shopping around, you need to answer a fundamental question:
-          <em>Can you accomplish your goals without one?</em>
-        </p>
-
-        <p><strong>You probably need a lobbyist if:</strong></p>
-        <ul>
-          <li><strong>The stakes are high.</strong> We're talking regulations that could cost you millions, legislation that threatens your entire business model, or policy changes that affect your industry's future.</li>
-          <li><strong>You lack relationships.</strong> You don't have direct access to key legislators, committee chairs, or agency heads. Your emails get ignored and your calls aren't returned.</li>
-          <li><strong>The issue is complex.</strong> The policy landscape is technical, involves multiple agencies, or requires coordination across different legislative committees.</li>
-          <li><strong>Time is short.</strong> Legislative sessions move fast—only 140 days every two years for regular sessions. You can't afford to learn the ropes while your issue dies in committee.</li>
-          <li><strong>You're outgunned.</strong> Your opponents already have lobbyists, and you're bringing a butter knife to a lobbying gunfight.</li>
-        </ul>
-
-        <p><strong>You might NOT need a lobbyist if:</strong></p>
-        <ul>
-          <li>Your issue has broad, bipartisan support and will likely pass anyway</li>
-          <li>You have strong existing relationships with key decision-makers</li>
-          <li>Your organization has in-house government relations staff</li>
-          <li>You're dealing with a straightforward, non-controversial issue</li>
-          <li>Budget constraints make it impossible (though sometimes doing nothing costs more)</li>
-        </ul>
-
-        <div class="not-prose bg-amber-50 border-l-4 border-amber-500 p-6 my-8">
-          <h3 class="text-lg font-semibold text-amber-900 mt-0 mb-2">Reality Check</h3>
-          <p class="text-sm text-amber-900 m-0">
-            Grassroots advocacy and coalition-building can sometimes achieve what paid lobbyists do—but it takes time,
-            organization, and sustained effort. If you've got a tight deadline or a small team, a lobbyist might be your
-            only realistic option.
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Before you start shopping for lobbyists, answer this honestly: do you need one? Not everyone does. Sometimes you're better off joining an industry association that already has Austin covered, or building grassroots support through your customer base.
           </p>
-        </div>
 
-        <!-- Section 2 -->
-        <h2 id="when-to-hire">When to Hire a Lobbyist (Timing Matters)</h2>
+          <p>
+            But here's when you almost certainly need professional help:
+          </p>
 
-        <p>
-          Texas operates on a biennial legislative schedule. The Legislature meets for 140 days starting in January of odd-numbered years.
-          If you wait until the session starts to hire a lobbyist, you're already behind.
-        </p>
-
-        <p><strong>Ideal timeline:</strong></p>
-        <ul>
-          <li><strong>6-12 months before session:</strong> Start your search. Give your lobbyist time to build relationships, understand your issue, and develop strategy.</li>
-          <li><strong>3-6 months before session:</strong> Contract should be signed. Your lobbyist should be meeting with legislators and their staff.</li>
-          <li><strong>Session starts:</strong> Your lobbyist hits the ground running with established relationships and a clear game plan.</li>
-        </ul>
-
-        <p>
-          <strong>Off-session work matters too.</strong> Some of the most effective lobbying happens between sessions when legislators
-          are back in their districts, interim committees are studying issues, and you can build relationships without the chaos
-          of session. Many lobbyists work year-round, not just during the 140-day sprint.
-        </p>
-
-        <!-- Section 3 -->
-        <h2 id="define-goals">Define Your Goals & Budget</h2>
-
-        <p>
-          Before you talk to a single lobbyist, get crystal clear on what you're trying to accomplish and what you're willing to spend.
-        </p>
-
-        <h3>Setting Clear Goals</h3>
-        <p>Vague goals lead to vague results. Instead of "we want to improve healthcare policy," try:</p>
-        <ul>
-          <li>"Kill HB 1234 that would impose new regulations on our industry"</li>
-          <li>"Pass SB 567 to extend our tax credit program for three more years"</li>
-          <li>"Amend SB 890 to include an exemption for small businesses under 50 employees"</li>
-          <li>"Secure $2 million in appropriations for our nonprofit's program"</li>
-          <li>"Build relationships with the Senate Health & Human Services Committee for next session"</li>
-        </ul>
-
-        <h3>Budget Reality</h3>
-        <p>
-          Lobbying isn't cheap, but it's often cheaper than the alternative (losing a fight that costs your business millions).
-          Typical Texas lobbying costs:
-        </p>
-
-        <div class="not-prose my-8">
-          <div class="bg-white rounded-lg border border-border overflow-hidden">
-            <div class="grid md:grid-cols-3 divide-x divide-border">
-              <div class="p-6">
-                <div class="text-sm font-medium text-muted-foreground mb-2">Entry Level</div>
-                <div class="text-2xl font-bold text-foreground mb-1">$3K-$7K/mo</div>
-                <div class="text-xs text-muted-foreground">Retainer for newer lobbyists or simple issues</div>
-              </div>
-              <div class="p-6">
-                <div class="text-sm font-medium text-muted-foreground mb-2">Mid-Range</div>
-                <div class="text-2xl font-bold text-foreground mb-1">$8K-$15K/mo</div>
-                <div class="text-xs text-muted-foreground">Experienced lobbyists, moderate complexity</div>
-              </div>
-              <div class="p-6">
-                <div class="text-sm font-medium text-muted-foreground mb-2">Premium</div>
-                <div class="text-2xl font-bold text-foreground mb-1">$20K+/mo</div>
-                <div class="text-xs text-muted-foreground">Top-tier lobbyists, high-stakes issues</div>
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-2 text-green-900">✓ The Financial Stakes Are Massive</h3>
+              <p class="text-muted-foreground mb-3">
+                We're talking proposed regulations that could cost you millions in compliance, legislation threatening your business model, or appropriations worth 5-10x your lobbying budget. When the math is obvious, hire the lobbyist.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0"><strong>Real example:</strong> A healthcare regulation requiring $4M in new equipment across your 50 locations. A $90K lobbying investment to kill or amend that bill is a no-brainer with a 44x potential ROI.</p>
               </div>
             </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-2 text-blue-900">✓ Your Emails Get Ignored</h3>
+              <p class="text-muted-foreground mb-3">
+                You've reached out to your State Representative. Maybe you even donated to their campaign. They still won't take a meeting, or their scheduler keeps rescheduling. That's not personal—they get 200 requests a week during session.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-900 mb-0">Your lobbyist gets the meeting because they helped that legislator's chief of staff get hired three jobs ago. Relationships trump cold outreach every single time.</p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-2 text-purple-900">✓ The Issue Is Technical or Multi-Agency</h3>
+              <p class="text-muted-foreground mb-3">
+                If your issue requires coordinating between TCEQ, Railroad Commission, and three legislative committees, you need someone who knows those systems inside-out. Learning that yourself during a 140-day session is like trying to learn surgery during an emergency appendectomy.
+              </p>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-2 text-orange-900">✓ You're Being Outspent by Opponents</h3>
+              <p class="text-muted-foreground mb-3">
+                Your competition already has two lobbying firms on retainer. Going up against them without professional help is like showing up to a gunfight with a strongly-worded letter. You will lose.
+              </p>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-lg font-bold mb-2 text-red-900">✓ Time Is Your Enemy</h3>
+              <p class="text-muted-foreground mb-3">
+                You've got 60 days until a bill hearing and zero Austin relationships. You need someone who can pick up the phone right now and get you in front of the committee chair's senior policy advisor. That's what you're paying for.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <p>
-          <strong>Add to that:</strong> expenses (travel, event tickets, meeting costs), potential success bonuses,
-          and coalition/grassroots support costs. Budget $50K-$100K minimum for a session if you're serious.
-        </p>
-
-        <!-- Section 4 -->
-        <h2 id="find-lobbyist">How to Find the Right Lobbyist</h2>
-
-        <p>Now for the fun part: actually finding someone to hire. You've got several options:</p>
-
-        <h3>1. Start with TexasLobby.org (Obviously)</h3>
-        <p>
-          We've got {totalLobbyists.toLocaleString()} active lobbyists you can browse by <a href="/subjects">subject area</a>,
-          <a href="/cities">city</a>, or <a href="/industries">industry</a>. {claimedCount.toLocaleString()} have claimed their profiles with
-          detailed bios, client lists, and contact information.
-        </p>
-
-        <p><strong>How to search effectively:</strong></p>
-        <ul>
-          <li><strong>Filter by subject area:</strong> If your issue is healthcare-related, search <a href="/subjects/healthcare">Healthcare lobbyists</a></li>
-          <li><strong>Look at client lists:</strong> Have they represented similar organizations? That's a good sign.</li>
-          <li><strong>Check their cities:</strong> Austin-based lobbyists tend to have stronger Capitol connections, but regional lobbyists might have better local relationships</li>
-          <li><strong>Premium/Featured badges matter:</strong> Lobbyists who invest in their profiles are usually more established</li>
-        </ul>
-
-        <h3>2. Ask for Referrals</h3>
-        <p>
-          Talk to trade associations, industry groups, or businesses in your sector. Who do they use? Who do they trust?
-          Personal referrals carry weight because reputation is everything in lobbying.
-        </p>
-
-        <h3>3. Check Texas Ethics Commission Records</h3>
-        <p>
-          All lobbyists must register with the Texas Ethics Commission. You can see who's representing whom,
-          though the data is clunky and hard to navigate (which is why we built TexasLobby.org).
-        </p>
-
-        <h3>4. Attend Legislative Events</h3>
-        <p>
-          Go to committee hearings, industry conferences, or Capitol receptions during session. Watch who's effective,
-          who legislators actually listen to, and who seems to know what they're doing.
-        </p>
-
-        <!-- Section 5 -->
-        <h2 id="evaluate">Evaluating Lobbyist Credentials</h2>
-
-        <p>You've got a list of potential lobbyists. Now you need to separate the pros from the pretenders.</p>
-
-        <h3>What to Look For:</h3>
-
-        <p><strong>1. Relevant Experience</strong></p>
-        <p>
-          Have they worked on your type of issue before? A healthcare lobbyist might be useless on energy policy.
-          Check their client list and ask for specific examples of similar work.
-        </p>
-
-        <p><strong>2. Relationships That Matter</strong></p>
-        <p>
-          Do they have access to the legislators and committee chairs who control your issue's fate? Ask directly:
-          "How well do you know the chair of the Senate Business & Commerce Committee?" A good lobbyist will give specifics.
-        </p>
-
-        <p><strong>3. Track Record</strong></p>
-        <p>
-          What have they actually accomplished? Don't just accept "we worked on 15 bills." Ask: "How many passed?
-          How many were your client's top priority? What happened when you lost?"
-        </p>
-
-        <p><strong>4. Reputation & Ethics</strong></p>
-        <p>
-          Lobbyists live and die by their reputations. Google them. Check for any ethics violations or disciplinary actions.
-          Ask around—the Texas lobbying community is small and people talk.
-        </p>
-
-        <p><strong>5. Communication Style</strong></p>
-        <p>
-          You'll be working closely with this person. Do they explain things clearly? Return calls promptly?
-          Make you feel heard? Chemistry matters.
-        </p>
-
-        <div class="not-prose bg-green-50 border-l-4 border-green-500 p-6 my-8">
-          <h3 class="text-lg font-semibold text-green-900 mt-0 mb-2">Pro Tip: The "Former Legislator" Myth</h3>
-          <p class="text-sm text-green-900 m-0">
-            Former legislators can make great lobbyists—but not always. Some trade on old relationships without doing the work.
-            Others adapt brilliantly to advocacy. Judge them on current effectiveness, not past titles.
-          </p>
-        </div>
-
-        <!-- Section 6 -->
-        <h2 id="interview">Questions to Ask During Interviews</h2>
-
-        <p>
-          You're not hiring someone to mow your lawn. This is a strategic relationship that could determine whether
-          your organization thrives or faces regulatory disaster. Ask tough questions.
-        </p>
-
-        <h3>About Their Experience:</h3>
-        <ul>
-          <li>"Can you walk me through a recent client engagement similar to ours? What was the outcome?"</li>
-          <li>"What's your success rate on bills you've actively supported or opposed?"</li>
-          <li>"Have you ever worked on both sides of an issue? How do you handle conflicts of interest?"</li>
-          <li>"What's the biggest lobbying failure you've had, and what did you learn from it?"</li>
-        </ul>
-
-        <h3>About Relationships & Strategy:</h3>
-        <ul>
-          <li>"Which legislators do you have the strongest relationships with?"</li>
-          <li>"How would you approach our specific issue?"</li>
-          <li>"Who are the key decision-makers we need to influence?"</li>
-          <li>"What opposition do you anticipate, and how would you counter it?"</li>
-        </ul>
-
-        <h3>About Logistics & Communication:</h3>
-        <ul>
-          <li>"How often will you update us on progress?"</li>
-          <li>"What's your typical response time for questions or urgent issues?"</li>
-          <li>"Will you personally handle our account, or will we work with junior staff?"</li>
-          <li>"Do you have other clients with potential conflicts to our position?"</li>
-        </ul>
-
-        <h3>About Money:</h3>
-        <ul>
-          <li>"What's your fee structure—monthly retainer, hourly, or contingency?"</li>
-          <li>"What expenses should we expect beyond your fee?"</li>
-          <li>"Do you offer success bonuses, and how are they structured?"</li>
-          <li>"What happens if we need to pause or terminate the contract?"</li>
-        </ul>
-
-        <!-- Section 7 -->
-        <h2 id="red-flags">Red Flags to Avoid</h2>
-
-        <p>Some warning signs that a lobbyist might not be worth your money:</p>
-
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-red-900 mt-0 mb-4">🚩 Warning Signs</h3>
-            <ul class="space-y-3 m-0">
+          <div class="not-prose bg-gray-50 rounded-lg border border-border p-6 my-8">
+            <h3 class="text-lg font-bold mb-4">You Might Not Need a Lobbyist If:</h3>
+            <ul class="space-y-3 text-sm text-muted-foreground">
               <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Guarantees results:</strong> No lobbyist can guarantee a bill will pass. If they promise it, they're lying.</span>
+                <span class="flex-shrink-0 mt-1">•</span>
+                <span><strong>Your issue has overwhelming bipartisan support</strong> and will likely pass with minimal opposition</span>
               </li>
               <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Won't provide references:</strong> Established lobbyists have satisfied clients who'll vouch for them.</span>
+                <span class="flex-shrink-0 mt-1">•</span>
+                <span><strong>You've got strong existing relationships</strong> with the key decision-makers (not just your local representative—the actual committee chairs who control your issue)</span>
               </li>
               <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Vague about their approach:</strong> Good lobbyists have specific strategies, not hand-wavy generalities.</span>
+                <span class="flex-shrink-0 mt-1">•</span>
+                <span><strong>Your trade association is already handling it</strong> competently and your interests align perfectly with the broader membership</span>
               </li>
               <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Too many conflicts:</strong> If they represent your competitors or opposing interests, walk away.</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Poor communication:</strong> If they're hard to reach during the hiring process, imagine how it'll be when you're paying them.</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Suspiciously cheap:</strong> Bottom-barrel pricing often means bottom-barrel results.</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-red-600 font-bold flex-shrink-0">×</span>
-                <span class="text-sm text-red-900"><strong>Ethics concerns:</strong> Any hint of past violations or shady practices should be disqualifying.</span>
+                <span class="flex-shrink-0 mt-1">•</span>
+                <span><strong>You can genuinely afford to lose</strong> this fight without major business consequences</span>
               </li>
             </ul>
           </div>
-        </div>
 
-        <!-- Section 8 -->
-        <h2 id="contracts">Understanding Lobbying Contracts</h2>
-
-        <p>You've found your lobbyist. Now it's time to put everything in writing. Don't skim the contract—this matters.</p>
-
-        <h3>Key Contract Elements:</h3>
-
-        <p><strong>1. Scope of Work</strong></p>
-        <p>
-          Be specific about what they're doing. "General lobbying services" is too vague. List specific bills,
-          legislators to target, committees to monitor, and deliverables (weekly reports, strategy memos, etc.).
-        </p>
-
-        <p><strong>2. Compensation Structure</strong></p>
-        <p>Most common models:</p>
-        <ul>
-          <li><strong>Monthly Retainer:</strong> Fixed monthly fee, most common for ongoing relationships</li>
-          <li><strong>Project-Based:</strong> Flat fee for a specific legislative session or issue</li>
-          <li><strong>Hourly:</strong> Less common in Texas, more typical for consulting work</li>
-          <li><strong>Success Bonuses:</strong> Additional payment if specific goals are achieved (beware ethical implications)</li>
-        </ul>
-
-        <p><strong>3. Expenses</strong></p>
-        <p>
-          Clarify what's included in the retainer vs. what's billed separately. Common expenses: travel to Austin,
-          event tickets, research costs, coalition membership fees. Get a cap on monthly expenses or require pre-approval.
-        </p>
-
-        <p><strong>4. Term & Termination</strong></p>
-        <p>
-          How long does the contract run? Can either party terminate it early? What happens to unused retainer funds?
-          What's the notice period? Build in flexibility in case things aren't working out.
-        </p>
-
-        <p><strong>5. Reporting & Communication</strong></p>
-        <p>
-          Specify how often you'll receive updates (weekly emails? monthly calls?), what information will be included,
-          and who your primary contact is.
-        </p>
-
-        <p><strong>6. Conflicts of Interest</strong></p>
-        <p>
-          The lobbyist should disclose any current or potential conflicts and agree not to take on conflicting clients
-          without your consent.
-        </p>
-
-        <p><strong>7. Confidentiality</strong></p>
-        <p>
-          Protect sensitive business information, strategic plans, and internal deliberations.
-        </p>
-
-        <div class="not-prose bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
-          <p class="text-sm text-blue-900 m-0">
-            <strong>Legal Review:</strong> Have your attorney review the contract before signing. Lobbying contracts
-            involve legal nuances around representation, fees, and ethics that deserve professional scrutiny.
-          </p>
-        </div>
-
-        <!-- Section 9 -->
-        <h2 id="costs">What You'll Actually Pay (The Real Numbers)</h2>
-
-        <p>
-          Let's talk money. Lobbying costs vary wildly based on the lobbyist's experience, your issue's complexity,
-          and what you're trying to accomplish.
-        </p>
-
-        <h3>Typical Cost Breakdown for a Legislative Session:</h3>
-
-        <div class="not-prose my-8">
-          <div class="bg-white rounded-lg border border-border p-6">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-border">
-                  <th class="text-left py-2 font-semibold">Item</th>
-                  <th class="text-right py-2 font-semibold">Cost Range</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-border">
-                <tr>
-                  <td class="py-3">Monthly Retainer (session months)</td>
-                  <td class="text-right py-3">$5,000 - $25,000/mo</td>
-                </tr>
-                <tr>
-                  <td class="py-3">Off-Session Retainer (if applicable)</td>
-                  <td class="text-right py-3">$2,000 - $10,000/mo</td>
-                </tr>
-                <tr>
-                  <td class="py-3">Travel & Expenses</td>
-                  <td class="text-right py-3">$1,000 - $5,000/mo</td>
-                </tr>
-                <tr>
-                  <td class="py-3">Event Tickets & Fundraisers</td>
-                  <td class="text-right py-3">$2,000 - $10,000</td>
-                </tr>
-                <tr>
-                  <td class="py-3">Research & Analysis</td>
-                  <td class="text-right py-3">$500 - $3,000</td>
-                </tr>
-                <tr>
-                  <td class="py-3">Coalition/Grassroots Support</td>
-                  <td class="text-right py-3">$5,000 - $50,000+</td>
-                </tr>
-                <tr class="font-semibold bg-muted/30">
-                  <td class="py-3">Typical Total (6-month session)</td>
-                  <td class="text-right py-3">$40,000 - $200,000+</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-semibold text-amber-900 mb-2">The "Free Lobbyist" Trap</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              Trade associations spread lobbying costs across many members, making it feel cheap or free. Great—until your specific priority conflicts with the association's broader agenda and you discover your $5,000 membership doesn't buy you any actual advocacy on your issue. Know what you're really getting before assuming it's handled.
+            </p>
           </div>
         </div>
+      </section>
 
-        <h3>What Drives Costs Higher:</h3>
-        <ul>
-          <li><strong>High-profile issues:</strong> Contentious bills get more expensive</li>
-          <li><strong>Multiple bills or agencies:</strong> More complexity = more hours</li>
-          <li><strong>Strong opposition:</strong> Fighting well-funded opponents costs more</li>
-          <li><strong>Last-minute emergencies:</strong> Rush jobs command premium pricing</li>
-          <li><strong>Top-tier lobbyists:</strong> The best don't come cheap</li>
-        </ul>
-
-        <h3>Ways to Reduce Costs:</h3>
-        <ul>
-          <li>Hire early in the interim (before session rush)</li>
-          <li>Do some legwork yourself (research, coalition-building)</li>
-          <li>Join industry associations that hire lobbyists collectively</li>
-          <li>Narrow your scope to priority issues only</li>
-          <li>Consider newer lobbyists building their practice</li>
-        </ul>
-
-        <!-- Section 10 -->
-        <h2 id="measure-success">Measuring Success & ROI</h2>
-
-        <p>
-          How do you know if your lobbyist is earning their keep? It's not always about whether a bill passed or failed—
-          lobbying success can be nuanced.
-        </p>
-
-        <h3>Success Metrics to Track:</h3>
-
-        <p><strong>1. Direct Outcomes</strong></p>
-        <ul>
-          <li>Bills passed/killed that aligned with your goals</li>
-          <li>Amendments added/removed as requested</li>
-          <li>Appropriations secured</li>
-          <li>Regulations delayed or modified</li>
-        </ul>
-
-        <p><strong>2. Relationship Building</strong></p>
-        <ul>
-          <li>Number of meetings with key legislators</li>
-          <li>Invitations to testify before committees</li>
-          <li>Direct access to decision-makers</li>
-          <li>Recognition as a credible stakeholder</li>
-        </ul>
-
-        <p><strong>3. Intelligence & Early Warnings</strong></p>
-        <ul>
-          <li>Advanced notice of problematic legislation</li>
-          <li>Insights into legislative strategy and timing</li>
-          <li>Understanding of political dynamics</li>
-        </ul>
-
-        <p><strong>4. Process Metrics</strong></p>
-        <ul>
-          <li>Quality and timeliness of reporting</li>
-          <li>Responsiveness to your questions/concerns</li>
-          <li>Strategic recommendations and guidance</li>
-        </ul>
-
-        <h3>Calculating ROI</h3>
-        <p>
-          If your lobbyist helped kill a bill that would have cost you $5 million in compliance costs, and you paid them
-          $80,000, that's a 62.5x return. Sometimes the ROI is crystal clear.
-        </p>
-
-        <p>
-          Other times it's murkier—relationship building, intelligence gathering, and positioning for future sessions
-          have value that's harder to quantify but no less real.
-        </p>
-
-        <div class="not-prose bg-green-50 border-l-4 border-green-500 p-6 my-8">
-          <h3 class="text-lg font-semibold text-green-900 mt-0 mb-2">The Long Game</h3>
-          <p class="text-sm text-green-900 m-0">
-            Good lobbying relationships are investments. Your lobbyist might not win every fight this session, but if
-            they're building credibility, planting seeds, and positioning you for future success, that's still valuable.
-            Judge them on effort, strategy, and long-term trajectory—not just this session's W-L record.
-          </p>
+      <!-- When to Hire -->
+      <section id="when-to-hire" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">When to Hire (Timing Kills More Deals Than Bad Lobbyists)</h2>
+          <p class="text-texas-blue-700 font-medium">Start early or pay the price</p>
         </div>
 
-        <!-- Conclusion -->
-        <h2>Final Thoughts: Trust, But Verify</h2>
-
-        <p>
-          Hiring a lobbyist is a significant investment in your organization's future. The right advocate can save you
-          millions, open doors, and help you navigate Texas politics with confidence. The wrong one can waste your budget
-          and leave you worse off than when you started.
-        </p>
-
-        <p>
-          Do your homework. Ask tough questions. Check references. Read the contract carefully. And once you've hired
-          someone, hold them accountable while giving them the space to do their job effectively.
-        </p>
-
-        <p>
-          Remember: you're not just buying access to the Capitol—you're partnering with someone who should become a
-          trusted advisor on all things government relations. Choose wisely.
-        </p>
-
-        <!-- CTA Section -->
-        <div class="not-prose mt-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg p-8 text-white">
-          <h3 class="text-2xl font-bold mb-4 text-white">Ready to Find Your Lobbyist?</h3>
-          <p class="mb-6 text-blue-50">
-            Browse {totalLobbyists.toLocaleString()} active Texas lobbyists by expertise, location, and industry.
-            Filter by what matters to you and connect directly with professionals who can help.
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The Texas Legislature meets for 140 days starting in January of odd-numbered years. The worst time to hire a lobbyist? Late December, right before session starts. Here's why:
           </p>
-          <div class="flex flex-wrap gap-4">
-            <a
-              href="/lobbyists"
-              class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-base font-medium text-texas-blue-600 hover:bg-gray-100 transition-colors"
-            >
-              Browse All Lobbyists
-            </a>
-            <a
-              href="/subjects"
-              class="inline-flex items-center justify-center rounded-md border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors"
-            >
-              Search by Subject Area
-            </a>
+
+          <p>
+            The real work happens <strong>before</strong> session begins. Committee assignments get made in November-December. Bill authors meet with lobbyists in October to draft legislation. Interim committee reports that drive session agendas get finalized in November. If you hire in late December, your lobbyist is playing catch-up from day one—and you're paying premium rates for fire-drill work.
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white border border-border rounded-lg overflow-hidden">
+              <div class="p-6 bg-gradient-to-r from-texas-blue-50 to-white border-b border-border">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 w-32 text-sm font-bold text-texas-blue-700 bg-texas-blue-100 rounded px-3 py-2 text-center">12-18 months before</div>
+                  <div class="flex-1">
+                    <div class="font-bold mb-2 text-lg">Strategic Positioning Phase</div>
+                    <p class="text-sm text-muted-foreground mb-3">Participate in interim committee hearings, build relationships before session chaos, establish your organization as a credible stakeholder legislators want to help.</p>
+                    <div class="bg-texas-blue-50 rounded-lg p-3">
+                      <p class="text-xs text-texas-blue-800 mb-0"><strong>What happens:</strong> Your lobbyist testifies at interim hearings, meets legislators in their districts, starts positioning your issue favorably before anyone's paying close attention. This is when smart money moves.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-6 bg-gradient-to-r from-green-50 to-white border-b border-border">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 w-32 text-sm font-bold text-green-700 bg-green-100 rounded px-3 py-2 text-center">6-12 months before</div>
+                  <div class="flex-1">
+                    <div class="font-bold mb-2 text-lg">Relationship Building Phase</div>
+                    <p class="text-sm text-muted-foreground mb-3">Meet with potential bill authors, identify committee members likely to support your position, understand the political landscape and competing interests.</p>
+                    <div class="bg-green-50 rounded-lg p-3">
+                      <p class="text-xs text-green-800 mb-0"><strong>What happens:</strong> Coffee meetings with committee staff, lunches with potential bill authors, building coalitions with allied organizations. Your lobbyist is laying groundwork while session is still months away.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-6 bg-gradient-to-r from-blue-50 to-white border-b border-border">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 w-32 text-sm font-bold text-blue-700 bg-blue-100 rounded px-3 py-2 text-center">3-6 months before</div>
+                  <div class="flex-1">
+                    <div class="font-bold mb-2 text-lg">Strategy & Contract Phase</div>
+                    <p class="text-sm text-muted-foreground mb-3">Finalize your lobbying contract, develop legislative strategy, draft bill language, recruit co-authors, count likely votes.</p>
+                    <div class="bg-blue-50 rounded-lg p-3">
+                      <p class="text-xs text-blue-800 mb-0"><strong>What happens:</strong> Bill language gets drafted and circulated for feedback, committee votes get counted, opposition research completed, backup plans developed. By November, you know exactly what you're filing in January.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-6 bg-gradient-to-r from-purple-50 to-white">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 w-32 text-sm font-bold text-purple-700 bg-purple-100 rounded px-3 py-2 text-center">January: Session starts</div>
+                  <div class="flex-1">
+                    <div class="font-bold mb-2 text-lg">Execution Phase</div>
+                    <p class="text-sm text-muted-foreground mb-3">Bills filed, committee hearings scheduled, amendments negotiated—your lobbyist operates with established relationships and clear strategy, not scrambling.</p>
+                    <div class="bg-purple-50 rounded-lg p-3">
+                      <p class="text-xs text-purple-800 mb-0"><strong>What happens:</strong> Chaos at the Capitol, but your lobbyist is ready. They know the players, the strategy is set, committee staff are expecting you. You're executing a plan, not making it up as you go.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-semibold text-red-900 mb-2">Emergency Hiring (The Premium Price You'll Pay)</h3>
+            <p class="text-sm text-red-900 mb-0">
+              <strong>Emergency hiring happens</strong>—a surprise bill threatens your business, or a crisis erupts mid-session. Good lobbyists can still deliver results if you hire in February. But you'll pay 30-50% premium rates for fire-drill work, the best lobbyists are often fully booked, and you'll miss opportunities that required months of positioning. Start early whenever possible.
+            </p>
           </div>
         </div>
+      </section>
 
-      </div>
+      <!-- What Actually Matters -->
+      <section id="what-matters" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">What Matters vs. What Doesn't</h2>
+          <p class="text-texas-blue-700 font-medium">How to separate substance from sizzle</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            When you start interviewing lobbyists, you'll hear a lot of impressive-sounding credentials. Some matter enormously. Others are nearly worthless. Here's how to tell the difference:
+          </p>
+
+          <h3 class="text-green-700 mt-8">What Matters Most:</h3>
+
+          <div class="not-prose my-6 space-y-6">
+            <div class="bg-gradient-to-r from-green-50 to-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                <h4 class="text-lg font-bold text-green-900 m-0">Specific Committee Staff Relationships</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-white rounded-lg p-4 mb-3 border border-green-200">
+                  <p class="text-sm text-green-900 mb-2"><strong>Good answer:</strong></p>
+                  <p class="text-sm text-green-800 mb-0">"I worked with Senator Johnson's senior policy advisor when she was at the House Appropriations Committee. She trusts me to bring her solid information because I've never burned her with bad intel. When I call her about your healthcare issue, she'll take the meeting—and listen."</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>Why it matters:</strong> Committee staff write amendments, schedule hearings, and advise legislators on votes. Access to staff = real influence. Names and specific relationships trump vague "connections."
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-50 to-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                <h4 class="text-lg font-bold text-blue-900 m-0">Recent Wins on Similar Issues</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-white rounded-lg p-4 mb-3 border border-blue-200">
+                  <p class="text-sm text-blue-900 mb-2"><strong>Good answer:</strong></p>
+                  <p class="text-sm text-blue-800 mb-0">"Last session I helped kill HB 2847 which would have imposed new reporting requirements on medical device manufacturers. We built a coalition of three industry groups, provided economic impact data to 12 key legislators, and got the committee to vote it down 9-3. Here's the final committee vote record."</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>Why it matters:</strong> Specific outcomes with bill numbers, vote counts, coalition partners, and verifiable results demonstrate they know how to navigate your issue—not just politics generally.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-50 to-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                <h4 class="text-lg font-bold text-purple-900 m-0">Understanding of Agency Rulemaking</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-white rounded-lg p-4 mb-3 border border-purple-200">
+                  <p class="text-sm text-purple-900 mb-2"><strong>Good answer:</strong></p>
+                  <p class="text-sm text-purple-800 mb-0">"Killing the bill is only half the battle. We also need to monitor TCEQ's rulemaking process because they could implement 80% of this through administrative rules without any legislative action. I've already got a meeting scheduled with their deputy director for next week to discuss their timeline."</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>Why it matters:</strong> Most important policy happens through agency rules, not legislation. Lobbyists who only know the legislative process leave you exposed to regulatory end-runs.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-50 to-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                <h4 class="text-lg font-bold text-orange-900 m-0">Willingness to Say "No" or "Not Yet"</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-white rounded-lg p-4 mb-3 border border-orange-200">
+                  <p class="text-sm text-orange-900 mb-2"><strong>Good answer:</strong></p>
+                  <p class="text-sm text-orange-800 mb-0">"Honestly, your bill probably won't pass this session. The votes aren't there, and the committee chair has publicly opposed similar legislation. But if we use this session to build relationships and demonstrate the economic impact, we can position it to pass in 2027. I'd recommend a two-session strategy."</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>Why it matters:</strong> Lobbyists who promise the moon are either lying or incompetent. Good lobbyists set realistic expectations and recommend strategic patience when it makes sense.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-red-700 mt-12">What DOESN'T Matter (or Matters Less Than You Think):</h3>
+
+          <div class="not-prose my-6 space-y-6">
+            <div class="bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">✗</div>
+                <h4 class="text-lg font-bold text-red-900 m-0">"Former State Representative"</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-red-100 rounded-lg p-4 mb-3 border border-red-200">
+                  <p class="text-sm text-red-900 mb-0"><strong>Why it's overrated:</strong> Some former legislators make excellent lobbyists. Others coast on old relationships that atrophied five years ago while charging 2x premium rates for their title. Judge them on current effectiveness and active relationships, not past positions.</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>The test:</strong> Ask "When's the last time you had a substantive conversation with the House Speaker?" or "Which committee staffers did you talk to last week?" Vague answers = stale relationships.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-50 to-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">✗</div>
+                <h4 class="text-lg font-bold text-orange-900 m-0">Big Firm Name Recognition</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-orange-100 rounded-lg p-4 mb-3 border border-orange-200">
+                  <p class="text-sm text-orange-900 mb-0"><strong>Why it's overrated:</strong> Large firms have infrastructure and resources, but you might get assigned to a junior associate while paying for the name partner's reputation. Small boutique firms often provide more partner-level attention and hungrier service.</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>The test:</strong> Ask "Who will actually be working on my account day-to-day?" If it's not the person you're interviewing, dig deeper on that person's qualifications.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-amber-50 to-white border-l-4 border-amber-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold">✗</div>
+                <h4 class="text-lg font-bold text-amber-900 m-0">Law Degree or MBA</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-amber-100 rounded-lg p-4 mb-3 border border-amber-200">
+                  <p class="text-sm text-amber-900 mb-0"><strong>Why it's overrated:</strong> Nice to have, rarely necessary. The best lobbyist I know has a bachelor's in history and worked his way up from legislative intern to chief of staff to lobbyist. Relationship-building skills and political instincts matter 100x more than academic credentials.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-gray-50 to-white border-l-4 border-gray-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white font-bold">✗</div>
+                <h4 class="text-lg font-bold text-gray-900 m-0">Impressive Client List (Without Context)</h4>
+              </div>
+              <div class="ml-11">
+                <div class="bg-gray-100 rounded-lg p-4 mb-3 border border-gray-200">
+                  <p class="text-sm text-gray-900 mb-0"><strong>Why it's overrated:</strong> "We represent Fortune 500 companies" sounds great. But what did they actually accomplish for those clients? And do they have time for you if they're juggling 40 other accounts?</p>
+                </div>
+                <p class="text-sm text-muted-foreground mb-0">
+                  <strong>The test:</strong> Ask "How many active clients do you have right now?" and "What percentage of your time can you commit to our issues?" More than 15 active clients = you're getting diluted attention.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <p class="text-sm text-blue-900 mb-0">
+              <strong>The credibility test:</strong> Ask "How would you approach our specific issue?" Listen for concrete strategies with specific names, timelines, and contingency plans—not vague promises about "leveraging relationships" or "building coalitions." Details reveal competence. Generalities reveal bullshit.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Where to Find -->
+      <section id="where-to-find" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Where to Find Serious Lobbyists</h2>
+          <p class="text-texas-blue-700 font-medium">Five strategies that actually work</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Finding lobbyist candidates is the easy part—Texas has over 1,600 registered lobbyists. Finding the <em>right</em> lobbyist for your specific issue requires strategic sourcing. Here's where to look:
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border-2 border-texas-blue-500 p-6">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="bg-texas-blue-500 text-white rounded-full p-3 flex-shrink-0 font-bold text-lg">1</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Use TexasLobby.org's Subject Area Search</h3>
+                  <p class="text-muted-foreground mb-4">
+                    The most efficient way to find lobbyists with actual experience in your industry. Filter by subject area expertise, city coverage, and track record on similar issues.
+                  </p>
+                  <div class="bg-texas-blue-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-texas-blue-900 mb-2"><strong>Why this works:</strong></p>
+                    <p class="text-sm text-texas-blue-800 mb-0">You can see which lobbyists have worked on healthcare, energy, tech, or whatever your issue is—then compare their experience levels, city coverage, and whether they're actively taking new clients. Saves weeks of cold-calling.</p>
+                  </div>
+                  <a
+                    href="/lobbyists"
+                    class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-texas-blue-600 transition-colors"
+                  >
+                    Search Texas Lobbyists by Subject Area
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="bg-muted text-foreground rounded-full p-3 flex-shrink-0 font-bold text-lg">2</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Ask Your Trade Association for Referrals</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Your industry association likely works with lobbyists who know your issues cold. Ask who they use—and who they'd recommend for a company your size.
+                  </p>
+                  <div class="bg-blue-50 rounded-lg p-4">
+                    <p class="text-sm text-blue-900 mb-2"><strong>Pro tip:</strong></p>
+                    <p class="text-sm text-blue-800 mb-0">Don't just ask "who's good?"—ask "who helped you kill that bad bill last session?" Specific wins reveal specific capabilities.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="bg-muted text-foreground rounded-full p-3 flex-shrink-0 font-bold text-lg">3</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Check Who's Registered on Similar Bills</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Go to the Texas Ethics Commission's lobbyist database and search for bills similar to your issue. See who's registered on those bills. Those lobbyists are already working in your space.
+                  </p>
+                  <div class="bg-green-50 rounded-lg p-4">
+                    <p class="text-sm text-green-900 mb-2"><strong>What to look for:</strong></p>
+                    <p class="text-sm text-green-800 mb-0">Lobbyists who've registered on 3-5 related bills are specialists. Lobbyists registered on 50+ bills across random topics are generalists who might be spread too thin.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="bg-muted text-foreground rounded-full p-3 flex-shrink-0 font-bold text-lg">4</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Ask Non-Competing Companies in Your Industry</h3>
+                  <p class="text-muted-foreground mb-4">
+                    That manufacturer in Dallas who's not competing with you? Call them. Ask who they use for lobbying and whether they'd recommend that lobbyist. You'd be surprised how open people are when you're not a competitor.
+                  </p>
+                  <div class="bg-purple-50 rounded-lg p-4">
+                    <p class="text-sm text-purple-900 mb-0"><strong>Bonus:</strong> If they're willing to share their lobbyist contact, ask if they'd be willing to introduce you. A warm intro beats a cold email every time.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="bg-muted text-foreground rounded-full p-3 flex-shrink-0 font-bold text-lg">5</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Attend Interim Committee Hearings</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Show up at legislative committee hearings related to your issue during the interim (between sessions). Watch who testifies, who seems to know the committee members, who gets asked substantive questions. Take notes.
+                  </p>
+                  <div class="bg-orange-50 rounded-lg p-4">
+                    <p class="text-sm text-orange-900 mb-0">Lobbyists who are testifying at interim hearings are doing real work, not just collecting retainer checks. That's who you want.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-semibold text-red-900 mb-2">Where NOT to Find Lobbyists</h3>
+            <p class="text-sm text-red-900 mb-0">
+              Skip the generic Google search for "best Texas lobbyist." You'll find SEO-optimized marketing sites with zero substance. Skip the "top 10 lobbyists" listicles written by people who've never hired a lobbyist. Find people who've actually done the work you need done.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interview Questions -->
+      <section id="interview-questions" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Interview Questions That Expose Pretenders</h2>
+          <p class="text-texas-blue-700 font-medium">What to ask and what answers to listen for</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            You've got three candidates. They all sound competent on the phone. Now comes the interview where you separate the real deal from the bullshit artists. Here are the questions that reveal who actually knows what they're doing:
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 1: "Walk me through exactly how you'd approach our specific issue."</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"First, I'd meet with the House Public Health Committee senior staffer—I worked with her when she was at HHSC—to understand their legislative priorities. Then I'd build a coalition with the hospital association and medical device manufacturers. We'd need economic impact data showing job losses, which I'd help you develop. Timeline: 6 months of positioning before we file the bill."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"I'd leverage my relationships to build support for your position and work closely with key stakeholders to move the bill forward."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Generic nonsense = they have no actual plan)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 2: "Which committee staffers would you call first on our issue and why?"</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"I'd call Sarah Rodriguez, the senior policy advisor for House Business & Industry. She handles all the occupational licensing bills, which is your issue. I've worked with her for eight years—she trusts me to bring her good information. I'd also loop in the Senate committee clerk early because they control hearing schedules."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"I have strong relationships across multiple committees and would identify the right contacts once we get started."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Translation: they don't know the staff)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 3: "Tell me about a time you failed to get a client what they wanted—and what you learned."</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"Last session we tried to pass a tax credit bill that the comptroller publicly opposed. I should have killed it when I saw the opposition was insurmountable, but the client pushed to fight. We lost badly, burned political capital, and damaged relationships. I learned to say no to clients when the politics aren't there—and now I do."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"I've been very fortunate to have a strong track record of success for my clients."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Either lying or too inexperienced to have failed yet)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 4: "How many active clients do you have right now, and how much time can you dedicate to our issues?"</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"I currently represent 8 clients. During session, I can dedicate about 6-8 hours per week to your issues, more if we're in crisis mode. During interim, expect 2-4 hours monthly for monitoring and relationship maintenance. If your needs exceed that, I'll tell you upfront and we can adjust the scope or I'll refer you to someone with more capacity."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"I'll give you whatever time you need" or "I don't track hours, I focus on results."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Unrealistic or evasive = you'll get neglected)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 5: "What's your relationship with the relevant state agency that regulates our industry?"</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"I worked with TCEQ extensively on air quality rules for three different clients. I know the deputy director and two division chiefs personally. Even if we kill your bill, we need to monitor their rulemaking process because they could implement similar requirements through administrative rules. I'd set up quarterly meetings with their policy team."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"I can develop those relationships as needed" or "My focus is on the legislative side."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Missing half the game = you're exposed)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 text-texas-blue-900">Question 6: "Can you provide references from clients with similar issues?"</h3>
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 border-2 border-green-500">
+                  <p class="text-sm font-semibold text-green-700 mb-2">✓ Good Answer:</p>
+                  <p class="text-sm text-green-800 mb-0">"Absolutely. I'll send you contact info for three clients I've worked with on healthcare regulation issues. I'll let them know you'll be reaching out. Ask them about communication, responsiveness, and whether I delivered what I promised."</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 border-2 border-red-500">
+                  <p class="text-sm font-semibold text-red-700 mb-2">✗ Red Flag Answer:</p>
+                  <p class="text-sm text-red-800 mb-0">"Most of my clients prefer to remain confidential" or "I can't share client names due to NDA agreements."</p>
+                  <p class="text-xs text-red-700 mt-2 italic">(Sketchy or no real clients to reference)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <p class="text-sm text-blue-900 mb-0">
+              <strong>Listen for:</strong> Specific names, concrete examples, realistic timelines, acknowledgment of challenges, and willingness to admit limitations. Anyone who promises guaranteed results or talks only in generalities is selling you fantasy, not lobbying.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Red Flags -->
+      <section id="red-flags" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Red Flags That Scream "Walk Away"</h2>
+          <p class="text-red-700 font-medium">Warning signs you're about to waste a lot of money</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Some warning signs are subtle. These aren't. If you see any of the following, end the conversation and move to the next candidate:
+          </p>
+
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 "I guarantee we can pass this bill"</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    No one can guarantee legislative outcomes. The Texas Legislature is controlled by 181 independently-elected officials responding to hundreds of competing interests. Anyone who promises guaranteed results is either lying, delusional, or planning to disappoint you badly. Run.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Can't name specific committee staff they work with</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    If they can't name three committee staffers they've worked with in the past year—with specific examples of what they worked on together—they don't have the relationships you're paying for. Committee staff are where the real work happens. No staff relationships = no effectiveness.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Vague or defensive about pricing</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    Professional lobbyists provide clear written proposals with specific monthly fees, scope of work, and deliverables. If someone says "we'll figure out pricing as we go" or gets defensive when you ask about costs, they're either inexperienced or planning to overcharge you later. Demand transparency.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Requires large PAC contributions as condition of engagement</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    Campaign contributions are common and often strategic. But a lobbyist who requires specific contribution amounts to specific legislators as a condition of taking you on as a client is unethical and possibly breaking the law. Political contributions should be your decision, not their demand.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Won't provide client references</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    Every legitimate lobbyist has clients who will vouch for them. Confidentiality is real, but good lobbyists can provide 2-3 references who've agreed to speak with prospective clients. No references = no track record worth mentioning.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Prices way below market rate</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    If everyone else quotes $12K-$15K per month and someone offers $3K, ask why. They're either desperate for clients (not a good sign), wildly inexperienced (also not good), or planning to do minimal work while collecting easy money. Effective lobbying costs money. There are no bargains.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-red-500 p-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">!</div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-red-900 mb-2">🚩 Bad-mouths other lobbyists or legislators</h3>
+                  <p class="text-sm text-red-800 mb-0">
+                    Professional lobbyists maintain relationships across the political spectrum and with competing lobbyists. If someone trash-talks other lobbyists, legislative staff, or specific legislators in your interview, that's who they'll trash-talk to legislators about you when things get difficult. Lack of professionalism is disqualifying.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-semibold text-amber-900 mb-2">Trust Your Gut</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              If something feels off—they're evasive, overpromising, or making you uncomfortable—walk away. You're about to invest six figures and trust this person to represent your business at the highest levels of state government. If you don't trust them completely, keep looking.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contract Terms -->
+      <section id="contract-terms" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Contract Terms Worth Fighting Over</h2>
+          <p class="text-texas-blue-700 font-medium">What to negotiate and what to demand in writing</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            You've found your lobbyist. Now comes the contract negotiation. Don't just sign whatever they send. These terms matter:
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-texas-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                Scope of Work (Be Brutally Specific)
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                "Government relations services" is too vague. Your contract should specify exactly what you're paying for.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-green-800 mb-2">Include These Specifics:</p>
+                <ul class="text-sm space-y-1 text-green-900 ml-4">
+                  <li>• Which bills or issues are covered</li>
+                  <li>• How many hours per month (or week during session)</li>
+                  <li>• Frequency of updates (weekly during session, monthly during interim)</li>
+                  <li>• Who specifically will work on your account</li>
+                  <li>• Whether agency rulemaking monitoring is included</li>
+                  <li>• What deliverables you'll receive (reports, bill tracking, strategy memos)</li>
+                </ul>
+              </div>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-sm text-red-900 mb-0"><strong>Red flag language:</strong> "Provide general legislative monitoring and advocacy as needed." That's a recipe for disappointment and disputes.</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                Monthly Retainer vs. Hourly Rates
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                Most lobbyists work on monthly retainer, which is usually better for both parties. If they insist on hourly, get a monthly cap.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-blue-800 mb-2">Standard Structure:</p>
+                <ul class="text-sm space-y-1 text-blue-900 ml-4">
+                  <li>• Base monthly retainer (different rates for session vs. interim)</li>
+                  <li>• Example: $15K/month during 5-month session, $6K/month during 19-month interim</li>
+                  <li>• Total annual commitment: $189,000</li>
+                </ul>
+              </div>
+              <div class="bg-amber-50 rounded-lg p-4">
+                <p class="text-sm text-amber-900 mb-0"><strong>Watch out for:</strong> "Additional fees may apply for extraordinary work." Define what "extraordinary" means or cap it at a percentage.</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                Expenses and Reimbursements
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                Your monthly retainer should cover most routine expenses. Define what's extra.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-green-800 mb-2">Typically INCLUDED in retainer:</p>
+                <ul class="text-sm space-y-1 text-green-900 ml-4">
+                  <li>• Travel to/from Austin</li>
+                  <li>• Normal office expenses</li>
+                  <li>• Capitol parking and routine meals</li>
+                  <li>• Basic research and tracking</li>
+                </ul>
+              </div>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-sm font-semibold text-red-800 mb-2">Typically EXTRA (with approval):</p>
+                <ul class="text-sm space-y-1 text-red-900 ml-4">
+                  <li>• Economic impact studies ($10K-$25K)</li>
+                  <li>• Polling or research ($5K-$15K)</li>
+                  <li>• Coalition membership dues</li>
+                  <li>• Large event sponsorships</li>
+                  <li>• Expert witness fees</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-orange-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                Term Length and Cancellation
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                Lobbyists want stability. You want flexibility. Compromise on reasonable terms.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-blue-800 mb-2">Fair Terms:</p>
+                <ul class="text-sm space-y-1 text-blue-900 ml-4">
+                  <li>• Minimum commitment: One full session (5-6 months) or one year</li>
+                  <li>• Auto-renewal with 60-90 day notice to cancel</li>
+                  <li>• Either party can terminate with 30-60 days notice</li>
+                  <li>• Termination for cause (ethics violations, non-performance) with no notice</li>
+                </ul>
+              </div>
+              <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-sm text-red-900 mb-0"><strong>Avoid:</strong> Multi-year contracts with no early termination option. Things change. You need an exit if it's not working.</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                Conflicts of Interest
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                Your lobbyist probably represents other clients. Make sure those clients aren't your competitors or adversaries.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold text-green-800 mb-2">Demand in Writing:</p>
+                <ul class="text-sm space-y-1 text-green-900 ml-4">
+                  <li>• Disclosure of current clients in your industry</li>
+                  <li>• Agreement not to represent direct competitors without your consent</li>
+                  <li>• Notification if potential conflicts arise</li>
+                  <li>• How they'll handle conflicts (recusal, referral, etc.)</li>
+                </ul>
+              </div>
+              <div class="bg-amber-50 rounded-lg p-4">
+                <p class="text-sm text-amber-900 mb-0"><strong>The unvarnished truth:</strong> In small industries, some overlap is inevitable. What matters is transparency and how conflicts get managed.</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">6</span>
+                Performance Metrics and Reporting
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                You can't measure "number of bills passed" because that's not entirely in their control. But you can measure activity and responsiveness.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm font-semibold text-blue-800 mb-2">Include These Deliverables:</p>
+                <ul class="text-sm space-y-1 text-blue-900 ml-4">
+                  <li>• Weekly written updates during session</li>
+                  <li>• Monthly reports during interim</li>
+                  <li>• Bill tracking dashboard access</li>
+                  <li>• Quarterly strategy meetings</li>
+                  <li>• 24-hour response time to urgent requests</li>
+                  <li>• End-of-session summary report with outcomes</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 my-8">
+            <p class="text-sm text-texas-blue-900 mb-0">
+              <strong>Get it in writing:</strong> Everything discussed above should be in the written contract, not just verbal promises. If your lobbyist resists putting terms in writing, that tells you everything you need to know. Move on.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real Costs -->
+      <section id="real-costs" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">What You'll Pay (All-In Costs)</h2>
+          <p class="text-texas-blue-700 font-medium">The monthly retainer is just the starting point</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Here's what catches most first-time clients off guard: that $12,000/month retainer? It's not your total cost. By the time you add PAC contributions, coalition memberships, research, and other expenses, you're often spending 50-100% more than the base retainer.
+          </p>
+
+          <p>
+            Let's break down what a typical session costs:
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white rounded-lg border-2 border-texas-blue-500 overflow-hidden">
+              <div class="bg-gradient-to-r from-texas-blue-500 to-texas-blue-600 p-4">
+                <h3 class="text-xl font-bold text-white mb-0">Typical Full-Session Investment (5 months)</h3>
+              </div>
+              <div class="p-6 space-y-3">
+                <div class="flex justify-between items-center pb-3 border-b border-border">
+                  <span class="text-sm font-medium">Monthly retainer × 5 months</span>
+                  <span class="text-lg font-bold text-texas-blue-600">$75,000</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-border">
+                  <span class="text-sm">PAC contributions (10-15 legislators @ $1,000-$2,500)</span>
+                  <span class="font-semibold">$15,000</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-border">
+                  <span class="text-sm">Industry coalition membership</span>
+                  <span class="font-semibold">$10,000</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-border">
+                  <span class="text-sm">Economic impact study</span>
+                  <span class="font-semibold">$12,000</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-border">
+                  <span class="text-sm">Your staff time (travel, testimony, coordination)</span>
+                  <span class="font-semibold">$8,000</span>
+                </div>
+                <div class="flex justify-between items-center pt-3 bg-texas-blue-50 -mx-6 px-6 py-4 rounded-lg">
+                  <span class="text-base font-bold">Total Session Investment</span>
+                  <span class="text-2xl font-bold text-texas-blue-600">$120,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p>
+            That $15K/month retainer turned into $24K/month all-in. This is normal. Budget accordingly.
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+              <div class="bg-gradient-to-r from-green-500 to-green-600 p-4">
+                <h3 class="text-xl font-bold text-white mb-0">Budget by Engagement Type</h3>
+              </div>
+              <div class="divide-y divide-border">
+                <div class="p-5">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1">
+                      <h4 class="font-bold text-lg mb-1">Monitoring & Defense</h4>
+                      <p class="text-sm text-muted-foreground">Watch for threats, kill bad bills if needed</p>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-2xl font-bold text-green-600">$30K–$60K</div>
+                      <div class="text-xs text-muted-foreground">per session</div>
+                    </div>
+                  </div>
+                  <div class="bg-green-50 rounded p-3">
+                    <p class="text-xs text-green-900 mb-0"><strong>What you get:</strong> Bill tracking, weekly updates, coalition coordination, defensive lobbying if threats emerge</p>
+                  </div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1">
+                      <h4 class="font-bold text-lg mb-1">Active Advocacy (One Bill)</h4>
+                      <p class="text-sm text-muted-foreground">Pass or kill specific legislation</p>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-2xl font-bold text-blue-600">$75K–$150K</div>
+                      <div class="text-xs text-muted-foreground">per session</div>
+                    </div>
+                  </div>
+                  <div class="bg-blue-50 rounded p-3">
+                    <p class="text-xs text-blue-900 mb-0"><strong>What you get:</strong> Full-court press on one priority bill, coalition building, committee testimony, amendment negotiations, vote counting</p>
+                  </div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1">
+                      <h4 class="font-bold text-lg mb-1">Comprehensive Program</h4>
+                      <p class="text-sm text-muted-foreground">Multiple priorities, year-round engagement</p>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-2xl font-bold text-purple-600">$150K–$300K+</div>
+                      <div class="text-xs text-muted-foreground">annually</div>
+                    </div>
+                  </div>
+                  <div class="bg-purple-50 rounded p-3">
+                    <p class="text-xs text-purple-900 mb-0"><strong>What you get:</strong> Year-round monitoring, interim committee engagement, multiple bill priorities, agency relations, proactive positioning</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-semibold text-amber-900 mb-2">The "Cheap" Lobbying Trap</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              Lobbyists charging $3K-$5K per month are either monitoring-only (no active advocacy), wildly inexperienced, or planning to do minimal work. Effective lobbying on issues that matter costs $10K-$25K+ monthly during session. If your issue is worth fighting for, budget accordingly. If it's not worth that investment, reconsider whether lobbying is the right approach.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Measuring ROI -->
+      <section id="measuring-roi" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">How to Measure ROI (When the Math Makes Sense)</h2>
+          <p class="text-green-700 font-medium">Four scenarios where lobbying pays for itself 10-50x over</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Lobbying feels expensive until you calculate what it's actually worth. Sometimes the ROI is crystal clear. Other times it's harder to quantify but no less real.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border-2 border-green-500 p-6">
+              <h3 class="text-xl font-bold text-green-900 mb-4">Scenario 1: Defensive Lobbying (The Easiest ROI)</h3>
+              <div class="bg-green-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-green-900 mb-3">
+                  <strong>The situation:</strong> A bill is filed that would effectively ban your product category in Texas, threatening $8M in annual revenue.
+                </p>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between"><span>Lobbying investment (5 months, all-in):</span><span class="font-bold">$95,000</span></div>
+                  <div class="flex justify-between"><span>Revenue protected if bill dies:</span><span class="font-bold">$8,000,000/year</span></div>
+                  <div class="flex justify-between border-t border-green-300 pt-2 mt-2 font-bold text-green-700"><span>ROI:</span><span class="text-lg">8,321%</span></div>
+                </div>
+              </div>
+              <p class="text-xs text-green-800 italic mb-0">
+                Even if you only had a 30% chance of killing the bill, the expected value ($2.4M) makes this a no-brainer investment. Defensive lobbying is where the clearest wins happen.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-blue-500 p-6">
+              <h3 class="text-xl font-bold text-blue-900 mb-4">Scenario 2: Regulatory Relief</h3>
+              <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-blue-900 mb-3">
+                  <strong>The situation:</strong> An agency proposes new regulations requiring $200K in compliance costs per location. You have 25 Texas locations.
+                </p>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between"><span>Lobbying + legal analysis investment:</span><span class="font-bold">$65,000</span></div>
+                  <div class="flex justify-between"><span>Compliance costs avoided (one-time):</span><span class="font-bold">$5,000,000</span></div>
+                  <div class="flex justify-between"><span>Ongoing operational savings:</span><span class="font-bold">$400,000/year</span></div>
+                  <div class="flex justify-between border-t border-blue-300 pt-2 mt-2 font-bold text-blue-700"><span>First-year ROI:</span><span class="text-lg">8,308%</span></div>
+                </div>
+              </div>
+              <p class="text-xs text-blue-800 italic mb-0">
+                Your lobbyist worked with the agency to modify the proposed rule, exempting businesses under a certain size threshold. Result: you avoided massive compliance costs without killing the entire regulatory effort.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-purple-500 p-6">
+              <h3 class="text-xl font-bold text-purple-900 mb-4">Scenario 3: Appropriations or Grants</h3>
+              <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-purple-900 mb-3">
+                  <strong>The situation:</strong> Your nonprofit qualifies for state grant funding, but the appropriation isn't automatic—it requires advocacy.
+                </p>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between"><span>Lobbying investment (8 months):</span><span class="font-bold">$55,000</span></div>
+                  <div class="flex justify-between"><span>Appropriation secured:</span><span class="font-bold">$2,500,000</span></div>
+                  <div class="flex justify-between border-t border-purple-300 pt-2 mt-2 font-bold text-purple-700"><span>ROI:</span><span class="text-lg">4,445%</span></div>
+                </div>
+              </div>
+              <p class="text-xs text-purple-800 italic mb-0">
+                Appropriations lobbying is highly competitive—hundreds of organizations compete for limited budget dollars. But if you win, the ROI is exceptional. Even at a 20% success rate, the expected value justifies the investment.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-2 border-orange-500 p-6">
+              <h3 class="text-xl font-bold text-orange-900 mb-4">Scenario 4: Market Access / License to Operate</h3>
+              <div class="bg-orange-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-orange-900 mb-3">
+                  <strong>The situation:</strong> Your business model requires legislative authorization (like ridesharing did in 2017). Without it, you can't operate legally in Texas.
+                </p>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between"><span>Lobbying investment (multi-session):</span><span class="font-bold">$450,000</span></div>
+                  <div class="flex justify-between"><span>Texas market value if authorized:</span><span class="font-bold">$25,000,000+</span></div>
+                  <div class="flex justify-between border-t border-orange-300 pt-2 mt-2 font-bold text-orange-700"><span>ROI:</span><span class="text-lg">5,456%</span></div>
+                </div>
+              </div>
+              <p class="text-xs text-orange-800 italic mb-0">
+                Some businesses literally can't operate without legislative authorization. The lobbying investment becomes existential—and the ROI is virtually infinite because the alternative is zero revenue in the Texas market.
+              </p>
+            </div>
+          </div>
+
+          <h3 class="mt-12">The Harder-to-Quantify Benefits</h3>
+
+          <div class="not-prose bg-white rounded-lg border border-border p-6 my-6">
+            <p class="text-sm text-muted-foreground mb-4">
+              Not everything shows up on a spreadsheet, but these benefits are real and compound over time:
+            </p>
+            <ul class="space-y-3 text-sm text-muted-foreground">
+              <li class="flex items-start gap-3">
+                <span class="text-green-500 font-bold flex-shrink-0">✓</span>
+                <span><strong>Early warning system:</strong> Knowing about threats 6-12 months before they become problems gives you time to respond strategically instead of reactively</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-500 font-bold flex-shrink-0">✓</span>
+                <span><strong>Relationship capital:</strong> Access to legislators and staff for future needs has compounding value—relationships built this session pay off for years</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-500 font-bold flex-shrink-0">✓</span>
+                <span><strong>Industry intelligence:</strong> Understanding what competitors are doing, where the political landscape is shifting, and what opportunities are emerging</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-500 font-bold flex-shrink-0">✓</span>
+                <span><strong>Regulatory navigation:</strong> Help working with state agencies on permits, rules, enforcement issues—saving months of bureaucratic delays</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-500 font-bold flex-shrink-0">✓</span>
+                <span><strong>Coalition partnerships:</strong> Alliances with other organizations that amplify your influence and create opportunities for cost-sharing on future issues</span>
+              </li>
+            </ul>
+          </div>
+
+          <p>
+            The real question isn't "Can we afford a lobbyist?" It's "Can we afford NOT to have one when our competitors do and the Legislature is making decisions that affect our industry's future?"
+          </p>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12">
+          <h2 class="text-3xl font-bold mb-6">The Bottom Line on Hiring a Lobbyist</h2>
+
+          <div class="prose prose-lg max-w-none mb-8">
+            <p>
+              Hiring your first lobbyist feels like a leap of faith. You're spending serious money on relationships and influence you can't see or directly control. But if you follow the process laid out in this guide—start early, focus on substance over presentation, ask the right questions, and negotiate clear contract terms—you dramatically increase your odds of finding someone who delivers.
+            </p>
+
+            <p>
+              The best lobbying relationships are partnerships. Your lobbyist brings Capitol relationships and strategic expertise. You bring industry knowledge and constituent impact. Together, you're significantly more effective than either party operating alone.
+            </p>
+
+            <p>
+              Look for lobbyists who name specific committee staffers they've worked with, who can describe recent wins on similar issues, who understand both legislative and agency processes, and who are willing to tell you "no" when the politics aren't there. Avoid anyone who guarantees outcomes, can't provide references, or gets vague when you ask about their approach to your specific issue.
+            </p>
+
+            <p>
+              And remember: effective lobbying is a long-term investment in relationships and positioning, not a short-term transaction. The lobbyist you hire six months before session starts will be far more effective than the one you call in February when you're already in crisis mode.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+            <h3 class="text-xl font-bold mb-4">Ready to Start Your Search?</h3>
+            <p class="text-muted-foreground mb-6">
+              Use TexasLobby.org to search {totalLobbyists.toLocaleString()} active Texas lobbyists by subject area expertise, city coverage, and experience. Compare candidates, save your favorites, and reach out directly.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a
+                href="/lobbyists"
+                class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 px-6 py-3 text-base font-semibold text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                Search Texas Lobbyists
+              </a>
+              <a
+                href="/guides/how-much-does-a-lobbyist-cost"
+                class="inline-flex items-center justify-center rounded-lg border-2 border-texas-blue-500 px-6 py-3 text-base font-semibold text-texas-blue-600 hover:bg-texas-blue-50 transition-colors"
+              >
+                Pricing Guide
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Guides -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <h2 class="text-2xl font-bold mb-8">Related Guides</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href="/guides/how-much-does-a-lobbyist-cost" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              How Much Does a Lobbyist Cost?
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Real pricing data, what drives costs up or down, and how to calculate ROI on your lobbying investment.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+
+          <a href="/guides/what-does-a-lobbyist-do" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              What Does a Lobbyist Do?
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Behind-the-scenes look at what lobbying looks like day-to-day, from committee meetings to coalition building.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+        </div>
+      </section>
+
     </div>
   </article>
 
-  <!-- Related Guides -->
-  <section class="py-12 bg-muted/30 border-t border-border">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-2xl font-bold mb-6">Related Guides</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-          <a href="/guides/how-much-does-a-lobbyist-cost" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <h3 class="font-semibold mb-2">Lobbyist Pricing Guide</h3>
-            <p class="text-sm text-muted-foreground">Understand what you'll pay and what drives costs</p>
-          </a>
-          <a href="/guides/how-to-become-a-lobbyist-in-texas" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <h3 class="font-semibold mb-2">Become a Lobbyist</h3>
-            <p class="text-sm text-muted-foreground">Career guide for aspiring Texas lobbyists</p>
-          </a>
-          <a href="/guides/what-does-a-lobbyist-do" class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors">
-            <h3 class="font-semibold mb-2">What Lobbyists Do</h3>
-            <p class="text-sm text-muted-foreground">Demystifying the lobbying profession</p>
-          </a>
-        </div>
-      </div>
+  <!-- Back to Guides -->
+  <section class="py-8 border-t border-border">
+    <div class="container max-w-4xl">
+      <a
+        href="/guides"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
+      >
+        ← Back to all guides
+      </a>
     </div>
   </section>
 </Layout>

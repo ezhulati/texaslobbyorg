@@ -1,5 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
+import PendingProfileActions from '@/components/react/PendingProfileActions';
 import { getCurrentUser, getUserRole } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
@@ -172,26 +173,13 @@ const pageDescription = 'Review and approve pending lobbyist profiles.';
                 </div>
 
                 <!-- Actions -->
-                <div class="flex flex-col gap-3">
-                  <form method="POST" action="/api/admin/approve-profile">
-                    <input type="hidden" name="profileId" value={profile.id} />
-                    <button
-                      type="submit"
-                      class="inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors whitespace-nowrap"
-                    >
-                      ✓ Approve
-                    </button>
-                  </form>
-                  <form method="POST" action="/api/admin/reject-profile">
-                    <input type="hidden" name="profileId" value={profile.id} />
-                    <button
-                      type="submit"
-                      class="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors whitespace-nowrap"
-                    >
-                      × Reject
-                    </button>
-                  </form>
-                </div>
+                <PendingProfileActions
+                  client:load
+                  profileId={profile.id}
+                  profileName={`${profile.first_name} ${profile.last_name}`}
+                  profileEmail={profile.email}
+                  isActive={profile.is_active}
+                />
               </div>
             </div>
           ))}

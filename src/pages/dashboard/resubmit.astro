@@ -1,0 +1,173 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ResubmitProfileForm from '@/components/react/ResubmitProfileForm';
+import { createServerClient } from '@/lib/supabase';
+
+// Check if user is authenticated (from middleware)
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect('/login?redirect=/dashboard/resubmit');
+}
+
+// Fetch user's rejected lobbyist profile
+const serverClient = createServerClient();
+const { data: lobbyist, error: lobbyistError } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
+  .eq('is_rejected', true)
+  .single();
+
+// If no rejected profile found, redirect to dashboard
+if (!lobbyist) {
+  return Astro.redirect('/dashboard');
+}
+
+// Check if user can resubmit (max 3 attempts)
+const { data: canResubmitResult } = await serverClient.rpc('can_user_resubmit', {
+  lobbyist_uuid: lobbyist.id
+});
+const canResubmit = canResubmitResult === true;
+
+// Check cooldown period (24 hours)
+const { data: cooldownElapsedResult } = await serverClient.rpc('is_resubmission_cooldown_elapsed', {
+  lobbyist_uuid: lobbyist.id
+});
+const cooldownElapsed = cooldownElapsedResult === true;
+
+// Calculate time remaining if still in cooldown
+let hoursRemaining = 0;
+if (!cooldownElapsed && lobbyist.last_resubmission_at) {
+  const lastResubmission = new Date(lobbyist.last_resubmission_at);
+  const now = new Date();
+  const hoursSinceResubmission = (now.getTime() - lastResubmission.getTime()) / (1000 * 60 * 60);
+  hoursRemaining = Math.max(0, 24 - hoursSinceResubmission);
+}
+
+const pageTitle = 'Resubmit Profile | TexasLobby.org';
+const pageDescription = 'Revise and resubmit your lobbyist profile for approval.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="py-12 min-h-[calc(100vh-4rem)]">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <a
+          href="/dashboard"
+          class="inline-flex items-center text-sm text-texas-blue-500 hover:underline mb-4"
+        >
+          ← Back to Dashboard
+        </a>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Revise & Resubmit Profile</h1>
+        <p class="text-lg text-muted-foreground">
+          Make the requested changes and resubmit your profile for review
+        </p>
+      </div>
+
+      <!-- Rejection Reason Display -->
+      <div class="mb-8 rounded-lg border-2 border-amber-200 bg-amber-50 p-6">
+        <h3 class="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+          Feedback from Review Team
+        </h3>
+        <p class="text-sm text-amber-800 whitespace-pre-wrap">
+          {lobbyist.rejection_reason}
+        </p>
+        <p class="text-xs text-amber-700 mt-3">
+          Attempt {lobbyist.rejection_count} of 3 — {3 - lobbyist.rejection_count} {3 - lobbyist.rejection_count === 1 ? 'attempt' : 'attempts'} remaining
+        </p>
+      </div>
+
+      <!-- Max Attempts Reached -->
+      {!canResubmit && (
+        <div class="mb-8 rounded-lg border-2 border-red-300 bg-red-50 p-6">
+          <h3 class="font-semibold text-red-900 mb-2 flex items-center gap-2">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            Maximum Resubmission Attempts Reached
+          </h3>
+          <p class="text-sm text-red-800 mb-4">
+            You've used all 3 submission attempts for this profile. Please contact our support team for further assistance.
+          </p>
+          <a
+            href="mailto:support@texaslobby.org"
+            class="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Contact Support Team
+          </a>
+        </div>
+      )}
+
+      <!-- Cooldown Notice -->
+      {canResubmit && !cooldownElapsed && (
+        <div class="mb-8 rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
+          <h3 class="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+            </svg>
+            Resubmission Cooldown Active
+          </h3>
+          <p class="text-sm text-blue-800 mb-2">
+            To prevent spam and allow our team time to review submissions, there's a 24-hour waiting period between resubmissions.
+          </p>
+          <p class="text-sm font-medium text-blue-900">
+            Time remaining: {Math.ceil(hoursRemaining)} hours
+          </p>
+          <p class="text-xs text-blue-700 mt-3">
+            You can use this time to prepare your revisions. The form below will be enabled once the cooldown period expires.
+          </p>
+        </div>
+      )}
+
+      <!-- Resubmission Form -->
+      {canResubmit && cooldownElapsed ? (
+        <ResubmitProfileForm
+          client:load
+          lobbyistId={lobbyist.id}
+          existingProfile={lobbyist}
+          rejectionReason={lobbyist.rejection_reason || ''}
+          rejectionCategory={lobbyist.rejection_category || ''}
+        />
+      ) : canResubmit ? (
+        <!-- Show read-only preview during cooldown -->
+        <div class="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Form Currently Locked</h3>
+          <p class="text-gray-600 mb-4">
+            Please wait for the cooldown period to expire before resubmitting
+          </p>
+          <p class="text-sm text-gray-500">
+            Check back in {Math.ceil(hoursRemaining)} hours
+          </p>
+        </div>
+      ) : null}
+
+      <!-- Help Section -->
+      <div class="mt-8 rounded-lg border border-border bg-muted/30 p-6">
+        <h3 class="font-semibold mb-3">Need Help?</h3>
+        <p class="text-sm text-muted-foreground mb-4">
+          If you have questions about the feedback or need clarification on what changes to make, our support team is here to help.
+        </p>
+        <a
+          href="mailto:support@texaslobby.org"
+          class="inline-flex items-center text-sm text-texas-blue-500 hover:underline"
+        >
+          <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Contact Support →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

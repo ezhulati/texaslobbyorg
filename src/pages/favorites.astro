@@ -179,6 +179,99 @@ const pageDescription = 'View and manage your saved Texas lobbyist profiles. Kee
             </div>
           ))}
         </div>
+
+        <!-- Next Steps Guide (only show when there are favorites) -->
+        {favoriteLobbyists.length > 0 && (
+          <div class="mt-16 border-t border-border pt-16">
+            <div class="max-w-4xl mx-auto">
+              <!-- Section Header -->
+              <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3">Choosing the Right Lobbyist</h2>
+                <p class="text-lg text-muted-foreground">
+                  Here's how to evaluate your saved advocates and make an informed decision
+                </p>
+              </div>
+
+              <!-- Quick Tips Grid -->
+              <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <!-- Tip 1: Compare Experience -->
+                <div class="rounded-lg border border-border bg-white p-6 hover:border-texas-blue-300 transition-colors">
+                  <div class="mb-4 inline-flex items-center justify-center rounded-lg bg-texas-blue-50 p-3">
+                    <svg class="h-6 w-6 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-semibold mb-2">Compare Expertise</h3>
+                  <p class="text-sm text-muted-foreground">
+                    Review their subject area specializations and check if they align with your industry and specific policy needs.
+                  </p>
+                </div>
+
+                <!-- Tip 2: Ask Questions -->
+                <div class="rounded-lg border border-border bg-white p-6 hover:border-texas-blue-300 transition-colors">
+                  <div class="mb-4 inline-flex items-center justify-center rounded-lg bg-texas-blue-50 p-3">
+                    <svg class="h-6 w-6 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-semibold mb-2">Schedule Consultations</h3>
+                  <p class="text-sm text-muted-foreground">
+                    Reach out to discuss your goals, ask about their approach, success stories, and typical engagement terms.
+                  </p>
+                </div>
+
+                <!-- Tip 3: Check Relationships -->
+                <div class="rounded-lg border border-border bg-white p-6 hover:border-texas-blue-300 transition-colors">
+                  <div class="mb-4 inline-flex items-center justify-center rounded-lg bg-texas-blue-50 p-3">
+                    <svg class="h-6 w-6 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-semibold mb-2">Consider Their Network</h3>
+                  <p class="text-sm text-muted-foreground">
+                    Strong relationships with legislators and agency officials are crucial for effective advocacy in Austin.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Resources Section -->
+              <div class="rounded-lg border border-border bg-muted/30 p-8">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0">
+                    <div class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 p-3">
+                      <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-xl font-semibold mb-3">Helpful Resources</h3>
+                    <ul class="space-y-3">
+                      <li>
+                        <a href="/how-it-works" class="text-texas-blue-500 hover:text-texas-blue-600 hover:underline font-medium">
+                          How the Texas Lobbying Process Works →
+                        </a>
+                        <p class="text-sm text-muted-foreground mt-1">Understand the legislative timeline and key milestones</p>
+                      </li>
+                      <li>
+                        <a href="/guides/questions-to-ask" class="text-texas-blue-500 hover:text-texas-blue-600 hover:underline font-medium">
+                          10 Questions to Ask Before Hiring a Lobbyist →
+                        </a>
+                        <p class="text-sm text-muted-foreground mt-1">Make sure you're choosing the right advocate for your needs</p>
+                      </li>
+                      <li>
+                        <a href="/guides/what-to-expect" class="text-texas-blue-500 hover:text-texas-blue-600 hover:underline font-medium">
+                          What to Expect When Working with a Lobbyist →
+                        </a>
+                        <p class="text-sm text-muted-foreground mt-1">Learn about typical engagement models and communication cadence</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       )}
 
       <!-- Back to Browse Link -->

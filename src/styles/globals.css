@@ -114,5 +114,16 @@
   }
 }
 
+/* Improve prose paragraph spacing for better visual distinction */
+@layer components {
+  .prose p {
+    @apply mb-6; /* Increase from default to 1.5rem (24px) */
+  }
+
+  .prose-lg p {
+    @apply mb-7; /* Even more for large prose (1.75rem / 28px) */
+  }
+}
+
 /* Import world-class article styling */
 @import './article.css';

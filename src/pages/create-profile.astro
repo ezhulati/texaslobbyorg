@@ -1,26 +1,37 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import CreateProfileForm from '@/components/react/CreateProfileForm';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase';
 
 // Check if user is authenticated (from middleware)
 const user = Astro.locals.user;
 
 // If user is authenticated, check if they already have a profile
 let existingProfile = false;
+let rejectedWithMaxAttempts = false;
+let rejectionCount = 0;
+
 if (user) {
-  const { data } = await supabase
+  const serverClient = createServerClient();
+  const { data } = await serverClient
     .from('lobbyists')
-    .select('id, slug, is_pending')
-    .eq('user_id', user.id)
+    .select('id, slug, is_pending, is_rejected, rejection_count, is_active')
+    .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
     .single();
 
   if (data) {
-    // User already has a profile
-    if (data.is_pending) {
-      // Profile is pending approval
-      existingProfile = true;
-    } else {
+    // Check if user has rejected profile with max attempts
+    if (data.is_rejected && (data.rejection_count || 0) >= 3) {
+      rejectedWithMaxAttempts = true;
+      rejectionCount = data.rejection_count || 0;
+    }
+    // Check if profile is pending or rejected (but still within attempts)
+    else if (data.is_pending || (data.is_rejected && (data.rejection_count || 0) < 3)) {
+      // Redirect to dashboard if pending or rejected (they should use resubmit flow)
+      return Astro.redirect('/dashboard');
+    }
+    // If profile is approved and active
+    else if (data.is_active) {
       // Profile is approved, redirect to it
       return Astro.redirect(`/lobbyists/${data.slug}`);
     }
@@ -44,7 +55,50 @@ const pageDescription = 'Create your Texas lobbyist profile on TexasLobby.org. G
         </p>
       </div>
 
-      {existingProfile ? (
+      {rejectedWithMaxAttempts ? (
+        <!-- Max Attempts Reached - Contact Support -->
+        <div class="rounded-lg border-2 border-red-300 bg-red-50 p-8 text-center">
+          <div class="mb-4">
+            <svg
+              class="mx-auto h-12 w-12 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-red-900 mb-3">Maximum Submission Attempts Reached</h3>
+          <p class="text-red-800 mb-4">
+            You've reached the maximum number of profile submission attempts ({rejectionCount} of 3).
+          </p>
+          <p class="text-red-700 mb-6">
+            Our support team is here to help you get your profile approved. Please contact us for personalized assistance with your submission.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="mailto:support@texaslobby.org"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-6 py-3 text-base font-medium text-white hover:bg-red-700 transition-colors"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Contact Support Team
+            </a>
+            <a
+              href="/dashboard"
+              class="inline-flex items-center justify-center rounded-md border border-border bg-white px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+            >
+              Return to Dashboard
+            </a>
+          </div>
+        </div>
+      ) : existingProfile ? (
         <!-- Already Has Pending Profile -->
         <div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-8 text-center">
           <div class="mb-4">

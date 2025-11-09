@@ -1,31 +1,8 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import { supabase } from '@/lib/supabase';
-import { Clock, Users, FileText, MessageCircle, TrendingUp, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 
-// Fetch some real data
-const { data: lobbyists, error } = await supabase
-  .from('lobbyists')
-  .select('subscription_tier, is_claimed, subject_areas')
-  .eq('is_active', true);
-
-const totalLobbyists = lobbyists?.length || 0;
-
-// Get most common subject areas
-const subjectCounts = lobbyists?.reduce((acc, l) => {
-  l.subject_areas?.forEach((subject: string) => {
-    acc[subject] = (acc[subject] || 0) + 1;
-  });
-  return acc;
-}, {} as Record<string, number>) || {};
-
-const topSubjects = Object.entries(subjectCounts)
-  .sort(([, a], [, b]) => b - a)
-  .slice(0, 5)
-  .map(([subject]) => subject);
-
-const pageTitle = 'What Does a Lobbyist Actually Do? Texas Lobbying 101';
-const pageDescription = 'The real story: what lobbyists do all day, common misconceptions debunked, different types of lobbyists, ethics and legal limits, and how the profession actually works in Texas.';
+const pageTitle = 'What Does a Lobbyist Do? Inside the Profession';
+const pageDescription = 'Texas lobbyist Byron Campbell reveals what lobbying looks like day-to-day—from committee staff meetings to coalition building, bill tracking to crisis management. The reality behind the stereotypes.';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -33,19 +10,11 @@ const schema = {
   headline: pageTitle,
   description: pageDescription,
   author: {
-    '@type': 'Organization',
-    name: 'TexasLobby.org',
+    '@type': 'Person',
+    name: 'Byron Campbell'
   },
-  publisher: {
-    '@type': 'Organization',
-    name: 'TexasLobby.org',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://texaslobby.org/logo.png',
-    },
-  },
-  datePublished: '2025-01-06',
-  dateModified: '2025-01-06',
+  datePublished: '2025-01-07',
+  dateModified: '2025-01-07'
 };
 ---
 
@@ -65,1057 +34,622 @@ const schema = {
         </a>
       </div>
 
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        Inside the Profession
+      </div>
+
       <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
-        What Does a Lobbyist Actually Do?
+        What Does a Lobbyist Do?
       </h1>
 
       <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
-        Let's clear up the mystery. Here's what Texas lobbyists <em>really</em> do all day,
-        the myths that need busting, and why the profession is more important (and less shady) than you think.
+        Most people think lobbying is schmoozing legislators over expensive dinners. Here's what the job looks like—from the 6 AM coffee meetings to the midnight text messages when bills get amended.
       </p>
 
       <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
         <div class="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-texas-blue-500" />
-          <span class="font-medium">12 min read</span>
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="font-medium">By Byron Campbell, Texas Lobbyist</span>
         </div>
         <div class="flex items-center gap-2">
-          <Users className="h-5 w-5 text-texas-blue-500" />
-          <span class="font-medium">{totalLobbyists.toLocaleString()} active Texas lobbyists</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Table of Contents -->
-  <section class="py-12 bg-gradient-to-b from-muted/20 to-background border-b border-border">
-    <div class="container">
-      <div class="max-w-3xl mx-auto">
-        <div class="bg-white rounded-2xl border border-border shadow-sm p-8 lg:p-10">
-          <h2 class="text-lg font-bold mb-6 text-foreground">What You'll Learn</h2>
-          <nav class="grid md:grid-cols-2 gap-x-8 gap-y-3">
-            <a href="#simple-answer" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">The Simple Answer</span>
-            </a>
-            <a href="#myths" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">6 Myths Debunked</span>
-            </a>
-            <a href="#day-in-life" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">A Day in the Life</span>
-            </a>
-            <a href="#types" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Three Types of Lobbyists</span>
-            </a>
-            <a href="#skills" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Real Skills for Success</span>
-            </a>
-            <a href="#ethics" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Ethics and Legal Limits</span>
-            </a>
-            <a href="#tools" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">Tools of the Trade</span>
-            </a>
-            <a href="#success-stories" class="group flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-texas-blue-600 transition-colors">
-              <span class="text-texas-blue-500 mt-0.5">→</span>
-              <span class="group-hover:translate-x-1 transition-transform">What Success Looks Like</span>
-            </a>
-          </nav>
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">14 min read</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content -->
-  <article class="py-20 lg:py-24">
-    <div class="container">
-      <div class="max-w-3xl mx-auto article-content">
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
 
-        <!-- Simple Answer -->
-        <div id="simple-answer" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6">The Simple Answer</h2>
-        </div>
-
-        <p class="lead">
-          <strong>A lobbyist is a professional advocate who represents clients' interests in front of government officials.</strong>
-          They provide information, expertise, and strategic advice to help shape legislation, regulations, and
-          public policy in ways that benefit their clients.
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <p class="text-lg leading-relaxed">
+          Here's what lobbying looks like: It's 8:30 AM on a Tuesday in March. I'm sitting in a cramped office in the Capitol basement with a committee clerk I've known for seven years, reviewing the witness list for Thursday's hearing. My client needs to testify third—after the proponents establish the framework but before the opposition shows up in force. The clerk pencils us in. This 10-minute conversation will matter more than any speech I could give on the House floor.
         </p>
 
-        <p>
-          Think of lobbyists as translators between two worlds: the complex world of business, nonprofits, or
-          special interests, and the equally complex world of government. They speak both languages fluently.
+        <p class="text-lg leading-relaxed">
+          That's lobbying. Not the stereotype of schmoozing legislators over steak dinners (though that occasionally happens). The real work is a thousand small strategic decisions, relationship-based problem-solving, and translating complex policy into language busy legislators can use.
         </p>
 
-        <div class="not-prose my-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-blue-900 mb-3">The Four Core Jobs</h3>
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="bg-white rounded-lg p-4">
-              <div class="flex items-start gap-3">
-                <FileText className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-                <div>
-                  <div class="font-semibold text-blue-900 mb-1">1. Monitor & Alert</div>
-                  <p class="text-sm text-blue-800">Track thousands of bills, flag the ones that affect clients</p>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <div class="flex items-start gap-3">
-                <MessageCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-                <div>
-                  <div class="font-semibold text-blue-900 mb-1">2. Educate & Inform</div>
-                  <p class="text-sm text-blue-800">Explain complex issues to legislators and staff</p>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <div class="flex items-start gap-3">
-                <Users className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-                <div>
-                  <div class="font-semibold text-blue-900 mb-1">3. Build Relationships</div>
-                  <p class="text-sm text-blue-800">Develop trust and access with key decision-makers</p>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <div class="flex items-start gap-3">
-                <TrendingUp className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-                <div>
-                  <div class="font-semibold text-blue-900 mb-1">4. Strategize & Execute</div>
-                  <p class="text-sm text-blue-800">Plan campaigns to pass, kill, or amend legislation</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Myths -->
-        <div id="myths" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">6 Myths About Lobbyists (Debunked)</h2>
-        </div>
-
-        <p>
-          Let's be honest: lobbyists have a bad reputation. Some of it is deserved, but most of it is based on
-          misconceptions. Here's what people get wrong:
+        <p class="text-lg leading-relaxed">
+          So what do lobbyists do all day? Let me show you.
         </p>
+      </div>
 
-        <!-- Myth 1 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #1: "Lobbyists are all wealthy fat cats"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> While some top lobbyists earn six figures, many make modest salaries.
-                  Entry-level lobbyists might start at $40K-$50K. The image of every lobbyist as a wealthy insider
-                  is just not accurate—plenty work long hours for middle-class pay.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                One former lobbyist in DC reported earning just $32,000 in their first lobbying job after graduate
-                school. In Texas, average lobbyist salaries are around $47,000 annually.
-              </p>
-            </div>
-          </div>
+      <!-- Core Functions -->
+      <section id="core-functions" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">The Five Core Functions of Lobbying</h2>
+          <p class="text-texas-blue-700 font-medium">What clients actually pay for</p>
         </div>
 
-        <!-- Myth 2 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #2: "Lobbyists only represent big corporations"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> Look at the {totalLobbyists.toLocaleString()} active Texas lobbyists. They represent churches,
-                  hospitals, universities, environmental groups, patient advocacy organizations, small business
-                  associations, and yes—corporations too. Anyone with an interest in public policy can hire a lobbyist.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                <strong>Top subject areas in Texas right now:</strong> {topSubjects.slice(0, 3).join(', ')}.
-                That's hardly just "corporate interests."
-              </p>
-            </div>
-          </div>
-        </div>
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Strip away the stereotypes and lobbying comes down to five essential functions. Everything else is just tactics in service of these core jobs.
+          </p>
 
-        <!-- Myth 3 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #3: "Lobbyists buy votes with campaign contributions"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> This is probably the biggest misconception. Campaign contributions buy
-                  <em>access</em>, not votes. A donation gets you a meeting; what you do in that meeting determines
-                  whether you win or lose. Plenty of well-funded interests lose fights, and grassroots groups with no
-                  money win them.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                <strong>The truth:</strong> Legislators care about three things more than money: (1) what their constituents
-                want, (2) what their party leadership wants, and (3) what they personally believe is right. Money is just
-                the entry fee to make your case—it doesn't guarantee results.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Myth 4 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #4: "Lobbyists don't contribute anything valuable"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> Legislators deal with thousands of bills every session. They can't possibly
-                  be experts on everything from healthcare to agriculture to cryptocurrency. Lobbyists provide specialized
-                  expertise and real-world impact analysis that helps legislators make informed decisions.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                <strong>Example:</strong> When Texas considered regulating ride-sharing apps in 2015, legislators
-                heard from lobbyists representing Uber, taxi companies, cities, disability advocates, and insurance
-                companies. Each provided different perspectives and data. The resulting law balanced all those interests—
-                imperfectly, but better than if legislators had tried to figure it all out themselves.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Myth 5 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #5: "Lobbying is all about fancy dinners and golf outings"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> Sure, relationship building happens over meals and events. But 90% of
-                  lobbying is unglamorous: reading bills, tracking amendments, sitting in committee hearings,
-                  writing policy briefs, coordinating coalitions, and sending hundreds of emails.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                <strong>A more accurate picture:</strong> For every fancy dinner, there are 10 hours of bill analysis,
-                5 conference calls with clients, 3 coalition meetings, and 50+ emails to legislative staff.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Myth 6 -->
-        <div class="not-prose my-8">
-          <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                <XCircle className="h-6 w-6 text-red-700" />
-              </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-red-900 mb-2">Myth #6: "Lobbying is only about legislation"</h3>
-                <p class="text-red-800 mb-3">
-                  <strong>Reality:</strong> Most lobbying in Texas actually happens <em>between</em> legislative sessions.
-                  Lobbyists spend huge amounts of time on state agency regulations, administrative rules, budget
-                  appropriations, and helping clients navigate bureaucracy.
-                </p>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4">
-              <p class="text-sm text-muted-foreground">
-                <strong>Example:</strong> The Texas Commission on Environmental Quality (TCEQ) writes hundreds of
-                pages of rules every year. Healthcare lobbyists spend months working with the Health and Human Services
-                Commission on Medicaid policy. That's all lobbying—even though no bills are involved.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Day in the Life -->
-        <div id="day-in-life" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">A Day in the Life: What They Actually Do</h2>
-        </div>
-
-        <p>
-          Let's follow a mid-level contract lobbyist through a typical day during the Texas legislative session
-          (January–May). This is what the work <em>really</em> looks like:
-        </p>
-
-        <div class="not-prose my-12 space-y-8">
-          <!-- Morning -->
-          <div class="bg-white border-l-4 border-orange-500 rounded-lg p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="bg-orange-500 text-white rounded-lg px-3 py-1 text-sm font-bold">7:00 AM</div>
-              <h3 class="text-xl font-bold">Morning: Bill Tracking & Capitol Intel</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">7:00–7:30 AM: Review overnight updates</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Check Capitol email alerts for new bill filings and amendments</li>
-                  <li>• Scan Texas Tribune and Austin American-Statesman for political news</li>
-                  <li>• Review overnight texts from legislative staff contacts</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">7:30–8:30 AM: Committee hearings begin</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Attend House Public Health Committee hearing (client's bill is on the agenda)</li>
-                  <li>• Fill out witness card to testify in favor</li>
-                  <li>• Text client updates on what other witnesses are saying</li>
-                  <li>• Give 3-minute testimony explaining client's position</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">8:30–9:00 AM: Post-hearing huddle</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Grab the committee chairman's chief of staff for a quick conversation</li>
-                  <li>• Gauge whether the bill has enough votes to pass out of committee</li>
-                  <li>• Identify which members need more information before they'll vote yes</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Late Morning -->
-          <div class="bg-white border-l-4 border-blue-500 rounded-lg p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="bg-blue-500 text-white rounded-lg px-3 py-1 text-sm font-bold">9:30 AM</div>
-              <h3 class="text-xl font-bold">Late Morning: Meetings & Strategy</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">9:30–10:00 AM: Capitol office visit #1</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Meet with Rep. Johnson's legislative director about different client's bill</li>
-                  <li>• Drop off one-page fact sheet and leave-behind materials</li>
-                  <li>• Answer questions about how the bill affects rural districts</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">10:00–11:00 AM: Coalition meeting</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Conference call with 8 other organizations supporting HB 1234</li>
-                  <li>• Divide up list of legislators—who will talk to whom</li>
-                  <li>• Agree on unified messaging and talking points</li>
-                  <li>• Discuss fundraising strategy for targeted legislators</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">11:00 AM–12:00 PM: Bill drafting session</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Meet with legislative counsel to draft amendment language</li>
-                  <li>• Work through technical details of how the bill would actually work</li>
-                  <li>• Get legal advice on constitutional issues</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lunch -->
-          <div class="bg-white border-l-4 border-purple-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm font-bold">12:00 PM</div>
-              <h3 class="text-xl font-bold">Lunch: Relationship Building</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">12:00–1:30 PM: Working lunch</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Take Senate staffer to lunch at Iron Cactus (one of Austin's popular Capitol-area spots)</li>
-                  <li>• 20 minutes of small talk: family, sports, the craziness of session</li>
-                  <li>• 40 minutes of substance: walk through client's concerns about pending bill</li>
-                  <li>• Leave with commitment: staffer will set up meeting with the Senator next week</li>
-                </ul>
-              </div>
-              <p class="text-xs text-muted-foreground italic px-4">
-                Note: Under Texas ethics rules, lobbyists can buy meals for legislators and staff, but it must be
-                reported if it exceeds certain thresholds. Many lobbyists now avoid meals altogether to stay away
-                from ethics gray areas.
-              </p>
-            </div>
-          </div>
-
-          <!-- Afternoon -->
-          <div class="bg-white border-l-4 border-green-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="bg-green-500 text-white rounded-lg px-3 py-1 text-sm font-bold">2:00 PM</div>
-              <h3 class="text-xl font-bold">Afternoon: Client Work & Floor Action</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">2:00–2:30 PM: House floor session</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Watch House floor debate on bill that affects three different clients</li>
-                  <li>• Text real-time updates to clients as amendments are offered</li>
-                  <li>• Rapid strategy call: should we support the amendment or oppose it?</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">2:30–4:00 PM: Crisis management</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• A hostile amendment just got added to client's bill—this is bad</li>
-                  <li>• Emergency calls to bill author's office and key committee members</li>
-                  <li>• Draft alternative amendment language that everyone can live with</li>
-                  <li>• Negotiate compromise with opposing lobbyist in Capitol hallway</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">4:00–5:30 PM: Research & prep work</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Back to the office to write policy brief for tomorrow's meetings</li>
-                  <li>• Research how other states have handled similar issues</li>
-                  <li>• Pull economic impact data to support client's position</li>
-                  <li>• Prep talking points for client's CEO who's testifying Thursday</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Evening -->
-          <div class="bg-white border-l-4 border-indigo-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="bg-indigo-500 text-white rounded-lg px-3 py-1 text-sm font-bold">6:00 PM</div>
-              <h3 class="text-xl font-bold">Evening: Never Really Done</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">6:00–7:30 PM: Fundraiser attendance</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Attend campaign fundraiser for key committee chairman</li>
-                  <li>• Client gave $1,000 contribution—lobbyist delivers the check and introduces CEO</li>
-                  <li>• 5 minutes of face time with the legislator at the event</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">8:00–9:00 PM: Client reporting</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Write detailed email updates to all 6 clients about today's developments</li>
-                  <li>• Return phone calls to clients who need to talk strategy</li>
-                  <li>• Schedule meetings for rest of the week</li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-lg p-4">
-                <p class="font-semibold mb-2">9:00–10:00 PM: Prep for tomorrow</p>
-                <ul class="text-muted-foreground space-y-1 ml-4">
-                  <li>• Review tomorrow's committee schedules</li>
-                  <li>• Flag any new bills that might affect clients</li>
-                  <li>• Answer a few urgent texts from legislative staff</li>
-                  <li>• Finally go home... until tomorrow at 7 AM</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="not-prose my-8 bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
-          <div class="flex gap-3">
-            <AlertCircle className="h-6 w-6 text-yellow-700 flex-shrink-0" />
-            <div>
-              <p class="text-sm text-yellow-900 mb-2">
-                <strong>Reality check:</strong> This is a fairly typical day <em>during session</em>. Between sessions
-                (most of the year), the pace is slower: more agency work, long-term strategy, less urgency.
-              </p>
-              <p class="text-sm text-yellow-900">
-                But when session is in full swing? 60-80 hour weeks are standard. All-nighters happen when important
-                bills are up for final votes. It's intense, exhausting, and thrilling all at once.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Types of Lobbyists -->
-        <div id="types" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">Three Types of Lobbyists Explained</h2>
-        </div>
-
-        <p>
-          Not all lobbyists work the same way. Here are the three main types you'll encounter in Texas:
-        </p>
-
-        <!-- Contract Lobbyist -->
-        <div class="not-prose my-8">
-          <div class="bg-white border-2 border-texas-blue-500 rounded-lg overflow-hidden">
-            <div class="bg-texas-blue-500/10 px-6 py-4 border-b border-texas-blue-500">
-              <h3 class="text-2xl font-bold">1. Contract Lobbyist (Most Common)</h3>
-              <p class="text-sm text-muted-foreground mt-1">Works for a lobbying firm, represents multiple clients</p>
-            </div>
-            <div class="p-6">
-              <div class="mb-6">
-                <h4 class="font-semibold mb-3">How it works:</h4>
-                <p class="text-sm text-muted-foreground">
-                  Contract lobbyists are hired by lobbying firms and represent multiple clients simultaneously.
-                  A single lobbyist might work for a hospital association, a tech company, a nonprofit advocacy
-                  group, and a trade association all at the same time.
-                </p>
-              </div>
-
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 class="font-semibold mb-2 text-green-700">Advantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• More time at the Capitol = better access and relationships</li>
-                    <li>• Can leverage connections across multiple issues and committees</li>
-                    <li>• Usually more experienced with legislative process</li>
-                    <li>• Firm provides research support, administrative help</li>
-                    <li>• Can often respond faster to breaking developments</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-semibold mb-2 text-red-700">Disadvantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• You're one of many clients—may not get full attention</li>
-                    <li>• Potential conflicts if they represent your competitors</li>
-                    <li>• Less deep knowledge of your specific industry</li>
-                    <li>• More expensive than in-house (firms have overhead)</li>
-                  </ul>
+          <!-- Function 1: Intelligence -->
+          <div class="not-prose my-8">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-texas-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Intelligence Gathering & Early Warning</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Most organizations hire lobbyists because they need to know what's coming before it's too late to respond. We're the early warning system.
+                  </p>
+                  <div class="bg-muted rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold mb-2">What this looks like in practice:</p>
+                    <ul class="text-sm space-y-1 ml-4">
+                      <li>• Monitoring bill filings across multiple committees</li>
+                      <li>• Tracking amendments as they're drafted (often before they're public)</li>
+                      <li>• Understanding which legislators are planning to file what next session</li>
+                      <li>• Hearing about regulatory changes before they're formally proposed</li>
+                      <li>• Knowing when your industry is about to become a political target</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-4">
+                    <p class="text-sm text-blue-900">
+                      <strong>Real example:</strong> Last session, I learned from a committee staffer that an amendment targeting my client's industry would be added to an unrelated bill. We had 48 hours to respond. That heads-up—which came from a casual conversation over coffee—saved the client millions.
+                    </p>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div class="bg-muted rounded-lg p-4">
-                <p class="text-sm">
-                  <strong>When to hire:</strong> When you don't have enough advocacy needs to justify a full-time employee,
-                  or when you need someone with extensive Capitol connections and multi-issue expertise.
-                </p>
+          <!-- Function 2: Access & Influence -->
+          <div class="not-prose my-8">
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Access to Decision-Makers</h3>
+                  <p class="text-muted-foreground mb-4">
+                    When you need a legislator's ear, your cold email goes to a legislative assistant who gets 200 emails a day. My text message goes directly to the member or their chief of staff—because we've built that relationship over years.
+                  </p>
+                  <div class="bg-muted rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold mb-2">The access hierarchy (from strongest to weakest):</p>
+                    <ul class="text-sm space-y-1 ml-4">
+                      <li>• Personal cell phone number (very rare, very valuable)</li>
+                      <li>• Chief of staff's direct line</li>
+                      <li>• Committee staff who draft the actual bills</li>
+                      <li>• Legislative director who controls the member's schedule</li>
+                      <li>• Policy advisors who brief the member before votes</li>
+                      <li>• General office line (what you get without a lobbyist)</li>
+                    </ul>
+                  </div>
+                  <div class="bg-green-50 rounded-lg p-4">
+                    <p class="text-sm text-green-900">
+                      <strong>Why this matters:</strong> The legislator who won't take your call will meet with me—not because I'm special, but because I've proven over years that when I say something is important, it actually is. Credibility is currency.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Function 3: Strategy & Positioning -->
+          <div class="not-prose my-8">
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Strategic Planning & Positioning</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Anyone can read a bill. What clients pay for is knowing WHEN to push, HOW to frame the issue, WHO to target, and WHAT compromises to accept or reject.
+                  </p>
+                  <div class="bg-muted rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold mb-2">Strategic questions we answer daily:</p>
+                    <ul class="text-sm space-y-1 ml-4">
+                      <li>• Which committee do we want this bill assigned to?</li>
+                      <li>• Should we file now or wait until next session?</li>
+                      <li>• Do we fight this amendment or use it as a trading chip?</li>
+                      <li>• Which coalition partners strengthen our position vs. hurt it?</li>
+                      <li>• Is this a winnable fight or should we focus elsewhere?</li>
+                    </ul>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-4">
+                    <p class="text-sm text-purple-900">
+                      <strong>The strategic skill:</strong> Knowing when to kill your own bill because the votes aren't there—and repositioning the issue for next session when the political landscape will be better. Bad lobbyists fight every battle. Good lobbyists know which battles to avoid.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Function 4: Coalition Building -->
+          <div class="not-prose my-8">
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">4</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Coalition Building & Alliance Management</h3>
+                  <p class="text-muted-foreground mb-4">
+                    One organization lobbying alone has limited power. Ten organizations speaking with one voice move mountains. Building and managing those coalitions is core lobbying work.
+                  </p>
+                  <div class="bg-muted rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold mb-2">Coalition work includes:</p>
+                    <ul class="text-sm space-y-1 ml-4">
+                      <li>• Identifying natural allies with aligned interests</li>
+                      <li>• Negotiating shared positions that work for everyone</li>
+                      <li>• Coordinating testimony and messaging</li>
+                      <li>• Managing conflicts when coalition partners disagree</li>
+                      <li>• Leveraging other groups' relationships and credibility</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-4">
+                    <p class="text-sm text-orange-900">
+                      <strong>Power in numbers:</strong> When a bill gets opposed by the Texas Medical Association, the hospital association, the nurses' union, AND the patient advocacy groups all speaking with unified messaging? That bill dies. Building that unified front is where experienced lobbyists earn their fees.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Function 5: Crisis Management -->
+          <div class="not-prose my-8">
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">5</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-3">Crisis Response & Damage Control</h3>
+                  <p class="text-muted-foreground mb-4">
+                    Sometimes you're playing offense (passing good legislation). Sometimes you're playing defense (killing bad legislation). And sometimes you're in pure crisis mode trying to minimize damage when a bill you hate is about to pass.
+                  </p>
+                  <div class="bg-muted rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold mb-2">Crisis lobbying looks like:</p>
+                    <ul class="text-sm space-y-1 ml-4">
+                      <li>• Negotiating amendments to soften a bill's impact</li>
+                      <li>• Finding procedural delays to buy time for opposition</li>
+                      <li>• Identifying poison pill amendments opponents will accept</li>
+                      <li>• Building last-minute coalitions to flip key votes</li>
+                      <li>• Damage control when your client becomes politically toxic</li>
+                    </ul>
+                  </div>
+                  <div class="bg-red-50 rounded-lg p-4">
+                    <p class="text-sm text-red-900">
+                      <strong>When the ship is sinking:</strong> Sometimes you can't kill the bill. The best you can do is get an exemption for your client, delay implementation, or water down the enforcement provisions. That's not failure—that's successful damage control.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- In-House Lobbyist -->
-        <div class="not-prose my-8">
-          <div class="bg-white border border-border rounded-lg overflow-hidden">
-            <div class="bg-purple-100 px-6 py-4 border-b border-border">
-              <h3 class="text-2xl font-bold">2. In-House Lobbyist</h3>
-              <p class="text-sm text-muted-foreground mt-1">Full-time employee of a single organization</p>
-            </div>
-            <div class="p-6">
-              <div class="mb-6">
-                <h4 class="font-semibold mb-3">How it works:</h4>
-                <p class="text-sm text-muted-foreground">
-                  In-house lobbyists work exclusively for one company, trade association, or organization.
-                  They're full-time employees with benefits, and their only job is advancing their employer's
-                  interests. Common among large corporations, major trade associations, and universities.
-                </p>
-              </div>
-
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 class="font-semibold mb-2 text-green-700">Advantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• 100% dedicated to your organization's priorities</li>
-                    <li>• Deep institutional knowledge of your business/industry</li>
-                    <li>• Always available, part of your team</li>
-                    <li>• No conflicts of interest with competitors</li>
-                    <li>• Often more cost-effective for high-volume needs</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-semibold mb-2 text-red-700">Disadvantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• Less time at Capitol = potentially weaker relationships</li>
-                    <li>• Fewer opportunities to build cross-issue coalitions</li>
-                    <li>• May lack broad legislative expertise</li>
-                    <li>• Expensive for smaller organizations</li>
-                    <li>• Often juggle other duties (PR, communications, etc.)</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="bg-muted rounded-lg p-4">
-                <p class="text-sm">
-                  <strong>When to hire:</strong> When your organization has year-round lobbying needs across multiple
-                  policy areas, or when your issues require someone with deep industry knowledge who can be fully integrated
-                  into your organization's strategy.
-                </p>
-              </div>
-            </div>
-          </div>
+      <!-- A Day in the Life -->
+      <section id="typical-day" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">A Typical Day During Session</h2>
+          <p class="text-texas-blue-700 font-medium">What lobbying looks like hour-by-hour</p>
         </div>
 
-        <!-- Association Lobbyist -->
-        <div class="not-prose my-8">
-          <div class="bg-white border border-border rounded-lg overflow-hidden">
-            <div class="bg-green-100 px-6 py-4 border-b border-border">
-              <h3 class="text-2xl font-bold">3. Association Lobbyist</h3>
-              <p class="text-sm text-muted-foreground mt-1">Works for trade association representing entire industry</p>
-            </div>
-            <div class="p-6">
-              <div class="mb-6">
-                <h4 class="font-semibold mb-3">How it works:</h4>
-                <p class="text-sm text-muted-foreground">
-                  Association lobbyists work for trade associations, professional groups, or industry coalitions.
-                  They represent the collective interests of all members—sometimes hundreds or thousands of
-                  organizations. Examples: Texas Association of Business, Texas Medical Association, Texas Bankers Association.
-                </p>
-              </div>
+        <div class="prose prose-lg max-w-none">
+          <p>
+            People always ask what I DO all day. Here's a real Tuesday from last session—not my busiest day, not my slowest, just... typical.
+          </p>
 
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 class="font-semibold mb-2 text-green-700">Advantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• Very cost-effective (dues shared across many members)</li>
-                    <li>• Strength in numbers—legislators listen to industries, not just companies</li>
-                    <li>• Built-in coalitions and grassroots networks</li>
-                    <li>• Deep subject matter expertise in the industry</li>
-                    <li>• Year-round advocacy, not just during session</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-semibold mb-2 text-red-700">Disadvantages:</h4>
-                  <ul class="text-sm space-y-1 text-muted-foreground">
-                    <li>• Represents "average member" not your specific needs</li>
-                    <li>• Can't take positions that divide the membership</li>
-                    <li>• Slower to respond (need board approval for positions)</li>
-                    <li>• May compromise on issues where members disagree</li>
-                    <li>• You're one voice among many in setting priorities</li>
-                  </ul>
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">6:30 AM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Coffee with committee staffer</strong> – Discussing hearing schedules for next week. She mentions an amendment is being drafted that could affect my client. This isn't on any public calendar yet.
+                  </p>
                 </div>
               </div>
+            </div>
 
-              <div class="bg-muted rounded-lg p-4">
-                <p class="text-sm">
-                  <strong>When to use:</strong> For broad industry issues where you share interests with competitors
-                  and other members. Many organizations use both an association lobbyist for big-picture industry
-                  issues AND a contract lobbyist for their company-specific concerns.
-                </p>
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">8:00 AM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Client call</strong> – Brief them on yesterday's committee hearing, the amendment I heard about at coffee, and our strategy for the next 48 hours. They ask if we should increase PAC contributions to the committee chair. We discuss.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">9:00 AM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Committee hearing</strong> – Testifying on HB 847. Keep it to 3 minutes, answer technical questions from members, hand the chairman a one-page summary with our proposed amendment language.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">10:30 AM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Meeting with bill author's office</strong> – Walk through our concerns with SB 123. They're open to amendments but won't kill the bill. We negotiate language that works for both sides. Relationship-building disguised as negotiation.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">12:00 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Coalition lunch</strong> – Five organizations coordinating strategy on shared priorities. One wants to fight a battle I know we'll lose. Convincing them to focus elsewhere without offending anyone takes the entire lunch.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">1:30 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Bill tracking and research</strong> – Review overnight amendments on 12 bills, write summaries for clients, identify three that need immediate attention. Draft talking points for legislators on two priority bills.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">3:00 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Drop-by meetings</strong> – Visit four legislator offices with no appointment. Two aren't available (expected), one has 10 minutes (productive), one has a new staffer I need to build rapport with (long-term investment).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">5:00 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Evening reception</strong> – Industry group event. Less about the rubber chicken dinner, more about the 15 conversations I have in the hallway with legislators, staffers, and other lobbyists. One casual chat reveals a competing industry is planning to oppose our bill—news to me.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">7:30 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Client reports</strong> – Write summary emails to three clients updating them on today's developments. One bill moved forward, one got delayed, one faces unexpected opposition. Recommend next steps for each.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-sm font-bold text-texas-blue-600 w-20 flex-shrink-0">9:15 PM</div>
+                <div class="flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    <strong>Text from committee clerk</strong> – Hearing schedule changed. Thursday's hearing moved to Wednesday. I need to notify two clients and make sure their expert witnesses can adjust travel. Make those calls tonight.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+
+          <p>
+            Notice what's missing? I didn't pass a single bill today. Most days during session, you don't. What I did do: gathered intelligence, built relationships, positioned clients strategically, prevented problems, and made incremental progress on five different fronts. That's lobbying.
+          </p>
+        </div>
+      </section>
+
+      <!-- Off-Session Work -->
+      <section id="off-session" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">What Lobbyists Do Between Sessions</h2>
+          <p class="text-texas-blue-700 font-medium">The 18-month interim is when relationships are built</p>
         </div>
 
-        <!-- Skills -->
-        <div id="skills" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">The Real Skills That Make Someone Successful</h2>
-        </div>
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The Texas Legislature only meets for 140 days every two years. Does that mean lobbyists take 18 months off? Not even close. Here's what effective lobbyists do during the interim:
+          </p>
 
-        <p>
-          Here's what separates good lobbyists from mediocre ones. Hint: it's not golf handicaps or fancy suits.
-        </p>
+          <div class="not-prose my-8 space-y-4">
+            <div class="bg-white rounded-lg border-l-4 border-texas-blue-500 p-6">
+              <h3 class="text-lg font-bold mb-2">Monitoring Interim Committees</h3>
+              <p class="text-sm text-muted-foreground">
+                Legislative committees meet between sessions to study issues and develop recommendations. These interim hearings shape next session's agenda. I attend the relevant ones, testify when helpful, and build relationships with members studying our issues.
+              </p>
+            </div>
 
-        <div class="not-prose my-8 space-y-4">
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">1. Credibility & Trust</h3>
-            <p class="text-sm text-muted-foreground">
-              The #1 asset. If legislators and staff trust that you're giving them accurate information and not
-              hiding downsides of your position, they'll listen. Lie once, and you're done forever. Good lobbyists
-              will even point out weaknesses in their own arguments and acknowledge when the other side has valid concerns.
-            </p>
+            <div class="bg-white rounded-lg border-l-4 border-green-500 p-6">
+              <h3 class="text-lg font-bold mb-2">Tracking Agency Rulemaking</h3>
+              <p class="text-sm text-muted-foreground">
+                State agencies issue regulations year-round. These rules often matter more than legislation because they have immediate force of law. Good lobbyists monitor proposed rules, submit comments, and maintain relationships with agency officials.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-l-4 border-purple-500 p-6">
+              <h3 class="text-lg font-bold mb-2">Relationship Maintenance</h3>
+              <p class="text-sm text-muted-foreground">
+                Those relationships with legislators and staff? They atrophy if you only show up during session. I take legislators to lunch in their districts, attend community events, send congratulations notes when their bills pass, and stay in touch monthly—not just when I need something.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-l-4 border-orange-500 p-6">
+              <h3 class="text-lg font-bold mb-2">Strategic Planning for Next Session</h3>
+              <p class="text-sm text-muted-foreground">
+                Starting 6-12 months before session, I'm meeting with clients to identify priorities, drafting bill language, finding authors willing to carry our legislation, pre-positioning issues with committee staff, and building coalitions. By the time session starts, the groundwork is done.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border-l-4 border-red-500 p-6">
+              <h3 class="text-lg font-bold mb-2">Industry Intelligence & Competitive Analysis</h3>
+              <p class="text-sm text-muted-foreground">
+                What are competing industries planning to push next session? What threats are emerging from consumer groups or regulatory advocates? Who's hiring which lobbyists? This intelligence gathering happens year-round and gives clients strategic advantages.
+              </p>
+            </div>
           </div>
 
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">2. Strategic Thinking</h3>
-            <p class="text-sm text-muted-foreground">
-              Knowing <em>how</em> the legislative process works is table stakes. Knowing <em>when</em> to push hard,
-              when to back off, when to compromise, and when to kill your own bill to avoid a worse outcome—that's
-              strategy. It's chess, not checkers.
-            </p>
-          </div>
-
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">3. Communication Skills</h3>
-            <p class="text-sm text-muted-foreground">
-              Translating complex policy into simple, compelling stories. A great lobbyist can explain a 50-page
-              technical bill in 90 seconds in a way that makes sense to someone who's never heard of the issue.
-              Bonus points if they can do it in a way that connects to legislators' districts and values.
-            </p>
-          </div>
-
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">4. Relationship Management</h3>
-            <p class="text-sm text-muted-foreground">
-              This isn't schmoozing—it's genuine relationship-building over years. Remembering that a staffer's kid
-              just graduated college. Sending congratulations when someone gets promoted. Being helpful even when you
-              don't need anything. The best lobbyists are the ones legislators actually <em>like</em> as people.
-            </p>
-          </div>
-
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">5. Subject Matter Expertise</h3>
-            <p class="text-sm text-muted-foreground">
-              You have to actually understand what you're lobbying on. Healthcare lobbyists need to understand how
-              insurance reimbursement works. Tech lobbyists need to understand data privacy and encryption. Energy
-              lobbyists need to understand the electric grid. Legislators can smell BS from a mile away.
-            </p>
-          </div>
-
-          <div class="bg-white border-l-4 border-texas-blue-500 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-2">6. Emotional Intelligence</h3>
-            <p class="text-sm text-muted-foreground">
-              Reading the room. Knowing when a legislator is genuinely interested vs. being polite. Understanding
-              the difference between "let me think about it" (meaning no) and "let me think about it" (meaning maybe).
-              Managing clients who want guarantees you can't give. Staying calm when a bill you've worked on for
-              months dies in committee.
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <p class="text-sm text-blue-900">
+              <strong>The reality:</strong> Lobbyists who disappear between sessions and reappear in January are the ones who struggle to get meetings, miss key developments, and lose influence. The best lobbying happens during the quiet months when there's time to build real relationships and strategic positioning.
             </p>
           </div>
         </div>
+      </section>
 
-        <!-- Ethics and Limits -->
-        <div id="ethics" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">Ethics and Legal Limits: What They Can't Do</h2>
+      <!-- Skills Required -->
+      <section id="skills" class="mb-16 scroll-mt-8">
+        <div class="bg-texas-blue-50 border-l-4 border-texas-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Skills That Separate Good Lobbyists from Mediocre Ones</h2>
+          <p class="text-texas-blue-700 font-medium">What makes someone effective at this job</p>
         </div>
 
-        <p>
-          Texas law and professional ethics create clear boundaries for lobbyists. Here's what they absolutely
-          cannot do:
-        </p>
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Anyone can register as a lobbyist and start taking clients. But effectiveness requires a specific skillset that takes years to develop.
+          </p>
 
-        <div class="not-prose my-8 space-y-4">
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot give legislators cash or cash equivalents</h3>
-                <p class="text-sm text-red-800">
-                  No handing a legislator $500 to vote your way. Campaign contributions must go through official
-                  channels and be publicly reported. Anything that looks like a direct bribe is illegal.
-                </p>
-              </div>
+          <div class="not-prose my-8 grid md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Relationship Intelligence</h3>
+              <p class="text-sm text-muted-foreground">
+                Not just knowing people, but understanding power dynamics, who influences whom, which staffers actually control decisions, and how to navigate complex political relationships without burning bridges.
+              </p>
             </div>
-          </div>
 
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot lie or materially misrepresent facts</h3>
-                <p class="text-sm text-red-800">
-                  Getting caught in a lie destroys a lobbyist's career. You can spin, emphasize favorable data,
-                  and present your side's strongest arguments—but outright lying is both unethical and stupid.
-                  Legislators have long memories.
-                </p>
-              </div>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Strategic Patience</h3>
+              <p class="text-sm text-muted-foreground">
+                Knowing when to push hard and when to back off. Understanding that losing this session might position you to win next session. Playing long-term games in a short-term political environment.
+              </p>
             </div>
-          </div>
 
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot lobby without registering with the Texas Ethics Commission</h3>
-                <p class="text-sm text-red-800">
-                  If you meet the thresholds ($1,000+ in compensation or $500+ in expenses per quarter), you must
-                  register and file quarterly reports. Failure to register or filing false reports can result in
-                  fines up to $10,000.
-                </p>
-              </div>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Policy Expertise</h3>
+              <p class="text-sm text-muted-foreground">
+                Deep understanding of how legislation actually works—bill drafting, amendment processes, committee procedures, parliamentary tactics. And subject matter expertise in the issues you lobby on.
+              </p>
             </div>
-          </div>
 
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot lobby legislators on contingency fees tied to passage/defeat of bills</h3>
-                <p class="text-sm text-red-800">
-                  While technically legal, it's considered unethical by most professional lobbyists. Payment should
-                  be for effort and expertise, not for outcomes you can't control. Most reputable lobbyists refuse
-                  contingency arrangements.
-                </p>
-              </div>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Coalition Management</h3>
+              <p class="text-sm text-muted-foreground">
+                Getting organizations with competing interests to work together requires diplomatic skill, conflict resolution, and the ability to find common ground without compromising core positions.
+              </p>
             </div>
-          </div>
 
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot represent directly conflicting interests simultaneously</h3>
-                <p class="text-sm text-red-800">
-                  You can't lobby for and against the same bill at the same time. While many lobbyists represent
-                  clients across different industries, ethical lobbyists turn down clients when there's a direct
-                  conflict with existing clients.
-                </p>
-              </div>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Crisis Management</h3>
+              <p class="text-sm text-muted-foreground">
+                Staying calm when bills get amended at midnight, votes flip unexpectedly, or clients face sudden political crises. Quick decision-making under pressure with incomplete information.
+              </p>
             </div>
-          </div>
 
-          <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6">
-            <div class="flex gap-3">
-              <XCircle className="h-6 w-6 text-red-600 flex-shrink-0" />
-              <div>
-                <h3 class="font-bold text-red-900 mb-2">❌ Cannot make direct threats or offer bribes</h3>
-                <p class="text-sm text-red-800">
-                  "Vote for this bill or we'll fund your opponent" is illegal. So is offering legislators personal
-                  benefits (jobs, contracts, etc.) in exchange for votes. Lobbyists can talk about how bills affect
-                  districts and industries, but threats and bribes are off-limits.
-                </p>
-              </div>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Message Discipline</h3>
+              <p class="text-sm text-muted-foreground">
+                Explaining complex policy in simple language legislators can use with constituents. Staying on message even when you disagree with your client's position. Never lying, but strategic framing of truth.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Political Instinct</h3>
+              <p class="text-sm text-muted-foreground">
+                Reading the room. Understanding when political winds are shifting. Sensing which battles are winnable and which are wastes of time and money. This can't be taught—it's learned through experience.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-lg border border-border p-6">
+              <h3 class="text-lg font-bold mb-2">Ethical Judgment</h3>
+              <p class="text-sm text-muted-foreground">
+                Knowing where the ethical lines are and never crossing them. Your reputation is your only real asset in this business. One ethics violation ends careers.
+              </p>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Tools of the Trade -->
-        <div id="tools" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">The Tools of the Trade</h2>
+      <!-- Myths vs Reality -->
+      <section id="myths" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Common Myths About Lobbying</h2>
+          <p class="text-red-700 font-medium">What lobbying isn't</p>
         </div>
 
-        <p>
-          What do lobbyists actually use to do their jobs? Here's the practical toolkit:
-        </p>
-
-        <div class="not-prose my-8 grid md:grid-cols-2 gap-6">
-          <div class="bg-white border border-border rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-3">📱 Essential Software</h3>
-            <ul class="text-sm space-y-2 text-muted-foreground">
-              <li>• <strong>Bill tracking systems</strong> – Monitor thousands of bills in real-time</li>
-              <li>• <strong>Texas Legislature Online</strong> – Official source for bills, votes, schedules</li>
-              <li>• <strong>CRM software</strong> – Track relationships, meeting notes, follow-ups</li>
-              <li>• <strong>Email/calendar</strong> – The backbone of communication and scheduling</li>
-            </ul>
-          </div>
-
-          <div class="bg-white border border-border rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-3">📊 Research & Analysis</h3>
-            <ul class="text-sm space-y-2 text-muted-foreground">
-              <li>• <strong>Economic impact studies</strong> – Quantify effects of proposed policies</li>
-              <li>• <strong>Polling data</strong> – Show public opinion to legislators</li>
-              <li>• <strong>Fiscal notes</strong> – Official cost estimates for bills</li>
-              <li>• <strong>Comparative state analysis</strong> – Show how other states handled similar issues</li>
-            </ul>
-          </div>
-
-          <div class="bg-white border border-border rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-3">📄 Written Materials</h3>
-            <ul class="text-sm space-y-2 text-muted-foreground">
-              <li>• <strong>One-pagers</strong> – Single-page summaries for busy legislators</li>
-              <li>• <strong>Leave-behinds</strong> – Materials to leave after meetings</li>
-              <li>• <strong>Talking points</strong> – Consistent messaging for clients and allies</li>
-              <li>• <strong>Amendment language</strong> – Actual bill text drafted with legal counsel</li>
-            </ul>
-          </div>
-
-          <div class="bg-white border border-border rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-3">🤝 Relationship Tools</h3>
-            <ul class="text-sm space-y-2 text-muted-foreground">
-              <li>• <strong>Capitol badge</strong> – Access to legislative offices and floor</li>
-              <li>• <strong>Phone & text</strong> – Direct lines to key staff and legislators</li>
-              <li>• <strong>Event calendar</strong> – Fundraisers, receptions, speaking opportunities</li>
-              <li>• <strong>Coalition networks</strong> – Partnerships with allied organizations</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Success Stories -->
-        <div id="success-stories" class="not-prose scroll-mt-24">
-          <h2 class="text-3xl font-bold mb-6 mt-20">What Success Actually Looks Like</h2>
-        </div>
-
-        <p>
-          Let's get specific about what lobbyists accomplish. Here are real examples of successful lobbying
-          (types of outcomes, not specific bills to avoid partisan issues):
-        </p>
-
-        <div class="not-prose my-12 space-y-8">
-          <div class="bg-white border-l-4 border-green-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <CheckCircle className="h-8 w-8 text-green-600 flex-shrink-0" />
-              <div>
-                <h3 class="text-lg font-bold text-green-900 mb-2">Defensive Win: Killing a Bad Bill</h3>
-                <p class="text-sm text-green-800 mb-3">
-                  A bill was filed that would have banned a client's product in Texas. The lobbyist built a coalition
-                  of businesses that relied on the product, commissioned an economic impact study showing 5,000 jobs
-                  at risk, and educated key committee members. The bill never got a hearing.
-                </p>
-                <p class="text-xs text-green-700 italic">
-                  Success metric: $50 million in Texas revenue saved, zero media coverage (no one knows you won).
-                </p>
+        <div class="prose prose-lg max-w-none">
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-3">
+                <span class="text-2xl">❌</span>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Myth: "Lobbying is just bribery with better PR"</h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    <strong>Reality:</strong> Campaign contributions and lobbying are separate activities governed by strict ethics rules. Quid pro quo is illegal and career-ending. What lobbyists provide is information, policy expertise, and constituent impact data legislators need to make informed decisions.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="bg-white border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <CheckCircle className="h-8 w-8 text-blue-600 flex-shrink-0" />
-              <div>
-                <h3 class="text-lg font-bold text-blue-900 mb-2">Offensive Win: Passing a Priority Bill</h3>
-                <p class="text-sm text-blue-800 mb-3">
-                  A trade association wanted to modernize outdated regulations that were hurting their industry.
-                  Their lobbyist spent 18 months building relationships, negotiating with opposing interests,
-                  drafting compromise language, and lining up bipartisan support. Bill passed unanimously.
-                </p>
-                <p class="text-xs text-blue-700 italic">
-                  Success metric: Reduced regulatory compliance costs by $2M annually across 500 member companies.
-                </p>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-3">
+                <span class="text-2xl">❌</span>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Myth: "Lobbyists write all the laws"</h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    <strong>Reality:</strong> Lobbyists often provide draft language, but so do agencies, legislative staff, and advocacy groups. The final language is negotiated among many stakeholders. Legislators (or their staff) make the ultimate decisions about what goes in bills.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="bg-white border-l-4 border-purple-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <CheckCircle className="h-8 w-8 text-purple-600 flex-shrink-0" />
-              <div>
-                <h3 class="text-lg font-bold text-purple-900 mb-2">Compromise Win: Amending a Moving Train</h3>
-                <p class="text-sm text-purple-800 mb-3">
-                  A bill was going to pass no matter what—it had strong support. But as originally written, it
-                  would have created problems for the client. The lobbyist negotiated a simple one-line amendment
-                  that addressed their concerns without killing support for the bill. Everyone won.
-                </p>
-                <p class="text-xs text-purple-700 italic">
-                  Success metric: Avoided $10M in compliance costs while maintaining good relationships with bill supporters.
-                </p>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-3">
+                <span class="text-2xl">❌</span>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Myth: "Good lobbyists can pass anything with enough money"</h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    <strong>Reality:</strong> Money helps, but political viability matters more. A well-funded lobbyist pushing a politically toxic bill will lose to a less-funded coalition with public support and good policy arguments. Context and timing matter more than budget.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="bg-white border-l-4 border-orange-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <CheckCircle className="h-8 w-8 text-orange-600 flex-shrink-0" />
-              <div>
-                <h3 class="text-lg font-bold text-orange-900 mb-2">Budget Win: Securing Appropriations</h3>
-                <p class="text-sm text-orange-800 mb-3">
-                  A university needed $25 million for a new research facility. Their lobbyist worked with key budget
-                  writers, provided data on economic impact and job creation, coordinated testimony from local leaders,
-                  and secured the funding in the final budget.
-                </p>
-                <p class="text-xs text-orange-700 italic">
-                  Success metric: $25M appropriation approved, construction begins next year.
-                </p>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-3">
+                <span class="text-2xl">❌</span>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Myth: "Lobbying is all expensive dinners and golf trips"</h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    <strong>Reality:</strong> The stereotype from the 1980s. Modern lobbying is 90% policy work, coalition building, and strategic communications. The "schmoozing" part is maybe 10%—and even then, it's more about relationship maintenance than lavish entertainment.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="bg-white border-l-4 border-indigo-600 rounded-lg p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <CheckCircle className="h-8 w-8 text-indigo-600 flex-shrink-0" />
-              <div>
-                <h3 class="text-lg font-bold text-indigo-900 mb-2">Regulatory Win: Shaping Agency Rules</h3>
-                <p class="text-sm text-indigo-800 mb-3">
-                  A state agency was writing new rules that would affect an entire industry. The lobbyist participated
-                  in every public comment period, submitted detailed technical feedback, met with agency staff to
-                  explain unintended consequences, and got several key provisions changed before the rules were finalized.
-                </p>
-                <p class="text-xs text-indigo-700 italic">
-                  Success metric: Rules implemented with client-friendly modifications, no lawsuit needed.
-                </p>
+            <div class="bg-white rounded-lg border border-border p-6">
+              <div class="flex items-start gap-4 mb-3">
+                <span class="text-2xl">❌</span>
+                <div>
+                  <h3 class="text-lg font-bold mb-2">Myth: "All lobbyists are former legislators"</h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    <strong>Reality:</strong> Some are, but most come from legislative staff positions, state agencies, advocacy organizations, or industry backgrounds. Former legislators can be effective lobbyists, but so can people who built relationships through other paths.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Final Section -->
-        <div class="not-prose my-12 bg-gradient-to-br from-texas-blue-500/10 to-purple-500/10 rounded-lg p-8 border-2 border-texas-blue-500">
-          <h2 class="text-2xl font-bold mb-4">The Bottom Line</h2>
-          <div class="space-y-4 text-muted-foreground">
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12">
+          <h2 class="text-3xl font-bold mb-6">The Reality of the Profession</h2>
+
+          <div class="prose prose-lg max-w-none mb-8">
             <p>
-              <strong>Lobbying is advocacy.</strong> Whether you think it's good or bad largely depends on whether
-              you agree with the positions being advocated. When nurses lobby for safer patient ratios, we call it
-              "advocacy." When oil companies lobby for drilling permits, we call it "lobbying." But the activity
-              is essentially the same: making the case for your interests to government officials.
+              So what do lobbyists do? We gather intelligence, provide access, develop strategy, build coalitions, and manage crises—all in service of helping clients navigate a complex political process most organizations don't have the time or expertise to manage themselves.
             </p>
+
             <p>
-              <strong>The best lobbyists are educators, strategists, and coalition-builders.</strong> They provide
-              valuable information to legislators who can't possibly be experts on everything. They help craft
-              workable policy that balances competing interests. They facilitate compromise that makes democracy function.
+              It's less glamorous than the stereotypes suggest. More strategic. More relationship-driven. And far more essential to how policy gets made than most people realize.
             </p>
+
             <p>
-              <strong>Yes, the system can be abused.</strong> Money talks louder than it should. Well-funded interests
-              have more access than poorly funded ones. But the solution isn't to ban lobbying—that would just drive
-              it underground. The solution is transparency, ethics enforcement, and more citizen engagement.
-            </p>
-            <p>
-              <strong>If you care about an issue, you're probably already lobbying.</strong> Called your legislator?
-              Testified at a hearing? Shared your views with an elected official? Congratulations—you're a lobbyist.
-              The only difference between you and a professional is that they do it full-time and they're (hopefully)
-              better at it.
+              Good lobbying is a combination of policy expertise, relationship intelligence, strategic thinking, and ethical judgment applied consistently over years. It's not about who you know—it's about who trusts you, who returns your calls, and who values your judgment enough to listen when you say something matters.
             </p>
           </div>
-        </div>
 
-        <!-- CTA Section -->
-        <div class="not-prose my-12">
-          <div class="bg-white rounded-lg border-2 border-texas-blue-500 p-8 text-center">
-            <h2 class="text-2xl font-bold mb-4">Want to See What Real Lobbyists Do?</h2>
+          <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+            <h3 class="text-xl font-bold mb-4">Considering a Career in Lobbying?</h3>
             <p class="text-muted-foreground mb-6">
-              Browse {totalLobbyists.toLocaleString()} active Texas lobbyists, see their specialties and clients,
-              and get a sense of who's representing which interests at the Capitol.
+              If this behind-the-scenes work appeals to you, check out our complete guide to becoming a Texas lobbyist—from education and experience requirements to landing your first client.
             </p>
-            <div class="flex flex-wrap gap-4 justify-center">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a
+                href="/guides/how-to-become-a-lobbyist-in-texas"
+                class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 px-6 py-3 text-base font-semibold text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                How to Become a Lobbyist
+              </a>
               <a
                 href="/lobbyists"
-                class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-8 py-3 text-lg font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
+                class="inline-flex items-center justify-center rounded-lg border-2 border-texas-blue-500 px-6 py-3 text-base font-semibold text-texas-blue-600 hover:bg-texas-blue-50 transition-colors"
               >
-                Browse All Lobbyists
-              </a>
-              <a
-                href="/guides/how-to-hire-a-lobbyist-in-texas"
-                class="inline-flex items-center justify-center rounded-md border-2 border-texas-blue-500 text-texas-blue-500 px-8 py-3 text-lg font-medium hover:bg-texas-blue-500/5 transition-colors"
-              >
-                Read: How to Hire a Lobbyist
+                Browse Texas Lobbyists
               </a>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Related Resources -->
-        <div class="not-prose my-12">
-          <h2 class="text-2xl font-bold mb-6">Related Resources</h2>
-          <div class="grid md:grid-cols-2 gap-6">
-            <a
-              href="/guides/how-to-become-a-lobbyist-in-texas"
-              class="block bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors"
-            >
-              <h3 class="text-lg font-semibold mb-2">How to Become a Lobbyist in Texas</h3>
-              <p class="text-sm text-muted-foreground">
-                Thinking about a lobbying career? Complete guide to education, registration, landing your
-                first client, and building a successful practice.
-              </p>
-            </a>
-            <a
-              href="/guides/how-much-does-a-lobbyist-cost"
-              class="block bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors"
-            >
-              <h3 class="text-lg font-semibold mb-2">How Much Does a Lobbyist Cost?</h3>
-              <p class="text-sm text-muted-foreground">
-                Pricing transparency: what you'll really pay ($5K-$50K+/month), cost drivers, hidden expenses,
-                and how to calculate ROI on your lobbying investment.
-              </p>
-            </a>
-          </div>
+      <!-- Related Guides -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <h2 class="text-2xl font-bold mb-8">Related Guides</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href="/guides/how-much-does-a-lobbyist-cost" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              How Much Does a Lobbyist Cost?
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Real pricing data and what you're actually paying for when you hire a lobbyist.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+
+          <a href="/guides/how-to-hire-a-lobbyist-in-texas" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              How to Hire a Lobbyist in Texas
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Complete guide to finding, evaluating, and working with Texas legislative advocates.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
         </div>
+      </section>
 
-      </div>
     </div>
-  </section>
-
-  <!-- Back to Guides -->
-  <section class="py-8 border-t border-border">
-    <div class="container max-w-3xl">
-      <a
-        href="/guides"
-        class="inline-flex items-center text-texas-blue-500 hover:underline"
-      >
-        ← Back to all guides
-      </a>
-    </div>
-  </section>
+  </article>
 </Layout>

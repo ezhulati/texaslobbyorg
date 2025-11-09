@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
+import { sendEmail, adminNewProfileEmail } from '@/lib/email';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
@@ -218,6 +219,31 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     console.log('[Resubmit Profile API] Profile resubmitted successfully:', updatedProfile.id);
+
+    // Send admin notification email
+    try {
+      const adminEmail = 'enrizhulati@gmail.com';
+      const adminUrl = `${import.meta.env.PUBLIC_SITE_URL}/admin/pending-profiles`;
+      const emailTemplate = adminNewProfileEmail(
+        `${formData.firstName} ${formData.lastName} (Resubmission #${existingProfile.rejection_count + 1})`,
+        adminUrl
+      );
+
+      const emailResult = await sendEmail({
+        to: adminEmail,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      });
+
+      if (emailResult.error) {
+        console.error('[Resubmit Profile API] Error sending admin notification:', emailResult.error);
+      } else {
+        console.log('[Resubmit Profile API] Admin notification sent to:', adminEmail);
+      }
+    } catch (emailError) {
+      console.error('[Resubmit Profile API] Admin email notification failed:', emailError);
+      // Don't fail the resubmission if email fails
+    }
 
     return new Response(JSON.stringify({
       success: true,

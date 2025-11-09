@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 import { slugify } from '@/lib/utils';
+import { sendEmail, adminNewProfileEmail } from '@/lib/email';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
@@ -133,6 +134,31 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     console.log('[Create Profile API] Profile created successfully, pending approval');
+
+    // STEP 6: Send admin notification email
+    try {
+      const adminEmail = 'enrizhulati@gmail.com';
+      const adminUrl = `${import.meta.env.PUBLIC_SITE_URL}/admin/pending-profiles`;
+      const emailTemplate = adminNewProfileEmail(
+        `${formData.firstName} ${formData.lastName}`,
+        adminUrl
+      );
+
+      const emailResult = await sendEmail({
+        to: adminEmail,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      });
+
+      if (emailResult.error) {
+        console.error('[Create Profile API] Error sending admin notification:', emailResult.error);
+      } else {
+        console.log('[Create Profile API] Admin notification sent to:', adminEmail);
+      }
+    } catch (emailError) {
+      console.error('[Create Profile API] Admin email notification failed:', emailError);
+      // Don't fail the profile creation if email fails
+    }
 
     return new Response(JSON.stringify({
       success: true,

@@ -61,17 +61,29 @@ const pageTitle = 'Manage Users | Admin';
                   {new Date(u.created_at).toLocaleDateString()}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                  {u.role !== 'admin' && (
-                    <button
-                      data-user-id={u.id}
-                      data-user-name={u.full_name || u.email}
-                      class="promote-admin-btn text-purple-600 hover:text-purple-800 font-medium"
-                    >
-                      Promote to Admin
-                    </button>
-                  )}
-                  {u.role === 'admin' && u.id === user.id && (
+                  {u.id === user.id ? (
                     <span class="text-xs text-muted-foreground italic">You</span>
+                  ) : (
+                    <div class="flex items-center justify-end gap-3">
+                      {u.role !== 'admin' && (
+                        <button
+                          data-user-id={u.id}
+                          data-user-name={u.full_name || u.email}
+                          class="promote-admin-btn text-purple-600 hover:text-purple-800 font-medium"
+                        >
+                          Promote to Admin
+                        </button>
+                      )}
+                      <button
+                        data-user-id={u.id}
+                        data-user-name={u.full_name || u.email}
+                        data-user-email={u.email}
+                        data-user-role={u.role}
+                        class="delete-user-btn text-red-600 hover:text-red-800 font-medium"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>
@@ -135,6 +147,77 @@ const pageTitle = 'Manage Users | Admin';
           alert('An error occurred. Please try again.');
           target.disabled = false;
           target.textContent = 'Promote to Admin';
+        }
+      });
+    });
+
+    // Handle delete user button clicks
+    const deleteButtons = document.querySelectorAll('.delete-user-btn');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const target = e.target as HTMLButtonElement;
+        const userId = target.dataset.userId;
+        const userName = target.dataset.userName;
+        const userEmail = target.dataset.userEmail;
+        const userRole = target.dataset.userRole;
+
+        if (!userId) return;
+
+        // Strong confirmation for permanent deletion
+        const confirmed = confirm(
+          `⚠️ PERMANENT DELETION WARNING ⚠️\n\n` +
+          `You are about to PERMANENTLY delete:\n` +
+          `Name: ${userName}\n` +
+          `Email: ${userEmail}\n` +
+          `Role: ${userRole}\n\n` +
+          `This action will:\n` +
+          `• Delete all user data immediately\n` +
+          `• Remove their ${userRole === 'lobbyist' ? 'lobbyist profile' : 'account'}\n` +
+          `• Delete favorites, history, and activity\n` +
+          `• CANNOT BE UNDONE\n\n` +
+          `Are you absolutely sure you want to continue?`
+        );
+
+        if (!confirmed) return;
+
+        // Double confirmation for extra safety
+        const doubleCheck = confirm(
+          `Final confirmation:\n\n` +
+          `Delete ${userEmail} permanently?\n\n` +
+          `Click OK to DELETE or Cancel to abort.`
+        );
+
+        if (!doubleCheck) return;
+
+        // Disable button
+        target.disabled = true;
+        target.textContent = 'Deleting...';
+
+        try {
+          const response = await fetch('/api/admin/delete-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(`✓ ${userName} has been permanently deleted.`);
+            window.location.reload();
+          } else {
+            alert(`Failed to delete user: ${data.error || 'Unknown error'}`);
+            target.disabled = false;
+            target.textContent = 'Delete';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          target.disabled = false;
+          target.textContent = 'Delete';
         }
       });
     });

@@ -112,10 +112,24 @@ const pageDescription = 'Manage your TexasLobby.org subscription and billing';
               Upgrade to Premium or Featured to unlock enhanced visibility and analytics.
             </p>
             <a
-              href="/pricing"
+              href="/dashboard/upgrade"
               class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               View Pricing Plans
+            </a>
+          </div>
+        )}
+
+        {subscriptionTier === 'premium' && (
+          <div class="bg-purple-50 border border-purple-200 rounded-md p-4 mb-4">
+            <p class="text-purple-800 mb-3">
+              Get even more visibility with Featured placement on the homepage.
+            </p>
+            <a
+              href="/dashboard/upgrade"
+              class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+            >
+              Upgrade to Featured
             </a>
           </div>
         )}

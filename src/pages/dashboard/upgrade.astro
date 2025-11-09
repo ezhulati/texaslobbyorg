@@ -1,6 +1,7 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
 import { SUBSCRIPTION_TIERS } from '@/lib/stripe';
+import { createServerClient } from '@/lib/supabase';
 
 // Require authentication
 const user = Astro.locals.user;
@@ -9,7 +10,17 @@ if (!user) {
   return Astro.redirect('/login?redirect=/dashboard/upgrade');
 }
 
-const pageTitle = 'Upgrade Your Profile - TexasLobby.org';
+// Get user's current subscription tier
+const supabase = createServerClient();
+const { data: userData } = await supabase
+  .from('users')
+  .select('subscription_tier')
+  .eq('id', user.id)
+  .single();
+
+const currentTier = userData?.subscription_tier || 'free';
+
+const pageTitle = currentTier === 'free' ? 'Upgrade Your Profile - TexasLobby.org' : 'Change Your Plan - TexasLobby.org';
 const pageDescription = 'Upgrade to Premium or Featured to maximize your visibility and reach more clients';
 ---
 
@@ -18,9 +29,13 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
     <div class="container mx-auto px-4 max-w-6xl">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Upgrade Your Profile</h1>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+          {currentTier === 'free' ? 'Upgrade Your Profile' : 'Change Your Plan'}
+        </h1>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Stand out from the competition and connect with more clients
+          {currentTier === 'free'
+            ? 'Stand out from the competition and connect with more clients'
+            : 'Upgrade to Featured or manage your current subscription'}
         </p>
       </div>
 
@@ -29,7 +44,7 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
         <!-- Premium Tier -->
         <div class="bg-white rounded-lg border-2 border-blue-200 shadow-lg p-8 relative">
           <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
-            Popular
+            {currentTier === 'premium' ? 'Current Plan' : 'Popular'}
           </div>
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Premium Listing</h2>
@@ -51,18 +66,23 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           </ul>
 
           <button
-            class="upgrade-btn w-full py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg"
+            class="upgrade-btn w-full py-4 rounded-lg transition-colors font-semibold text-lg disabled:cursor-not-allowed"
+            class:list={[
+              currentTier === 'premium' || currentTier === 'featured'
+                ? 'bg-gray-300 text-gray-600'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            ]}
             data-tier="premium"
-            data-price-id={SUBSCRIPTION_TIERS.premium.priceId}
+            disabled={currentTier === 'premium' || currentTier === 'featured'}
           >
-            Upgrade to Premium
+            {currentTier === 'premium' ? 'Current Plan' : currentTier === 'featured' ? 'Downgrade to Premium' : 'Upgrade to Premium'}
           </button>
         </div>
 
         <!-- Featured Tier -->
         <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg border-2 border-purple-300 shadow-lg p-8 relative">
           <div class="absolute top-0 right-0 bg-purple-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
-            Best Value
+            {currentTier === 'featured' ? 'Current Plan' : 'Best Value'}
           </div>
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Featured Listing</h2>
@@ -84,11 +104,16 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           </ul>
 
           <button
-            class="upgrade-btn w-full py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg"
+            class="upgrade-btn w-full py-4 rounded-lg transition-colors font-semibold text-lg disabled:cursor-not-allowed"
+            class:list={[
+              currentTier === 'featured'
+                ? 'bg-gray-300 text-gray-600'
+                : 'bg-purple-600 text-white hover:bg-purple-700'
+            ]}
             data-tier="featured"
-            data-price-id={SUBSCRIPTION_TIERS.featured.priceId}
+            disabled={currentTier === 'featured'}
           >
-            Upgrade to Featured
+            {currentTier === 'featured' ? 'Current Plan' : 'Upgrade to Featured'}
           </button>
         </div>
       </div>

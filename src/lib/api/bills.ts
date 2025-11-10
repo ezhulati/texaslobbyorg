@@ -119,7 +119,8 @@ export async function getBillUpdates(billId: string) {
     .from('bill_updates')
     .select('*')
     .eq('bill_id', billId)
-    .order('changed_at', { ascending: false });
+    .order('action_date', { ascending: false })
+    .order('created_at', { ascending: false });
 
   if (error) {
     throw new Error(`Failed to get bill updates: ${error.message}`);
@@ -134,7 +135,7 @@ export async function getBillUpdates(billId: string) {
 export async function incrementBillViews(billId: string) {
   const supabase = createServerClient();
 
-  const { error } = await supabase.rpc('increment', {
+  const { error } = await supabase.rpc('increment_view_count', {
     row_id: billId,
     table_name: 'bills',
     column_name: 'view_count',

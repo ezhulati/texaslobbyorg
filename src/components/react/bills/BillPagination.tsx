@@ -20,6 +20,12 @@ export default function BillPagination({
   baseUrl = '/bills',
 }: BillPaginationProps) {
   const buildPageUrl = (page: number): string => {
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') {
+      // Server-side: return simple URL with page param
+      return page > 1 ? `${baseUrl}?page=${page}` : baseUrl;
+    }
+
     const url = new URL(baseUrl, window.location.origin);
 
     // Preserve existing query params

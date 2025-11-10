@@ -168,7 +168,7 @@ export function validateSearchFilters(filters: BillSearchFilters): {
   valid: boolean;
   errors: string[];
 } {
-  const errors: string[];
+  const errors: string[] = [];
 
   // Validate limit
   if (filters.limit !== undefined) {

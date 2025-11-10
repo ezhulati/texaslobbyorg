@@ -9,12 +9,14 @@ const user = await requireAuth().catch(() => {
   return Astro.redirect('/login?redirect=/dashboard/analytics');
 });
 
-// Get user's lobbyist profile
-const { data: lobbyist, error: lobbyistError } = await supabase
+// Get user's lobbyist profile (check both user_id and claimed_by)
+const { data: lobbyistData, error: lobbyistError } = await supabase
   .from('lobbyists')
   .select('subscription_tier')
-  .eq('user_id', user.id)
-  .single();
+  .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
+  .limit(1);
+
+const lobbyist = lobbyistData?.[0];
 
 // If no lobbyist profile, redirect to claim
 if (lobbyistError || !lobbyist) {

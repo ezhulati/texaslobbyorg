@@ -7,6 +7,7 @@ import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
 import FavoriteButton from '@/components/react/FavoriteButton';
 import TestimonialsDisplay from '@/components/react/TestimonialsDisplay';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
+import { getLobbyistTaggedBills } from '@/lib/api/bills';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
 import { supabase } from '@/lib/supabase';
 import { MapPin, Briefcase, Mail, Phone, Globe, Calendar, Linkedin } from 'lucide-react';
@@ -43,6 +44,15 @@ if (isAuthenticated && currentUser) {
 
 // Fetch clients
 const clients: Database['public']['Tables']['clients']['Row'][] = await getLobbyistClients(lobbyist.id);
+
+// Fetch tagged bills (public only)
+let taggedBills: any[] = [];
+try {
+  const allTaggedBills = await getLobbyistTaggedBills(lobbyist.id);
+  taggedBills = allTaggedBills.filter((tag: any) => tag.is_public);
+} catch (err) {
+  console.error('Failed to fetch tagged bills:', err);
+}
 
 // Fetch candidate lobbyists for recommendations
 const { data: candidateLobbyists } = await supabase
@@ -122,6 +132,31 @@ const schema = {
 };
 
 const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
+
+// Tag type configuration for bill positions
+const tagTypeConfig = {
+  supporting: {
+    label: 'Supporting',
+    bgClass: 'bg-green-50',
+    textClass: 'text-green-700',
+    borderClass: 'border-green-200',
+    icon: '👍',
+  },
+  monitoring: {
+    label: 'Monitoring',
+    bgClass: 'bg-blue-50',
+    textClass: 'text-blue-700',
+    borderClass: 'border-blue-200',
+    icon: '👁️',
+  },
+  opposing: {
+    label: 'Opposing',
+    bgClass: 'bg-red-50',
+    textClass: 'text-red-700',
+    borderClass: 'border-red-200',
+    icon: '👎',
+  },
+};
 ---
 
 <Layout
@@ -233,6 +268,109 @@ const initials = `${lobbyist.first_name[0]}${lobbyist.last_name[0]}`;
             <div class="mb-8">
               <h2 class="text-2xl font-bold mb-4">Clients & Representations</h2>
               <CollapsibleClients clients={clients} initialVisibleCount={10} client:load />
+            </div>
+          )}
+
+          {/* Bills I'm Tracking */}
+          {taggedBills && taggedBills.length > 0 && (
+            <div class="mb-8">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Bills I'm Tracking</h2>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  {taggedBills.length} {taggedBills.length === 1 ? 'Bill' : 'Bills'}
+                </span>
+              </div>
+              <p class="text-muted-foreground mb-4">
+                Active legislation {fullName} is currently tracking and working on. This demonstrates their current focus areas and legislative engagement.
+              </p>
+              <div class="space-y-3">
+                {taggedBills.slice(0, 6).map((tag: any) => {
+                  const bill = tag.bill;
+                  const config = tagTypeConfig[tag.tag_type as keyof typeof tagTypeConfig] || tagTypeConfig.monitoring;
+
+                  return (
+                    <div class="bg-white border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div class="flex items-start justify-between gap-4 mb-3">
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 mb-2">
+                            <a
+                              href={`/bills/${bill.slug}`}
+                              class="text-lg font-semibold text-blue-600 hover:text-blue-700"
+                            >
+                              {bill.bill_number}
+                            </a>
+                            <span
+                              class={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgClass} ${config.textClass} border ${config.borderClass}`}
+                            >
+                              <span>{config.icon}</span>
+                              {config.label}
+                            </span>
+                          </div>
+                          <h3 class="text-sm text-gray-900 mb-2 leading-snug">
+                            {bill.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      {/* Notes */}
+                      {tag.context_notes && (
+                        <div class="mb-3 p-3 bg-gray-50 rounded-md border border-gray-200">
+                          <div class="text-xs text-gray-500 mb-1 font-medium">{fullName}'s Insight</div>
+                          <p class="text-sm text-gray-700 leading-relaxed">{tag.context_notes}</p>
+                        </div>
+                      )}
+
+                      {/* Bill Details */}
+                      <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                        {bill.current_status && (
+                          <span class="inline-flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {bill.current_status}
+                          </span>
+                        )}
+                        {bill.chamber && (
+                          <span class="inline-flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            {bill.chamber}
+                          </span>
+                        )}
+                        {bill.subject_areas && bill.subject_areas.length > 0 && (
+                          <div class="flex flex-wrap gap-1">
+                            {bill.subject_areas.slice(0, 2).map((subject: string) => (
+                              <span class="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                                {subject}
+                              </span>
+                            ))}
+                            {bill.subject_areas.length > 2 && (
+                              <span class="text-gray-500">+{bill.subject_areas.length - 2}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {taggedBills.length > 6 && (
+                <div class="mt-4 text-center">
+                  <a
+                    href="/bills"
+                    class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  >
+                    View all {taggedBills.length} bills {fullName} is tracking
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              )}
             </div>
           )}
 

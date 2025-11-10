@@ -76,11 +76,11 @@ export function isAuthenticated(): boolean {
  */
 export function createDefaultMockUser(): MockUser {
   const mockUser: MockUser = {
-    id: 'mock-user-' + Date.now(),
-    email: 'test@example.com',
-    firstName: 'Test',
-    lastName: 'User',
-    role: 'searcher',
+    id: '2ad0d8cc-3a45-4e27-a119-e0db73dfe811', // Using real lobbyist ID from database
+    email: 'test.lobbyist@example.com',
+    firstName: 'E',
+    lastName: 'Lobby',
+    role: 'lobbyist', // Changed to lobbyist for testing bill tagging features
   };
 
   setMockUser(mockUser);

@@ -180,12 +180,7 @@ export async function addToWatchlist(
       user_id: userId,
       bill_id: billId,
       notifications_enabled: preferences?.notifications_enabled ?? true,
-      notify_on_status_change: preferences?.notify_on_status_change ?? true,
-      notify_on_hearing: preferences?.notify_on_hearing ?? true,
-      notify_on_amendment: preferences?.notify_on_amendment ?? true,
-      notify_on_vote: preferences?.notify_on_vote ?? true,
-      notify_on_governor_action: preferences?.notify_on_governor_action ?? true,
-      digest_mode: preferences?.digest_mode ?? false,
+      notification_types: preferences?.notification_types || null,
     })
     .select()
     .single();
@@ -239,7 +234,6 @@ export async function getBillLobbyists(billId: string) {
         id,
         first_name,
         last_name,
-        firm,
         email,
         phone,
         cities,
@@ -297,8 +291,10 @@ export async function getBillTags(billId: string) {
         id,
         first_name,
         last_name,
-        firm,
         slug,
+        email,
+        phone,
+        subject_areas,
         subscription_tier
       )
     `)
@@ -351,6 +347,40 @@ export async function getLegislativeSessions() {
 
   if (error) {
     throw new Error(`Failed to get legislative sessions: ${error.message}`);
+  }
+
+  return data;
+}
+
+/**
+ * Get bills tagged by a lobbyist
+ */
+export async function getLobbyistTaggedBills(lobbyistId: string) {
+  const supabase = createServerClient();
+
+  const { data, error } = await supabase
+    .from('bill_tags')
+    .select(`
+      *,
+      bill:bills (
+        id,
+        bill_number,
+        title,
+        slug,
+        current_status,
+        chamber,
+        session_id,
+        subject_areas,
+        last_action,
+        last_action_date,
+        view_count
+      )
+    `)
+    .eq('lobbyist_id', lobbyistId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to get tagged bills: ${error.message}`);
   }
 
   return data;

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
+import { sendEmail, profileDeletedEmail } from '@/lib/email';
 
 /**
  * Delete a lobbyist profile (admin only)
@@ -89,6 +90,26 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     } catch (auditError) {
       console.warn('[Delete Lobbyist API] Failed to log audit trail:', auditError);
+    }
+
+    // Send email notification BEFORE deletion
+    if (lobbyist.email) {
+      try {
+        const emailTemplate = profileDeletedEmail(`${lobbyist.first_name} ${lobbyist.last_name}`);
+        const emailResult = await sendEmail({
+          to: lobbyist.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html
+        });
+
+        if (emailResult.error) {
+          console.warn('[Delete Lobbyist API] Failed to send deletion email:', emailResult.error);
+        } else {
+          console.log('[Delete Lobbyist API] Deletion email sent successfully to:', lobbyist.email);
+        }
+      } catch (emailError: any) {
+        console.warn('[Delete Lobbyist API] Error sending deletion email:', emailError);
+      }
     }
 
     // Delete the lobbyist (cascades to favorites and page_views via ON DELETE CASCADE)

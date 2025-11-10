@@ -83,6 +83,7 @@ export async function getLobbyistBySlug(slug: string) {
     .select('*')
     .eq('slug', slug)
     .eq('is_active', true)
+    .eq('approval_status', 'approved')
     .single();
 
   if (error) {
@@ -152,7 +153,8 @@ export async function getLobbyistCount(params: SearchParams) {
   let queryBuilder = supabase
     .from('lobbyists')
     .select('id', { count: 'exact', head: true })
-    .eq('is_active', true);
+    .eq('is_active', true)
+    .eq('approval_status', 'approved');
 
   // Convert city slugs to names
   if (cities && cities.length > 0) {

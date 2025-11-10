@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
+import { sendEmail, profileApprovedEmail } from '@/lib/email';
 
 /**
  * Approve a lobbyist profile (admin only)
@@ -56,7 +57,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Get lobbyist details
     const { data: lobbyist, error: fetchError } = await serverClient
       .from('lobbyists')
-      .select('id, first_name, last_name, email, approval_status')
+      .select('id, first_name, last_name, email, slug, approval_status')
       .eq('id', lobbyistId)
       .single();
 
@@ -72,11 +73,18 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     console.log('[Approve Lobbyist API] Approving lobbyist:', lobbyistId);
 
-    // Update approval status
+    // Update approval status AND clear rejection fields
     const { error: updateError } = await serverClient
       .from('lobbyists')
       .update({
+        // Set approval status
         approval_status: 'approved',
+        // Clear rejection tracking fields so dashboard shows approved state
+        is_rejected: false,
+        rejection_reason: null,
+        rejected_at: null,
+        rejected_by: null,
+        // Keep rejection_count for historical tracking
         updated_at: new Date().toISOString()
       })
       .eq('id', lobbyistId);
@@ -104,6 +112,30 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     } catch (auditError) {
       console.warn('[Approve Lobbyist API] Failed to log audit trail:', auditError);
+    }
+
+    // Send approval email notification
+    if (lobbyist.email) {
+      try {
+        const profileUrl = `https://texaslobby.org/lobbyists/${lobbyist.slug}`;
+        const emailTemplate = profileApprovedEmail(
+          `${lobbyist.first_name} ${lobbyist.last_name}`,
+          profileUrl
+        );
+        const emailResult = await sendEmail({
+          to: lobbyist.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html
+        });
+
+        if (emailResult.error) {
+          console.warn('[Approve Lobbyist API] Failed to send approval email:', emailResult.error);
+        } else {
+          console.log('[Approve Lobbyist API] Approval email sent successfully to:', lobbyist.email);
+        }
+      } catch (emailError: any) {
+        console.warn('[Approve Lobbyist API] Error sending approval email:', emailError);
+      }
     }
 
     return new Response(JSON.stringify({

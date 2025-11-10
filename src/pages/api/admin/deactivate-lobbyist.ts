@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
+import { sendEmail, profileDeactivatedEmail } from '@/lib/email';
 
 /**
  * Deactivate a lobbyist profile (admin only)
@@ -104,6 +105,26 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     } catch (auditError) {
       console.warn('[Deactivate Lobbyist API] Failed to log audit trail:', auditError);
+    }
+
+    // Send email notification to lobbyist
+    if (lobbyist.email) {
+      try {
+        const emailTemplate = profileDeactivatedEmail(`${lobbyist.first_name} ${lobbyist.last_name}`);
+        const emailResult = await sendEmail({
+          to: lobbyist.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html
+        });
+
+        if (emailResult.error) {
+          console.warn('[Deactivate Lobbyist API] Failed to send deactivation email:', emailResult.error);
+        } else {
+          console.log('[Deactivate Lobbyist API] Deactivation email sent successfully to:', lobbyist.email);
+        }
+      } catch (emailError: any) {
+        console.warn('[Deactivate Lobbyist API] Error sending deactivation email:', emailError);
+      }
     }
 
     return new Response(JSON.stringify({

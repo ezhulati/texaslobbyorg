@@ -424,3 +424,180 @@ export function subscriptionDowngradedEmail(
     `,
   };
 }
+
+export function profileRejectedEmail(lobbyistName: string, rejectionReason: string, attemptNumber: number) {
+  return {
+    subject: 'Profile Revision Required - TexasLobby.org',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #f59e0b; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">Profile Needs Revision</h1>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <p>Hi ${lobbyistName},</p>
+
+            <p>Thank you for submitting your profile to TexasLobby.org. After review, we need you to revise your profile before it can be approved.</p>
+
+            <div style="background-color: #fee2e2; padding: 20px; border-left: 4px solid #ef4444; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0;"><strong>Reason for Revision:</strong></p>
+              <p style="margin: 0; white-space: pre-wrap;">${rejectionReason}</p>
+            </div>
+
+            <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0;"><strong>What You Need to Do:</strong></p>
+              <ol style="margin: 0; padding-left: 20px;">
+                <li>Review the feedback above carefully</li>
+                <li>Make the necessary corrections to your profile</li>
+                <li>Resubmit your profile for approval</li>
+              </ol>
+            </div>
+
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+              <p style="margin: 0; font-size: 14px;"><strong>Submission Status:</strong> Attempt ${attemptNumber} of 3</p>
+              ${attemptNumber >= 3 ? '<p style="margin: 5px 0 0 0; font-size: 14px; color: #dc2626;">You have reached the maximum number of submissions. Please contact support for assistance.</p>' : ''}
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://texaslobby.org/dashboard" style="display: inline-block; background-color: #003f87; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600;">Revise & Resubmit Profile</a>
+            </div>
+
+            <p>If you have questions about the feedback or need assistance, please contact us at <a href="mailto:support@texaslobby.org" style="color: #003f87;">support@texaslobby.org</a>.</p>
+
+            <p style="margin-top: 30px;">Best regards,<br><strong>The TexasLobby.org Team</strong></p>
+          </div>
+
+          <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+            <p>TexasLobby.org - Connecting Texas Businesses with Experienced Lobbyists</p>
+            <p>
+              <a href="https://texaslobby.org" style="color: #003f87; text-decoration: none;">Visit Website</a> |
+              <a href="https://texaslobby.org/dashboard" style="color: #003f87; text-decoration: none;">Dashboard</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+}
+
+export function profileDeactivatedEmail(lobbyistName: string) {
+  return {
+    subject: 'Your Profile Has Been Deactivated - TexasLobby.org',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #6b7280; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">Profile Deactivated</h1>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <p>Hi ${lobbyistName},</p>
+
+            <p>This is to notify you that your lobbyist profile on TexasLobby.org has been deactivated by our administrative team.</p>
+
+            <div style="background-color: #fee2e2; padding: 20px; border-left: 4px solid #ef4444; margin: 20px 0;">
+              <p style="margin: 0;"><strong>What This Means:</strong></p>
+              <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                <li>Your profile is no longer visible on TexasLobby.org</li>
+                <li>You will not appear in search results</li>
+                <li>Potential clients cannot view your profile</li>
+              </ul>
+            </div>
+
+            <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0;"><strong>Common Reasons for Deactivation:</strong></p>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li>Violation of terms of service</li>
+                <li>Inaccurate or misleading profile information</li>
+                <li>Inactive account for extended period</li>
+                <li>Request for account closure</li>
+              </ul>
+            </div>
+
+            <p><strong>If you believe this was done in error or would like to discuss reactivation, please contact our support team.</strong></p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="mailto:support@texaslobby.org" style="display: inline-block; background-color: #003f87; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600;">Contact Support</a>
+            </div>
+
+            <p style="margin-top: 30px;">Best regards,<br><strong>The TexasLobby.org Team</strong></p>
+          </div>
+
+          <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+            <p>TexasLobby.org - Connecting Texas Businesses with Experienced Lobbyists</p>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+}
+
+export function profileDeletedEmail(lobbyistName: string) {
+  return {
+    subject: 'Your Profile Has Been Permanently Deleted - TexasLobby.org',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #dc2626; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">⚠️ Profile Deleted</h1>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <p>Hi ${lobbyistName},</p>
+
+            <p>This is to notify you that your lobbyist profile on TexasLobby.org has been <strong>permanently deleted</strong> by our administrative team.</p>
+
+            <div style="background-color: #fee2e2; padding: 20px; border-left: 4px solid #dc2626; margin: 20px 0;">
+              <p style="margin: 0;"><strong>What This Means:</strong></p>
+              <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                <li>Your profile has been permanently removed</li>
+                <li>All profile data has been deleted from our system</li>
+                <li>This action cannot be undone</li>
+              </ul>
+            </div>
+
+            <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+              <p style="margin: 0;"><strong>Common Reasons for Profile Deletion:</strong></p>
+              <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                <li>Serious violation of terms of service</li>
+                <li>Fraudulent or misrepresented information</li>
+                <li>Account closure request</li>
+                <li>Repeated policy violations</li>
+              </ul>
+            </div>
+
+            <p><strong>If you believe this was done in error, please contact our support team immediately.</strong></p>
+
+            <p>If you wish to create a new profile in the future, you may do so at <a href="https://texaslobby.org/claim-profile" style="color: #003f87;">https://texaslobby.org/claim-profile</a>. Please ensure all information provided is accurate and complies with our terms of service.</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="mailto:support@texaslobby.org" style="display: inline-block; background-color: #003f87; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600;">Contact Support</a>
+            </div>
+
+            <p style="margin-top: 30px;">Best regards,<br><strong>The TexasLobby.org Team</strong></p>
+          </div>
+
+          <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+            <p>TexasLobby.org - Connecting Texas Businesses with Experienced Lobbyists</p>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+}

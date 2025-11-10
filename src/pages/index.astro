@@ -21,6 +21,7 @@ const { data: allFeaturedLobbyists } = await supabase
   .select('id, first_name, last_name, slug, bio, profile_image_url, cities, subject_areas, subscription_tier, featured_order')
   .eq('subscription_tier', 'featured')
   .eq('is_active', true)
+  .eq('approval_status', 'approved')
   .order('featured_order', { nullsFirst: false });
 
 // Sort to prioritize those with profile images, then by featured_order

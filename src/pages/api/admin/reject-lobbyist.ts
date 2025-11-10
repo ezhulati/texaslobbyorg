@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createServerAuthClient, createServerClient } from '@/lib/supabase';
+import { sendEmail, profileRejectedEmail } from '@/lib/email';
 
 /**
  * Reject a lobbyist profile (admin only)
@@ -56,7 +57,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Get lobbyist details
     const { data: lobbyist, error: fetchError } = await serverClient
       .from('lobbyists')
-      .select('id, first_name, last_name, email, approval_status')
+      .select('id, first_name, last_name, email, approval_status, rejection_count')
       .eq('id', lobbyistId)
       .single();
 
@@ -72,11 +73,21 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     console.log('[Reject Lobbyist API] Rejecting lobbyist:', lobbyistId);
 
-    // Update approval status
+    // Get current rejection count to increment it
+    const currentCount = lobbyist.rejection_count || 0;
+
+    // Update both approval_status AND rejection tracking fields
     const { error: updateError } = await serverClient
       .from('lobbyists')
       .update({
+        // New approval system
         approval_status: 'rejected',
+        // Legacy rejection tracking (for user dashboard)
+        is_rejected: true,
+        rejection_reason: reason || 'Profile requires revision',
+        rejected_at: new Date().toISOString(),
+        rejected_by: user.id,
+        rejection_count: currentCount + 1,
         updated_at: new Date().toISOString()
       })
       .eq('id', lobbyistId);
@@ -104,6 +115,30 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     } catch (auditError) {
       console.warn('[Reject Lobbyist API] Failed to log audit trail:', auditError);
+    }
+
+    // Send email notification to lobbyist
+    if (lobbyist.email) {
+      try {
+        const emailTemplate = profileRejectedEmail(
+          `${lobbyist.first_name} ${lobbyist.last_name}`,
+          reason || 'Profile requires revision',
+          currentCount + 1
+        );
+        const emailResult = await sendEmail({
+          to: lobbyist.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html
+        });
+
+        if (emailResult.error) {
+          console.warn('[Reject Lobbyist API] Failed to send rejection email:', emailResult.error);
+        } else {
+          console.log('[Reject Lobbyist API] Rejection email sent successfully to:', lobbyist.email);
+        }
+      } catch (emailError: any) {
+        console.warn('[Reject Lobbyist API] Error sending rejection email:', emailError);
+      }
     }
 
     return new Response(JSON.stringify({

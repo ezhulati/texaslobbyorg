@@ -1,0 +1,172 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ProfileEditForm from '@/components/react/ProfileEditForm';
+import ProfilePhotoUpload from '@/components/react/ProfilePhotoUpload';
+import { requireAuth } from '@/lib/auth';
+import { createServerClient } from '@/lib/supabase';
+
+// Require authentication
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect('/login?redirect=/dashboard/edit');
+}
+
+// Get user's lobbyist profile using server client
+const serverClient = createServerClient();
+const { data: lobbyist, error: lobbyistError } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
+  .single();
+
+// If no lobbyist profile, redirect to dashboard
+if (lobbyistError || !lobbyist) {
+  return Astro.redirect('/dashboard');
+}
+
+// Get available cities
+const { data: cities } = await serverClient
+  .from('cities')
+  .select('slug, name')
+  .order('name');
+
+// Get available subject areas
+const { data: subjects } = await serverClient
+  .from('subject_areas')
+  .select('slug, name')
+  .order('name');
+
+const pageTitle = 'Edit Profile | TexasLobby.org';
+const pageDescription = 'Update your lobbyist profile information, contact details, and areas of expertise.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Profile Edit Page -->
+  <section class="py-12">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-2">
+          <a
+            href="/dashboard"
+            class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg
+              class="h-4 w-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              ></path>
+            </svg>
+            Back to Dashboard
+          </a>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Edit Your Profile</h1>
+        <p class="text-lg text-muted-foreground">
+          Update your information to help potential clients find and connect with you
+        </p>
+      </div>
+
+      <!-- Info Banner -->
+      <div class="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <div class="flex gap-3">
+          <svg
+            class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <div>
+            <h3 class="font-semibold text-blue-900 mb-1">Your profile is public</h3>
+            <p class="text-sm text-blue-800">
+              All information you provide will be visible on your public profile at{' '}
+              <a
+                href={`/lobbyists/${lobbyist.slug}`}
+                target="_blank"
+                class="underline hover:no-underline"
+              >
+                /lobbyists/{lobbyist.slug}
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Photo Section -->
+      <div class="rounded-lg border border-border bg-white p-8">
+        <h2 class="text-2xl font-bold mb-6">Profile Photo</h2>
+        <ProfilePhotoUpload
+          client:load
+          userId={user.id}
+          currentPhotoUrl={lobbyist.profile_image_url}
+        />
+      </div>
+
+      <!-- Edit Form -->
+      <div class="rounded-lg border border-border bg-white p-8">
+        <h2 class="text-2xl font-bold mb-6">Profile Information</h2>
+        <ProfileEditForm
+          client:load
+          lobbyistId={lobbyist.id}
+          initialData={{
+            firstName: lobbyist.first_name,
+            lastName: lobbyist.last_name,
+            email: lobbyist.email,
+            phone: lobbyist.phone,
+            website: lobbyist.website,
+            bio: lobbyist.bio,
+            cities: lobbyist.cities || [],
+            subjectAreas: lobbyist.subject_areas || [],
+          }}
+          availableCities={cities || []}
+          availableSubjects={subjects || []}
+        />
+      </div>
+
+      <!-- Help Section -->
+      <div class="mt-8 rounded-lg border border-border bg-muted/30 p-6">
+        <h3 class="font-semibold mb-3">Tips for a Great Profile</h3>
+        <ul class="space-y-2 text-sm text-muted-foreground">
+          <li class="flex gap-3">
+            <svg class="h-5 w-5 text-texas-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Write a compelling bio:</strong> Focus on your experience, expertise, and what makes you unique. Include specific achievements and areas of focus.</span>
+          </li>
+          <li class="flex gap-3">
+            <svg class="h-5 w-5 text-texas-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Be specific about cities:</strong> Only select cities where you actively practice. This helps clients find local representation.</span>
+          </li>
+          <li class="flex gap-3">
+            <svg class="h-5 w-5 text-texas-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Choose relevant expertise areas:</strong> Select all areas where you have meaningful experience. More isn't always better - focus on your strengths.</span>
+          </li>
+          <li class="flex gap-3">
+            <svg class="h-5 w-5 text-texas-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Keep contact info current:</strong> Make it easy for potential clients to reach you. Include a professional email and phone number.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>

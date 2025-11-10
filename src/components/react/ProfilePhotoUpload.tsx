@@ -52,50 +52,39 @@ export default function ProfilePhotoUpload({
     };
     reader.readAsDataURL(file);
 
-    // Upload to Supabase Storage
+    // Upload via API route (server-side to handle auth properly)
     setUploading(true);
     try {
-      // Generate unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}/profile.${fileExt}`;
-
-      // Delete old photo if exists
+      const formData = new FormData();
+      formData.append('file', file);
       if (currentPhotoUrl) {
-        const oldPath = currentPhotoUrl.split('/').slice(-2).join('/');
-        await supabase.storage
-          .from('profile-photos')
-          .remove([oldPath]);
+        formData.append('currentPhotoUrl', currentPhotoUrl);
       }
 
-      // Upload new photo
-      const { error: uploadError, data } = await supabase.storage
-        .from('profile-photos')
-        .upload(fileName, file, {
-          upsert: true,
-          contentType: file.type,
-        });
+      const response = await fetch('/api/profile/upload-photo', {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (uploadError) throw uploadError;
+      const result = await response.json();
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('profile-photos')
-        .getPublicUrl(fileName);
-
-      // Update lobbyist profile
-      const { error: updateError } = await supabase
-        .from('lobbyists')
-        .update({ photo_url: publicUrl })
-        .eq('user_id', userId);
-
-      if (updateError) throw updateError;
+      if (!response.ok) {
+        const errorMsg = result.details || result.error || 'Failed to upload photo';
+        console.error('Upload failed:', errorMsg, result);
+        throw new Error(errorMsg);
+      }
 
       // Call success callback
-      onUploadComplete?.(publicUrl);
+      onUploadComplete?.(result.photoUrl);
+
+      // Success! Keep the preview
+      setError('');
 
     } catch (err: any) {
       console.error('Upload error:', err);
-      setError(err?.message || 'Failed to upload photo');
+      const errorMessage = err?.message || 'Failed to upload photo';
+      console.log('Setting error message:', errorMessage);
+      setError(errorMessage);
       // Revert preview on error
       setPreview(currentPhotoUrl || null);
     } finally {

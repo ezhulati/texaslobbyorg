@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import world-class article styling */
+@import './article.css';
+
 @layer base {
   :root {
     /* Texas Design System - Light Mode */
@@ -124,6 +127,3 @@
     @apply mb-7; /* Even more for large prose (1.75rem / 28px) */
   }
 }
-
-/* Import world-class article styling */
-@import './article.css';

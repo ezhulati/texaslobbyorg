@@ -9,6 +9,9 @@ const ALLOWED_FIELDS = [
   'website',
   'linkedin_url',
   'years_experience',
+  'bio',
+  'cities',
+  'subject_areas',
 ] as const;
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -59,16 +62,26 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         } else {
           updates[field] = null;
         }
+      } else if (field === 'cities' || field === 'subject_areas') {
+        // Validate array fields
+        if (Array.isArray(value)) {
+          updates[field] = value;
+        } else {
+          return new Response(
+            JSON.stringify({ success: false, error: `${field} must be an array` }),
+            { status: 400, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
       } else {
         updates[field] = value && typeof value === 'string' ? value.trim() : value;
       }
     }
 
-    // Update the lobbyist profile
+    // Update the lobbyist profile (check both user_id and claimed_by)
     const { error: updateError } = await supabase
       .from('lobbyists')
       .update(updates)
-      .eq('user_id', user.id);
+      .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`);
 
     if (updateError) {
       console.error('Profile update error:', updateError);

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/lib/supabase';
 
 interface ProfileEditFormProps {
   lobbyistId: string;
@@ -79,9 +78,13 @@ export default function ProfileEditForm({
     }
 
     try {
-      const { error: updateError } = await supabase
-        .from('lobbyists')
-        .update({
+      // Use API endpoint instead of direct Supabase client
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           first_name: formData.firstName,
           last_name: formData.lastName,
           email: formData.email || null,
@@ -90,11 +93,14 @@ export default function ProfileEditForm({
           bio: formData.bio || null,
           cities: selectedCities,
           subject_areas: selectedSubjects,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', lobbyistId);
+        }),
+      });
 
-      if (updateError) throw updateError;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update profile');
+      }
 
       setSuccess(true);
 

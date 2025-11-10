@@ -1,3 +1,4 @@
+Initialising login role...
 export type Json =
   | string
   | number
@@ -11,6 +12,31 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -245,6 +271,179 @@ export type Database = {
             columns: ["target_user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bill_tags: {
+        Row: {
+          bill_id: string
+          context_notes: string | null
+          created_at: string | null
+          id: string
+          lobbyist_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          bill_id: string
+          context_notes?: string | null
+          created_at?: string | null
+          id?: string
+          lobbyist_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          bill_id?: string
+          context_notes?: string | null
+          created_at?: string | null
+          id?: string
+          lobbyist_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bill_tags_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_tags_lobbyist_id_fkey"
+            columns: ["lobbyist_id"]
+            isOneToOne: false
+            referencedRelation: "lobbyists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bill_updates: {
+        Row: {
+          action_date: string
+          bill_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          new_status: string | null
+          notified_user_ids: string[] | null
+          old_status: string | null
+          update_type: string
+        }
+        Insert: {
+          action_date: string
+          bill_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          new_status?: string | null
+          notified_user_ids?: string[] | null
+          old_status?: string | null
+          update_type: string
+        }
+        Update: {
+          action_date?: string
+          bill_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          new_status?: string | null
+          notified_user_ids?: string[] | null
+          old_status?: string | null
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bill_updates_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bills: {
+        Row: {
+          bill_number: string
+          chamber: string
+          co_authors: string[] | null
+          companion_bill_id: string | null
+          created_at: string | null
+          current_status: string
+          fiscal_note_url: string | null
+          full_text: string | null
+          id: string
+          last_action: string | null
+          last_action_date: string | null
+          primary_author: string | null
+          search_vector: unknown
+          session_id: string
+          slug: string
+          status_date: string | null
+          subject_areas: string[] | null
+          summary: string | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          bill_number: string
+          chamber: string
+          co_authors?: string[] | null
+          companion_bill_id?: string | null
+          created_at?: string | null
+          current_status?: string
+          fiscal_note_url?: string | null
+          full_text?: string | null
+          id?: string
+          last_action?: string | null
+          last_action_date?: string | null
+          primary_author?: string | null
+          search_vector?: unknown
+          session_id: string
+          slug: string
+          status_date?: string | null
+          subject_areas?: string[] | null
+          summary?: string | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          bill_number?: string
+          chamber?: string
+          co_authors?: string[] | null
+          companion_bill_id?: string | null
+          created_at?: string | null
+          current_status?: string
+          fiscal_note_url?: string | null
+          full_text?: string | null
+          id?: string
+          last_action?: string | null
+          last_action_date?: string | null
+          primary_author?: string | null
+          search_vector?: unknown
+          session_id?: string
+          slug?: string
+          status_date?: string | null
+          subject_areas?: string[] | null
+          summary?: string | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bills_companion_bill_id_fkey"
+            columns: ["companion_bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bills_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "legislative_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -594,8 +793,45 @@ export type Database = {
           },
         ]
       }
+      legislative_sessions: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          id: string
+          is_current: boolean | null
+          session_code: string
+          session_number: number
+          session_type: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          session_code: string
+          session_number: number
+          session_type: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          session_code?: string
+          session_number?: number
+          session_type?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       lobbyists: {
         Row: {
+          approval_status: Database["public"]["Enums"]["approval_status"] | null
           bio: string | null
           cities: string[] | null
           claimed_at: string | null
@@ -610,6 +846,7 @@ export type Database = {
           has_enforcement_history: boolean | null
           id: string
           id_verification_url: string | null
+          internal_notes: string | null
           is_active: boolean
           is_claimed: boolean
           is_pending: boolean
@@ -655,6 +892,9 @@ export type Database = {
           years_experience: number | null
         }
         Insert: {
+          approval_status?:
+            | Database["public"]["Enums"]["approval_status"]
+            | null
           bio?: string | null
           cities?: string[] | null
           claimed_at?: string | null
@@ -669,6 +909,7 @@ export type Database = {
           has_enforcement_history?: boolean | null
           id?: string
           id_verification_url?: string | null
+          internal_notes?: string | null
           is_active?: boolean
           is_claimed?: boolean
           is_pending?: boolean
@@ -714,6 +955,9 @@ export type Database = {
           years_experience?: number | null
         }
         Update: {
+          approval_status?:
+            | Database["public"]["Enums"]["approval_status"]
+            | null
           bio?: string | null
           cities?: string[] | null
           claimed_at?: string | null
@@ -728,6 +972,7 @@ export type Database = {
           has_enforcement_history?: boolean | null
           id?: string
           id_verification_url?: string | null
+          internal_notes?: string | null
           is_active?: boolean
           is_claimed?: boolean
           is_pending?: boolean
@@ -867,6 +1112,63 @@ export type Database = {
             columns: ["lobbyist_id"]
             isOneToOne: false
             referencedRelation: "lobbyists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          bill_id: string
+          bill_update_id: string
+          created_at: string | null
+          delivery_status: string | null
+          email_body: string
+          email_subject: string
+          error_message: string | null
+          id: string
+          notification_type: string
+          sent_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bill_id: string
+          bill_update_id: string
+          created_at?: string | null
+          delivery_status?: string | null
+          email_body: string
+          email_subject: string
+          error_message?: string | null
+          id?: string
+          notification_type: string
+          sent_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bill_id?: string
+          bill_update_id?: string
+          created_at?: string | null
+          delivery_status?: string | null
+          email_body?: string
+          email_subject?: string
+          error_message?: string | null
+          id?: string
+          notification_type?: string
+          sent_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_bill_update_id_fkey"
+            columns: ["bill_update_id"]
+            isOneToOne: false
+            referencedRelation: "bill_updates"
             referencedColumns: ["id"]
           },
         ]
@@ -1444,6 +1746,44 @@ export type Database = {
         }
         Relationships: []
       }
+      watchlist_entries: {
+        Row: {
+          bill_id: string
+          created_at: string | null
+          id: string
+          notification_types: string[] | null
+          notifications_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bill_id: string
+          created_at?: string | null
+          id?: string
+          notification_types?: string[] | null
+          notifications_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bill_id?: string
+          created_at?: string | null
+          id?: string
+          notification_types?: string[] | null
+          notifications_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watchlist_entries_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       active_users: {
@@ -1579,6 +1919,23 @@ export type Database = {
           count: number
         }[]
       }
+      get_user_watchlist: {
+        Args: { limit_count?: number; offset_count?: number; p_user_id: string }
+        Returns: {
+          added_at: string
+          bill_id: string
+          bill_number: string
+          bill_updated_at: string
+          chamber: string
+          current_status: string
+          notifications_enabled: boolean
+          slug: string
+          status_date: string
+          summary: string
+          title: string
+          watchlist_id: string
+        }[]
+      }
       has_pending_claim: { Args: { lobbyist_uuid: string }; Returns: boolean }
       increment_view_count: {
         Args: { lobbyist_id: string }
@@ -1610,6 +1967,32 @@ export type Database = {
         Returns: Json
       }
       permanently_delete_user: { Args: { p_user_id: string }; Returns: Json }
+      search_bills: {
+        Args: {
+          chamber_filter?: string
+          limit_count?: number
+          offset_count?: number
+          search_query?: string
+          session_filter?: string
+          status_filter?: string
+          subject_filters?: string[]
+        }
+        Returns: {
+          bill_number: string
+          chamber: string
+          current_status: string
+          id: string
+          primary_author: string
+          search_rank: number
+          session_id: string
+          slug: string
+          status_date: string
+          subject_areas: string[]
+          summary: string
+          title: string
+          view_count: number
+        }[]
+      }
       search_lobbyists: {
         Args: {
           city_filters?: string[]
@@ -1648,6 +2031,7 @@ export type Database = {
       }
     }
     Enums: {
+      approval_status: "pending" | "approved" | "rejected"
       rejection_category:
         | "invalid_id"
         | "incomplete_info"
@@ -1790,8 +2174,12 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
+      approval_status: ["pending", "approved", "rejected"],
       rejection_category: [
         "invalid_id",
         "incomplete_info",
@@ -1814,3 +2202,5 @@ export const Constants = {
     },
   },
 } as const
+A new version of Supabase CLI is available: v2.54.11 (currently installed v2.48.3)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli

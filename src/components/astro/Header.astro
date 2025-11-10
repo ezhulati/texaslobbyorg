@@ -6,6 +6,7 @@ const pathname = Astro.url.pathname;
 
 const navLinks = [
   { href: '/lobbyists', label: 'Find Lobbyists' },
+  { href: '/bills', label: 'Bills' },
   { href: '/cities', label: 'By City' },
   { href: '/subjects', label: 'By Expertise' },
   { href: '/how-it-works', label: 'How It Works' },
@@ -123,6 +124,8 @@ if (isAdmin) {
               <div class="absolute right-0 mt-2 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 {lobbyistSlug && <a href={`/lobbyists/${lobbyistSlug}`} class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Profile</a>}
                 <a href="/dashboard" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Edit Profile</a>
+                <a href="/watchlist" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Watchlist</a>
+                <a href="/tagged-bills" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Tagged Bills</a>
                 <a href="/dashboard/analytics" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Analytics</a>
                 <a href="/dashboard/subscription" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Plan & Billing</a>
                 <a href="/account" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Account Settings</a>
@@ -329,6 +332,12 @@ if (isAdmin) {
               class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
             >
               Edit Profile
+            </a>
+            <a
+              href="/tagged-bills"
+              class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
+            >
+              My Tagged Bills
             </a>
             <a
               href="/dashboard/subscription"

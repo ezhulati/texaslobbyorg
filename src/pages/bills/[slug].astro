@@ -8,7 +8,10 @@
 import Layout from '@/components/astro/Layout.astro';
 import BillDetailLayout from '@/components/astro/bills/BillDetailLayout.astro';
 import BillUpdateTimeline from '@/components/astro/bills/BillUpdateTimeline.astro';
-import { getBillBySlug, getBillUpdates } from '@/lib/api/bills';
+import LobbyistCard from '@/components/astro/bills/LobbyistCard.astro';
+import WatchlistButton from '@/components/react/bills/WatchlistButton';
+import BillTagButton from '@/components/react/bills/BillTagButton';
+import { getBillBySlug, getBillUpdates, getBillTags } from '@/lib/api/bills';
 
 // Get bill slug from URL
 const { slug } = Astro.params;
@@ -27,6 +30,10 @@ if (!bill) {
 // Fetch bill update history
 const updates = await getBillUpdates(bill.id);
 
+// Fetch bill tags (lobbyists tracking this bill)
+const billTags = await getBillTags(bill.id);
+const publicTags = billTags.filter((tag: any) => tag.is_public);
+
 // Increment view count (fire and forget)
 try {
   await fetch(`${Astro.url.origin}/api/bills/${bill.id}/increment-views`, {
@@ -37,8 +44,10 @@ try {
   console.error('Failed to increment view count:', error);
 }
 
-const pageTitle = `${bill.bill_number} - ${bill.title}`;
-const pageDescription = bill.summary || bill.title.substring(0, 160);
+// Use SEO-optimized fields if available, otherwise fallback to defaults
+const pageTitle = bill.title_tag || `${bill.bill_number} - ${bill.title}`;
+const pageDescription = bill.meta_description || bill.summary || bill.title.substring(0, 160);
+const pageExcerpt = bill.excerpt || bill.summary?.substring(0, 150);
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -61,7 +70,26 @@ const pageDescription = bill.summary || bill.title.substring(0, 160);
     </nav>
 
     {/* Bill Details */}
-    <BillDetailLayout bill={bill}>
+    <BillDetailLayout bill={bill} introHook={bill.intro_hook}>
+      {/* Lobbyists Section */}
+      {publicTags && publicTags.length > 0 && (
+        <div class="mt-12 pt-12 border-t border-gray-200">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+              Lobbyists Working on This Bill
+            </h2>
+            <p class="text-gray-600">
+              Connect with experienced lobbyists who are tracking or working on this legislation.
+            </p>
+          </div>
+          <div class="grid gap-4">
+            {publicTags.map((tag: any) => (
+              <LobbyistCard lobbyist={tag.lobbyist} tag={tag} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Update Timeline */}
       {updates && updates.length > 0 && (
         <div class="mt-12 pt-12 border-t border-gray-200">
@@ -75,6 +103,18 @@ const pageDescription = bill.summary || bill.title.substring(0, 160);
       {/* Actions */}
       <div class="mt-12 pt-12 border-t border-gray-200">
         <div class="flex flex-wrap gap-4">
+          <WatchlistButton
+            client:load
+            billId={bill.id}
+            billNumber={bill.bill_number}
+          />
+
+          <BillTagButton
+            client:load
+            billId={bill.id}
+            billNumber={bill.bill_number}
+          />
+
           <a
             href="/bills"
             class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50 transition-colors"

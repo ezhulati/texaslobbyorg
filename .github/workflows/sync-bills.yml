@@ -51,10 +51,10 @@ jobs:
           LIMIT="${{ github.event.inputs.limit || '100' }}"
 
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            echo "Running dry run sync (session: $SESSION, limit: $LIMIT)..."
+            echo "Running dry run sync..."
             npx tsx scripts/sync-bills-production.ts --session $SESSION --limit $LIMIT --dry-run --verbose
           else
-            echo "Running production sync (session: $SESSION, limit: $LIMIT)..."
+            echo "Running production sync..."
             npx tsx scripts/sync-bills-production.ts --session $SESSION --limit $LIMIT
           fi
 

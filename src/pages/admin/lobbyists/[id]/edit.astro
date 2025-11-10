@@ -1,0 +1,340 @@
+---
+// Admin lobbyist edit page
+import Layout from '@/components/astro/Layout.astro';
+import { createServerClient } from '@/lib/supabase';
+
+// Admin authentication
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect('/login?redirect=' + Astro.url.pathname);
+}
+
+const serverClient = createServerClient();
+const { data: currentUserData } = await serverClient
+  .from('users')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+
+if (currentUserData?.role !== 'admin') {
+  return Astro.redirect('/');
+}
+
+const lobbyistId = Astro.params.id;
+
+// Fetch lobbyist details
+const { data: lobbyist, error: lobbyistError } = await serverClient
+  .from('lobbyists')
+  .select('*')
+  .eq('id', lobbyistId)
+  .single();
+
+if (lobbyistError || !lobbyist) {
+  return Astro.redirect('/admin/lobbyists');
+}
+
+// Get available cities
+const { data: cities } = await serverClient
+  .from('cities')
+  .select('slug, name')
+  .order('name');
+
+// Get available subject areas
+const { data: subjects } = await serverClient
+  .from('subject_areas')
+  .select('slug, name')
+  .order('name');
+
+const pageTitle = `Edit ${lobbyist.first_name} ${lobbyist.last_name} - Admin`;
+const pageDescription = `Admin edit page for lobbyist ${lobbyist.first_name} ${lobbyist.last_name}`;
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <!-- Header -->
+      <div class="mb-6">
+        <a href={`/admin/lobbyists/${lobbyistId}`} class="text-sm text-blue-600 hover:text-blue-800 mb-2 inline-block">
+          ← Back to Lobbyist Details
+        </a>
+        <h1 class="text-3xl font-bold text-gray-900">Edit Lobbyist Profile</h1>
+        <p class="text-gray-600 mt-1">Editing: {lobbyist.first_name} {lobbyist.last_name}</p>
+      </div>
+
+      <!-- Edit Form -->
+      <form id="edit-form" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+        <!-- Basic Information -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">
+                First Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value={lobbyist.first_name}
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">
+                Last Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={lobbyist.last_name}
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={lobbyist.email || ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={lobbyist.phone || ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label for="website" class="block text-sm font-medium text-gray-700 mb-1">
+                Website
+              </label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                value={lobbyist.website || ''}
+                placeholder="https://"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label for="linkedin_url" class="block text-sm font-medium text-gray-700 mb-1">
+                LinkedIn Profile
+              </label>
+              <input
+                type="url"
+                id="linkedin_url"
+                name="linkedin_url"
+                value={lobbyist.linkedin_url || ''}
+                placeholder="https://linkedin.com/in/..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Information -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Professional Information</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="years_experience" class="block text-sm font-medium text-gray-700 mb-1">
+                Years of Experience
+              </label>
+              <input
+                type="number"
+                id="years_experience"
+                name="years_experience"
+                value={lobbyist.years_experience || ''}
+                min="0"
+                max="70"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., 15"
+              />
+            </div>
+            <div>
+              <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">
+                Bio
+              </label>
+              <textarea
+                id="bio"
+                name="bio"
+                rows="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Professional bio..."
+              >{lobbyist.bio || ''}</textarea>
+              <p class="mt-1 text-xs text-gray-500">
+                Recommended: 150-300 characters
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cities Served -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Cities Served <span class="text-red-500">*</span>
+          </h2>
+          <p class="text-sm text-gray-600 mb-3">Select all cities where this lobbyist actively serves clients</p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {cities && cities.map((city) => (
+              <label class="flex items-center gap-2 rounded-md border border-gray-300 p-3 cursor-pointer hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  name="cities"
+                  value={city.slug}
+                  checked={lobbyist.cities && lobbyist.cities.includes(city.slug) ? true : undefined}
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span class="text-sm font-medium text-gray-900">{city.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <!-- Subject Areas -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Areas of Expertise <span class="text-red-500">*</span>
+          </h2>
+          <p class="text-sm text-gray-600 mb-3">Select all areas where this lobbyist has expertise</p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {subjects && subjects.map((subject) => (
+              <label class="flex items-center gap-2 rounded-md border border-gray-300 p-3 cursor-pointer hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  name="subject_areas"
+                  value={subject.slug}
+                  checked={lobbyist.subject_areas && lobbyist.subject_areas.includes(subject.slug) ? true : undefined}
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span class="text-sm font-medium text-gray-900">{subject.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex gap-3 pt-6 border-t border-gray-200">
+          <button
+            type="submit"
+            class="px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+          >
+            Save Changes
+          </button>
+          <a
+            href={`/admin/lobbyists/${lobbyistId}`}
+            class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors font-medium"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+
+      <!-- Messages -->
+      <div id="message-container" class="mt-4"></div>
+    </div>
+  </div>
+
+  <script define:vars={{ lobbyistId }}>
+    const form = document.getElementById('edit-form');
+    const messageContainer = document.getElementById('message-container');
+
+    function showMessage(type, message) {
+      const bgColor = type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+      const textColor = type === 'success' ? 'text-green-800' : 'text-red-800';
+
+      messageContainer.innerHTML = `
+        <div class="${bgColor} border ${textColor} rounded-lg p-4">
+          <p class="text-sm font-medium">${message}</p>
+        </div>
+      `;
+
+      // Scroll to message
+      messageContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      // Get selected cities
+      const cities = Array.from(formData.getAll('cities'));
+
+      // Get selected subject areas
+      const subject_areas = Array.from(formData.getAll('subject_areas'));
+
+      // Validate
+      if (cities.length === 0) {
+        showMessage('error', 'Please select at least one city');
+        return;
+      }
+
+      if (subject_areas.length === 0) {
+        showMessage('error', 'Please select at least one area of expertise');
+        return;
+      }
+
+      // Build update object
+      const updates = {
+        lobbyistId,
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email') || null,
+        phone: formData.get('phone') || null,
+        website: formData.get('website') || null,
+        linkedin_url: formData.get('linkedin_url') || null,
+        bio: formData.get('bio') || null,
+        years_experience: formData.get('years_experience') || null,
+        cities,
+        subject_areas,
+      };
+
+      try {
+        const response = await fetch('/api/admin/edit-lobbyist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to update lobbyist');
+        }
+
+        showMessage('success', 'Lobbyist profile updated successfully!');
+
+        // Redirect back to details page after 1 second
+        setTimeout(() => {
+          window.location.href = `/admin/lobbyists/${lobbyistId}`;
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('error', error instanceof Error ? error.message : 'Failed to update lobbyist');
+      }
+    });
+  </script>
+</Layout>

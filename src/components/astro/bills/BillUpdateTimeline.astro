@@ -1,0 +1,81 @@
+---
+/**
+ * BillUpdateTimeline Component
+ *
+ * Displays a timeline of bill status changes and updates.
+ */
+
+import type { BillUpdateRecord } from '@/lib/types/bills';
+
+interface Props {
+  updates: BillUpdateRecord[];
+}
+
+const { updates } = Astro.props;
+
+const typeIcons = {
+  status_change: '📋',
+  amendment: '✏️',
+  vote: '🗳️',
+  hearing: '👥',
+  other: '📌',
+};
+
+const typeColors = {
+  status_change: 'bg-blue-100 text-blue-800',
+  amendment: 'bg-yellow-100 text-yellow-800',
+  vote: 'bg-green-100 text-green-800',
+  hearing: 'bg-purple-100 text-purple-800',
+  other: 'bg-gray-100 text-gray-800',
+};
+---
+
+{updates.length > 0 ? (
+  <div class="space-y-4">
+    {updates.map((update, index) => (
+      <div class="relative pl-8 pb-6 last:pb-0">
+        {/* Timeline line */}
+        {index < updates.length - 1 && (
+          <div class="absolute left-2 top-8 bottom-0 w-0.5 bg-gray-200" />
+        )}
+
+        {/* Timeline dot */}
+        <div class="absolute left-0 top-2 w-4 h-4 rounded-full bg-blue-600 border-2 border-white ring-2 ring-gray-200" />
+
+        {/* Update card */}
+        <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+          <div class="flex items-start justify-between gap-4 mb-2">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[update.update_type]}`}>
+                  <span class="mr-1">{typeIcons[update.update_type]}</span>
+                  {update.update_type.replace('_', ' ')}
+                </span>
+                {update.new_status && update.new_status !== update.previous_status && (
+                  <span class="text-xs text-gray-600">
+                    {update.previous_status ? `${update.previous_status} → ` : ''}
+                    <span class="font-medium">{update.new_status}</span>
+                  </span>
+                )}
+              </div>
+              <p class="text-gray-900 leading-relaxed">
+                {update.description}
+              </p>
+            </div>
+            <time class="text-sm text-gray-500 whitespace-nowrap">
+              {new Date(update.changed_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </time>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <div class="text-center py-12 text-gray-500">
+    <p>No update history available for this bill.</p>
+  </div>
+)}

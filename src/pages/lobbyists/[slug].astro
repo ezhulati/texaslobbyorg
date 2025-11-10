@@ -45,6 +45,7 @@ if (isAuthenticated && currentUser) {
 const clients: Database['public']['Tables']['clients']['Row'][] = await getLobbyistClients(lobbyist.id);
 
 // Fetch candidate lobbyists for recommendations
+// Note: No limit to ensure all similar lobbyists are considered
 const { data: candidateLobbyists } = await supabase
   .from('lobbyists')
   .select(`
@@ -56,8 +57,7 @@ const { data: candidateLobbyists } = await supabase
     )
   `)
   .eq('is_active', true)
-  .neq('id', lobbyist.id)
-  .limit(50);
+  .neq('id', lobbyist.id);
 
 // Calculate similar lobbyists
 const similarLobbyists = candidateLobbyists && candidateLobbyists.length > 0

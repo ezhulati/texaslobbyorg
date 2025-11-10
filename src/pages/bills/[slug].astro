@@ -34,6 +34,11 @@ const updates = await getBillUpdates(bill.id);
 const billTags = await getBillTags(bill.id);
 const publicTags = billTags.filter((tag: any) => tag.is_public);
 
+// Get authentication state
+const isAuthenticated = Astro.locals.isAuthenticated || false;
+const currentUser = Astro.locals.user;
+const isLobbyist = currentUser?.role === 'lobbyist';
+
 // Increment view count (fire and forget)
 try {
   await fetch(`${Astro.url.origin}/api/bills/${bill.id}/increment-views`, {
@@ -90,8 +95,8 @@ const pageExcerpt = bill.excerpt || bill.summary?.substring(0, 150);
         </div>
       )}
 
-      {/* Update Timeline */}
-      {updates && updates.length > 0 && (
+      {/* Update Timeline - Only show if there are meaningful updates (not just placeholder filed entries) */}
+      {updates && updates.length > 0 && !updates.every((u: any) => u.update_type === 'filed' && u.description?.includes('Not yet available')) && (
         <div class="mt-12 pt-12 border-t border-gray-200">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">
             Bill History
@@ -103,17 +108,24 @@ const pageExcerpt = bill.excerpt || bill.summary?.substring(0, 150);
       {/* Actions */}
       <div class="mt-12 pt-12 border-t border-gray-200">
         <div class="flex flex-wrap gap-4">
-          <WatchlistButton
-            client:load
-            billId={bill.id}
-            billNumber={bill.bill_number}
-          />
+          {isAuthenticated && (
+            <WatchlistButton
+              client:load
+              billId={bill.id}
+              billNumber={bill.bill_number}
+              isAuthenticated={isAuthenticated}
+            />
+          )}
 
-          <BillTagButton
-            client:load
-            billId={bill.id}
-            billNumber={bill.bill_number}
-          />
+          {isAuthenticated && isLobbyist && (
+            <BillTagButton
+              client:load
+              billId={bill.id}
+              billNumber={bill.bill_number}
+              isAuthenticated={isAuthenticated}
+              isLobbyist={isLobbyist}
+            />
+          )}
 
           <a
             href="/bills"

@@ -3,16 +3,17 @@
  *
  * Button to add/remove bills from user's watchlist.
  * Shows different states: add, remove, loading, error.
+ * Only renders if user is authenticated.
  */
 
 import { useState, useEffect } from 'react';
-import { getOrCreateMockUser } from '@/lib/auth-mock';
 
 interface WatchlistButtonProps {
   billId: string;
   billNumber: string;
   variant?: 'default' | 'icon' | 'compact';
   onSuccess?: () => void;
+  isAuthenticated: boolean;
 }
 
 export default function WatchlistButton({
@@ -20,20 +21,31 @@ export default function WatchlistButton({
   billNumber,
   variant = 'default',
   onSuccess,
+  isAuthenticated,
 }: WatchlistButtonProps) {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Check if bill is in watchlist on mount
+  // Get user ID from cookies on mount
   useEffect(() => {
-    checkWatchlistStatus();
-  }, [billId]);
+    if (isAuthenticated) {
+      // Get user ID from cookie or session
+      const userIdFromCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('user_id='))
+        ?.split('=')[1];
+      setUserId(userIdFromCookie || null);
+      if (userIdFromCookie) {
+        checkWatchlistStatus(userIdFromCookie);
+      }
+    }
+  }, [isAuthenticated, billId]);
 
-  const checkWatchlistStatus = async () => {
+  const checkWatchlistStatus = async (uid: string) => {
     try {
-      const user = getOrCreateMockUser();
-      const response = await fetch(`/api/watchlist/${user.id}/bills`);
+      const response = await fetch(`/api/watchlist/${uid}/bills`);
 
       if (response.ok) {
         const { bills } = await response.json();
@@ -46,15 +58,18 @@ export default function WatchlistButton({
   };
 
   const handleToggleWatchlist = async () => {
+    if (!userId) {
+      setError('Please log in to use watchlist');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const user = getOrCreateMockUser();
-
       if (isInWatchlist) {
         // Remove from watchlist
-        const response = await fetch(`/api/watchlist/${user.id}/bills/${billId}`, {
+        const response = await fetch(`/api/watchlist/${userId}/bills/${billId}`, {
           method: 'DELETE',
         });
 
@@ -65,7 +80,7 @@ export default function WatchlistButton({
         setIsInWatchlist(false);
       } else {
         // Add to watchlist
-        const response = await fetch(`/api/watchlist/${user.id}/bills`, {
+        const response = await fetch(`/api/watchlist/${userId}/bills`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ bill_id: billId }),

@@ -3,24 +3,27 @@
  *
  * Allows lobbyists to tag bills they're working on with their position
  * (supporting, monitoring, opposing) and add optional notes.
+ * Only renders if user is authenticated as a lobbyist.
  */
 
 import { useState, useEffect } from 'react';
-import { getOrCreateMockUser } from '@/lib/auth-mock';
 
 type TagType = 'supporting' | 'monitoring' | 'opposing';
 
 interface BillTagButtonProps {
   billId: string;
   billNumber: string;
+  isAuthenticated: boolean;
+  isLobbyist: boolean;
 }
 
-export default function BillTagButton({ billId, billNumber }: BillTagButtonProps) {
+export default function BillTagButton({ billId, billNumber, isAuthenticated, isLobbyist }: BillTagButtonProps) {
   const [isTagged, setIsTagged] = useState(false);
   const [existingTag, setExistingTag] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lobbyistId, setLobbyistId] = useState<string | null>(null);
 
   // Form state
   const [tagType, setTagType] = useState<TagType>('monitoring');
@@ -28,19 +31,26 @@ export default function BillTagButton({ billId, billNumber }: BillTagButtonProps
   const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
-    checkTagStatus();
-  }, [billId]);
+    if (isAuthenticated && isLobbyist) {
+      // Get lobbyist ID from cookie
+      const lobbyistIdFromCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('user_id='))
+        ?.split('=')[1];
+      setLobbyistId(lobbyistIdFromCookie || null);
+      if (lobbyistIdFromCookie) {
+        checkTagStatus(lobbyistIdFromCookie);
+      }
+    }
+  }, [isAuthenticated, isLobbyist, billId]);
 
-  const checkTagStatus = async () => {
+  const checkTagStatus = async (lid: string) => {
     try {
-      const user = getOrCreateMockUser();
-      // For now, assume user is a lobbyist
-      // TODO: Check actual user role when real auth is implemented
-      const response = await fetch(`/api/bills/${billId}/tags?lobbyist_id=${user.id}`);
+      const response = await fetch(`/api/bills/${billId}/tags?lobbyist_id=${lid}`);
 
       if (response.ok) {
         const { tags } = await response.json();
-        const myTag = tags.find((t: any) => t.lobbyist_id === user.id);
+        const myTag = tags.find((t: any) => t.lobbyist_id === lid);
 
         if (myTag) {
           setIsTagged(true);
@@ -57,12 +67,16 @@ export default function BillTagButton({ billId, billNumber }: BillTagButtonProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!lobbyistId) {
+      setError('Please log in as a lobbyist to tag bills');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const user = getOrCreateMockUser();
-
       if (isTagged && existingTag) {
         // Update existing tag
         const response = await fetch(`/api/bills/${billId}/tags/${existingTag.id}`, {
@@ -84,7 +98,7 @@ export default function BillTagButton({ billId, billNumber }: BillTagButtonProps
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            lobbyist_id: user.id,
+            lobbyist_id: lobbyistId,
             tag_type: tagType,
             notes,
             is_public: isPublic,
@@ -99,7 +113,9 @@ export default function BillTagButton({ billId, billNumber }: BillTagButtonProps
       }
 
       setShowModal(false);
-      await checkTagStatus();
+      if (lobbyistId) {
+        await checkTagStatus(lobbyistId);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An error occurred';
       setError(message);

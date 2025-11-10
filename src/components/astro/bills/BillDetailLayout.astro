@@ -50,62 +50,32 @@ const chamberName = getChamberName(bill.chamber);
     )}
   </div>
 
-  {/* Metadata Grid */}
-  <div class="grid md:grid-cols-2 gap-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-    {bill.status_date && (
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Last Updated</h3>
-        <p class="text-gray-900">
-          {new Date(bill.status_date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </p>
-      </div>
-    )}
+  {/* Metadata Grid - Only show if there's content */}
+  {((bill.co_authors && bill.co_authors.length > 0) || (bill.committee_referrals && bill.committee_referrals.length > 0) || bill.last_action) && (
+    <div class="grid md:grid-cols-2 gap-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
 
-    {bill.filed_date && (
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Filed Date</h3>
-        <p class="text-gray-900">
-          {new Date(bill.filed_date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </p>
-      </div>
-    )}
+      {bill.co_authors && bill.co_authors.length > 0 && (
+        <div class="md:col-span-2">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Co-Authors</h3>
+          <p class="text-gray-900">{bill.co_authors.join(', ')}</p>
+        </div>
+      )}
 
-    {bill.co_authors && bill.co_authors.length > 0 && (
-      <div class="md:col-span-2">
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Co-Authors</h3>
-        <p class="text-gray-900">{bill.co_authors.join(', ')}</p>
-      </div>
-    )}
+      {bill.committee_referrals && bill.committee_referrals.length > 0 && (
+        <div class="md:col-span-2">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Committee Referrals</h3>
+          <p class="text-gray-900">{bill.committee_referrals.join(', ')}</p>
+        </div>
+      )}
 
-    {bill.committee_referrals && bill.committee_referrals.length > 0 && (
-      <div class="md:col-span-2">
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Committee Referrals</h3>
-        <p class="text-gray-900">{bill.committee_referrals.join(', ')}</p>
-      </div>
-    )}
-
-    {bill.last_action && (
-      <div class="md:col-span-2">
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Latest Action</h3>
-        <p class="text-gray-900">{bill.last_action}</p>
-      </div>
-    )}
-
-    {bill.view_count && bill.view_count > 0 && (
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Views</h3>
-        <p class="text-gray-900">{bill.view_count.toLocaleString()}</p>
-      </div>
-    )}
-  </div>
+      {bill.last_action && (
+        <div class="md:col-span-2">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Latest Action</h3>
+          <p class="text-gray-900">{bill.last_action}</p>
+        </div>
+      )}
+    </div>
+  )}
 
   {/* Subject Areas */}
   {bill.subject_areas && bill.subject_areas.length > 0 && (

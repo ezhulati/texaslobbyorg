@@ -72,9 +72,6 @@ const chamberName = getChamberName(bill.chamber);
             Updated {new Date(bill.status_date).toLocaleDateString()}
           </span>
         )}
-        {bill.view_count && bill.view_count > 0 && (
-          <span>{bill.view_count} views</span>
-        )}
       </div>
       <span class="text-blue-600 text-sm font-medium group-hover:underline">
         View Details →

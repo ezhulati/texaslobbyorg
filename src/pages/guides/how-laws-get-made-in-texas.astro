@@ -1,0 +1,1038 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'How Laws Actually Get Made in Texas (Beyond the Textbook Version)';
+const pageDescription = 'The civics class version of lawmaking leaves out the most important parts: committee staff who write amendments, calendar politics, late-night negotiations, and how bills resurrect from the dead. Byron Campbell reveals how it really works.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: 'Byron Campbell'
+  },
+  datePublished: '2025-01-09',
+  dateModified: '2025-01-09'
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
+        <a
+          href="/guides"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to all guides
+        </a>
+      </div>
+
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        Understanding the Process
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        How Laws Actually Get Made in Texas
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed">
+        The civics class flowchart leaves out the most important parts: committee staff who write the real amendments, calendar politics that kill bills without votes, and conference committees where legislation gets rewritten behind closed doors.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="font-medium">By Byron Campbell, Texas Lobbyist</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">22 min read</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-4xl">
+
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <p class="text-lg leading-relaxed">
+          Last session I watched a healthcare bill die in conference committee at 2:47 AM on Day 137. The House had passed it 118-28. The Senate passed it 24-7. Both chambers wanted this legislation. It died anyway—not from opposition, but from a calendar miscalculation and a conference committee chair who owed a favor to someone who opposed one provision.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          The civics class flowchart doesn't mention conference committee leverage at 3 AM. It doesn't explain why committee staff matter more than most legislators. It leaves out the calendar politics that kill more bills than votes ever will. And it never mentions that the most consequential lawmaking happens in rooms where the public isn't invited.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          If you're hiring a lobbyist or trying to influence legislation, understanding the real process reveals where influence gets applied and which relationships actually matter. The textbook version explains how a bill becomes a law. This guide explains how laws actually get made.
+        </p>
+      </div>
+
+      <!-- Section 1: The Textbook Lie -->
+      <section id="textbook-lie" class="mb-16 scroll-mt-8">
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">The Textbook Lie (And Why It Persists)</h2>
+          <p class="text-red-700 font-medium">The civics class flowchart is technically accurate and practically useless</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Every Texas schoolchild learns the process: legislator files bill, committee holds hearing, committee votes, bill goes to floor, chamber passes it, other chamber repeats process, governor signs it. Clean. Linear. Democratic.
+          </p>
+
+          <p>
+            That process is accurate the same way saying "cook pasta by boiling water" is accurate. Technically true. Completely unhelpful if you're trying to make dinner.
+          </p>
+
+          <div class="not-prose my-8">
+            <div class="bg-white rounded-lg border-2 border-border overflow-hidden">
+              <div class="grid md:grid-cols-2 gap-0">
+                <div class="p-6 bg-blue-50 border-r border-border">
+                  <h3 class="text-lg font-bold mb-4 text-blue-900">Textbook Version</h3>
+                  <ol class="space-y-3 text-sm text-blue-800">
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">1.</span>
+                      <span>Member files bill</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">2.</span>
+                      <span>Assigned to committee</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">3.</span>
+                      <span>Committee hearing held</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">4.</span>
+                      <span>Committee votes to pass</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">5.</span>
+                      <span>Floor debate and vote</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">6.</span>
+                      <span>Sent to other chamber</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">7.</span>
+                      <span>Process repeats</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">8.</span>
+                      <span>Governor signs into law</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <div class="p-6 bg-green-50">
+                  <h3 class="text-lg font-bold mb-4 text-green-900">What's Actually Happening</h3>
+                  <ol class="space-y-3 text-sm text-green-800">
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">1.</span>
+                      <span>Lobbyist drafts language, finds author</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">2.</span>
+                      <span>Chairman decides if bill gets heard</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">3.</span>
+                      <span>Staff brief chairman, write amendments</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">4.</span>
+                      <span>Or chairman leaves it pending (soft kill)</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">5.</span>
+                      <span>Calendars Committee decides scheduling</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">6.</span>
+                      <span>Real negotiations happen in hallways</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">7.</span>
+                      <span>Conference committee rewrites bill</span>
+                    </li>
+                    <li class="flex gap-3">
+                      <span class="font-bold flex-shrink-0">8.</span>
+                      <span>Veto threats extracted concessions earlier</span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p>
+            The textbook version leaves out the power dynamics, the staff influence, the timing games, the leverage points, and the relationships that determine outcomes. It's a map that shows the destination but leaves out the terrain, the weather, and the fact that most roads are closed.
+          </p>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-amber-900">Why the Simplified Version Persists</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              The textbook version serves a purpose—it teaches civic structure and formal process. But it also obscures where real power operates, which protects insiders from scrutiny and makes lobbying seem more mysterious than it is. Understanding the real process demystifies legislative influence and reveals that success comes from knowing where decisions actually get made.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Stage 1 - Where Bills Come From -->
+      <section id="stage-1" class="mb-16 scroll-mt-8">
+        <div class="bg-purple-50 border-l-4 border-purple-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 1: Where Bills Actually Come From</h2>
+          <p class="text-purple-700 font-medium">Spoiler: Not from legislators sitting down with blank paper</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The textbook says "any member can file a bill." True. What it doesn't say is that most bills get drafted by people who aren't legislators—lobbyists, agency staff, coalition attorneys, industry groups, and Texas Legislative Council drafters who turn policy ideas into legal language.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Who Actually Writes Bills</h3>
+              <div class="space-y-4">
+                <div class="bg-texas-blue-50 rounded-lg p-4">
+                  <h4 class="font-bold text-sm mb-2 text-texas-blue-900">Lobbyists Draft Client Bills</h4>
+                  <p class="text-sm text-texas-blue-800 mb-0">
+                    I've drafted dozens of bills for clients. We identify the problem, research statutory gaps, write initial language, then bring it to Texas Legislative Council for technical cleanup. By the time a legislator sees it, the policy framework is set—they're signing on as author, not creating from scratch.
+                  </p>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4">
+                  <h4 class="font-bold text-sm mb-2 text-green-900">State Agencies Draft Their Own Priorities</h4>
+                  <p class="text-sm text-green-800 mb-0">
+                    TCEQ, HHSC, TxDOT—major agencies have legislative liaisons who draft bills to fix statutory problems they've discovered during implementation. They bring these to friendly committee chairs who file them as "agency cleanup bills." The legislator is the vehicle, not the architect.
+                  </p>
+                </div>
+
+                <div class="bg-orange-50 rounded-lg p-4">
+                  <h4 class="font-bold text-sm mb-2 text-orange-900">Leadership Staff Draft Priority Legislation</h4>
+                  <p class="text-sm text-orange-800 mb-0">
+                    The Speaker's policy team and Lieutenant Governor's staff draft leadership priorities. These bills get low bill numbers (HB 1-20, SB 1-20) and extensive staff research before filing. By the time they're filed, coalition support is lined up and committee passage is virtually guaranteed.
+                  </p>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-4">
+                  <h4 class="font-bold text-sm mb-2 text-purple-900">Texas Legislative Council Provides Technical Drafting</h4>
+                  <p class="text-sm text-purple-800 mb-0">
+                    TLC is the legislature's nonpartisan bill drafting service. They take policy concepts and turn them into proper statutory language—"amend Section 123.456 of the Water Code by adding Subsection (d)" rather than "make water cleaner." They're expert drafters, not policy creators. The policy comes from whoever requests the draft.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">How Lobbyists Find Bill Authors</h3>
+              <p class="text-muted-foreground mb-4">
+                You've got bill language ready. Now you need a legislator to file it. This process reveals who has relationships and who's winging it.
+              </p>
+              <div class="bg-muted rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-2">The relationship-based approach:</p>
+                <ul class="text-sm space-y-2 ml-4">
+                  <li>• Identify committee with jurisdiction over your issue</li>
+                  <li>• Approach committee members whose districts benefit from the bill</li>
+                  <li>• Brief the member and their senior policy advisor together</li>
+                  <li>• Explain constituent impact, political upside, coalition support</li>
+                  <li>• Member agrees to author if it fits their priorities</li>
+                </ul>
+              </div>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-900 mb-0">
+                  <strong>What separates good lobbyists from bad:</strong> Good lobbyists already know which members care about your issue because they've spent the interim building those relationships. Bad lobbyists cold-call 30 offices hoping someone bites. The difference shows in success rates.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-red-900">When Members Actually Write Their Own Bills</h3>
+            <p class="text-sm text-red-900 mb-0">
+              It happens—usually with simple constituent service bills or personal priority issues a member campaigned on. But even then, their staff does the actual drafting work with TLC. The romantic image of a legislator writing legislation at their desk? That's not how statutory language gets created.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Stage 2 - Committee Politics -->
+      <section id="stage-2" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 2: Committee Politics (Where Chairman Is King)</h2>
+          <p class="text-green-700 font-medium">Staff write amendments, chairmen control hearings, and "left pending" is a death sentence</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Committee hearings are where most bills die. Not from dramatic votes—from calculated inaction. The chairman controls the calendar, the hearing schedule, the witness list, and whether bills ever get voted on. That's more power than most members have on the floor.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">The Absolute Power of Committee Chairmen</h3>
+              <p class="text-muted-foreground mb-4">
+                The Speaker and Lieutenant Governor appoint committee chairs. Those chairs then control which bills get hearings, when hearings happen, which amendments get considered, and whether bills get voted on. No hearing = bill dies. Hearing but no vote = bill dies. The chairman's discretion is nearly absolute.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4 mb-4">
+                <p class="text-sm text-red-900 mb-2">
+                  <strong>Power dynamics this creates:</strong>
+                </p>
+                <ul class="text-sm space-y-1 text-red-800 ml-4">
+                  <li>• Bill authors have to negotiate with chairs to get hearings scheduled</li>
+                  <li>• Chairs can demand amendments before agreeing to hear bills</li>
+                  <li>• Opposition lobbying focuses on convincing chairs not to schedule hearings</li>
+                  <li>• Members who anger chairs get their bills slow-walked or killed</li>
+                  <li>• Chairs friendly to your issue are worth 10x more than friendly members</li>
+                </ul>
+              </div>
+              <div class="bg-muted rounded-lg p-4">
+                <p class="text-sm mb-0">
+                  <strong>Strategic implication:</strong> If your lobbyist's pitch is "I know lots of legislators," ask them "Do you know the committee chairs and their senior staff?" Member relationships matter. Chairman relationships determine outcomes.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Committee Staff Who Write the Real Amendments</h3>
+              <p class="text-muted-foreground mb-4">
+                Legislators don't write amendments during committee hearings. Committee staff do. They sit next to the chairman during hearings, draft amendment language in real-time, brief the chairman on technical issues, and recommend which amendments to accept.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-purple-900 mb-3">
+                  <strong>What committee staff do behind the scenes:</strong>
+                </p>
+                <ul class="text-sm space-y-2 text-purple-800 ml-4">
+                  <li>• Analyze bills before hearings and brief the chairman</li>
+                  <li>• Draft committee substitute bills that replace original versions</li>
+                  <li>• Write amendments addressing concerns raised by members or stakeholders</li>
+                  <li>• Research fiscal notes and implementation challenges</li>
+                  <li>• Coordinate with other committees on overlapping jurisdiction</li>
+                  <li>• Manage witness lists and hearing schedules</li>
+                </ul>
+              </div>
+              <div class="bg-white border border-purple-200 rounded-lg p-4">
+                <p class="text-sm text-purple-900 mb-2">
+                  <strong>Why staff relationships matter more than you think:</strong>
+                </p>
+                <p class="text-sm text-purple-800 mb-0">
+                  I've killed bills by convincing committee staff to recommend against them in their briefing memo. I've saved bills by working with staff to draft amendments that addressed chairman concerns before the hearing. Staff briefings happen before members even see the bill. That's where opinions form.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">"Left Pending" as the Soft Kill Tactic</h3>
+              <p class="text-muted-foreground mb-4">
+                After testimony, the chairman can call for a vote, propose amendments, or leave the bill pending. "Pending" sounds temporary. It's not. Bills left pending almost never get voted on. They sit in legislative purgatory until session ends and they die automatically.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-orange-900 mb-2">
+                  <strong>Why chairmen use this tactic:</strong>
+                </p>
+                <p class="text-sm text-orange-800 mb-0">
+                  Voting down a bill creates a public record. The author gets angry. Supporters remember. But leaving a bill pending? The chairman can say "we needed more time to study it" or "we ran out of time before session ended." No fingerprints. No recorded vote. The bill dies quietly, and the chairman avoids political blowback.
+                </p>
+              </div>
+              <div class="bg-red-100 rounded-lg p-4">
+                <p class="text-sm text-red-900">
+                  <strong>Defensive strategy this enables:</strong> If you're trying to kill a bill, getting it left pending is almost as good as defeating it—and politically safer. A good lobbyist can convince a chairman to schedule a hearing (political cover for the author) but then leave it pending (killing the bill without a vote). The author got their hearing. Supporters got to testify. The bill still died.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Public Hearing vs. Markup Session</h3>
+              <p class="text-muted-foreground mb-4">
+                Public hearings are theater. Citizens testify for three minutes. Members ask questions. Supporters and opponents show up in matching T-shirts. But the real work happens in markup sessions—committee meetings where members debate and vote on amendments without public testimony.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-900 mb-0">
+                  <strong>The sequence that matters:</strong> Public hearing where everyone testifies → Bill left pending → Chairman and staff work with stakeholders on amendments → Markup session where committee votes on amended bill. Most organizations focus energy on the public hearing. Smart lobbyists focus on what happens between the hearing and the markup.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-green-900">Sunday Hearings and Timing Games</h3>
+            <p class="text-sm text-green-900 mb-3">
+              Committees can schedule hearings on weekends, late at night, or with minimal notice. A Sunday hearing at 7 PM with 48 hours' notice? That's intentional. Chairmen use timing to control who can attend and testify. Grassroots opponents who can't take Monday off work to drive to Austin for a Sunday evening hearing lose their voice.
+            </p>
+            <p class="text-sm text-green-900">
+              Professional lobbyists attend regardless. That's part of what you're paying for—someone who can show up whenever the chairman schedules the hearing, even if it's inconvenient by design.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Stage 3 - Calendar Politics -->
+      <section id="stage-3" class="mb-16 scroll-mt-8">
+        <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 3: The Calendar Game (Getting Scheduled Is Half the Battle)</h2>
+          <p class="text-blue-700 font-medium">Calendars Committee kills more bills than any single vote</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Your bill passed committee. Congratulations—you've cleared the first hurdle. Now it goes to the Calendars Committee in the House (or directly to the Senate floor with different rules). Calendars decides which bills get scheduled for floor debate and when. If they don't schedule your bill within 30 days, it dies. No vote. No explanation required.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">How Calendars Committee Works (House)</h3>
+              <p class="text-muted-foreground mb-4">
+                The House Calendars Committee doesn't evaluate policy—substantive committees already did that. Calendars evaluates politics, leadership priorities, and time management. They control the floor schedule, which gives them veto power over any bill, regardless of how much support it has.
+              </p>
+              <div class="bg-muted rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-2">Bills Calendars prioritizes for scheduling:</p>
+                <ul class="text-sm space-y-1 ml-4">
+                  <li>• Leadership priorities (HB 1-20 automatically get scheduled)</li>
+                  <li>• Bills with strong bipartisan support and no organized opposition</li>
+                  <li>• Noncontroversial local bills</li>
+                  <li>• Bills the Speaker or committee chairs specifically request</li>
+                  <li>• Legislation with coalition support demonstrating broad backing</li>
+                </ul>
+              </div>
+              <div class="bg-texas-blue-50 rounded-lg p-4">
+                <p class="text-sm text-texas-blue-900 mb-0">
+                  <strong>Bills that die in Calendars:</strong> Controversial legislation without leadership support, bills with strong opposition from key interest groups, and anything filed too late in session to get scheduled before Day 140. Calendars doesn't have to explain why. They just don't schedule it, and 30 days later it's dead.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">The 30-Day Death Clock</h3>
+              <p class="text-muted-foreground mb-4">
+                Once a bill reaches Calendars Committee, they have 30 calendar days to schedule it for floor debate. If Day 30 arrives without action, the bill is automatically dead. This creates a ticking clock that gives Calendars enormous leverage.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4 mb-4">
+                <p class="text-sm text-red-900 mb-2">
+                  <strong>Strategic kill tactic:</strong>
+                </p>
+                <p class="text-sm text-red-800 mb-0">
+                  If you're trying to kill a bill that passed its substantive committee, you don't need to convince 76 House members to vote against it. You need to convince Calendars Committee not to schedule it. That's 13 members (the committee size) instead of 150. Much easier math.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Senate Intent Calendar and Blocking Bills</h3>
+              <p class="text-muted-foreground mb-4">
+                The Senate doesn't have a Calendars Committee. Instead, bills go on the Intent Calendar in the order they're reported from committee. But—and this is where Senate rules get weird—bills can only be debated out of order with 3/5 vote (19 senators). The first bill on the calendar is the "blocker bill," which never moves. Every other bill requires 19 votes just to get debated.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4">
+                <p class="text-sm text-purple-900 mb-0">
+                  <strong>What this means:</strong> In the Senate, 12 senators can prevent a bill from even being debated by refusing to vote to bring it up. You can have 20 votes to pass your bill, but if you can't get 19 votes to suspend the rule and debate it, you're stuck. This gives the minority enormous power to block legislation.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Late-Session Calendar Chaos</h3>
+              <p class="text-muted-foreground mb-4">
+                As Day 140 approaches, the calendar becomes a weapon. Hundreds of bills are competing for limited floor time. Leadership priorities get scheduled first. Everything else fights for scraps. Bills that would normally get 2-3 hours of debate get 30 minutes. Amendments that would normally get considered get ruled "not germane" to save time.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0">
+                  <strong>Why early positioning wins:</strong> Bills that passed committee on Day 75 have time to get scheduled. Bills that pass committee on Day 120 are competing with 200 other bills for 20 days of floor time. Even if they technically have enough time, calendar congestion kills them. This is why early filing and committee action matters.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-amber-900">What Lobbyists Do During Calendar Stage</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              We're talking to Calendars Committee members and their staff, explaining why the bill deserves floor time, demonstrating coalition support, and making sure leadership knows the bill exists and has backing. If the bill has opposition, we're neutralizing it before it reaches Calendars. Bills that arrive at Calendars with unresolved controversy rarely get scheduled.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Stage 4 - Floor Votes Are Theater -->
+      <section id="stage-4" class="mb-16 scroll-mt-8">
+        <div class="bg-orange-50 border-l-4 border-orange-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 4: Floor Votes Are Theater (Real Decisions Made Earlier)</h2>
+          <p class="text-orange-700 font-medium">By the time a bill hits the floor, the outcome is already determined</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Civics class teaches that floor debate is where democracy happens. Eloquent speeches. Passionate arguments. Dramatic votes. And all of that does happen—but it rarely changes outcomes. By the time a bill reaches the floor, the votes have been counted, the amendments negotiated, and the result determined.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Vote Counts Happen Before Floor Debate</h3>
+              <p class="text-muted-foreground mb-4">
+                Before leadership schedules a bill for floor debate, they count votes. The bill author and their staff call members, check voting intentions, and determine whether they have the 76 votes (House) or 16 votes (Senate) needed to pass. If they don't have the votes, they either pull the bill, negotiate more amendments, or accept defeat.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4">
+                <p class="text-sm text-red-900 mb-0">
+                  <strong>What this means:</strong> Floor speeches aren't trying to convince colleagues—members already know how they're voting. Speeches are for the public record, for constituents watching online, and for political cover. "I gave a great speech supporting this bill" sounds better than "I voted for it because leadership told me to."
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Real Negotiations Happen in Caucus Meetings and Hallways</h3>
+              <p class="text-muted-foreground mb-4">
+                The Republican Caucus meets. The Democratic Caucus meets. Rural members meet. Urban members meet. These closed-door discussions are where vote commitments get made, amendments get negotiated, and deals get cut. Public floor debate is the performance. Caucus meetings are the rehearsal where the script gets written.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-purple-900 mb-3">
+                  <strong>Hallway negotiations during floor debate:</strong>
+                </p>
+                <ul class="text-sm space-y-1 text-purple-800 ml-4">
+                  <li>• Author negotiates with members who have concerns about specific provisions</li>
+                  <li>• Lobbyists brief members on amendments as they're being proposed on the floor</li>
+                  <li>• Leadership staff count votes in real-time and signal whether to pull a bill</li>
+                  <li>• Opposition groups try to peel off votes with last-minute concerns</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Floor Amendments: Planned vs. Hostile</h3>
+              <p class="text-muted-foreground mb-4">
+                Amendments offered on the floor fall into two categories: friendly amendments the author supports (often negotiated beforehand) and hostile amendments designed to kill the bill or force difficult votes.
+              </p>
+              <div class="bg-muted rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-2">Friendly amendments (pre-negotiated):</p>
+                <ul class="text-sm space-y-1 ml-4">
+                  <li>• Address concerns raised by members during vote counting</li>
+                  <li>• Often written by bill author's staff or committee staff</li>
+                  <li>• Author publicly accepts them to show willingness to compromise</li>
+                  <li>• Usually pass with minimal debate</li>
+                </ul>
+              </div>
+              <div class="bg-red-100 rounded-lg p-4">
+                <p class="text-sm font-semibold mb-2 text-red-900">Hostile amendments (designed to kill):</p>
+                <ul class="text-sm space-y-1 text-red-800 ml-4">
+                  <li>• Add poison pill provisions that supporters can't accept</li>
+                  <li>• Strip key provisions, making the bill meaningless</li>
+                  <li>• Force members to take politically difficult votes</li>
+                  <li>• Slow down the process, eating up floor time</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">When Floor Votes Actually Matter</h3>
+              <p class="text-muted-foreground mb-4">
+                Floor votes matter for the public record, for constituent messaging, and for political positioning. They matter less for determining outcomes—by the time a bill reaches the floor, stakeholders know whether it will pass.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900">
+                  <strong>Exception: Close votes on controversial bills.</strong> When a bill has exactly 76 votes (House) or 16 votes (Senate), every floor amendment and every speech can shift one or two members. These high-stakes floor fights are rare—but they're where floor debate actually influences outcomes. Most bills aren't close.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-blue-900">What Lobbyists Do During Floor Debate</h3>
+            <p class="text-sm text-blue-900 mb-0">
+              We're in the hallways outside the chamber, available to answer questions when members step out. We're monitoring amendments as they're proposed and texting bill authors about potential problems. We're making sure friendly members show up for the vote and counting votes in real-time. Floor debate is fast-paced crisis management, not persuasion.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Stage 5 - Conference Committees -->
+      <section id="stage-5" class="mb-16 scroll-mt-8">
+        <div class="bg-purple-50 border-l-4 border-purple-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 5: Conference Committees (Where Dead Bills Resurrect)</h2>
+          <p class="text-purple-700 font-medium">Ten members, closed-door negotiations, and the power to rewrite legislation</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Conference committees are where legislative magic happens—and by magic, I mean provisions that died in committee suddenly reappear, bills get completely rewritten, and language that never received a public hearing becomes law. Ten legislators (five from each chamber) negotiate behind closed doors to resolve differences between House and Senate versions of a bill.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">How Bills End Up in Conference Committee</h3>
+              <p class="text-muted-foreground mb-4">
+                House passes HB 1000. Senate passes HB 1000 with amendments. House refuses to accept Senate amendments. Senate refuses to drop its amendments. Stalemate. Leadership appoints five House members and five Senate members to negotiate a compromise. That's your conference committee.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4">
+                <p class="text-sm text-orange-900 mb-0">
+                  <strong>Who gets appointed matters enormously.</strong> Bill authors almost always get appointed. Committee chairs who heard the bill usually get appointed. Beyond that, leadership chooses members based on expertise, political relationships, and whose votes they need to pass the final compromise. Friendly conference committee members protect your interests. Hostile members gut your bill.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">The Power to Add Provisions That Never Got Debated</h3>
+              <p class="text-muted-foreground mb-4">
+                Conference committees can add provisions that weren't in either the House or Senate version. A bill that died in committee? Its language can be added to a live bill in conference committee. A provision that never got a hearing? Conference committee can insert it.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4 mb-4">
+                <p class="text-sm text-red-900 mb-2">
+                  <strong>Real example from last session:</strong>
+                </p>
+                <p class="text-sm text-red-800 mb-0">
+                  A healthcare bill died in committee on Day 95. Dead bill, no path forward. On Day 136, a different healthcare bill went to conference committee. The conference committee report included language from the dead bill. Both chambers accepted the conference report. The "dead" bill became law without ever getting a floor vote in either chamber.
+                </p>
+              </div>
+              <div class="bg-muted rounded-lg p-4">
+                <p class="text-sm mb-0">
+                  <strong>Why this matters for defensive lobbying:</strong> Killing a bill in committee doesn't mean you've won. Track conference committees on related legislation. Your defeated bill might resurrect as an add-on to someone else's conference report. You don't get to testify. You don't get a committee vote. The provision just appears in the final conference committee report.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Time Pressure as Leverage</h3>
+              <p class="text-muted-foreground mb-4">
+                Conference committees typically meet during Days 131-137, with reports due by Day 138. That's one week to negotiate differences, draft new language, get all ten members to agree, and file the report. The time pressure is intense and intentional—it forces compromise.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-900 mb-0">
+                  <strong>Leverage this creates:</strong> As Day 138 approaches, the choice becomes "accept this compromise or lose the bill entirely." Members who would normally demand changes don't have time to renegotiate. Take-it-or-leave-it offers work when there's no time left. Conference committee chairs with strong negotiating skills use time as a weapon.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Conference Committee Reports Can't Be Amended</h3>
+              <p class="text-muted-foreground mb-4">
+                When a conference committee report returns to the House and Senate for a vote, members can't amend it. The vote is binary: accept the negotiated compromise or reject it and kill the bill. No amendments. No negotiations. Up or down.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0">
+                  <strong>Strategic leverage for conference committee members:</strong> They know their report can't be amended, which means members who dislike certain provisions have to decide whether to accept language they hate or kill legislation they otherwise support. This gives conference committees enormous power to include controversial provisions that couldn't pass through normal process.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-purple-50 border-l-4 border-purple-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-purple-900">Lobbying Conference Committees</h3>
+            <p class="text-sm text-purple-900 mb-3">
+              This is where lobbyists earn their fees. Conference committee members have enormous discretion over final language. We're meeting with all ten members, explaining client concerns, proposing specific language changes, and building coalitions to support or oppose provisions. Conference committee negotiations happen fast, often at night, with minimal public notice.
+            </p>
+            <p class="text-sm text-purple-900">
+              If you don't have a lobbyist engaged during conference committee stage, you're relying on hope. By the time the conference report is public, it's too late to influence it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Stage 6 - Governor's Desk -->
+      <section id="stage-6" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Stage 6: The Governor's Desk (Veto Threats vs. Actual Vetoes)</h2>
+          <p class="text-green-700 font-medium">Line-item veto power and the post-session veto window</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The Governor has three options when a bill reaches his desk: sign it into law, veto it, or let it become law without his signature. But the real power isn't the veto—it's the veto threat. Knowing the Governor opposes a bill changes negotiations long before the bill passes.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Veto Threats During Session</h3>
+              <p class="text-muted-foreground mb-4">
+                The Governor's staff tracks legislation and communicates positions to bill authors. If the Governor opposes a bill, his staff signals that opposition before it passes. Bill authors then decide: amend the bill to address Governor concerns, or pass it anyway and risk a veto.
+              </p>
+              <div class="bg-texas-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-texas-blue-900 mb-2">
+                  <strong>How veto threats shape legislation:</strong>
+                </p>
+                <ul class="text-sm space-y-1 text-texas-blue-800 ml-4">
+                  <li>• Authors add amendments to satisfy Governor concerns before passage</li>
+                  <li>• Controversial provisions get stripped to avoid vetoes</li>
+                  <li>• Bills the Governor strongly opposes often don't get floor votes—why pass legislation that will be vetoed?</li>
+                  <li>• Leadership coordinates with Governor's office on priority bills to ensure support</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Line-Item Veto Power (Appropriations Only)</h3>
+              <p class="text-muted-foreground mb-4">
+                For appropriations bills, the Governor can veto specific line items while signing the rest of the bill. This surgical veto power gives the Governor enormous influence over state budget decisions.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4">
+                <p class="text-sm text-red-900 mb-0">
+                  <strong>Strategic implication:</strong> A program you fought for can be funded by the legislature and then line-item vetoed by the Governor. All that work—coalition building, committee testimony, floor passage—undone with a stroke of the Governor's pen. This is why Governor relationships matter for appropriations lobbying.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Post-Session Veto Window</h3>
+              <p class="text-muted-foreground mb-4">
+                Bills passed in the last 10 days of session give the Governor extra power. Normally, the legislature can override vetoes with a 2/3 vote. But after the legislature adjourns, there's no session to override. Bills vetoed after adjournment stay vetoed.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-purple-900 mb-3">
+                  <strong>The 20-day post-session deadline:</strong>
+                </p>
+                <p class="text-sm text-purple-800 mb-0">
+                  The Governor has 20 days after session ends to sign or veto bills sent in the final 10 days. For the 89th session ending June 2, that deadline is June 22. Bills signed become law. Bills vetoed are dead with no override possibility. This gives the Governor absolute power over late-session legislation.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Signing Ceremonies vs. Quiet Signatures</h3>
+              <p class="text-muted-foreground mb-4">
+                The Governor hosts signing ceremonies for priority legislation—bills he championed, major reforms, politically significant measures. These events feature speeches, media coverage, and bill authors standing beside the Governor for photos. Other bills get signed quietly without fanfare.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4">
+                <p class="text-sm text-orange-900 mb-0">
+                  <strong>What this reveals:</strong> A signing ceremony signals the Governor's strong support and willingness to take credit. A quiet signature means the Governor accepted the bill but isn't actively promoting it. The difference matters for implementation—agencies pay more attention to Governor priorities than bills signed without ceremony.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-blue-900">When to Engage the Governor's Office</h3>
+            <p class="text-sm text-blue-900 mb-0">
+              If your bill has controversial elements or addresses a policy area the Governor cares about, brief the Governor's policy staff early. Don't wait until the bill passes both chambers. Get ahead of concerns, address them through amendments, and position the bill as aligned with Governor priorities. Reactive lobbying after passage rarely changes veto decisions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: The Invisible Players -->
+      <section id="invisible-players" class="mb-16 scroll-mt-8">
+        <div class="bg-orange-50 border-l-4 border-orange-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">The Invisible Players (Staff, Leadership, Outside Influencers)</h2>
+          <p class="text-orange-700 font-medium">The people who shape outcomes but never appear in the flowchart</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The textbook shows legislators voting. It doesn't show the committee staffer who wrote the amendment that killed your bill, or the leadership aide who kept your issue off the calendar, or the coalition attorney who drafted the compromise language. These invisible players shape outcomes without ever casting a vote.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Committee Staff Who Write Amendments</h3>
+              <p class="text-muted-foreground mb-4">
+                Committee staff draft amendments, brief chairmen before hearings, research fiscal impacts, coordinate with stakeholders, and manage hearing schedules. They're subject matter experts who often know the issues better than the legislators they work for.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4">
+                <p class="text-sm text-purple-900 mb-0">
+                  <strong>Why staff relationships matter more than you think:</strong> I've killed bills by convincing committee staff to recommend against them. I've saved bills by working with staff to draft amendments that satisfied chairman concerns. Staff briefings happen before members see bills. That's where first impressions form—and first impressions often determine outcomes.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Personal Staff Who Negotiate Deals</h3>
+              <p class="text-muted-foreground mb-4">
+                Every legislator has a chief of staff and policy advisors. These personal staffers track their member's bills, negotiate with other offices on amendments, count votes, and advise on political strategy. For controversial bills, most negotiations happen staff-to-staff before members ever discuss the issue.
+              </p>
+              <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-900 mb-0">
+                  <strong>The staffer who becomes your ally:</strong> When a legislator's chief of staff trusts you to provide accurate information and honest analysis, that relationship opens doors. They'll call you when they need expertise on your issue. They'll warn you when problems are emerging. Personal staff relationships compound over time—this session's helpful interaction becomes next session's advocacy advantage.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Leadership Staff Who Control Calendars</h3>
+              <p class="text-muted-foreground mb-4">
+                The Speaker's office and Lieutenant Governor's office employ policy directors who manage leadership priorities, coordinate committee schedules, and advise on which bills deserve floor time. These leadership staffers wield enormous power without holding elected office.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0">
+                  <strong>Access to leadership staff = access to the process.</strong> A leadership staffer who knows you and trusts your analysis can flag issues for leadership attention, coordinate coalition building across committees, and smooth scheduling conflicts. These relationships take years to build. Once established, they're invaluable.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-red-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Coalition Attorneys and Policy Experts</h3>
+              <p class="text-muted-foreground mb-4">
+                Large coalitions employ attorneys and policy experts who draft legislation, coordinate stakeholder input, and negotiate compromises. These outside experts often write the first draft of bill language before any legislator gets involved.
+              </p>
+              <div class="bg-red-100 rounded-lg p-4">
+                <p class="text-sm text-red-900 mb-0">
+                  <strong>When coalition dynamics matter:</strong> If your issue affects multiple industries, coalition-drafted language often becomes the starting point for legislation. Being part of the coalition that drafts the bill gives you influence over initial language. Joining after the draft is complete means fighting uphill to change provisions already baked in.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-amber-900">Why Staff Relationships Are Long-Term Assets</h3>
+            <p class="text-sm text-amber-900 mb-0">
+              Legislative staff move between offices, committees, and jobs. The committee staffer you work with this session might become a chief of staff next session, or join a state agency, or become a lobbyist themselves. These relationships compound over years. The staffer who trusts you today becomes the agency director who takes your call in 2029. Invest in staff relationships with the same care you invest in legislator relationships.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: What Happens When Bills Die -->
+      <section id="when-bills-die" class="mb-16 scroll-mt-8">
+        <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">What Happens When Bills Die (And How They Come Back)</h2>
+          <p class="text-blue-700 font-medium">Interim study assignments, pre-filing, and the two-year cycle</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            Day 140 arrives. Your bill didn't pass. It died in committee, or got left pending, or passed one chamber but not the other. That doesn't mean the issue is dead—it means you're waiting 18 months to try again. Understanding what happens between sessions determines whether your next attempt succeeds.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Interim Study Assignments</h3>
+              <p class="text-muted-foreground mb-4">
+                When session ends, the Speaker and Lieutenant Governor issue "interim charges"—topics they assign committees to study during the 18-month interim. Committees hold hearings, invite testimony, research best practices, and issue reports recommending legislation for next session.
+              </p>
+              <div class="bg-texas-blue-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-texas-blue-900 mb-2">
+                  <strong>Strategic opportunity:</strong>
+                </p>
+                <p class="text-sm text-texas-blue-800 mb-0">
+                  If your issue gets included in interim charges, that's a signal leadership considers it important. Testifying at interim hearings positions your organization as a stakeholder and allows you to shape committee recommendations before next session starts. Bills based on interim study reports have higher success rates because they've been publicly vetted.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Pre-Filing for Next Session</h3>
+              <p class="text-muted-foreground mb-4">
+                Pre-filing opens the first Monday after the November election (18 months after the previous session ended). Legislators can file bills before session officially starts in January. Leadership priorities get filed early and claim low bill numbers.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0">
+                  <strong>Why early filing matters:</strong> Low bill numbers signal leadership backing. Bills filed in November have more time for coalition building, committee positioning, and stakeholder input before session starts. Bills filed on Day 59 (the deadline) are scrambling from the start. Early filing doesn't guarantee success, but it creates better odds.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">How Dead Ideas Come Back</h3>
+              <p class="text-muted-foreground mb-4">
+                Ideas that failed one session often succeed the next—if proponents spend the interim building support, addressing opposition concerns, and positioning for success. Bills that get filed identically every session without interim work fail repeatedly.
+              </p>
+              <div class="bg-muted rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-2">What successful re-filing looks like:</p>
+                <ul class="text-sm space-y-1 ml-4">
+                  <li>• Testify at interim hearings showing continued stakeholder interest</li>
+                  <li>• Meet with committee members and staff during interim to discuss concerns</li>
+                  <li>• Build coalitions with organizations that opposed you last time</li>
+                  <li>• Address technical problems or unintended consequences identified last session</li>
+                  <li>• Demonstrate political or economic changes that make the bill more viable</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">The Two-Year Cycle</h3>
+              <p class="text-muted-foreground mb-4">
+                Unlike states with annual sessions, Texas operates on a two-year legislative cycle. Bills that fail in 2025 can't be reconsidered until 2027. That 24-month gap changes strategic calculations—waiting two years for another attempt means problems persist, opportunities are missed, and opponents have more time to organize.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4">
+                <p class="text-sm text-orange-900 mb-0">
+                  <strong>Cost of the two-year cycle:</strong> A regulatory problem costing your business $10,000/month becomes a $240,000 problem if you miss session and have to wait two years. A market opportunity requiring statutory change stays closed for 24 months. The biennial cycle raises the stakes for every legislative session.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-red-50 border-l-4 border-red-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-red-900">Special Sessions Can Bypass the Two-Year Wait</h3>
+            <p class="text-sm text-red-900 mb-3">
+              The Governor can call special sessions limited to 30 days, and the legislature can only consider items the Governor includes on the call. Special sessions have happened for redistricting, school finance, and other urgent issues.
+            </p>
+            <p class="text-sm text-red-900">
+              But don't count on special sessions for your issue. Your problem has to be urgent enough to the Governor that they'll spend political capital calling a special session and including it on the agenda. Unless you have that level of influence, plan on the regular session being your only opportunity.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: Why Understanding the Real Process Matters -->
+      <section id="why-it-matters" class="mb-16 scroll-mt-8">
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-2">Why Understanding the Real Process Matters</h2>
+          <p class="text-green-700 font-medium">Where influence gets applied and which relationships actually deliver results</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <p>
+            The textbook version of lawmaking misleads people about where influence matters. Organizations waste resources lobbying members who don't control outcomes. They focus on public hearings instead of staff briefings. They celebrate committee passage without realizing the Calendars Committee will kill their bill in 30 days.
+          </p>
+
+          <p>
+            Understanding the real process reveals leverage points that determine success.
+          </p>
+
+          <div class="not-prose my-8 space-y-6">
+            <div class="bg-white border-l-4 border-texas-blue-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Why Committee Staff Matter More Than Most Legislators</h3>
+              <p class="text-muted-foreground mb-4">
+                Committee staff write amendments, brief chairmen, research fiscal impacts, and manage hearing schedules. One committee staffer who trusts you can be worth more than ten legislators who are friendly but uninvolved.
+              </p>
+              <div class="bg-texas-blue-50 rounded-lg p-4">
+                <p class="text-sm text-texas-blue-900 mb-0">
+                  <strong>Strategic implication:</strong> If your lobbyist's pitch is "I know 50 legislators," ask them "Do you know committee staff and what's your history working with them?" Staff relationships determine whether bills get scheduled, amended, or left pending. Legislator relationships matter. Staff relationships determine outcomes.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-purple-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">How Calendar Politics Kill More Bills Than Votes</h3>
+              <p class="text-muted-foreground mb-4">
+                The Calendars Committee's 30-day rule means bills can pass their substantive committee unanimously and still die without ever getting a floor vote. Time is a weapon. Scheduling is power.
+              </p>
+              <div class="bg-purple-50 rounded-lg p-4">
+                <p class="text-sm text-purple-900 mb-0">
+                  <strong>Strategic implication:</strong> Defensive lobbying that convinces Calendars not to schedule a bill is cheaper and easier than defeating it on the floor. Offensive lobbying that gets your bill scheduled quickly—before calendar congestion hits—dramatically improves passage odds. Calendar strategy matters more than most organizations realize.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-green-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Where Lobbyists Add Value (Access to Invisible Stages)</h3>
+              <p class="text-muted-foreground mb-4">
+                Lobbyists don't just attend public hearings—anyone can do that. Lobbyists have access to committee staff before hearings, to leadership aides who control calendars, to conference committee members negotiating final language, and to Governor's office policy directors evaluating bills.
+              </p>
+              <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-900 mb-0">
+                  <strong>Strategic implication:</strong> The public parts of the process (hearings, floor debates, votes) are where outcomes get recorded. The invisible parts (staff briefings, hallway negotiations, conference committee deals) are where outcomes get determined. Good lobbyists operate in both worlds. Great lobbyists know the invisible parts matter more.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white border-l-4 border-orange-500 rounded-r-lg p-6">
+              <h3 class="text-xl font-bold mb-3">Specific Examples of Bills That Followed the "Real" Path</h3>
+              <p class="text-muted-foreground mb-4">
+                Last session, a telecommunications bill passed the House 132-12. Overwhelming support. It went to the Senate, passed committee 9-0, then died when Calendars never scheduled it because one influential senator opposed a single provision and asked leadership not to bring it up. No vote. No public opposition. Just calendar leverage.
+              </p>
+              <div class="bg-orange-50 rounded-lg p-4">
+                <p class="text-sm text-orange-900 mb-0">
+                  <strong>Another example:</strong> A healthcare bill died in committee Day 95. Dead. Done. Then on Day 136, a conference committee on a different healthcare bill added the dead bill's language to their report. Both chambers accepted the conference report. The dead bill became law without ever getting a floor vote. Conference committee resurrection—exactly as the real process works.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="not-prose bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-2 text-blue-900">The Gap Between Public Process and Real Process</h3>
+            <p class="text-sm text-blue-900 mb-0">
+              The textbook process teaches civic structure. The real process reveals power dynamics. Organizations that understand both succeed. Organizations that only understand the textbook version waste resources on public theater while decisions get made in rooms they don't have access to. The gap between the two versions is where lobbyists operate—and where outcomes get determined.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <div class="bg-gradient-to-br from-texas-blue-50 to-texas-blue-100 rounded-2xl p-8 lg:p-12">
+          <h2 class="text-3xl font-bold mb-6">The Process Beyond the Flowchart</h2>
+
+          <div class="prose prose-lg max-w-none mb-8">
+            <p>
+              The civics class flowchart is accurate. Bills do get filed, assigned to committees, debated, and voted on. But that flowchart leaves out the staff who write amendments, the calendar politics that kill bills without votes, the conference committees that rewrite legislation behind closed doors, and the relationships that determine which bills get scheduled and which die pending.
+            </p>
+
+            <p>
+              Understanding the real process reveals where influence gets applied. Committee staff matter more than most legislators. Calendar positioning beats passionate floor speeches. Conference committee negotiations trump everything that came before. And relationships built during the interim determine outcomes the following session.
+            </p>
+
+            <p>
+              If you're hiring a lobbyist or trying to influence Texas legislation, look for people who understand this invisible architecture. Ask them about committee staff relationships, not just legislator connections. Ask how they navigate calendar politics. Ask about their track record in conference committees. The textbook version explains how a bill becomes a law. The real version explains how laws actually get made.
+            </p>
+
+            <p>
+              The 89th Legislature convenes January 14, 2025. Between now and then, committee staff are being hired, relationships are being built, interim hearings are positioning next session's priorities, and bill language is being drafted. The work that determines session outcomes is happening right now—during the time most organizations aren't paying attention.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg border border-texas-blue-200 p-6">
+            <h3 class="text-xl font-bold mb-4">Find Lobbyists Who Understand the Real Process</h3>
+            <p class="text-muted-foreground mb-6">
+              Search Texas lobbyists who know committee staff, understand calendar politics, and have track records navigating conference committees. The relationships that matter aren't on the organizational chart.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a
+                href="/lobbyists"
+                class="inline-flex items-center justify-center rounded-lg bg-texas-blue-500 px-6 py-3 text-base font-semibold text-white hover:bg-texas-blue-600 transition-colors"
+              >
+                Search Texas Lobbyists
+              </a>
+              <a
+                href="/guides/how-to-hire-a-lobbyist-in-texas"
+                class="inline-flex items-center justify-center rounded-lg border-2 border-texas-blue-500 px-6 py-3 text-base font-semibold text-texas-blue-600 hover:bg-texas-blue-50 transition-colors"
+              >
+                How to Hire a Lobbyist
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Guides -->
+      <section class="mt-16 pt-16 border-t border-border">
+        <h2 class="text-2xl font-bold mb-8">Related Guides</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href="/guides/understanding-texas-legislative-deadlines" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              Understanding Texas Legislative Deadlines
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              The 140-day session, bill filing deadlines, committee kill points, and why timing determines legislative success.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+
+          <a href="/guides/what-does-a-lobbyist-do" class="group rounded-xl border border-border bg-white p-6 hover:border-texas-blue-300 hover:shadow-lg transition-all">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">
+              What Does a Lobbyist Do?
+            </h3>
+            <p class="text-muted-foreground mb-4">
+              Inside look at what lobbying looks like day-to-day—from committee staff meetings to coalition building and crisis management.
+            </p>
+            <span class="text-sm font-medium text-texas-blue-600 group-hover:underline">
+              Read guide →
+            </span>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </article>
+
+  <!-- Back to Guides -->
+  <section class="py-8 border-t border-border">
+    <div class="container max-w-4xl">
+      <a
+        href="/guides"
+        class="inline-flex items-center text-texas-blue-500 hover:underline"
+      >
+        ← Back to all guides
+      </a>
+    </div>
+  </section>
+</Layout>

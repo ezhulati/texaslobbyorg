@@ -12,9 +12,10 @@ import BillStatusBadge from './BillStatusBadge.astro';
 
 interface Props {
   bill: Bill;
+  introHook?: string;
 }
 
-const { bill } = Astro.props;
+const { bill, introHook } = Astro.props;
 
 const formattedBillNumber = formatBillNumber(bill.bill_number);
 const chamberName = getChamberName(bill.chamber);
@@ -40,6 +41,13 @@ const chamberName = getChamberName(bill.chamber);
     <h2 class="text-2xl font-semibold text-gray-900 leading-tight mt-6">
       {bill.title}
     </h2>
+
+    {/* Intro Hook - Engaging first sentence */}
+    {introHook && (
+      <p class="text-lg text-gray-700 leading-relaxed mt-4 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/30">
+        {introHook}
+      </p>
+    )}
   </div>
 
   {/* Metadata Grid */}

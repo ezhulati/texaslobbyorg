@@ -24,15 +24,16 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { url: 'industries', priority: '0.8', changefreq: 'weekly' },
   { url: 'subjects', priority: '0.8', changefreq: 'weekly' },
   { url: 'cities', priority: '0.8', changefreq: 'weekly' },
+  { url: 'guides', priority: '0.8', changefreq: 'weekly' },
+  { url: 'blog', priority: '0.8', changefreq: 'weekly' },
 
   // Content pages
   { url: 'reports/2025', priority: '0.8', changefreq: 'monthly' },
-  { url: 'guides/how-to-hire-a-lobbyist-in-texas', priority: '0.7', changefreq: 'monthly' },
-  { url: 'guides/how-to-become-a-lobbyist-in-texas', priority: '0.7', changefreq: 'monthly' },
-  { url: 'guides/how-much-does-a-lobbyist-cost', priority: '0.7', changefreq: 'monthly' },
+
+  // Note: Individual guides and blog posts are now auto-discovered from file system
+  // No need to manually add them here - see sitemap.xml.ts
 
   // Add new sections here as you create them:
-  // { url: 'blog', priority: '0.7', changefreq: 'daily' },
   // { url: 'about', priority: '0.6', changefreq: 'monthly' },
 ];
 

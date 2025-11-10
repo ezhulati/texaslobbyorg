@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase';
 import { INDUSTRY_SLUGS } from '@/lib/industries-data';
 import { STATIC_ROUTES } from '@/lib/sitemap-config';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export const GET: APIRoute = async ({ site }) => {
   const siteUrl = site?.toString() || 'https://texaslobby.org';
@@ -54,20 +56,37 @@ export const GET: APIRoute = async ({ site }) => {
     changefreq: 'weekly',
   }));
 
-  // Add new database-driven sections here as you create them:
-  // Example for /reports section:
-  // const { data: reports } = await supabase
-  //   .from('reports')
-  //   .select('slug, updated_at')
-  //   .eq('is_published', true)
-  //   .order('slug');
-  //
-  // const reportPages = (reports || []).map(report => ({
-  //   url: `reports/${report.slug}`,
-  //   lastmod: report.updated_at ? new Date(report.updated_at).toISOString().split('T')[0] : undefined,
-  //   priority: '0.7',
-  //   changefreq: 'monthly',
-  // }));
+  // Auto-discover guide pages from file system
+  const guidesDir = join(process.cwd(), 'src/pages/guides');
+  let guidePages: any[] = [];
+  try {
+    const guideFiles = await readdir(guidesDir);
+    guidePages = guideFiles
+      .filter(file => file.endsWith('.astro') && file !== 'index.astro')
+      .map(file => ({
+        url: `guides/${file.replace('.astro', '')}`,
+        priority: '0.7',
+        changefreq: 'monthly',
+      }));
+  } catch (error) {
+    console.error('Error reading guides directory:', error);
+  }
+
+  // Auto-discover blog posts from file system
+  const blogDir = join(process.cwd(), 'src/pages/blog');
+  let blogPages: any[] = [];
+  try {
+    const blogFiles = await readdir(blogDir);
+    blogPages = blogFiles
+      .filter(file => file.endsWith('.astro') && file !== 'index.astro')
+      .map(file => ({
+        url: `blog/${file.replace('.astro', '')}`,
+        priority: '0.7',
+        changefreq: 'monthly',
+      }));
+  } catch (error) {
+    console.error('Error reading blog directory:', error);
+  }
 
   // Combine all pages
   const allPages = [
@@ -76,9 +95,8 @@ export const GET: APIRoute = async ({ site }) => {
     ...lobbyistPages,
     ...subjectPages,
     ...cityPages,
-    // Add new sections here:
-    // ...reportPages,
-    // ...guidePages,
+    ...guidePages,
+    ...blogPages,
   ];
 
   // Generate XML

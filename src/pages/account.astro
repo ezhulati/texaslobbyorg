@@ -382,6 +382,10 @@ if (!isAuthenticated || !currentUser) {
 
       if (response.ok) {
         showMessage('success', 'Profile updated successfully!');
+        // Reload page after 1 second to fetch updated user data
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         showMessage('error', data.error || 'Failed to update profile');
       }

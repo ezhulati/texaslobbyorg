@@ -1,0 +1,562 @@
+openapi: 3.0.3
+info:
+  title: Bills API
+  description: API endpoints for searching, viewing, and interacting with Texas legislative bills
+  version: 1.0.0
+  contact:
+    name: TexasLobby.org API Team
+
+servers:
+  - url: https://texaslobby.org/api
+    description: Production
+  - url: http://localhost:4321/api
+    description: Local development
+
+tags:
+  - name: Bills
+    description: Bill search and details
+  - name: Related
+    description: Related bills and amendments
+
+paths:
+  /bills/search:
+    get:
+      tags:
+        - Bills
+      summary: Search for Texas legislative bills
+      description: |
+        Full-text search across bills with filtering by subject area, session, and status.
+        Results ranked by: lobbyist tier > text relevance > view count > alphabetical.
+      operationId: searchBills
+      parameters:
+        - name: q
+          in: query
+          description: Search query (searches bill number, title, summary, full text)
+          required: false
+          schema:
+            type: string
+            example: "education funding"
+        - name: subjects
+          in: query
+          description: Filter by subject areas (comma-separated)
+          required: false
+          schema:
+            type: string
+            example: "Healthcare,Education"
+        - name: session
+          in: query
+          description: Filter by session code (e.g., "89R", "881")
+          required: false
+          schema:
+            type: string
+            example: "89R"
+        - name: status
+          in: query
+          description: Filter by bill status
+          required: false
+          schema:
+            type: string
+            enum:
+              - filed
+              - referred
+              - hearing_scheduled
+              - committee_passed
+              - committee_failed
+              - floor_calendar
+              - passed_chamber
+              - sent_to_other_chamber
+              - passed_both_chambers
+              - sent_to_governor
+              - signed
+              - vetoed
+              - dead
+        - name: limit
+          in: query
+          description: Number of results to return
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of results to skip (for pagination)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bills:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillSummary'
+                  total:
+                    type: integer
+                    description: Total number of matching bills
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+              example:
+                bills:
+                  - id: "550e8400-e29b-41d4-a716-446655440000"
+                    bill_number: "HB 1"
+                    chamber: "house"
+                    title: "AN ACT relating to public school finance"
+                    summary: "Appropriations for public education funding"
+                    status: "passed_chamber"
+                    subject_areas: ["Education", "Finance"]
+                    filed_date: "2025-01-15"
+                    slug: "89r-hb-1"
+                total: 1523
+                limit: 20
+                offset: 0
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}:
+    get:
+      tags:
+        - Bills
+      summary: Get bill details
+      description: Retrieve complete information about a specific bill
+      operationId: getBillById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/slug/{slug}:
+    get:
+      tags:
+        - Bills
+      summary: Get bill by slug
+      description: Retrieve bill details using human-readable slug (e.g., "89r-hb-1")
+      operationId: getBillBySlug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Bill slug (e.g., "89r-hb-1")
+          schema:
+            type: string
+            example: "89r-hb-1"
+      responses:
+        '200':
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}/related:
+    get:
+      tags:
+        - Related
+      summary: Get related bills
+      description: Find companion bills (same content in other chamber) and similar bills
+      operationId: getRelatedBills
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Related bills
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  companion_bill:
+                    $ref: '#/components/schemas/BillSummary'
+                    nullable: true
+                  similar_bills:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillSummary'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}/amendments:
+    get:
+      tags:
+        - Related
+      summary: Get bill amendment history
+      description: Retrieve all amendments filed for this bill
+      operationId: getBillAmendments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Amendment history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amendments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillUpdate'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}/updates:
+    get:
+      tags:
+        - Related
+      summary: Get bill update history
+      description: Retrieve complete history of status changes and actions
+      operationId: getBillUpdates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Update history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillUpdate'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}/lobbyists:
+    get:
+      tags:
+        - Related
+      summary: Get lobbyists associated with bill
+      description: Find lobbyists who have tagged this bill or specialize in its subject areas
+      operationId: getBillLobbyists
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Associated lobbyists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lobbyists:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LobbyistWithTag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{id}/increment-views:
+    post:
+      tags:
+        - Bills
+      summary: Increment bill view count
+      description: Track page view for analytics (called client-side)
+      operationId: incrementBillViews
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: View count incremented
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    BillSummary:
+      type: object
+      required:
+        - id
+        - bill_number
+        - chamber
+        - title
+        - status
+        - slug
+      properties:
+        id:
+          type: string
+          format: uuid
+        bill_number:
+          type: string
+          example: "HB 1"
+        chamber:
+          type: string
+          enum: [house, senate]
+        title:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+            - filed
+            - referred
+            - hearing_scheduled
+            - committee_passed
+            - committee_failed
+            - floor_calendar
+            - passed_chamber
+            - sent_to_other_chamber
+            - passed_both_chambers
+            - sent_to_governor
+            - signed
+            - vetoed
+            - dead
+        subject_areas:
+          type: array
+          items:
+            type: string
+        filed_date:
+          type: string
+          format: date
+          nullable: true
+        slug:
+          type: string
+          example: "89r-hb-1"
+
+    BillDetail:
+      allOf:
+        - $ref: '#/components/schemas/BillSummary'
+        - type: object
+          properties:
+            full_text:
+              type: string
+              description: Complete bill text (HTML stripped)
+              nullable: true
+            full_text_url:
+              type: string
+              format: uri
+              description: Link to official bill text
+              nullable: true
+            primary_author:
+              type: string
+            coauthors:
+              type: array
+              items:
+                type: string
+            keywords:
+              type: array
+              items:
+                type: string
+            status_date:
+              type: string
+              format: date-time
+            last_action:
+              type: string
+              nullable: true
+            committee_referrals:
+              type: array
+              items:
+                type: string
+            fiscal_note_url:
+              type: string
+              format: uri
+              nullable: true
+            companion_bill_id:
+              type: string
+              format: uuid
+              nullable: true
+            view_count:
+              type: integer
+            session:
+              $ref: '#/components/schemas/Session'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_number:
+          type: integer
+          example: 89
+        session_type:
+          type: string
+          enum: [regular, special]
+        called_session_number:
+          type: integer
+          nullable: true
+        session_code:
+          type: string
+          example: "89R"
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        is_active:
+          type: boolean
+
+    BillUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bill_id:
+          type: string
+          format: uuid
+        update_type:
+          type: string
+          enum: [status_change, amendment, vote, hearing, other]
+        previous_status:
+          type: string
+          nullable: true
+        new_status:
+          type: string
+          nullable: true
+        description:
+          type: string
+        changed_at:
+          type: string
+          format: date-time
+
+    LobbyistWithTag:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        slug:
+          type: string
+        subscription_tier:
+          type: string
+          enum: [free, premium, featured]
+        subject_areas:
+          type: array
+          items:
+            type: string
+        bill_tag:
+          type: object
+          nullable: true
+          properties:
+            notes:
+              type: string
+              description: Lobbyist's analysis/insights on this bill
+              nullable: true
+            notes_updated_at:
+              type: string
+              format: date-time
+              nullable: true
+            created_at:
+              type: string
+              format: date-time
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid query parameter"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Bill not found"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "An unexpected error occurred"

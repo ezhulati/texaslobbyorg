@@ -1,0 +1,527 @@
+openapi: 3.0.3
+info:
+  title: Bill Tags API
+  description: API endpoints for lobbyists to tag bills and add expertise insights
+  version: 1.0.0
+
+servers:
+  - url: https://texaslobby.org/api
+    description: Production
+  - url: http://localhost:4321/api
+    description: Local development
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Bill Tags
+    description: Lobbyist bill tagging and expertise management
+
+paths:
+  /bills/tags:
+    get:
+      tags:
+        - Bill Tags
+      summary: Get lobbyist's tagged bills
+      description: Retrieve all bills the authenticated lobbyist has tagged
+      operationId: getLobbyistTags
+      parameters:
+        - name: lobbyist_id
+          in: query
+          description: Lobbyist ID (optional - defaults to authenticated lobbyist)
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lobbyist's tagged bills
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillTag'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                    description: Maximum bills lobbyist can tag (-1 for unlimited)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags:
+        - Bill Tags
+      summary: Tag a bill
+      description: |
+        Claim expertise on a bill by tagging it. Optionally add analysis/insights.
+
+        **Limits**:
+        - Free tier: 5 bills maximum
+        - Premium/Featured: Unlimited
+
+        **Requirements**:
+        - User must have lobbyist profile
+        - Premium or Featured subscription required for insights/notes
+      operationId: createBillTag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - bill_id
+              properties:
+                bill_id:
+                  type: string
+                  format: uuid
+                  description: Bill to tag
+                notes:
+                  type: string
+                  description: Analysis or insights about the bill (premium/featured only)
+                  nullable: true
+                  maxLength: 5000
+      responses:
+        '201':
+          description: Bill tagged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillTag'
+        '400':
+          description: Invalid request or tag limit exceeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Tag limit exceeded. Upgrade to premium for unlimited tagging."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not a lobbyist or insufficient subscription tier
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Premium subscription required to add notes"
+        '409':
+          description: Bill already tagged by this lobbyist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You have already tagged this bill"
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/tags/{id}:
+    get:
+      tags:
+        - Bill Tags
+      summary: Get bill tag details
+      description: Retrieve specific bill tag with notes
+      operationId: getBillTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill tag ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Bill tag details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillTag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Bill Tags
+      summary: Update bill tag notes
+      description: Update the lobbyist's analysis/insights for a tagged bill
+      operationId: updateBillTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill tag ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - notes
+              properties:
+                notes:
+                  type: string
+                  description: Updated analysis or insights
+                  maxLength: 5000
+      responses:
+        '200':
+          description: Tag updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillTag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not the tag owner or insufficient subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You can only update your own tags"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Bill Tags
+      summary: Remove bill tag
+      description: Untag a bill (removes lobbyist's claim of expertise)
+      operationId: deleteBillTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill tag ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Tag removed successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not the tag owner
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You can only delete your own tags"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/{bill_id}/tags:
+    get:
+      tags:
+        - Bill Tags
+      summary: Get all tags for a bill
+      description: Retrieve all lobbyists who have tagged this bill (public endpoint)
+      operationId: getBillTags
+      security: []  # Public endpoint
+      parameters:
+        - name: bill_id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Bill tags from all lobbyists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillTagWithLobbyist'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/tags/stats:
+    get:
+      tags:
+        - Bill Tags
+      summary: Get tag statistics
+      description: Get summary stats about lobbyist's tagging activity
+      operationId: getBillTagStats
+      responses:
+        '200':
+          description: Tag statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_tagged:
+                    type: integer
+                    example: 12
+                  limit:
+                    type: integer
+                    example: 5
+                    description: Maximum bills lobbyist can tag (-1 for unlimited)
+                  tags_with_notes:
+                    type: integer
+                    example: 8
+                    description: Number of tags with analysis/insights
+                  recent_tags_count:
+                    type: integer
+                    example: 3
+                    description: Tags added in last 30 days
+                  subscription_tier:
+                    type: string
+                    enum: [free, premium, featured]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/tags/flag/{id}:
+    post:
+      tags:
+        - Bill Tags
+      summary: Flag inappropriate tag
+      description: Report a bill tag as inappropriate or irrelevant (for moderation)
+      operationId: flagBillTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bill tag ID to flag
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  description: Reason for flagging
+                  enum:
+                    - irrelevant
+                    - spam
+                    - misleading
+                    - inappropriate
+                    - other
+                details:
+                  type: string
+                  description: Additional context
+                  maxLength: 500
+      responses:
+        '201':
+          description: Tag flagged for review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Tag flagged for admin review"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    BillTag:
+      type: object
+      required:
+        - id
+        - bill_id
+        - lobbyist_id
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        bill_id:
+          type: string
+          format: uuid
+        lobbyist_id:
+          type: string
+          format: uuid
+        bill:
+          $ref: '#/components/schemas/BillSummary'
+        notes:
+          type: string
+          nullable: true
+          description: Lobbyist's analysis or insights
+        notes_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    BillTagWithLobbyist:
+      allOf:
+        - $ref: '#/components/schemas/BillTag'
+        - type: object
+          properties:
+            lobbyist:
+              $ref: '#/components/schemas/LobbyistSummary'
+
+    BillSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bill_number:
+          type: string
+          example: "HB 1"
+        chamber:
+          type: string
+          enum: [house, senate]
+        title:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        status:
+          type: string
+        slug:
+          type: string
+
+    LobbyistSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        slug:
+          type: string
+        subscription_tier:
+          type: string
+          enum: [free, premium, featured]
+        subject_areas:
+          type: array
+          items:
+            type: string
+        profile_image_url:
+          type: string
+          format: uri
+          nullable: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Supabase JWT token from authenticated session
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication required"
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Lobbyist account required"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

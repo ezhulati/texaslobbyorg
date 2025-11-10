@@ -1,0 +1,58 @@
+name: Send Bill Update Notifications
+
+on:
+  # Run every hour during legislative session
+  schedule:
+    - cron: "0 * * * *"
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for bill updates and send notifications
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          echo "📧 Checking for pending notifications..."
+          npx tsx scripts/send-bill-notifications.ts
+
+      - name: Report notification status
+        if: always()
+        run: |
+          echo "## Notification Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Time: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ Bill Notification Job Failed',
+              body: `The bill notification job failed on ${new Date().toISOString()}.\n\nUsers may not receive timely bill update notifications.\n\nCheck the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`,
+              labels: ['automation', 'notifications', 'bug']
+            });

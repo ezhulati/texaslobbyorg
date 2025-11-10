@@ -1,0 +1,434 @@
+openapi: 3.0.3
+info:
+  title: Watchlist API
+  description: API endpoints for managing user bill watchlists and notification preferences
+  version: 1.0.0
+
+servers:
+  - url: https://texaslobby.org/api
+    description: Production
+  - url: http://localhost:4321/api
+    description: Local development
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Watchlist
+    description: User bill tracking and watchlist management
+
+paths:
+  /bills/watchlist:
+    get:
+      tags:
+        - Watchlist
+      summary: Get user's watchlist
+      description: Retrieve all bills the authenticated user is tracking
+      operationId: getWatchlist
+      responses:
+        '200':
+          description: User's watchlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  watchlist:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WatchlistItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags:
+        - Watchlist
+      summary: Add bill to watchlist
+      description: |
+        Add a bill to the user's watchlist with notification preferences.
+
+        **Limits**:
+        - Free tier: 10 bills maximum
+        - Premium/Featured: Unlimited
+      operationId: addToWatchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - bill_id
+              properties:
+                bill_id:
+                  type: string
+                  format: uuid
+                  description: ID of the bill to track
+                notifications_enabled:
+                  type: boolean
+                  default: true
+                  description: Enable notifications for this bill
+                notify_on_status_change:
+                  type: boolean
+                  default: true
+                notify_on_hearing:
+                  type: boolean
+                  default: true
+                notify_on_amendment:
+                  type: boolean
+                  default: true
+                notify_on_vote:
+                  type: boolean
+                  default: true
+                notify_on_governor_action:
+                  type: boolean
+                  default: true
+                digest_mode:
+                  type: boolean
+                  default: false
+                  description: Receive daily digest instead of immediate notifications
+      responses:
+        '201':
+          description: Bill added to watchlist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistItem'
+        '400':
+          description: Invalid request or watchlist limit exceeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Watchlist limit exceeded. Upgrade to premium for unlimited tracking."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Bill already in watchlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Bill already in your watchlist"
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/watchlist/{id}:
+    get:
+      tags:
+        - Watchlist
+      summary: Get watchlist entry details
+      description: Retrieve specific watchlist entry with notification preferences
+      operationId: getWatchlistEntry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist entry ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Watchlist entry details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Watchlist
+      summary: Update notification preferences
+      description: Modify notification settings for a tracked bill
+      operationId: updateWatchlistEntry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist entry ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notifications_enabled:
+                  type: boolean
+                notify_on_status_change:
+                  type: boolean
+                notify_on_hearing:
+                  type: boolean
+                notify_on_amendment:
+                  type: boolean
+                notify_on_vote:
+                  type: boolean
+                notify_on_governor_action:
+                  type: boolean
+                digest_mode:
+                  type: boolean
+                digest_time:
+                  type: string
+                  format: time
+                  example: "08:00:00"
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Watchlist
+      summary: Remove bill from watchlist
+      description: Stop tracking a bill (removes from watchlist)
+      operationId: removeFromWatchlist
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist entry ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Bill removed from watchlist
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/watchlist/bill/{bill_id}:
+    delete:
+      tags:
+        - Watchlist
+      summary: Remove bill by bill ID
+      description: Alternative endpoint to remove bill using bill ID instead of watchlist entry ID
+      operationId: removeFromWatchlistByBillId
+      parameters:
+        - name: bill_id
+          in: path
+          required: true
+          description: Bill UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Bill removed from watchlist
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bills/watchlist/stats:
+    get:
+      tags:
+        - Watchlist
+      summary: Get watchlist statistics
+      description: Get summary stats about user's watchlist (count, limits, recent updates)
+      operationId: getWatchlistStats
+      responses:
+        '200':
+          description: Watchlist statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_tracked:
+                    type: integer
+                    example: 7
+                  limit:
+                    type: integer
+                    example: 10
+                    description: Maximum bills user can track (10 for free, -1 for unlimited)
+                  notifications_enabled_count:
+                    type: integer
+                    example: 5
+                  recent_updates_count:
+                    type: integer
+                    example: 3
+                    description: Number of tracked bills updated in last 24 hours
+                  subscription_tier:
+                    type: string
+                    enum: [free, premium, featured]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    WatchlistItem:
+      type: object
+      required:
+        - id
+        - bill_id
+        - bill
+        - notifications_enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Watchlist entry ID
+        bill_id:
+          type: string
+          format: uuid
+        bill:
+          $ref: '#/components/schemas/BillSummary'
+        notifications_enabled:
+          type: boolean
+        notify_on_status_change:
+          type: boolean
+        notify_on_hearing:
+          type: boolean
+        notify_on_amendment:
+          type: boolean
+        notify_on_vote:
+          type: boolean
+        notify_on_governor_action:
+          type: boolean
+        digest_mode:
+          type: boolean
+        digest_time:
+          type: string
+          format: time
+          example: "08:00:00"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    BillSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bill_number:
+          type: string
+          example: "HB 1"
+        chamber:
+          type: string
+          enum: [house, senate]
+        title:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        status:
+          type: string
+        status_date:
+          type: string
+          format: date-time
+        last_action:
+          type: string
+          nullable: true
+        subject_areas:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Supabase JWT token from authenticated session
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication required"
+
+    Forbidden:
+      description: Access denied (trying to access another user's watchlist)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Access denied"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

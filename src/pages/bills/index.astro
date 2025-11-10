@@ -1,0 +1,100 @@
+---
+/**
+ * Bill Search/Browse Page
+ *
+ * Displays searchable list of Texas legislative bills with filtering.
+ */
+
+import Layout from '@/components/astro/Layout.astro';
+import BillCard from '@/components/astro/bills/BillCard.astro';
+import BillSearchFilter from '@/components/react/bills/BillSearchFilter';
+import BillPagination from '@/components/react/bills/BillPagination';
+import { parseSearchParams, executeBillSearch } from '@/lib/services/billSearch';
+import { getBillSubjectAreas, getLegislativeSessions } from '@/lib/api/bills';
+
+// Parse search params from URL
+const filters = parseSearchParams(Astro.url.searchParams);
+
+// Execute search
+const { bills, pagination } = await executeBillSearch(filters);
+
+// Get filter options
+const subjects = await getBillSubjectAreas();
+const sessions = await getLegislativeSessions();
+
+const pageTitle = filters.query
+  ? `Search Results for "${filters.query}"`
+  : 'Texas Legislative Bills';
+
+const pageDescription = `Search and browse ${bills.length.toLocaleString()}+ Texas legislative bills. Track bill status, find bills by subject area, and stay informed about legislation that impacts your business.`;
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    {/* Page Header */}
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-3">
+        Texas Legislative Bills
+      </h1>
+      <p class="text-lg text-gray-600">
+        Search and monitor bills from the Texas Legislature
+      </p>
+    </div>
+
+    {/* Search and Filters */}
+    <div class="mb-8">
+      <BillSearchFilter
+        client:load
+        initialFilters={filters}
+        subjects={subjects}
+        sessions={sessions}
+      />
+    </div>
+
+    {/* Results Header */}
+    <div class="mb-6">
+      {filters.query || filters.subjects?.length ? (
+        <p class="text-gray-600">
+          Found {bills.length} bill{bills.length === 1 ? '' : 's'}
+          {filters.query && ` matching "${filters.query}"`}
+          {filters.subjects && filters.subjects.length > 0 && ` in ${filters.subjects.join(', ')}`}
+        </p>
+      ) : (
+        <p class="text-gray-600">
+          Showing recent bills
+        </p>
+      )}
+    </div>
+
+    {/* Bill Results */}
+    {bills.length > 0 ? (
+      <div class="space-y-4 mb-8">
+        {bills.map((bill) => (
+          <BillCard bill={bill} showSummary={true} />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">No bills found</h3>
+        <p class="mt-1 text-gray-500">
+          Try adjusting your search or filters
+        </p>
+      </div>
+    )}
+
+    {/* Pagination */}
+    {bills.length > 0 && (
+      <div class="mt-8">
+        <BillPagination
+          client:load
+          currentPage={pagination.page}
+          hasNextPage={pagination.hasMore}
+          hasPrevPage={pagination.page > 1}
+        />
+      </div>
+    )}
+  </div>
+</Layout>

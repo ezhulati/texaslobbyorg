@@ -12,6 +12,10 @@ on:
         description: 'Session code (e.g., 89R, 881)'
         required: false
         default: '89R'
+      limit:
+        description: 'Max bills to sync (default: 100 for daily, use 10000 for full sync)'
+        required: false
+        default: '100'
       dry_run:
         description: 'Dry run (preview without writing to DB)'
         required: false
@@ -43,12 +47,15 @@ jobs:
           PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
+          SESSION="${{ github.event.inputs.session || '89R' }}"
+          LIMIT="${{ github.event.inputs.limit || '100' }}"
+
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "Running dry run sync..."
-            npx tsx scripts/sync-bills.ts --session ${{ github.event.inputs.session || '89R' }} --dry-run --verbose
+            npx tsx scripts/sync-bills-production.ts --session $SESSION --limit $LIMIT --dry-run --verbose
           else
             echo "Running production sync..."
-            npx tsx scripts/sync-bills.ts --session ${{ github.event.inputs.session || '89R' }} --verbose
+            npx tsx scripts/sync-bills-production.ts --session $SESSION --limit $LIMIT
           fi
 
       - name: Report sync status

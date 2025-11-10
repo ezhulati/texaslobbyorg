@@ -12,7 +12,9 @@
     "type-check": "astro check",
     "db:push": "supabase db push",
     "db:seed": "supabase db execute < supabase/seed.sql",
-    "db:setup": "npm run db:push && npm run db:seed"
+    "db:setup": "npm run db:push && npm run db:seed",
+    "bills:sync": "npx tsx scripts/sync-bills-production.ts",
+    "bills:check": "npx tsx scripts/check-bill-tables.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -24,6 +26,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.45.4",
     "astro": "^5.15.3",
+    "basic-ftp": "^5.0.5",
     "cheerio": "^1.1.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.451.0",

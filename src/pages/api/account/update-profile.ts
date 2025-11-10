@@ -56,6 +56,21 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
+    // Also update lobbyist profile if user is a lobbyist
+    // Check both user_id and claimed_by fields
+    const { error: lobbyistUpdateError } = await supabase
+      .from('lobbyists')
+      .update({
+        first_name: updateData.first_name,
+        last_name: updateData.last_name,
+      })
+      .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`);
+
+    if (lobbyistUpdateError) {
+      console.error('Error updating lobbyist profile:', lobbyistUpdateError);
+      // Don't fail the whole request, just log the error
+    }
+
     return new Response(
       JSON.stringify({ success: true, message: 'Profile updated successfully' }),
       {

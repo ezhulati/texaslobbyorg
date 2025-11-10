@@ -10,15 +10,22 @@ if (!user) {
   return Astro.redirect('/login?redirect=/dashboard/upgrade');
 }
 
-// Get user's current subscription tier
+// Get user's current subscription tier and cancellation status
 const supabase = createServerClient();
 const { data: userData } = await supabase
   .from('users')
-  .select('subscription_tier')
+  .select('subscription_tier, cancel_at_period_end, subscription_current_period_end')
   .eq('id', user.id)
   .single();
 
 const currentTier = userData?.subscription_tier || 'free';
+const cancelAtPeriodEnd = userData?.cancel_at_period_end ?? false;
+const periodEnd = userData?.subscription_current_period_end
+  ? new Date(userData.subscription_current_period_end)
+  : null;
+
+// Check if subscription is cancelled but still active
+const isCancelledButActive = cancelAtPeriodEnd && currentTier !== 'free' && periodEnd && periodEnd > new Date();
 
 const pageTitle = currentTier === 'free' ? 'Upgrade Your Profile - TexasLobby.org' : 'Change Your Plan - TexasLobby.org';
 const pageDescription = 'Upgrade to Premium or Featured to maximize your visibility and reach more clients';
@@ -39,12 +46,151 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
         </p>
       </div>
 
+      <!-- Cancellation Warning Banner -->
+      {isCancelledButActive && periodEnd && (
+        <div class="bg-orange-50 border-2 border-orange-300 rounded-lg p-6 mb-8 max-w-4xl mx-auto">
+          <div class="flex items-start gap-4">
+            <svg class="h-8 w-8 text-orange-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-orange-900 mb-2">
+                Scheduled Downgrade to Free - {currentTier === 'premium' ? 'Premium' : 'Featured'} Active Until {periodEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+              </h3>
+              <p class="text-orange-800 mb-4">
+                Your <strong>{currentTier === 'premium' ? 'Premium' : 'Featured'}</strong> subscription will end on <strong>{periodEnd.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>. You'll automatically move to the <strong>Free plan</strong> and keep your basic profile listing.
+              </p>
+              <div class="bg-white border border-orange-200 rounded-md p-4 mb-4">
+                <p class="text-orange-900 font-semibold mb-2">💡 Want to keep your {currentTier === 'premium' ? 'Premium' : 'Featured'} benefits?</p>
+                <p class="text-orange-800 text-sm mb-3">
+                  Reactivate before {periodEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} to avoid losing:
+                </p>
+                <ul class="text-orange-800 text-sm space-y-1 ml-4">
+                  {currentTier === 'premium' && (
+                    <>
+                      <li>• Enhanced visibility in search results</li>
+                      <li>• Priority placement in listings</li>
+                      <li>• Detailed analytics dashboard</li>
+                      <li>• Profile badge</li>
+                    </>
+                  )}
+                  {currentTier === 'featured' && (
+                    <>
+                      <li>• Maximum visibility - top search results</li>
+                      <li>• Homepage featured placement</li>
+                      <li>• Featured badge with icon</li>
+                      <li>• Comprehensive analytics dashboard</li>
+                      <li>• Unlimited client testimonials</li>
+                      <li>• Priority customer support</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+              <button
+                id="reactivate-from-banner-btn"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors font-semibold shadow-md"
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Reactivate {currentTier === 'premium' ? 'Premium' : 'Featured'} Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <!-- Pricing Cards -->
-      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
+      <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
+        <!-- Free Tier -->
+        <div class:list={[
+          'rounded-lg shadow-lg p-8 relative',
+          isCancelledButActive
+            ? 'bg-gray-50 border-2 border-gray-300'
+            : currentTier === 'free'
+              ? 'bg-white border-2 border-gray-400'
+              : 'bg-white border-2 border-gray-200'
+        ]}>
+          <div class:list={[
+            'absolute top-0 right-0 px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold text-white',
+            isCancelledButActive
+              ? 'bg-gray-600'
+              : currentTier === 'free'
+                ? 'bg-gray-600'
+                : 'bg-gray-400'
+          ]}>
+            {isCancelledButActive && periodEnd
+              ? `Active After ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+              : currentTier === 'free' ? 'Current Plan' : 'Free Option'}
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Basic Listing</h2>
+            <div class="flex items-baseline gap-2 mb-4">
+              <span class="text-5xl font-bold text-gray-900">Free</span>
+            </div>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-gray-700">Basic profile listing</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-gray-700">Contact information visible</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-gray-700">Standard search visibility</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-gray-700">Up to 3 client testimonials</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-gray-700">Basic analytics</span>
+            </li>
+          </ul>
+
+          <button
+            class="w-full py-4 rounded-lg transition-colors font-semibold text-lg bg-gray-300 text-gray-600 cursor-not-allowed"
+            disabled
+          >
+            {isCancelledButActive && periodEnd
+              ? `Active After ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+              : currentTier === 'free' ? 'Current Plan' : 'Always Free'}
+          </button>
+        </div>
+
         <!-- Premium Tier -->
-        <div class="bg-white rounded-lg border-2 border-blue-200 shadow-lg p-8 relative">
-          <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
-            {currentTier === 'premium' ? 'Current Plan' : 'Popular'}
+        <div class:list={[
+          'rounded-lg shadow-lg p-8 relative',
+          isCancelledButActive && currentTier === 'premium'
+            ? 'bg-orange-50 border-2 border-orange-300'
+            : 'bg-white border-2 border-blue-200'
+        ]}>
+          <div class:list={[
+            'absolute top-0 right-0 px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold text-white',
+            isCancelledButActive && currentTier === 'premium'
+              ? 'bg-orange-600'
+              : currentTier === 'premium'
+                ? 'bg-blue-600'
+                : 'bg-blue-600'
+          ]}>
+            {isCancelledButActive && currentTier === 'premium' && periodEnd
+              ? `Active Until ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+              : currentTier === 'premium' ? 'Current Plan' : 'Popular'}
           </div>
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Premium Listing</h2>
@@ -68,21 +214,41 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           <button
             class="upgrade-btn w-full py-4 rounded-lg transition-colors font-semibold text-lg disabled:cursor-not-allowed"
             class:list={[
-              currentTier === 'premium' || currentTier === 'featured'
-                ? 'bg-gray-300 text-gray-600'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              isCancelledButActive && currentTier === 'premium'
+                ? 'bg-orange-600 text-white hover:bg-orange-700'
+                : currentTier === 'premium' && !isCancelledButActive
+                  ? 'bg-gray-300 text-gray-600'
+                  : currentTier === 'featured'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
             ]}
             data-tier="premium"
-            disabled={currentTier === 'premium' || currentTier === 'featured'}
+            data-is-reactivation={isCancelledButActive && currentTier === 'premium'}
+            data-is-downgrade={currentTier === 'featured'}
+            disabled={currentTier === 'premium' && !isCancelledButActive}
           >
-            {currentTier === 'premium' ? 'Current Plan' : currentTier === 'featured' ? 'Downgrade to Premium' : 'Upgrade to Premium'}
+            {isCancelledButActive && currentTier === 'premium'
+              ? '🔄 Reactivate Premium'
+              : currentTier === 'premium' ? 'Current Plan' : currentTier === 'featured' ? 'Downgrade to Premium' : 'Upgrade to Premium'}
           </button>
         </div>
 
         <!-- Featured Tier -->
-        <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg border-2 border-purple-300 shadow-lg p-8 relative">
-          <div class="absolute top-0 right-0 bg-purple-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
-            {currentTier === 'featured' ? 'Current Plan' : 'Best Value'}
+        <div class:list={[
+          'rounded-lg shadow-lg p-8 relative',
+          isCancelledButActive && currentTier === 'featured'
+            ? 'bg-orange-50 border-2 border-orange-300'
+            : 'bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-300'
+        ]}>
+          <div class:list={[
+            'absolute top-0 right-0 px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold text-white',
+            isCancelledButActive && currentTier === 'featured'
+              ? 'bg-orange-600'
+              : 'bg-purple-600'
+          ]}>
+            {isCancelledButActive && currentTier === 'featured' && periodEnd
+              ? `Active Until ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+              : currentTier === 'featured' ? 'Current Plan' : 'Best Value'}
           </div>
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Featured Listing</h2>
@@ -106,14 +272,19 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           <button
             class="upgrade-btn w-full py-4 rounded-lg transition-colors font-semibold text-lg disabled:cursor-not-allowed"
             class:list={[
-              currentTier === 'featured'
-                ? 'bg-gray-300 text-gray-600'
-                : 'bg-purple-600 text-white hover:bg-purple-700'
+              isCancelledButActive && currentTier === 'featured'
+                ? 'bg-orange-600 text-white hover:bg-orange-700'
+                : currentTier === 'featured'
+                  ? 'bg-gray-300 text-gray-600'
+                  : 'bg-purple-600 text-white hover:bg-purple-700'
             ]}
             data-tier="featured"
-            disabled={currentTier === 'featured'}
+            data-is-reactivation={isCancelledButActive && currentTier === 'featured'}
+            disabled={currentTier === 'featured' && !isCancelledButActive}
           >
-            {currentTier === 'featured' ? 'Current Plan' : 'Upgrade to Featured'}
+            {isCancelledButActive && currentTier === 'featured'
+              ? '🔄 Reactivate Featured'
+              : currentTier === 'featured' ? 'Current Plan' : 'Upgrade to Featured'}
           </button>
         </div>
       </div>
@@ -292,14 +463,92 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
   </div>
 
   <script define:vars={{ currentTier }}>
+    // Reactivate from banner button
+    document.getElementById('reactivate-from-banner-btn')?.addEventListener('click', async () => {
+      if (!confirm('Reactivate your subscription? Your benefits will continue without interruption.')) {
+        return;
+      }
+
+      const btn = document.getElementById('reactivate-from-banner-btn');
+      if (!btn) return;
+
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Reactivating...';
+
+      try {
+        const response = await fetch('/api/stripe/reactivate-subscription', {
+          method: 'POST',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to reactivate subscription');
+        }
+
+        alert('🎉 Your subscription has been reactivated! You won\'t lose access.');
+        window.location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    });
+
+    // Upgrade/Reactivate/Downgrade buttons on pricing cards
     document.querySelectorAll('.upgrade-btn').forEach(button => {
       button.addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         const tier = btn.dataset.tier;
+        const isReactivation = btn.dataset.isReactivation === 'true';
+        const isDowngrade = btn.dataset.isDowngrade === 'true';
 
         // Check if user has an existing subscription
         const hasSubscription = currentTier === 'premium' || currentTier === 'featured';
 
+        // Handle reactivation
+        if (isReactivation) {
+          if (!confirm('Reactivate your subscription? Your benefits will continue without interruption.')) {
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = 'Reactivating...';
+
+          try {
+            const response = await fetch('/api/stripe/reactivate-subscription', {
+              method: 'POST',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.error || 'Failed to reactivate subscription');
+            }
+
+            alert('🎉 Your subscription has been reactivated!');
+            window.location.reload();
+          } catch (error) {
+            console.error('Error:', error);
+            alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+            btn.disabled = false;
+            btn.textContent = `🔄 Reactivate ${tier === 'premium' ? 'Premium' : 'Featured'}`;
+          }
+          return;
+        }
+
+        // Handle downgrade confirmation
+        if (isDowngrade) {
+          const confirmMessage = `Downgrade from Featured to Premium?\n\nYou'll lose:\n• Homepage featured placement\n• Featured badge with icon\n• Unlimited testimonials\n• Priority customer support\n\nThe change takes effect at the end of your current billing period.`;
+
+          if (!confirm(confirmMessage)) {
+            return;
+          }
+        }
+
+        // Handle normal upgrade/downgrade
         btn.disabled = true;
         btn.textContent = 'Processing...';
 
@@ -322,8 +571,10 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           }
 
           if (hasSubscription) {
-            // Subscription was upgraded - reload to show new tier
-            alert(`Successfully upgraded to ${tier === 'premium' ? 'Premium' : 'Featured'}! Check your email for confirmation.`);
+            // Subscription was changed - reload to show new tier
+            const action = isDowngrade ? 'downgraded' : 'upgraded';
+            const actionCaps = isDowngrade ? 'Downgrade scheduled' : 'Successfully upgraded';
+            alert(`${actionCaps} to ${tier === 'premium' ? 'Premium' : 'Featured'}! Check your email for confirmation.`);
             window.location.href = '/dashboard/subscription?upgraded=true';
           } else {
             // Redirect to Stripe Checkout for new subscription
@@ -335,7 +586,8 @@ const pageDescription = 'Upgrade to Premium or Featured to maximize your visibil
           console.error('Error:', error);
           alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
           btn.disabled = false;
-          btn.textContent = `Upgrade to ${tier === 'premium' ? 'Premium' : 'Featured'}`;
+          const action = isDowngrade ? 'Downgrade' : 'Upgrade';
+          btn.textContent = `${action} to ${tier === 'premium' ? 'Premium' : 'Featured'}`;
         }
       });
     });

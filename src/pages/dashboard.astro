@@ -24,9 +24,15 @@ if (userRole === 'admin') {
 const serverClient = createServerClient();
 const { data: userData } = await serverClient
   .from('users')
-  .select('*')
+  .select('*, cancel_at_period_end, subscription_current_period_end')
   .eq('id', user.id)
   .single();
+
+// Store cancellation data
+const cancelAtPeriodEnd = userData?.cancel_at_period_end ?? false;
+const periodEnd = userData?.subscription_current_period_end
+  ? new Date(userData.subscription_current_period_end)
+  : null;
 
 // Fetch user's lobbyist profile if they have one
 // Check both user_id (created profiles) and claimed_by (claimed profiles)
@@ -35,6 +41,9 @@ const { data: lobbyist, error: lobbyistError } = await serverClient
   .select('*')
   .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
   .single();
+
+// Check if subscription is cancelled but still active (after lobbyist is loaded)
+const isCancelledButActive = cancelAtPeriodEnd && lobbyist?.subscription_tier !== 'free' && periodEnd && periodEnd > new Date();
 
 // Check for pending role upgrade request (for searchers)
 let pendingRoleUpgrade = null;
@@ -522,7 +531,13 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
             </div>
             <div class="flex justify-between">
               <span class="text-muted-foreground">Tier:</span>
-              <span class="font-medium capitalize">{lobbyist.subscription_tier || 'Free'}</span>
+              <span class:list={[
+                'font-medium capitalize',
+                isCancelledButActive && 'text-orange-600'
+              ]}>
+                {lobbyist.subscription_tier || 'Free'}
+                {isCancelledButActive && periodEnd && ` - Ends ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
+              </span>
             </div>
           </div>
         </div>
@@ -559,10 +574,16 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
               Edit Profile →
             </a>
             <a
+              href="/dashboard/upgrade"
+              class="block text-sm text-texas-blue-500 hover:underline"
+            >
+              View Pricing →
+            </a>
+            <a
               href="/dashboard/subscription"
               class="block text-sm text-texas-blue-500 hover:underline"
             >
-              Upgrade Plan →
+              Manage Subscription →
             </a>
           </div>
         </div>
@@ -637,7 +658,7 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
           </a>
           {!isPending && lobbyist.subscription_tier === 'free' && (
             <a
-              href="/dashboard/subscription"
+              href="/dashboard/upgrade"
               class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
             >
               Upgrade to Premium

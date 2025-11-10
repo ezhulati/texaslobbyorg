@@ -74,6 +74,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Get the current subscription
     const subscription = await stripe.subscriptions.retrieve(userData.stripe_subscription_id);
 
+    console.log(`[Upgrade] Attempting to upgrade from ${userData.subscription_tier} to ${newTier}`);
+    console.log(`[Upgrade] Current price: ${subscription.items.data[0].price.id}`);
+    console.log(`[Upgrade] Target price: ${tierData.priceId}`);
+
     // Update the subscription to the new price
     const updatedSubscription = await stripe.subscriptions.update(userData.stripe_subscription_id, {
       items: [{
@@ -87,7 +91,41 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       proration_behavior: 'create_prorations', // Charge difference immediately
     });
 
-    // Update database
+    console.log(`[Upgrade] Stripe update response - price: ${updatedSubscription.items.data[0].price.id}, metadata: ${updatedSubscription.metadata.tier}`);
+
+    // CRITICAL: Verify the price was actually updated
+    const verifySubscription = await stripe.subscriptions.retrieve(userData.stripe_subscription_id);
+    const actualPriceId = verifySubscription.items.data[0].price.id;
+    const actualTier = verifySubscription.metadata.tier;
+
+    console.log(`[Upgrade] Verification - actual price: ${actualPriceId}, actual tier: ${actualTier}`);
+
+    // Check if price matches what we requested
+    if (actualPriceId !== tierData.priceId) {
+      // CRITICAL BUG: Stripe updated metadata but NOT the price
+      console.error(`[Upgrade] CRITICAL: Price mismatch! Requested ${tierData.priceId} but got ${actualPriceId}`);
+      console.error(`[Upgrade] Rolling back metadata to match actual price...`);
+
+      // Rollback metadata to match the actual subscription tier
+      const actualTierFromPrice = actualPriceId === SUBSCRIPTION_TIERS.premium.priceId ? 'premium' : 'featured';
+
+      await stripe.subscriptions.update(userData.stripe_subscription_id, {
+        metadata: {
+          ...verifySubscription.metadata,
+          tier: actualTierFromPrice,
+        },
+      });
+
+      return new Response(
+        JSON.stringify({
+          error: `Failed to update subscription price. Your subscription remains on ${actualTierFromPrice}. Please contact support if this persists.`,
+          details: 'Price update was not applied by Stripe'
+        }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Update database ONLY if Stripe update was verified successful
     const { error: updateError } = await supabase
       .from('users')
       .update({

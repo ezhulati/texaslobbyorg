@@ -247,7 +247,7 @@ const tagTypeConfig = {
                 <CollapsibleBio bio={lobbyist.bio} previewSentences={3} client:load />
               </div>
             </div>
-          ) : !lobbyist.is_claimed && (
+          ) : !lobbyist.user_id && (
             <div class="mb-8 rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
               <h2 class="text-xl font-semibold mb-2">Profile Not Yet Claimed</h2>
               <p class="text-muted-foreground mb-4">
@@ -667,12 +667,12 @@ const tagTypeConfig = {
 
                   {!lobbyist.email && !lobbyist.phone && !lobbyist.website && !(lobbyist as any).linkedin_url && (
                     <p class="text-sm text-muted-foreground">
-                      {lobbyist.is_claimed ? 'No contact information provided' : 'Contact information will be added when the lobbyist claims this profile'}
+                      {lobbyist.user_id ? 'No contact information provided' : 'Contact information will be added when the lobbyist claims this profile'}
                     </p>
                   )}
                 </div>
 
-                {lobbyist.is_claimed && lobbyist.email && (
+                {lobbyist.user_id && lobbyist.email && (
                   <a
                     href={`mailto:${lobbyist.email}`}
                     class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-texas-blue-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-texas-blue-500/90 transition-colors"
@@ -686,7 +686,7 @@ const tagTypeConfig = {
                 {/* Non-authenticated user view */}
                 <div class="space-y-4">
                   {/* Are you this lobbyist? */}
-                  {!lobbyist.is_claimed && (
+                  {!lobbyist.user_id && (
                     <div class="rounded-lg bg-amber-50 border-2 border-amber-300 p-4 mb-4">
                       <div class="flex items-start gap-3">
                         <svg class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -745,7 +745,7 @@ const tagTypeConfig = {
           </div>
 
           {/* Upgrade CTA for unclaimed profiles */}
-          {!lobbyist.is_claimed && (
+          {!lobbyist.user_id && (
             <div class="rounded-lg border-2 border-dashed border-texas-blue-500 bg-texas-blue-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Is this you?</h3>
               <p class="text-sm text-muted-foreground mb-4">
@@ -761,7 +761,7 @@ const tagTypeConfig = {
           )}
 
           {/* Upgrade CTA for free tier */}
-          {lobbyist.is_claimed && lobbyist.subscription_tier === 'free' && (
+          {lobbyist.user_id && lobbyist.subscription_tier === 'free' && (
             <div class="rounded-lg border-2 border-dashed border-texas-gold-500 bg-texas-gold-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Upgrade Your Profile</h3>
               <p class="text-sm text-muted-foreground mb-4">

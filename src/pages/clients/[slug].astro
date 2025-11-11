@@ -27,7 +27,7 @@ if (!client) {
 const totalPages = Math.ceil(client.lobbyists.total_count / perPage);
 
 // SEO metadata
-const pageTitle = `${client.name} - Texas Lobbyist Clients`;
+const pageTitle = `Lobbyists representing ${client.name} in Texas`;
 const pageDescription = `${client.name} is represented by ${client.lobbyist_count} Texas ${pluralize(client.lobbyist_count, 'lobbyist')} specializing in ${client.subject_areas.slice(0, 3).join(', ')}.`;
 
 // Schema.org Organization markup

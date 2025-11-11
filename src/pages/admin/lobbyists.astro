@@ -171,7 +171,7 @@ const pageTitle = 'Manage Lobbyists | Admin';
                 data-email={lobbyist.email || lobbyist.user?.email || ''}
                 data-status={lobbyist.is_pending ? 'pending' : lobbyist.is_active ? 'active' : 'inactive'}
                 data-tier={lobbyist.subscription_tier || 'free'}
-                data-approval={lobbyist.is_approved ? 'approved' : lobbyist.is_approved === false ? 'rejected' : 'pending_approval'}
+                data-approval={lobbyist.approval_status || 'pending_approval'}
                 data-cities={lobbyist.cities?.join(' ') || ''}
                 data-lobbyist-id={lobbyist.id}
                 data-created={lobbyist.created_at}
@@ -209,11 +209,12 @@ const pageTitle = 'Manage Lobbyists | Admin';
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   <span class={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-                    lobbyist.is_approved ? 'bg-green-100 text-green-800' :
-                    lobbyist.is_approved === false ? 'bg-red-100 text-red-800' :
+                    lobbyist.approval_status === 'approved' ? 'bg-green-100 text-green-800' :
+                    lobbyist.approval_status === 'rejected' ? 'bg-red-100 text-red-800' :
                     'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {lobbyist.is_approved ? 'Approved' : lobbyist.is_approved === false ? 'Rejected' : 'Pending'}
+                    {lobbyist.approval_status === 'approved' ? 'Approved' :
+                     lobbyist.approval_status === 'rejected' ? 'Rejected' : 'Pending'}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm">

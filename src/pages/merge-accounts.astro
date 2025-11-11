@@ -22,7 +22,8 @@ const { data: currentProfile } = await serverClient
 const { data: allProfiles } = await serverClient
   .from('lobbyists')
   .select('*')
-  .order('last_name');
+  .order('last_name')
+  .limit(10000); // Override default 1000 limit
 
 // Check for existing pending merge requests
 const { data: pendingMerges } = await serverClient

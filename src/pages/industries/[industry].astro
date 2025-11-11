@@ -33,7 +33,8 @@ const { data: lobbyists } = await supabase
   `)
   .eq('is_active', true)
   .order('subscription_tier', { ascending: false })
-  .order('view_count', { ascending: false });
+  .order('view_count', { ascending: false })
+  .limit(10000); // Override default 1000 limit
 
 // Helper: Check if client name matches industry keywords
 function hasIndustryClient(clients: any[], keywords: string[]): boolean {
@@ -115,7 +116,7 @@ lobbyistsWithExpertise.sort((a, b) => b.relevanceScore - a.relevanceScore);
 const allRelevantLobbyists = [...lobbyistsWithExperience, ...lobbyistsWithExpertise];
 
 // Get all cities for filtering
-const { data: cities } = await supabase.from('cities').select('slug, name').order('name');
+const { data: cities } = await supabase.from('cities').select('slug, name').order('name').limit(10000); // Override default 1000 limit
 
 // Get city distribution
 const cityCounts: Record<string, number> = {};

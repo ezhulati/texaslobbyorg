@@ -23,7 +23,8 @@ export const GET: APIRoute = async ({ site }) => {
     .from('lobbyists')
     .select('slug, updated_at')
     .eq('is_active', true)
-    .order('slug');
+    .order('slug')
+    .limit(10000); // Override default 1000 limit
 
   const lobbyistPages = (lobbyists || []).map(lobbyist => ({
     url: `lobbyists/${lobbyist.slug}`,
@@ -36,7 +37,8 @@ export const GET: APIRoute = async ({ site }) => {
   const { data: subjects } = await supabase
     .from('subject_areas')
     .select('slug')
-    .order('slug');
+    .order('slug')
+    .limit(10000); // Override default 1000 limit
 
   const subjectPages = (subjects || []).map(subject => ({
     url: `subjects/${subject.slug}`,
@@ -48,7 +50,8 @@ export const GET: APIRoute = async ({ site }) => {
   const { data: cities } = await supabase
     .from('cities')
     .select('slug')
-    .order('slug');
+    .order('slug')
+    .limit(10000); // Override default 1000 limit
 
   const cityPages = (cities || []).map(city => ({
     url: `cities/${city.slug}`,

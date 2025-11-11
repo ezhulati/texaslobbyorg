@@ -9,6 +9,7 @@
 import type { Bill } from '@/lib/types/bills';
 import { formatBillNumber, getChamberName } from '@/lib/types/bills';
 import BillStatusBadge from './BillStatusBadge.astro';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
   bill: Bill;
@@ -19,6 +20,36 @@ const { bill, introHook } = Astro.props;
 
 const formattedBillNumber = formatBillNumber(bill.bill_number);
 const chamberName = getChamberName(bill.chamber);
+
+// Fetch session info
+const { data: session } = await supabase
+  .from('legislative_sessions')
+  .select('*')
+  .eq('id', bill.session_id)
+  .single();
+
+// Fetch companion bill if exists
+let companionBill = null;
+if (bill.companion_bill_id) {
+  const { data } = await supabase
+    .from('bills')
+    .select('bill_number, slug')
+    .eq('id', bill.companion_bill_id)
+    .single();
+  companionBill = data;
+}
+
+// Format dates
+const formatDate = (dateString: string | null) => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+const sessionName = session ? `${session.session_number}${session.session_type === 'regular' ? 'th Regular' : `th Special`} Session` : '';
+const sessionDates = session && session.start_date
+  ? `${formatDate(session.start_date)}${session.end_date ? ` - ${formatDate(session.end_date)}` : ''}`
+  : '';
 ---
 
 <div class="max-w-4xl mx-auto">
@@ -29,10 +60,18 @@ const chamberName = getChamberName(bill.chamber);
         <h1 class="text-4xl font-bold text-gray-900 mb-2">
           {formattedBillNumber}
         </h1>
-        <p class="text-lg text-gray-600">
-          {chamberName} Bill
-          {bill.primary_author && ` • ${bill.primary_author}`}
-        </p>
+        <div class="space-y-1">
+          <p class="text-lg text-gray-600">
+            {chamberName} Bill
+            {bill.primary_author && ` • ${bill.primary_author}`}
+          </p>
+          {sessionName && (
+            <p class="text-sm text-gray-500">
+              {sessionName}
+              {sessionDates && <span class="text-gray-400"> ({sessionDates})</span>}
+            </p>
+          )}
+        </div>
       </div>
       <BillStatusBadge status={bill.current_status} size="lg" />
     </div>
@@ -51,8 +90,24 @@ const chamberName = getChamberName(bill.chamber);
   </div>
 
   {/* Metadata Grid - Only show if there's content */}
-  {((bill.co_authors && bill.co_authors.length > 0) || (bill.committee_referrals && bill.committee_referrals.length > 0) || bill.last_action) && (
+  {((bill.co_authors && bill.co_authors.length > 0) || (bill.committee_referrals && bill.committee_referrals.length > 0) || bill.last_action || bill.status_date || companionBill) && (
     <div class="grid md:grid-cols-2 gap-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+
+      {bill.status_date && (
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Status Date</h3>
+          <p class="text-gray-900">{formatDate(bill.status_date)}</p>
+        </div>
+      )}
+
+      {companionBill && (
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Companion Bill</h3>
+          <a href={`/bills/${companionBill.slug}`} class="text-blue-600 hover:text-blue-700 font-medium">
+            {companionBill.bill_number}
+          </a>
+        </div>
+      )}
 
       {bill.co_authors && bill.co_authors.length > 0 && (
         <div class="md:col-span-2">
@@ -71,7 +126,10 @@ const chamberName = getChamberName(bill.chamber);
       {bill.last_action && (
         <div class="md:col-span-2">
           <h3 class="text-sm font-medium text-gray-500 mb-1">Latest Action</h3>
-          <p class="text-gray-900">{bill.last_action}</p>
+          <p class="text-gray-900">
+            {bill.last_action}
+            {bill.last_action_date && <span class="text-gray-600"> • {formatDate(bill.last_action_date)}</span>}
+          </p>
         </div>
       )}
     </div>
@@ -128,4 +186,13 @@ const chamberName = getChamberName(bill.chamber);
 
   {/* Slot for additional content (timeline, lobbyists, etc.) */}
   <slot />
+
+  {/* View count - small and discreet */}
+  {bill.view_count > 0 && (
+    <div class="mt-8 pt-4 border-t border-gray-100">
+      <p class="text-xs text-gray-400 text-center">
+        Viewed {bill.view_count.toLocaleString()} {bill.view_count === 1 ? 'time' : 'times'}
+      </p>
+    </div>
+  )}
 </div>

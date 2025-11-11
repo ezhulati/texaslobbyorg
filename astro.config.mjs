@@ -12,7 +12,9 @@ export default defineConfig({
     }),
   ],
   output: 'server',
-  adapter: netlify(),
+  adapter: netlify({
+    edgeMiddleware: false,
+  }),
   site: 'https://texaslobby.org',
   server: {
     port: 4321,

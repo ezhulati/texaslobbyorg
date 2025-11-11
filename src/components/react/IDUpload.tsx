@@ -99,6 +99,13 @@ export default function IDUpload({ userId, onUploadComplete, onError }: IDUpload
         });
 
       if (uploadError) {
+        console.error('Supabase upload error:', uploadError);
+
+        // Provide helpful error messages based on error type
+        if (uploadError.message.includes('not found') || uploadError.message.includes('Bucket')) {
+          throw new Error('Storage bucket not configured. Please contact support.');
+        }
+
         throw uploadError;
       }
 
@@ -107,9 +114,10 @@ export default function IDUpload({ userId, onUploadComplete, onError }: IDUpload
         .from('id-verifications')
         .getPublicUrl(fileName);
 
+      console.log('[IDUpload] Upload successful:', publicUrl);
       onUploadComplete(publicUrl);
     } catch (err: any) {
-      console.error('Upload error:', err);
+      console.error('[IDUpload] Upload error:', err);
       onError(err?.message || 'Failed to upload file. Please try again.');
     } finally {
       setUploading(false);

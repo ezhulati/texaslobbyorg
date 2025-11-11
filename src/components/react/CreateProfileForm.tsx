@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
 import IDUpload from '@/components/react/IDUpload';
+import MultiSelect from '@/components/react/MultiSelect';
 
 interface CreateProfileFormProps {
   userId: string;
@@ -20,14 +21,41 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
     website: '',
     linkedinUrl: '',
     bio: '',
-    cities: '',
-    subjectAreas: '',
     idVerificationUrl: '',
   });
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [selectedSubjectAreas, setSelectedSubjectAreas] = useState<string[]>([]);
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [availableSubjectAreas, setAvailableSubjectAreas] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [uploadError, setUploadError] = useState('');
+
+  // Fetch available options from database
+  useEffect(() => {
+    const fetchOptions = async () => {
+      // Fetch cities
+      const { data: citiesData } = await supabase
+        .from('cities')
+        .select('name')
+        .order('name');
+      if (citiesData) {
+        setAvailableCities(citiesData.map(c => c.name));
+      }
+
+      // Fetch subject areas
+      const { data: subjectsData } = await supabase
+        .from('subject_areas')
+        .select('name')
+        .order('name');
+      if (subjectsData) {
+        setAvailableSubjectAreas(subjectsData.map(s => s.name));
+      }
+    };
+
+    fetchOptions();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +81,13 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ formData }),
+        body: JSON.stringify({
+          formData: {
+            ...formData,
+            cities: selectedCities,
+            subjectAreas: selectedSubjectAreas,
+          }
+        }),
       });
 
       console.log('[CreateProfileForm] Create API response status:', response.status);
@@ -224,37 +258,33 @@ export default function CreateProfileForm({ userId, userEmail, userFirstName, us
 
       {/* Cities */}
       <div>
-        <label htmlFor="cities" className="block text-sm font-medium mb-2">
-          Cities You Serve
-        </label>
-        <Input
-          id="cities"
-          type="text"
-          placeholder="Austin, Houston, Dallas"
-          value={formData.cities}
-          onChange={(e) => setFormData({ ...formData, cities: e.target.value })}
+        <MultiSelect
+          label="Cities You Serve"
+          options={availableCities}
+          selected={selectedCities}
+          onChange={setSelectedCities}
+          placeholder="Select cities..."
           disabled={loading}
         />
         <p className="mt-1 text-xs text-muted-foreground">
-          Enter cities separated by commas
+          Select the Texas cities where you provide lobbying services
         </p>
       </div>
 
       {/* Subject Areas */}
       <div>
-        <label htmlFor="subjectAreas" className="block text-sm font-medium mb-2">
-          Areas of Expertise
-        </label>
-        <Input
-          id="subjectAreas"
-          type="text"
-          placeholder="Healthcare, Energy, Education"
-          value={formData.subjectAreas}
-          onChange={(e) => setFormData({ ...formData, subjectAreas: e.target.value })}
+        <MultiSelect
+          label="Areas of Expertise"
+          options={availableSubjectAreas}
+          selected={selectedSubjectAreas}
+          onChange={setSelectedSubjectAreas}
+          placeholder="Select policy areas..."
+          allowCustom={true}
+          customPlaceholder="Add custom area"
           disabled={loading}
         />
         <p className="mt-1 text-xs text-muted-foreground">
-          Enter expertise areas separated by commas
+          Select your areas of expertise. You can add custom areas if needed.
         </p>
       </div>
 

@@ -56,7 +56,7 @@ export default function BillPagination({
   }) => {
     if (disabled) {
       return (
-        <span className="px-4 py-2 text-gray-400 border border-gray-200 rounded-md cursor-not-allowed bg-gray-50">
+        <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-400 border border-gray-200 rounded-md cursor-not-allowed bg-gray-50">
           {children}
         </span>
       );
@@ -65,7 +65,7 @@ export default function BillPagination({
     return (
       <a
         href={page ? buildPageUrl(page) : '#'}
-        className={`px-4 py-2 border rounded-md font-medium transition-colors ${
+        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base border rounded-md font-medium transition-colors ${
           active
             ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
@@ -77,14 +77,15 @@ export default function BillPagination({
   };
 
   return (
-    <nav className="flex items-center justify-center gap-2" aria-label="Pagination">
+    <nav className="flex items-center justify-center gap-1.5 sm:gap-2" aria-label="Pagination">
       {/* Previous button */}
       <PaginationButton
         page={currentPage - 1}
         disabled={!hasPrevPage}
       >
         <span className="sr-only">Previous</span>
-        ← Previous
+        <span className="hidden sm:inline">← Previous</span>
+        <span className="sm:hidden">←</span>
       </PaginationButton>
 
       {/* Page numbers */}
@@ -114,7 +115,7 @@ export default function BillPagination({
       </div>
 
       {/* Mobile page indicator */}
-      <div className="md:hidden px-4 py-2 text-sm text-gray-600">
+      <div className="md:hidden px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 font-medium">
         Page {currentPage}
       </div>
 
@@ -124,7 +125,8 @@ export default function BillPagination({
         disabled={!hasNextPage}
       >
         <span className="sr-only">Next</span>
-        Next →
+        <span className="hidden sm:inline">Next →</span>
+        <span className="sm:hidden">→</span>
       </PaginationButton>
     </nav>
   );

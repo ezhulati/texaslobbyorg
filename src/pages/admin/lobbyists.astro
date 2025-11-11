@@ -9,18 +9,38 @@ const user = Astro.locals.user;
 if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
 if (user.role !== 'admin') return Astro.redirect('/dashboard');
 
-// Get all lobbyists with user info
-const { data: lobbyists } = await serverClient
-  .from('lobbyists')
-  .select(`
-    *,
-    user:user_id (
-      email,
-      full_name
-    )
-  `)
-  .order('created_at', { ascending: false })
-  .limit(10000); // Increase limit to fetch all lobbyists (default is 1000)
+// Get all lobbyists with user info (fetch in batches to overcome 1000 row limit)
+async function fetchAllLobbyists() {
+  const batchSize = 1000;
+  let allLobbyists: any[] = [];
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, error } = await serverClient
+      .from('lobbyists')
+      .select(`
+        *,
+        user:user_id (
+          email,
+          full_name
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + batchSize - 1);
+
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+
+    allLobbyists = [...allLobbyists, ...data];
+    hasMore = data.length === batchSize;
+    offset += batchSize;
+  }
+
+  return allLobbyists;
+}
+
+const lobbyists = await fetchAllLobbyists();
 
 // Get statistics
 const { count: totalCount } = await serverClient

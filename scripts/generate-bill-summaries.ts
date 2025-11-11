@@ -1,0 +1,179 @@
+/**
+ * Generate real summaries for bills by reading their full text
+ * Uses Anthropic Claude API to create concise, meaningful summaries
+ */
+
+import 'dotenv/config';
+import { createClient } from '@supabase/supabase-js';
+import Anthropic from '@anthropic-ai/sdk';
+
+const supabaseUrl = process.env.PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+if (!anthropicKey) {
+  console.error('ANTHROPIC_API_KEY environment variable is required');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+const anthropic = new Anthropic({ apiKey: anthropicKey });
+
+interface Bill {
+  id: string;
+  bill_number: string;
+  title: string;
+  summary: string | null;
+  full_text: string | null;
+}
+
+async function generateSummary(billText: string, billTitle: string): Promise<string> {
+  // Truncate very long bill text to stay within token limits
+  const maxChars = 50000; // ~12,500 tokens
+  const truncatedText = billText.length > maxChars
+    ? billText.substring(0, maxChars) + '\n\n[Text truncated for length]'
+    : billText;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-3-5-haiku-20241022',
+    max_tokens: 200,
+    system: 'You write direct, concise bill summaries with no preamble. Start immediately with what the bill does.',
+    messages: [{
+      role: 'user',
+      content: `Summarize this Texas bill in 2-3 sentences (~100-150 words). Explain what it does, who it affects, and its impact. Use plain language for business owners and citizens.
+
+Bill Title: ${billTitle}
+
+Bill Text:
+${truncatedText}`
+    }]
+  });
+
+  const summary = response.content[0].type === 'text'
+    ? response.content[0].text.trim()
+    : '';
+
+  return summary;
+}
+
+async function processBills(limit: number = 10, dryRun: boolean = false) {
+  console.log(`\n${'='.repeat(60)}`);
+  console.log('Bill Summary Generation Script');
+  console.log(`Mode: ${dryRun ? 'DRY RUN (no database updates)' : 'LIVE (will update database)'}`);
+  console.log(`Batch size: ${limit} bills`);
+  console.log(`${'='.repeat(60)}\n`);
+
+  // Get bills that need summaries
+  const { data: allBills, error } = await supabase
+    .from('bills')
+    .select('id, bill_number, title, summary, full_text')
+    .not('full_text', 'is', null)
+    .order('bill_number');
+
+  if (error) {
+    console.error('Error fetching bills:', error);
+    return;
+  }
+
+  // Filter in memory for bills that need summaries
+  const bills = (allBills || [])
+    .filter((b: Bill) =>
+      !b.summary ||
+      b.summary.trim() === '' ||
+      (b.summary.startsWith('relating to') && b.summary.length < 100)
+    )
+    .slice(0, limit);
+
+  if (!bills || bills.length === 0) {
+    console.log('No bills need summaries!');
+    return;
+  }
+
+  console.log(`Found ${bills.length} bills to process\n`);
+
+  let successCount = 0;
+  let errorCount = 0;
+
+  for (let i = 0; i < bills.length; i++) {
+    const bill = bills[i] as Bill;
+
+    console.log(`\n[${i + 1}/${bills.length}] Processing ${bill.bill_number}...`);
+    console.log(`Title: ${bill.title.substring(0, 80)}...`);
+    console.log(`Current summary: ${bill.summary?.substring(0, 80)}...`);
+
+    if (!bill.full_text) {
+      console.log('❌ No full text available, skipping');
+      errorCount++;
+      continue;
+    }
+
+    try {
+      const newSummary = await generateSummary(bill.full_text, bill.title);
+
+      console.log(`\n✨ Generated summary (${newSummary.length} chars):`);
+      console.log(`"${newSummary}"`);
+
+      if (!dryRun) {
+        const { error: updateError } = await supabase
+          .from('bills')
+          .update({ summary: newSummary })
+          .eq('id', bill.id);
+
+        if (updateError) {
+          console.log(`❌ Failed to update database: ${updateError.message}`);
+          errorCount++;
+        } else {
+          console.log('✅ Database updated');
+          successCount++;
+        }
+      } else {
+        console.log('🔍 DRY RUN - would update database');
+        successCount++;
+      }
+
+      // Rate limiting: wait 1 second between requests
+      if (i < bills.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+    } catch (error) {
+      console.log(`❌ Error generating summary: ${error}`);
+      errorCount++;
+    }
+  }
+
+  console.log(`\n${'='.repeat(60)}`);
+  console.log('Summary Generation Complete');
+  console.log(`${'='.repeat(60)}`);
+  console.log(`✅ Successful: ${successCount}`);
+  console.log(`❌ Errors: ${errorCount}`);
+  console.log(`📊 Total processed: ${bills.length}`);
+
+  const { data: remaining } = await supabase
+    .from('bills')
+    .select('id', { count: 'exact', head: true })
+    .not('full_text', 'is', null)
+    .or('summary.is.null,and(summary.like.relating to%,summary.length().lt.100)');
+
+  console.log(`📝 Remaining bills needing summaries: ${remaining?.length || 'unknown'}`);
+  console.log(`${'='.repeat(60)}\n`);
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const limitArg = args.find(arg => arg.startsWith('--limit='));
+const dryRunArg = args.includes('--dry-run');
+
+const limit = limitArg ? parseInt(limitArg.split('=')[1]) : 10;
+
+console.log('\nUsage:');
+console.log('  npx tsx scripts/generate-bill-summaries.ts [options]');
+console.log('\nOptions:');
+console.log('  --limit=N     Process N bills (default: 10)');
+console.log('  --dry-run     Test mode, no database updates');
+console.log('\nExamples:');
+console.log('  npx tsx scripts/generate-bill-summaries.ts --limit=5 --dry-run');
+console.log('  npx tsx scripts/generate-bill-summaries.ts --limit=50');
+console.log('  npx tsx scripts/generate-bill-summaries.ts --limit=967  # Process all\n');
+
+processBills(limit, dryRunArg).catch(console.error);

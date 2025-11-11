@@ -29,16 +29,13 @@ const pageDescription = 'Get in touch with TexasLobby.org. We\'re here to help b
             <h2 class="text-2xl font-bold mb-6">Send us a message</h2>
 
             <form
-              name="contact"
-              netlify
-              netlify-honeypot="bot-field"
+              id="contact-form"
               class="space-y-6"
             >
-              <!-- Hidden fields for Netlify -->
-              <input type="hidden" name="form-name" value="contact" />
+              <!-- Honeypot for spam prevention -->
               <div class="hidden">
                 <label>
-                  Don't fill this out if you're human: <input name="bot-field" />
+                  Don't fill this out if you're human: <input name="bot-field" id="bot-field" />
                 </label>
               </div>
 
@@ -225,4 +222,95 @@ const pageDescription = 'Get in touch with TexasLobby.org. We\'re here to help b
       </div>
     </div>
   </section>
+
+  <!-- Contact Form JavaScript -->
+  <script>
+    document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target as HTMLFormElement;
+      const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const originalButtonText = submitButton.textContent;
+
+      // Check honeypot
+      const botField = (document.getElementById('bot-field') as HTMLInputElement)?.value;
+      if (botField) {
+        console.log('Bot detected');
+        return; // Silent fail for bots
+      }
+
+      // Disable button and show loading state
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+
+      // Remove any existing messages
+      const existingMessage = form.querySelector('.form-message');
+      if (existingMessage) {
+        existingMessage.remove();
+      }
+
+      try {
+        const formData = new FormData(form);
+
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Success message
+          const successDiv = document.createElement('div');
+          successDiv.className = 'form-message rounded-lg border border-green-200 bg-green-50 p-4';
+          successDiv.innerHTML = `
+            <div class="flex items-start gap-3">
+              <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <p class="font-medium text-green-800">Message sent successfully!</p>
+                <p class="text-sm text-green-700 mt-1">We'll get back to you within 1-2 business days.</p>
+              </div>
+            </div>
+          `;
+          form.insertAdjacentElement('beforebegin', successDiv);
+
+          // Reset form
+          form.reset();
+
+          // Scroll to success message
+          successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        } else {
+          throw new Error(result.error || 'Failed to send message');
+        }
+
+      } catch (error: any) {
+        // Error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'form-message rounded-lg border border-red-200 bg-red-50 p-4';
+        errorDiv.innerHTML = `
+          <div class="flex items-start gap-3">
+            <svg class="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <p class="font-medium text-red-800">Failed to send message</p>
+              <p class="text-sm text-red-700 mt-1">${error.message || 'Please try again later.'}</p>
+            </div>
+          </div>
+        `;
+        form.insertAdjacentElement('beforebegin', errorDiv);
+
+        // Scroll to error message
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      } finally {
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+      }
+    });
+  </script>
 </Layout>

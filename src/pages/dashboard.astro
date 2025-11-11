@@ -40,7 +40,12 @@ const { data: lobbyist, error: lobbyistError } = await serverClient
   .from('lobbyists')
   .select('*')
   .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
-  .single();
+  .maybeSingle(); // Use maybeSingle() to handle 0 or 1 results gracefully
+
+// Log error for debugging
+if (lobbyistError) {
+  console.error('Error fetching lobbyist profile:', lobbyistError);
+}
 
 // Check if subscription is cancelled but still active (after lobbyist is loaded)
 const isCancelledButActive = cancelAtPeriodEnd && lobbyist?.subscription_tier !== 'free' && periodEnd && periodEnd > new Date();
@@ -262,6 +267,54 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
           >
             Contact Support →
           </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Lobbyist without profile (edge case) -->
+  {userRole === 'lobbyist' && !lobbyist && (
+    <section class="py-8 min-h-[calc(100vh-4rem)]">
+      <div class="container max-w-5xl">
+        <div class="rounded-lg border-2 border-amber-200 bg-amber-50 p-8">
+          <div class="flex gap-6">
+            <div class="flex-shrink-0">
+              <svg class="h-12 w-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-amber-900 mb-3">Profile Not Found</h2>
+              <p class="text-amber-800 mb-4">
+                Your account is registered as a lobbyist, but we couldn't find your profile. This usually happens if:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-sm text-amber-800 mb-6">
+                <li>You haven't claimed your existing profile yet</li>
+                <li>You haven't created your profile yet</li>
+                <li>There was an issue during profile creation</li>
+              </ul>
+              <div class="flex gap-4">
+                <a
+                  href="/claim-profile"
+                  class="inline-flex items-center gap-2 rounded-md bg-texas-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-700 transition-colors"
+                >
+                  Claim Your Profile
+                </a>
+                <a
+                  href="/create-profile"
+                  class="inline-flex items-center gap-2 rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
+                >
+                  Create Profile
+                </a>
+                <a
+                  href="/contact"
+                  class="inline-flex items-center gap-2 text-texas-blue-600 hover:underline"
+                >
+                  Contact Support →
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

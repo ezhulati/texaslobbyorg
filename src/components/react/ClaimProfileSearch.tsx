@@ -231,6 +231,7 @@ export default function ClaimProfileSearch({
           password: signupPassword,
           firstName: selectedProfilePreview.first_name,
           lastName: selectedProfilePreview.last_name,
+          userType: 'lobbyist',
           lobbyistId: selectedProfilePreview.id
         })
       });
@@ -241,8 +242,9 @@ export default function ClaimProfileSearch({
         throw new Error(data.error || 'Failed to create account');
       }
 
-      // After successful signup, reload page to get authenticated state
-      window.location.reload();
+      // Account created successfully!
+      // Reload page to get authenticated state and proceed to ID upload
+      window.location.href = `/claim-profile?lobbyist=${selectedProfilePreview.id}`;
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {

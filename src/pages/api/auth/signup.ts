@@ -4,8 +4,8 @@ import { createServerAuthClient, createServerClient } from '@/lib/supabase';
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     console.log('[Signup API] POST request received');
-    const { email, password, firstName, lastName, userType } = await request.json();
-    console.log('[Signup API] Attempting signup for email:', email, 'userType:', userType);
+    const { email, password, firstName, lastName, userType, lobbyistId } = await request.json();
+    console.log('[Signup API] Attempting signup for email:', email, 'userType:', userType, 'lobbyistId:', lobbyistId);
 
     // Use service role client for pre-signup checks
     const serverClient = createServerClient();
@@ -29,7 +29,22 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // STEP 2: If user selected "lobbyist", check for existing unclaimed profile
     let unclaimedProfile = null;
-    if (userType === 'lobbyist') {
+
+    // If lobbyistId is provided (from claim flow), fetch that specific profile
+    if (lobbyistId) {
+      const { data: profile, error: profileError } = await serverClient
+        .from('lobbyists')
+        .select('id, slug, first_name, last_name, email')
+        .eq('id', lobbyistId)
+        .eq('is_claimed', false)
+        .single();
+
+      if (!profileError && profile) {
+        console.log('[Signup API] Found unclaimed profile by lobbyistId:', lobbyistId);
+        unclaimedProfile = profile;
+      }
+    } else if (userType === 'lobbyist') {
+      // Otherwise check by email
       const { data: profile, error: profileError } = await serverClient
         .from('lobbyists')
         .select('id, slug, first_name, last_name, email')
@@ -124,6 +139,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       redirectTo,
       needsEmailVerification,
       hasUnclaimedProfile: !!unclaimedProfile,
+      lobbyistId: unclaimedProfile?.id || null,
       user: {
         id: data.user.id,
         email: data.user.email,

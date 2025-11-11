@@ -1,0 +1,222 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ExpandableSubjectAreas from '@/components/react/ExpandableSubjectAreas';
+import { getClientBySlug } from '@/lib/api/clients';
+import { pluralize } from '@/lib/utils';
+
+// Get slug from URL params
+const { slug } = Astro.params;
+
+// Get page number for lobbyist pagination
+const url = new URL(Astro.request.url);
+const page = parseInt(url.searchParams.get('page') || '1');
+const perPage = 20;
+
+// Calculate offset for pagination
+const lobbyistOffset = (page - 1) * perPage;
+
+// Fetch client data
+const client = await getClientBySlug(slug!, perPage, lobbyistOffset);
+
+// Handle 404 if client not found
+if (!client) {
+  return Astro.redirect('/404');
+}
+
+// Calculate pagination
+const totalPages = Math.ceil(client.lobbyists.total_count / perPage);
+
+// SEO metadata
+const pageTitle = `${client.name} - Texas Lobbyist Clients`;
+const pageDescription = `${client.name} is represented by ${client.lobbyist_count} Texas ${pluralize(client.lobbyist_count, 'lobbyist')} specializing in ${client.subject_areas.slice(0, 3).join(', ')}.`;
+
+// Schema.org Organization markup
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: client.name,
+  url: `https://texaslobby.org/clients/${client.slug}`,
+  description: `Represented by ${client.lobbyist_count} Texas ${pluralize(client.lobbyist_count, 'lobbyist')}`,
+  knowsAbout: client.subject_areas,
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  schema={schema}
+>
+  <!-- Client Header -->
+  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-12 border-b border-border">
+    <div class="container">
+      <h1 class="text-4xl font-bold mb-4">{client.name}</h1>
+      <p class="text-lg text-muted-foreground mb-6">
+        Represented by {client.lobbyist_count} {pluralize(client.lobbyist_count, 'lobbyist')}
+      </p>
+
+      <!-- Lobbyist Expertise Areas (expandable) -->
+      {client.subject_areas.length > 0 && (
+        <ExpandableSubjectAreas
+          client:load
+          subjects={client.subject_areas}
+          initialDisplayCount={5}
+          labelText={`Policy areas covered by their ${pluralize(client.lobbyist_count, 'lobbyist')}:`}
+        />
+      )}
+    </div>
+  </section>
+
+  <!-- Lobbyists Section -->
+  <section class="py-12">
+    <div class="container">
+      <h2 class="text-2xl font-bold mb-6">Lobbyists</h2>
+
+      {client.lobbyists.results.length === 0 ? (
+        <!-- No lobbyists -->
+        <p class="text-muted-foreground">No active lobbyists found for this client.</p>
+      ) : (
+        <>
+          <!-- Lobbyist Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {client.lobbyists.results.map((lobbyist) => (
+              <a
+                href={`/lobbyists/${lobbyist.slug}`}
+                class="block group"
+              >
+                <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-white">
+                  <!-- Lobbyist Photo -->
+                  {lobbyist.profile_image_url ? (
+                    <img
+                      src={lobbyist.profile_image_url}
+                      alt={`${lobbyist.first_name} ${lobbyist.last_name}`}
+                      class="w-16 h-16 rounded-full mb-4 object-cover"
+                    />
+                  ) : (
+                    <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                      <span class="text-2xl font-bold text-muted-foreground">
+                        {lobbyist.first_name.charAt(0)}{lobbyist.last_name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+
+                  <!-- Lobbyist Name -->
+                  <h3 class="text-lg font-semibold mb-1 group-hover:text-texas-blue-500 transition-colors">
+                    {lobbyist.first_name} {lobbyist.last_name}
+                  </h3>
+
+                  <!-- Subscription Tier Badge -->
+                  <div class="mb-3">
+                    {lobbyist.subscription_tier === 'featured' && (
+                      <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                        Featured
+                      </span>
+                    )}
+                    {lobbyist.subscription_tier === 'premium' && (
+                      <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                        Premium
+                      </span>
+                    )}
+                    {lobbyist.subscription_tier === 'free' && (
+                      <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                        Free
+                      </span>
+                    )}
+                  </div>
+
+                  <!-- Subject Areas -->
+                  {lobbyist.subject_areas.length > 0 && (
+                    <div class="flex flex-wrap gap-1">
+                      {lobbyist.subject_areas.slice(0, 3).map((subject) => (
+                        <span class="text-xs text-muted-foreground">
+                          {subject}{lobbyist.subject_areas.indexOf(subject) < Math.min(2, lobbyist.subject_areas.length - 1) ? ',' : ''}
+                        </span>
+                      ))}
+                      {lobbyist.subject_areas.length > 3 && (
+                        <span class="text-xs text-muted-foreground">
+                          +{lobbyist.subject_areas.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <!-- Pagination for Lobbyists -->
+          {totalPages > 1 && (
+            <div class="mt-12 flex items-center justify-center gap-2">
+              {/* Previous Button */}
+              {page > 1 ? (
+                <a
+                  href={`/clients/${slug}?${new URLSearchParams({ page: String(page - 1) }).toString()}`}
+                  class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                >
+                  ← Previous
+                </a>
+              ) : (
+                <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                  ← Previous
+                </span>
+              )}
+
+              {/* Page Numbers */}
+              <div class="flex items-center gap-1">
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let pageNum = i + 1;
+                  if (totalPages > 5 && page > 3) {
+                    pageNum = page - 2 + i;
+                    if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                  }
+
+                  return (
+                    <a
+                      href={`/clients/${slug}?${new URLSearchParams({ page: String(pageNum) }).toString()}`}
+                      class={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${
+                        pageNum === page
+                          ? 'bg-texas-blue-500 text-white'
+                          : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                      }`}
+                    >
+                      {pageNum}
+                    </a>
+                  );
+                })}
+              </div>
+
+              {/* Next Button */}
+              {page < totalPages ? (
+                <a
+                  href={`/clients/${slug}?${new URLSearchParams({ page: String(page + 1) }).toString()}`}
+                  class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                >
+                  Next →
+                </a>
+              ) : (
+                <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                  Next →
+                </span>
+              )}
+            </div>
+
+            <p class="text-center text-sm text-muted-foreground mt-4">
+              Showing {(page - 1) * perPage + 1} - {Math.min(page * perPage, client.lobbyists.total_count)} of {client.lobbyists.total_count} {pluralize(client.lobbyists.total_count, 'lobbyist')}
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  </section>
+
+  <!-- Back Link -->
+  <section class="py-8 border-t border-border">
+    <div class="container">
+      <a
+        href="/clients"
+        class="inline-flex items-center text-texas-blue-500 hover:text-texas-blue-600 transition-colors"
+      >
+        ← Back to all clients
+      </a>
+    </div>
+  </section>
+</Layout>

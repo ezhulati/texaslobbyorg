@@ -1,0 +1,272 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+import ClientCard from '@/components/astro/ClientCard.astro';
+import ClientsFilter from '@/components/react/ClientsFilter';
+import BrowseModeToggle from '@/components/react/BrowseModeToggle';
+import { supabase } from '@/lib/supabase';
+import { searchClients, getClientCount } from '@/lib/api/clients';
+
+// Get search parameters from URL
+const url = new URL(Astro.request.url);
+const page = parseInt(url.searchParams.get('page') || '1');
+const subjectParam = url.searchParams.get('subject') || '';
+const sortParam = url.searchParams.get('sort') || 'lobbyist_count_desc';
+const perPage = 50;
+
+// Parse subject filters (comma-separated)
+const subjectFilters = subjectParam ? subjectParam.split(',').filter(Boolean) : [];
+
+// Fetch subject areas for filter dropdown
+const { data: subjectAreas } = await supabase
+  .from('subject_areas')
+  .select('id, name, slug')
+  .order('name')
+  .limit(10000);
+
+// Build search parameters
+const searchParams = {
+  sort: sortParam as 'lobbyist_count_desc' | 'lobbyist_count_asc' | 'name_asc' | 'name_desc',
+  subjects: subjectFilters.length > 0 ? subjectFilters : undefined,
+  limit: perPage,
+  offset: (page - 1) * perPage,
+};
+
+// Fetch clients and total count
+const clients = await searchClients(searchParams);
+const totalCount = await getClientCount(searchParams);
+const totalPages = Math.ceil(totalCount / perPage);
+
+// Check if filters are applied
+const hasFilters = subjectFilters.length > 0 || sortParam !== 'lobbyist_count_desc';
+
+// SEO metadata
+const pageTitle = 'Browse Texas Lobbyist Clients | Company Directory';
+const pageDescription = `Discover which ${totalCount}+ companies are represented by Texas lobbyists. Explore by industry, compare lobbying activity, find advocates through their client lists.`;
+
+// Schema.org ItemList markup for SEO
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: clients.map((client, index) => ({
+    '@type': 'ListItem',
+    position: (page - 1) * perPage + index + 1,
+    item: {
+      '@type': 'Organization',
+      name: client.name,
+      url: `https://texaslobby.org/clients/${client.slug}`,
+    },
+  })),
+  numberOfItems: totalCount,
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  schema={schema}
+>
+  <!-- Page Header -->
+  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-12 border-b border-border">
+    <div class="container">
+      <!-- Browse Mode Toggle -->
+      <div class="mb-6">
+        <BrowseModeToggle client:load currentMode="clients" />
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">Browse by Clients</h1>
+      <p class="text-lg text-muted-foreground mb-6">
+        {totalCount.toLocaleString()} companies represented by Texas lobbyists
+      </p>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section class="py-12">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar Filter -->
+        <aside class="lg:col-span-1">
+          <div class="sticky top-4">
+            <h2 class="text-lg font-semibold mb-4">Filter & Sort</h2>
+            <ClientsFilter
+              client:load
+              subjectAreas={subjectAreas || []}
+              initialSubjects={subjectFilters}
+              initialSort={sortParam}
+            />
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+          <!-- Active Filters -->
+          {hasFilters && (
+            <div class="mb-6 flex flex-wrap items-center gap-2">
+              <span class="text-sm font-medium text-muted-foreground">Active filters:</span>
+
+              {/* Subject filters */}
+              {subjectFilters.map((subjectSlug) => {
+                const subject = subjectAreas?.find(s => s.slug === subjectSlug);
+                if (!subject) return null;
+
+                const removeUrl = new URLSearchParams(url.searchParams);
+                const remainingSubjects = subjectFilters.filter(s => s !== subjectSlug);
+                if (remainingSubjects.length > 0) {
+                  removeUrl.set('subject', remainingSubjects.join(','));
+                } else {
+                  removeUrl.delete('subject');
+                }
+
+                return (
+                  <a
+                    href={`/clients?${removeUrl.toString()}`}
+                    class="inline-flex items-center gap-1 rounded-full bg-texas-blue-500/10 px-3 py-1 text-sm hover:bg-texas-blue-500/20 transition-colors"
+                  >
+                    <span>{subject.name}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </a>
+                );
+              })}
+
+              {/* Sort filter (if not default) */}
+              {sortParam !== 'lobbyist_count_desc' && (
+                <a
+                  href={`/clients?${new URLSearchParams({ ...Object.fromEntries(url.searchParams), sort: 'lobbyist_count_desc' }).toString().replace(/sort=lobbyist_count_desc&?/, '')}`}
+                  class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80 transition-colors"
+                >
+                  <span>Sort: {
+                    sortParam === 'lobbyist_count_asc' ? 'Fewest Lobbyists' :
+                    sortParam === 'name_asc' ? 'Name (A-Z)' :
+                    sortParam === 'name_desc' ? 'Name (Z-A)' :
+                    'Custom'
+                  }</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </a>
+              )}
+
+              {/* Clear all */}
+              <a
+                href="/clients"
+                class="text-sm text-texas-blue-500 hover:text-texas-blue-600 hover:underline"
+              >
+                Clear all
+              </a>
+            </div>
+          )}
+
+          {clients.length === 0 ? (
+            <!-- Empty State -->
+            <div class="text-center py-12">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+                <svg class="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold mb-2">No clients found</h2>
+              <p class="text-muted-foreground mb-6">
+                {hasFilters
+                  ? 'Try adjusting your filters to see more results'
+                  : 'Check back later as we continue to update our database'
+                }
+              </p>
+            </div>
+          ) : (
+        <>
+              <!-- Client Cards Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                {clients.map(client => (
+                  <ClientCard client={client} />
+                ))}
+              </div>
+
+              <!-- Pagination -->
+              {totalPages > 1 && (
+                <div class="mt-12 flex items-center justify-center gap-2">
+                  {/* Previous Button */}
+                  {page > 1 ? (
+                    <a
+                      href={`/clients?${new URLSearchParams({ page: String(page - 1), ...subjectFilters.length > 0 && { subject: subjectFilters.join(',') }, ...sortParam !== 'lobbyist_count_desc' && { sort: sortParam } }).toString()}`}
+                      class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                    >
+                      ← Previous
+                    </a>
+                  ) : (
+                    <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                      ← Previous
+                    </span>
+                  )}
+
+                  {/* Page Numbers */}
+                  <div class="flex items-center gap-1">
+                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                      let pageNum = i + 1;
+                      if (totalPages > 5 && page > 3) {
+                        pageNum = page - 2 + i;
+                        if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                      }
+
+                      return (
+                        <a
+                          href={`/clients?${new URLSearchParams({ page: String(pageNum), ...subjectFilters.length > 0 && { subject: subjectFilters.join(',') }, ...sortParam !== 'lobbyist_count_desc' && { sort: sortParam } }).toString()}`}
+                          class={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${
+                            pageNum === page
+                              ? 'bg-texas-blue-500 text-white'
+                              : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                          }`}
+                        >
+                          {pageNum}
+                        </a>
+                      );
+                    })}
+                  </div>
+
+                  {/* Next Button */}
+                  {page < totalPages ? (
+                    <a
+                      href={`/clients?${new URLSearchParams({ page: String(page + 1), ...subjectFilters.length > 0 && { subject: subjectFilters.join(',') }, ...sortParam !== 'lobbyist_count_desc' && { sort: sortParam } }).toString()}`}
+                      class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                    >
+                      Next →
+                    </a>
+                  ) : (
+                    <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                      Next →
+                    </span>
+                  )}
+                </div>
+
+                <p class="text-center text-sm text-muted-foreground mt-4">
+                  Showing {(page - 1) * perPage + 1} - {Math.min(page * perPage, totalCount)} of {totalCount.toLocaleString()} clients
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-12 bg-muted/50 border-t border-border">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+          Are You a Texas Lobbyist?
+        </h2>
+        <p class="text-lg text-muted-foreground mb-6">
+          Claim your free profile and connect with businesses who need your expertise
+        </p>
+        <a
+          href="/claim-profile"
+          class="inline-flex items-center justify-center rounded-md bg-texas-red-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-red-600 transition-colors"
+        >
+          Claim Your Profile
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

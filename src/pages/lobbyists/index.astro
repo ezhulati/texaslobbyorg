@@ -2,6 +2,7 @@
 import Layout from '@/components/astro/Layout.astro';
 import SearchFilter from '@/components/react/SearchFilter';
 import SearchableList from '@/components/react/SearchableList';
+import BrowseModeToggle from '@/components/react/BrowseModeToggle';
 import { supabase } from '@/lib/supabase';
 import { searchLobbyists, getLobbyistCount } from '@/lib/api/lobbyists';
 
@@ -107,6 +108,11 @@ const schema = {
   <!-- Search Header -->
   <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-12 border-b border-border">
     <div class="container">
+      <!-- Browse Mode Toggle -->
+      <div class="mb-6">
+        <BrowseModeToggle client:load currentMode="lobbyists" />
+      </div>
+
       <h1 class="text-3xl md:text-4xl font-bold mb-2">Find Texas Lobbyists</h1>
       <p class="text-lg text-muted-foreground mb-6">
         {totalCount.toLocaleString()} lobbyists ready to represent your business interests

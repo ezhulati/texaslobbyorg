@@ -149,3 +149,133 @@ export async function getClientsBySubject(subjectName: string, limit: number = 1
     .sort((a, b) => b.count - a.count)
     .slice(0, limit);
 }
+
+// ============================================================================
+// Clients Directory Feature (001-clients-directory)
+// ============================================================================
+
+/**
+ * Type definitions for client directory and detail pages
+ */
+export interface ClientSummary {
+  name: string;
+  slug: string;
+  lobbyist_count: number;
+  subject_areas: string[];
+  top_subject_areas: string[];
+}
+
+export interface ClientSearchParams {
+  sort?: 'lobbyist_count_desc' | 'lobbyist_count_asc' | 'name_asc' | 'name_desc';
+  subjects?: string[];  // Subject area slugs
+  limit?: number;
+  offset?: number;
+}
+
+export interface LobbyistSummary {
+  id: string;
+  first_name: string;
+  last_name: string;
+  slug: string;
+  profile_image_url: string | null;
+  subject_areas: string[];
+  subscription_tier: 'free' | 'premium' | 'featured';
+}
+
+export interface ClientDetail {
+  name: string;
+  slug: string;
+  lobbyist_count: number;
+  subject_areas: string[];
+  lobbyists: {
+    total_count: number;
+    results: LobbyistSummary[];
+  };
+}
+
+/**
+ * Search clients with filters and sorting
+ * Calls get_clients_directory Postgres function
+ */
+export async function searchClients(params: ClientSearchParams): Promise<ClientSummary[]> {
+  const { sort = 'lobbyist_count_desc', subjects, limit = 50, offset = 0 } = params;
+
+  // Convert subject slugs to names (if provided)
+  let subjectNames: string[] | null = null;
+  if (subjects && subjects.length > 0) {
+    const { data: subjectData } = await supabase
+      .from('subject_areas')
+      .select('name')
+      .in('slug', subjects);
+    subjectNames = subjectData ? subjectData.map(s => s.name) : null;
+  }
+
+  const { data, error } = await (supabase.rpc as any)('get_clients_directory', {
+    sort_by: sort,
+    subject_filters: subjectNames,
+    limit_count: limit,
+    offset_count: offset,
+  });
+
+  if (error) {
+    console.error('Error fetching clients:', error);
+    throw error;
+  }
+
+  return data as ClientSummary[];
+}
+
+/**
+ * Get a single client by slug with paginated lobbyists
+ * Calls get_client_detail Postgres function
+ */
+export async function getClientBySlug(
+  slug: string,
+  lobbyistLimit = 20,
+  lobbyistOffset = 0
+): Promise<ClientDetail | null> {
+  const { data, error } = await (supabase.rpc as any)('get_client_detail', {
+    client_slug_param: slug,
+    lobbyist_limit: lobbyistLimit,
+    lobbyist_offset: lobbyistOffset,
+  });
+
+  if (error) {
+    console.error('Error fetching client:', error);
+    return null;
+  }
+
+  // Postgres function returns an array with 1 result or empty array
+  return data && data.length > 0 ? data[0] : null;
+}
+
+/**
+ * Get total count of clients (for pagination)
+ * Uses dedicated count function to avoid Supabase RPC row limits
+ */
+export async function getClientCount(params: ClientSearchParams): Promise<number> {
+  const { subjects } = params;
+
+  // Convert subject slugs to names
+  let subjectNames: string[] | null = null;
+  if (subjects && subjects.length > 0) {
+    const { data: subjectData } = await supabase
+      .from('subject_areas')
+      .select('name')
+      .in('slug', subjects);
+    subjectNames = subjectData ? subjectData.map(s => s.name) : null;
+  }
+
+  // Call dedicated count function (returns single bigint, not rows)
+  const { data, error } = await (supabase.rpc as any)('get_clients_count', {
+    subject_filters: subjectNames,
+  });
+
+  if (error) {
+    console.error('Error counting clients:', error);
+    return 0;
+  }
+
+  // RPC returns the count directly as a number
+  return typeof data === 'number' ? data : 0;
+}

@@ -1,0 +1,51 @@
+---
+import { pluralize } from '@/lib/utils';
+
+interface Props {
+  client: {
+    name: string;
+    slug: string;
+    lobbyist_count: number;
+    top_subject_areas: string[];
+  };
+}
+
+const { client } = Astro.props;
+---
+
+<a
+  href={`/clients/${client.slug}`}
+  class="block group"
+  data-testid="client-card"
+>
+  <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-white">
+    <!-- Client Name -->
+    <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+      {client.name}
+    </h3>
+
+    <!-- Lobbyist Count -->
+    <p class="text-muted-foreground mb-4" data-testid="lobbyist-count">
+      {client.lobbyist_count} {pluralize(client.lobbyist_count, 'lobbyist')}
+    </p>
+
+    <!-- Subject Area Tags -->
+    {client.top_subject_areas.length > 0 && (
+      <div>
+        <p class="text-xs text-muted-foreground mb-2">Top policy areas:</p>
+        <div class="flex flex-wrap gap-2">
+          {client.top_subject_areas.slice(0, 3).map((subject) => (
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-sm">
+              {subject}
+            </span>
+          ))}
+          {client.top_subject_areas.length > 3 && (
+            <span class="inline-flex items-center rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
+              +{client.top_subject_areas.length - 3} more
+            </span>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</a>

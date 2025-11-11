@@ -11,12 +11,12 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const PREAMBLE_PATTERNS = [
-  /^Here's a summary of the bill:\s*/i,
-  /^Here's a concise summary:\s*/i,
-  /^Here's a summary:\s*/i,
-  /^Summary:\s*/i,
-  /^Here is a summary:\s*/i,
-  /^Here is a concise summary:\s*/i,
+  /^Here's a summary of the (Texas )?bill:[\s\n]*/i,
+  /^Here's a concise summary:[\s\n]*/i,
+  /^Here's a summary:[\s\n]*/i,
+  /^Summary:[\s\n]*/i,
+  /^Here is a summary:[\s\n]*/i,
+  /^Here is a concise summary:[\s\n]*/i,
   /^This bill\s+/i, // Remove "This bill" at start
   /^The bill\s+/i, // Remove "The bill" at start
 ];
@@ -27,27 +27,30 @@ async function cleanSummaries(dryRun: boolean = false) {
   console.log(`Mode: ${dryRun ? 'DRY RUN (no database updates)' : 'LIVE (will update database)'}`);
   console.log(`${'='.repeat(60)}\n`);
 
-  // Get all bills with summaries
-  const { data: bills, error } = await supabase
-    .from('bills')
-    .select('id, bill_number, summary')
-    .not('summary', 'is', null)
-    .order('bill_number');
-
-  if (error) {
-    console.error('Error fetching bills:', error);
-    return;
-  }
-
-  if (!bills || bills.length === 0) {
-    console.log('No bills found!');
-    return;
-  }
-
   let cleanedCount = 0;
   let unchangedCount = 0;
+  let offset = 0;
+  const batchSize = 1000;
 
-  for (const bill of bills) {
+  // Process all bills in batches
+  while (true) {
+    const { data: bills, error } = await supabase
+      .from('bills')
+      .select('id, bill_number, summary')
+      .not('summary', 'is', null)
+      .order('bill_number')
+      .range(offset, offset + batchSize - 1);
+
+    if (error) {
+      console.error('Error fetching bills:', error);
+      return;
+    }
+
+    if (!bills || bills.length === 0) break;
+
+    console.log(`\nProcessing batch ${offset}-${offset + bills.length}...`);
+
+    for (const bill of bills) {
     if (!bill.summary) continue;
 
     let cleaned = bill.summary;
@@ -91,6 +94,10 @@ async function cleanSummaries(dryRun: boolean = false) {
     } else {
       unchangedCount++;
     }
+    }
+
+    if (bills.length < batchSize) break;
+    offset += batchSize;
   }
 
   console.log(`\n${'='.repeat(60)}`);
@@ -98,7 +105,7 @@ async function cleanSummaries(dryRun: boolean = false) {
   console.log(`${'='.repeat(60)}`);
   console.log(`✅ Cleaned: ${cleanedCount}`);
   console.log(`⏭️  Unchanged: ${unchangedCount}`);
-  console.log(`📊 Total processed: ${bills.length}`);
+  console.log(`📊 Total processed: ${cleanedCount + unchangedCount}`);
   console.log(`${'='.repeat(60)}\n`);
 }
 

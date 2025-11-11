@@ -27,6 +27,33 @@ interface Bill {
   full_text: string | null;
 }
 
+const PREAMBLE_PATTERNS = [
+  /^Here's a summary of the (Texas )?bill:[\s\n]*/i,
+  /^Here's a concise summary:[\s\n]*/i,
+  /^Here's a summary:[\s\n]*/i,
+  /^Summary:[\s\n]*/i,
+  /^Here is a summary:[\s\n]*/i,
+  /^Here is a concise summary:[\s\n]*/i,
+  /^This bill\s+/i,
+  /^The bill\s+/i,
+];
+
+function cleanPreamble(text: string): string {
+  let cleaned = text.trim();
+
+  // Apply each preamble pattern
+  for (const pattern of PREAMBLE_PATTERNS) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+
+  // Capitalize first letter after cleaning
+  if (cleaned.length > 0) {
+    cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  }
+
+  return cleaned;
+}
+
 async function generateSummary(billText: string, billTitle: string): Promise<string> {
   // Truncate very long bill text to stay within token limits
   const maxChars = 50000; // ~12,500 tokens
@@ -37,10 +64,12 @@ async function generateSummary(billText: string, billTitle: string): Promise<str
   const response = await anthropic.messages.create({
     model: 'claude-3-5-haiku-20241022',
     max_tokens: 200,
-    system: 'You write direct, concise bill summaries with no preamble. Start immediately with what the bill does.',
+    system: 'You are a bill summarizer. Write ONLY the summary content. Do NOT include any preamble, introduction, or phrases like "Here\'s a summary" or "This bill". Start directly with what the bill does.',
     messages: [{
       role: 'user',
       content: `Summarize this Texas bill in 2-3 sentences (~100-150 words). Explain what it does, who it affects, and its impact. Use plain language for business owners and citizens.
+
+IMPORTANT: Write ONLY the summary. Do NOT start with "Here's a summary" or "This bill" or any introduction.
 
 Bill Title: ${billTitle}
 
@@ -53,7 +82,8 @@ ${truncatedText}`
     ? response.content[0].text.trim()
     : '';
 
-  return summary;
+  // Clean any preambles that still slip through
+  return cleanPreamble(summary);
 }
 
 async function processBills(limit: number = 10, dryRun: boolean = false) {
@@ -77,11 +107,11 @@ async function processBills(limit: number = 10, dryRun: boolean = false) {
 
   // Filter in memory for bills that need summaries
   const bills = (allBills || [])
-    .filter((b: Bill) =>
-      !b.summary ||
-      b.summary.trim() === '' ||
-      (b.summary.startsWith('relating to') && b.summary.length < 100)
-    )
+    .filter((b: Bill) => {
+      if (!b.summary || b.summary.trim() === '') return true;
+      const lowerSummary = b.summary.toLowerCase();
+      return lowerSummary.startsWith('relating to') && b.summary.length < 200; // Increased threshold
+    })
     .slice(0, limit);
 
   if (!bills || bills.length === 0) {

@@ -19,7 +19,8 @@ const { data: lobbyists } = await serverClient
       full_name
     )
   `)
-  .order('created_at', { ascending: false });
+  .order('created_at', { ascending: false })
+  .limit(10000); // Increase limit to fetch all lobbyists (default is 1000)
 
 // Get statistics
 const { count: totalCount } = await serverClient

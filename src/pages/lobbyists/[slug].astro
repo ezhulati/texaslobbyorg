@@ -685,27 +685,6 @@ const tagTypeConfig = {
               <>
                 {/* Non-authenticated user view */}
                 <div class="space-y-4">
-                  {/* Are you this lobbyist? */}
-                  {!lobbyist.user_id && (
-                    <div class="rounded-lg bg-amber-50 border-2 border-amber-300 p-4 mb-4">
-                      <div class="flex items-start gap-3">
-                        <svg class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                        <div class="flex-1">
-                          <p class="text-sm font-semibold text-amber-900 mb-1">Is this you?</p>
-                          <p class="text-xs text-amber-800 mb-3">Claim this listing to manage your information and connect with potential clients.</p>
-                          <a
-                            href="/claim-profile"
-                            class="inline-flex items-center justify-center rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 transition-colors"
-                          >
-                            Claim This Listing
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
                   {/* For business owners wanting to connect */}
                   <div class="rounded-lg bg-texas-blue-50 border border-texas-blue-200 p-4">
                     <div class="flex items-start gap-3">

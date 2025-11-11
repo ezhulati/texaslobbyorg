@@ -18,11 +18,12 @@ export const GET: APIRoute = async ({ site }) => {
     changefreq: 'weekly',
   }));
 
-  // Fetch all active lobbyists
+  // Fetch all active and approved lobbyists
   const { data: lobbyists } = await supabase
     .from('lobbyists')
     .select('slug, updated_at')
     .eq('is_active', true)
+    .eq('approval_status', 'approved')
     .order('slug')
     .limit(10000); // Override default 1000 limit
 

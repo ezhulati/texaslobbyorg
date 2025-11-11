@@ -13,7 +13,7 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [userType, setUserType] = useState<'searcher' | 'lobbyist'>('searcher');
+  const [userType, setUserType] = useState<'searcher' | 'lobbyist' | ''>('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,6 +28,12 @@ export default function AuthForm({ mode, redirectTo = '/dashboard' }: AuthFormPr
 
     try {
       if (mode === 'signup') {
+        // Validate user type selection
+        if (!userType) {
+          setError('Please select whether you are searching for a lobbyist or are a registered lobbyist');
+          setLoading(false);
+          return;
+        }
         // Sign up via API endpoint (server-side auth with cookies)
         console.log('[AuthForm] Starting signup with email:', email, 'userType:', userType);
 

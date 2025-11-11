@@ -134,7 +134,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
               <strong>Create or Claim Your Profile:</strong>
               <ul>
                 <li>If you're already in our TEC database, you can <a href="${process.env.PUBLIC_SITE_URL || 'https://texaslobby.org'}/claim-profile">claim your existing profile</a></li>
-                <li>Otherwise, <a href="${process.env.PUBLIC_SITE_URL || 'https://texaslobby.org'}/create-profile">create a new profile</a></li>
+                <li>Otherwise, <a href="${process.env.PUBLIC_SITE_URL || 'https://texaslobby.org'}/signup">create your profile from scratch</a></li>
               </ul>
             </li>
             <li><strong>Complete Your Profile:</strong> Add your photo, bio, areas of expertise, and client list</li>

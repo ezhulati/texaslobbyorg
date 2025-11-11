@@ -129,32 +129,89 @@ const pageDescription = 'Create your Texas lobbyist profile on TexasLobby.org. G
         </div>
       ) : !user ? (
         <!-- Not Logged In -->
-        <div class="rounded-lg border-2 border-dashed border-texas-blue/30 bg-texas-blue-500/5 p-8 text-center">
-          <div class="mb-4">
-            <svg class="mx-auto h-12 w-12 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+        <div class="space-y-8">
+          <!-- Primary Action: Create New Profile -->
+          <div class="rounded-lg border-2 border-texas-blue-300 bg-gradient-to-br from-texas-blue-50 to-white p-8">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="flex-shrink-0">
+                <svg class="h-12 w-12 text-texas-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-2">Create New Lobbyist Profile</h2>
+                <p class="text-muted-foreground mb-6">
+                  Not yet in our directory? Create your profile and we'll review it within 24-48 hours.
+                </p>
+
+                <!-- Benefits -->
+                <div class="grid sm:grid-cols-3 gap-4 mb-6">
+                  <div class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm">24-48 hour review</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm">Free forever</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm">Full control</span>
+                  </div>
+                </div>
+
+                <!-- Single Clear CTA -->
+                <div class="space-y-3">
+                  <a
+                    href="/login?redirect=/create-profile"
+                    class="block w-full sm:w-auto text-center sm:inline-flex items-center justify-center rounded-md bg-texas-blue-600 px-8 py-3.5 text-base font-semibold text-white hover:bg-texas-blue-700 transition-all shadow-md hover:shadow-lg"
+                  >
+                    Sign In to Create Profile
+                  </a>
+                  <p class="text-sm text-muted-foreground">
+                    Don't have an account yet? <a href="/signup?redirect=/create-profile" class="text-texas-blue-600 hover:underline font-medium">Create one now →</a>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 class="text-xl font-semibold mb-3">Sign In Required</h3>
-          <p class="text-muted-foreground mb-2">
-            You need to sign in before creating your profile. This helps us verify your identity and protect your information.
-          </p>
-          <p class="text-sm text-muted-foreground mb-6">
-            <strong>Just signed up?</strong> Please verify your email first, then sign in to continue.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="/login?redirect=/create-profile"
-              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
-            >
-              Sign In
-            </a>
-            <a
-              href="/signup?redirect=/create-profile"
-              class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
-            >
-              Create Account
-            </a>
+
+          <!-- Secondary Option: Claim Existing -->
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-white text-gray-500 font-medium">OR</span>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-gray-300 bg-gray-50 p-6">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0">
+                <svg class="h-10 w-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold mb-2">Already in Our Directory?</h3>
+                <p class="text-sm text-muted-foreground mb-4">
+                  If you're registered with the Texas Ethics Commission, you likely have an existing profile. Claim it for instant access.
+                </p>
+                <a
+                  href="/claim-profile"
+                  class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700"
+                >
+                  Claim Existing Profile →
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
@@ -188,15 +245,6 @@ const pageDescription = 'Create your Texas lobbyist profile on TexasLobby.org. G
         </div>
       )}
 
-      <!-- Already Have a Profile? -->
-      <div class="mt-8 text-center">
-        <p class="text-sm text-muted-foreground">
-          Already in our directory?{' '}
-          <a href="/claim-profile" class="text-texas-blue-500 hover:underline font-medium">
-            Claim your existing profile
-          </a>
-        </p>
-      </div>
     </div>
   </section>
 </Layout>

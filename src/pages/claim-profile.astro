@@ -1,17 +1,12 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
-import ClaimProfileForm from '@/components/react/ClaimProfileForm';
+import ClaimProfileSearch from '@/components/react/ClaimProfileSearch';
 import { supabase } from '@/lib/supabase';
 
-// Check if user is authenticated (from middleware)
+// Check if user is authenticated
 const user = Astro.locals.user;
 
-// Check for auto-detection query params (from signup flow)
-const autoDetect = Astro.url.searchParams.get('auto') === 'true';
-const prefilledEmail = Astro.url.searchParams.get('email') || null;
-
 // If user is authenticated, check if they already have a claimed profile
-let alreadyClaimed = false;
 if (user) {
   const { data } = await supabase
     .from('lobbyists')
@@ -21,209 +16,203 @@ if (user) {
     .single();
 
   if (data) {
-    // User already has a claimed profile, redirect to it
     return Astro.redirect(`/lobbyists/${data.slug}`);
   }
 }
 
-// SEO-optimized title (55-60 chars) and description (155-160 chars)
 const pageTitle = 'Claim Your Texas Lobbyist Profile | Free Listing';
 const pageDescription = 'Claim your lobbyist profile on TexasLobby.org. Manage your information, showcase clients, increase visibility. Connect with Texas businesses seeking advocacy.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <!-- Claim Profile Page -->
-  <section class="py-16 min-h-[calc(100vh-4rem)]">
-    <div class="container max-w-4xl">
-      <!-- Header -->
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-b from-texas-blue-50 to-white pt-20 pb-16">
+    <div class="container max-w-5xl">
       <div class="text-center mb-12">
-        <h1 class="text-3xl md:text-4xl font-bold mb-4">Claim Your Profile</h1>
-        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
-          If you're a registered lobbyist in Texas, you likely already have a profile in our directory. Claim it to take control of your information and showcase your expertise.
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-texas-blue-100 text-texas-blue-700 text-sm font-medium mb-6">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          Free • No credit card required
+        </div>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          Take Control of Your<br/>
+          <span class="text-texas-blue-600">Professional Profile</span>
+        </h1>
+
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+          Already registered with the Texas Ethics Commission? Your profile is waiting.
+          Claim it in 60 seconds and start attracting clients today.
+        </p>
+
+        <!-- Trust Indicators -->
+        <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600 mb-12">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">1,687 Texas lobbyists</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">Verified profiles only</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">24-hour approval</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Search Card -->
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8 md:p-10">
+          <ClaimProfileSearch
+            client:load
+            isAuthenticated={!!user}
+            userId={user?.id}
+            userEmail={user?.email}
+          />
+        </div>
+
+        <!-- Not in directory CTA -->
+        <div class="mt-8 text-center">
+          <p class="text-gray-600 mb-3">
+            Don't have a profile yet?
+          </p>
+          <a
+            href="/create-profile"
+            class="inline-flex items-center gap-2 text-texas-blue-600 hover:text-texas-blue-700 font-semibold group"
+          >
+            Create your profile from scratch
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Claim Section -->
+  <section class="py-20 bg-white">
+    <div class="container max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Why claim your profile?</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Lobbyists with claimed profiles get 5x more client inquiries than unclaimed listings
         </p>
       </div>
 
-      <!-- Benefits Section -->
-      <div class="grid md:grid-cols-3 gap-6 mb-12">
-        <div class="rounded-lg border border-border bg-white p-6">
-          <div class="mb-3">
-            <svg
-              class="h-10 w-10 text-texas-blue-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Benefit 1 -->
+        <div class="group">
+          <div class="bg-gradient-to-br from-texas-blue-50 to-white rounded-2xl p-8 h-full border border-gray-100 hover:shadow-xl transition-all">
+            <div class="w-14 h-14 rounded-xl bg-texas-blue-600 text-white flex items-center justify-center mb-5">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Get Discovered</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Business owners searching for expertise in your policy areas will find you first. Show up when it matters most.
+            </p>
           </div>
-          <h3 class="font-semibold mb-2">Control Your Information</h3>
-          <p class="text-sm text-muted-foreground">
-            Update your bio, contact details, and areas of expertise
-          </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-white p-6">
-          <div class="mb-3">
-            <svg
-              class="h-10 w-10 text-texas-blue-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              ></path>
-            </svg>
+        <!-- Benefit 2 -->
+        <div class="group">
+          <div class="bg-gradient-to-br from-texas-blue-50 to-white rounded-2xl p-8 h-full border border-gray-100 hover:shadow-xl transition-all">
+            <div class="w-14 h-14 rounded-xl bg-texas-blue-600 text-white flex items-center justify-center mb-5">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Control Your Story</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Add your bio, highlight recent wins, showcase client testimonials. Make your expertise undeniable.
+            </p>
           </div>
-          <h3 class="font-semibold mb-2">Showcase Your Clients</h3>
-          <p class="text-sm text-muted-foreground">
-            Highlight your client relationships and track record
-          </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-white p-6">
-          <div class="mb-3">
-            <svg
-              class="h-10 w-10 text-texas-blue-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-              ></path>
-            </svg>
+        <!-- Benefit 3 -->
+        <div class="group">
+          <div class="bg-gradient-to-br from-texas-blue-50 to-white rounded-2xl p-8 h-full border border-gray-100 hover:shadow-xl transition-all">
+            <div class="w-14 h-14 rounded-xl bg-texas-blue-600 text-white flex items-center justify-center mb-5">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Grow Your Practice</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Premium members report 3-5 qualified leads per month. Turn your profile into your best marketing channel.
+            </p>
           </div>
-          <h3 class="font-semibold mb-2">Increase Visibility</h3>
-          <p class="text-sm text-muted-foreground">
-            Upgrade to Premium or Featured for priority placement
-          </p>
         </div>
       </div>
+    </div>
+  </section>
 
-      {!user ? (
-        <!-- Not Logged In -->
-        <div class="rounded-lg border-2 border-dashed border-texas-blue/30 bg-texas-blue-500/5 p-8 text-center">
-          <h3 class="text-xl font-semibold mb-3">Sign In Required</h3>
-          <p class="text-muted-foreground mb-6">
-            You need to sign in or create an account before claiming your profile. This helps us verify your identity and protect your information.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="/login"
-              class="inline-flex items-center justify-center rounded-md bg-texas-blue-500 px-6 py-3 text-base font-medium text-white hover:bg-texas-blue-600 transition-colors"
-            >
-              Sign In
-            </a>
-            <a
-              href="/signup"
-              class="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-base font-medium hover:bg-accent transition-colors"
-            >
-              Create Account
-            </a>
-          </div>
-        </div>
-      ) : (
-        <!-- Logged In - Show Claim Form -->
-        <div class="space-y-6">
-          <!-- Auto-Detection Banner (if coming from signup) -->
-          {autoDetect && prefilledEmail && (
-            <div class="rounded-lg border-2 border-texas-blue-200 bg-texas-blue-50 p-6">
-              <div class="flex gap-3">
-                <svg class="h-6 w-6 text-texas-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-                <div>
-                  <h3 class="font-semibold text-texas-blue-900 mb-1">We Found Your Profile!</h3>
-                  <p class="text-sm text-texas-blue-800">
-                    Great news! We found an existing profile for <strong>{prefilledEmail}</strong>. Review the details below and claim it to manage your listing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div class="rounded-lg border border-border bg-white p-8">
-            <ClaimProfileForm
-              client:load
-              userId={user.id}
-              userEmail={user.email || undefined}
-              autoDetect={autoDetect}
-              prefilledEmail={prefilledEmail}
-            />
-          </div>
-        </div>
-      )}
-
-      <!-- Create New Profile CTA -->
-      <div class="mt-8 rounded-lg border-2 border-dashed border-texas-gold-500/50 bg-texas-gold-500/5 p-6">
-        <h3 class="font-semibold mb-2 text-lg">Can't find your profile?</h3>
-        <p class="text-sm text-muted-foreground mb-4">
-          If you're a newly registered lobbyist or haven't appeared in Texas Ethics Commission data yet, you can create a new profile. It will be reviewed by our team before going live.
-        </p>
-        <a
-          href="/create-profile"
-          class="inline-flex items-center justify-center rounded-md bg-texas-gold-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-texas-gold-600 transition-colors"
-        >
-          Create New Profile
-        </a>
+  <!-- How It Works -->
+  <section class="py-20 bg-gray-50">
+    <div class="container max-w-5xl">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Claim your profile in 3 steps</h2>
+        <p class="text-lg text-gray-600">Takes less than a minute. No payment required.</p>
       </div>
 
-      <!-- Additional Info -->
-      <div class="mt-12 space-y-6">
-        <div class="rounded-lg border border-border bg-muted/30 p-6">
-          <h3 class="font-semibold mb-3">How does profile claiming work?</h3>
-          <ol class="space-y-2 text-sm text-muted-foreground">
-            <li class="flex gap-3">
-              <span class="flex-shrink-0 font-semibold text-foreground">1.</span>
-              <span>Sign in or create an account using your professional email address</span>
-            </li>
-            <li class="flex gap-3">
-              <span class="flex-shrink-0 font-semibold text-foreground">2.</span>
-              <span>Search for your profile using your email or name</span>
-            </li>
-            <li class="flex gap-3">
-              <span class="flex-shrink-0 font-semibold text-foreground">3.</span>
-              <span>Verify your identity (your email must match our records)</span>
-            </li>
-            <li class="flex gap-3">
-              <span class="flex-shrink-0 font-semibold text-foreground">4.</span>
-              <span>Start managing your profile and connecting with potential clients</span>
-            </li>
-          </ol>
-        </div>
+      <div class="relative">
+        <!-- Connection line -->
+        <div class="hidden md:block absolute top-12 left-[16.666%] right-[16.666%] h-0.5 bg-gray-200"></div>
 
-        <div class="rounded-lg border border-border bg-muted/30 p-6">
-          <h3 class="font-semibold mb-3">Frequently Asked Questions</h3>
-          <div class="space-y-4">
-            <div>
-              <h4 class="font-medium text-sm mb-1">Where does profile data come from?</h4>
-              <p class="text-sm text-muted-foreground">
-                Our directory is based on Texas Ethics Commission registration data. We import public lobbyist records to create initial profiles that you can claim and enhance.
+        <div class="grid md:grid-cols-3 gap-8 relative">
+          <!-- Step 1 -->
+          <div class="text-center">
+            <div class="w-24 h-24 rounded-2xl bg-texas-blue-600 text-white flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="text-lg font-bold mb-2">Find Yourself</h3>
+              <p class="text-gray-600 text-sm">
+                Search by email or name. We'll show you matching profiles instantly.
               </p>
             </div>
-            <div>
-              <h4 class="font-medium text-sm mb-1">Is claiming my profile free?</h4>
-              <p class="text-sm text-muted-foreground">
-                Yes! Claiming your profile and maintaining a basic listing is completely free. You can upgrade to Premium ($297/mo) or Featured ($597/mo) for enhanced visibility and analytics.
+          </div>
+
+          <!-- Step 2 -->
+          <div class="text-center">
+            <div class="w-24 h-24 rounded-2xl bg-texas-blue-600 text-white flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="text-lg font-bold mb-2">Verify Ownership</h3>
+              <p class="text-gray-600 text-sm">
+                Quick sign-in, upload ID verification. We review within 24 hours.
               </p>
             </div>
-            <div>
-              <h4 class="font-medium text-sm mb-1">What if the email doesn't match?</h4>
-              <p class="text-sm text-muted-foreground">
-                For security reasons, the email on your account must match the email we have on file from the Texas Ethics Commission. If you need to update your email, please contact{' '}
-                <a href="/contact" class="text-texas-blue-500 hover:underline">contact us</a>.
+          </div>
+
+          <!-- Step 3 -->
+          <div class="text-center">
+            <div class="w-24 h-24 rounded-2xl bg-texas-blue-600 text-white flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="text-lg font-bold mb-2">Start Growing</h3>
+              <p class="text-gray-600 text-sm">
+                Customize your profile, add testimonials, and watch the inquiries roll in.
               </p>
             </div>
           </div>

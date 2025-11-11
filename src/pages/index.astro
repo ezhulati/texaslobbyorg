@@ -7,12 +7,14 @@ import { supabase } from '@/lib/supabase';
 const { data: cities } = await supabase
   .from('cities')
   .select('id, name, slug')
-  .order('name');
+  .order('name')
+  .limit(10000); // Override default 1000 limit
 
 const { data: subjectAreas } = await supabase
   .from('subject_areas')
   .select('id, name, slug')
-  .order('name');
+  .order('name')
+  .limit(10000); // Override default 1000 limit
 
 // Fetch featured lobbyists for homepage showcase
 // Prioritize lobbyists with profile photos
@@ -22,7 +24,8 @@ const { data: allFeaturedLobbyists } = await supabase
   .eq('subscription_tier', 'featured')
   .eq('is_active', true)
   .eq('approval_status', 'approved')
-  .order('featured_order', { nullsFirst: false });
+  .order('featured_order', { nullsFirst: false })
+  .limit(10000); // Override default 1000 limit
 
 // Sort to prioritize those with profile images, then by featured_order
 const featuredLobbyists = allFeaturedLobbyists?.sort((a, b) => {

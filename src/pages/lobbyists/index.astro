@@ -30,12 +30,14 @@ const perPage = 24;
 const { data: cities } = await supabase
   .from('cities')
   .select('id, name, slug')
-  .order('name');
+  .order('name')
+  .limit(10000); // Override default 1000 limit
 
 const { data: subjectAreas } = await supabase
   .from('subject_areas')
   .select('id, name, slug')
-  .order('name');
+  .order('name')
+  .limit(10000); // Override default 1000 limit
 
 // Build search parameters
 const searchParams = {

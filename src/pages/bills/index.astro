@@ -11,12 +11,18 @@ import BillSearchFilter from '@/components/react/bills/BillSearchFilter';
 import BillPagination from '@/components/react/bills/BillPagination';
 import { parseSearchParams, executeBillSearch } from '@/lib/services/billSearch';
 import { getBillSubjectAreas, getLegislativeSessions } from '@/lib/api/bills';
+import { supabase } from '@/lib/supabase';
 
 // Parse search params from URL
 const filters = parseSearchParams(Astro.url.searchParams);
 
 // Execute search
 const { bills, pagination } = await executeBillSearch(filters);
+
+// Get total count of bills (for pagination display)
+const { count: totalCount } = await supabase
+  .from('bills')
+  .select('*', { count: 'exact', head: true });
 
 // Get filter options
 const subjects = await getBillSubjectAreas();
@@ -94,6 +100,9 @@ const pageDescription = `Search and browse ${bills.length.toLocaleString()}+ Tex
           hasNextPage={pagination.hasMore}
           hasPrevPage={pagination.page > 1}
         />
+        <p class="text-center mt-4 text-xs sm:text-sm text-gray-500">
+          Showing <span class="font-medium text-gray-700">{pagination.offset + 1}</span> - <span class="font-medium text-gray-700">{pagination.offset + bills.length}</span> of <span class="font-medium text-gray-700">{totalCount?.toLocaleString() || '8,717'}</span> bills
+        </p>
       </div>
     )}
   </div>

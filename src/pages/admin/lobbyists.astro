@@ -9,38 +9,64 @@ const user = Astro.locals.user;
 if (!user) return Astro.redirect('/login?redirect=' + Astro.url.pathname);
 if (user.role !== 'admin') return Astro.redirect('/dashboard');
 
-// Get all lobbyists with user info (fetch in batches to overcome 1000 row limit)
-async function fetchAllLobbyists() {
-  const batchSize = 1000;
-  let allLobbyists: any[] = [];
-  let offset = 0;
-  let hasMore = true;
+// Get URL parameters for filtering and pagination
+const url = new URL(Astro.request.url);
+const page = parseInt(url.searchParams.get('page') || '1');
+const searchTerm = url.searchParams.get('search') || '';
+const statusFilter = url.searchParams.get('status') || '';
+const tierFilter = url.searchParams.get('tier') || '';
+const approvalFilter = url.searchParams.get('approval') || '';
+const perPage = 50;
 
-  while (hasMore) {
-    const { data, error } = await serverClient
-      .from('lobbyists')
-      .select(`
-        *,
-        user:user_id (
-          email,
-          full_name
-        )
-      `)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + batchSize - 1);
+// Build filtered query
+let query = serverClient
+  .from('lobbyists')
+  .select(`
+    *,
+    user:user_id (
+      email,
+      full_name
+    )
+  `, { count: 'exact' });
 
-    if (error) throw error;
-    if (!data || data.length === 0) break;
-
-    allLobbyists = [...allLobbyists, ...data];
-    hasMore = data.length === batchSize;
-    offset += batchSize;
-  }
-
-  return allLobbyists;
+// Apply search filter
+if (searchTerm) {
+  query = query.or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
 }
 
-const lobbyists = await fetchAllLobbyists();
+// Apply status filter
+if (statusFilter === 'pending') {
+  query = query.eq('is_pending', true);
+} else if (statusFilter === 'active') {
+  query = query.eq('is_active', true).eq('is_pending', false);
+} else if (statusFilter === 'inactive') {
+  query = query.eq('is_active', false).eq('is_pending', false);
+}
+
+// Apply tier filter
+if (tierFilter) {
+  query = query.eq('subscription_tier', tierFilter);
+}
+
+// Apply approval filter
+if (approvalFilter) {
+  query = query.eq('approval_status', approvalFilter);
+}
+
+// Apply pagination
+query = query
+  .order('created_at', { ascending: false })
+  .range((page - 1) * perPage, page * perPage - 1);
+
+const { data: lobbyists, count: filteredCount, error } = await query;
+
+if (error) {
+  console.error('Error fetching lobbyists:', error);
+}
+
+// Calculate pagination
+const totalPages = Math.ceil((filteredCount || 0) / perPage);
+const hasFilters = searchTerm || statusFilter || tierFilter || approvalFilter;
 
 // Get statistics
 const { count: totalCount } = await serverClient
@@ -98,18 +124,20 @@ const pageTitle = 'Manage Lobbyists | Admin';
       </div>
 
       <!-- Search and Filters -->
-      <div class="mb-6 space-y-4">
+      <form method="GET" action="/admin/lobbyists" class="mb-6 space-y-4">
         <div class="flex gap-4">
           <div class="flex-1">
             <input
               type="text"
-              id="search-input"
-              placeholder="Search by name, email, or city..."
+              name="search"
+              value={searchTerm}
+              placeholder="Search by name or email..."
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
             />
           </div>
           <select
-            id="status-filter"
+            name="status"
+            value={statusFilter}
             class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
           >
             <option value="">All Statuses</option>
@@ -118,7 +146,8 @@ const pageTitle = 'Manage Lobbyists | Admin';
             <option value="inactive">Inactive</option>
           </select>
           <select
-            id="tier-filter"
+            name="tier"
+            value={tierFilter}
             class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
           >
             <option value="">All Tiers</option>
@@ -127,7 +156,8 @@ const pageTitle = 'Manage Lobbyists | Admin';
             <option value="featured">Featured</option>
           </select>
           <select
-            id="approval-filter"
+            name="approval"
+            value={approvalFilter}
             class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-texas-blue-500 focus:border-transparent"
           >
             <option value="">All Approvals</option>
@@ -135,32 +165,37 @@ const pageTitle = 'Manage Lobbyists | Admin';
             <option value="pending_approval">Pending Approval</option>
             <option value="rejected">Rejected</option>
           </select>
+          <button
+            type="submit"
+            class="px-6 py-2 bg-texas-blue-600 text-white rounded-md hover:bg-texas-blue-700 font-medium"
+          >
+            Search
+          </button>
         </div>
         <div class="flex items-center justify-between text-sm text-muted-foreground">
-          <span id="results-count">{lobbyists?.length || 0} lobbyists</span>
+          <span>
+            Showing {(page - 1) * perPage + 1}-{Math.min(page * perPage, filteredCount || 0)} of {filteredCount || 0} lobbyists
+            {hasFilters && <span class="text-texas-blue-600"> (filtered)</span>}
+          </span>
           <div class="flex items-center gap-4">
-            <span id="selected-count" class="hidden text-texas-blue-600 font-medium">0 selected</span>
+            {hasFilters && (
+              <a
+                href="/admin/lobbyists"
+                class="text-texas-blue-600 hover:text-texas-blue-700 font-medium"
+              >
+                Clear Filters
+              </a>
+            )}
             <button
-              id="export-selected"
-              class="hidden px-3 py-1 bg-texas-blue-600 text-white rounded-md hover:bg-texas-blue-700 text-sm font-medium"
-            >
-              Export Selected
-            </button>
-            <button
+              type="button"
               id="export-all"
               class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm font-medium"
             >
-              Export All
-            </button>
-            <button
-              id="clear-filters"
-              class="text-texas-blue-600 hover:text-texas-blue-700 font-medium"
-            >
-              Clear Filters
+              Export Current Page
             </button>
           </div>
         </div>
-      </div>
+      </form>
 
       <!-- Lobbyists Table -->
       <div class="rounded-lg border border-border bg-white overflow-hidden">
@@ -186,22 +221,14 @@ const pageTitle = 'Manage Lobbyists | Admin';
           </thead>
           <tbody class="divide-y divide-border">
             {lobbyists?.map((lobbyist) => (
-              <tr
-                class="hover:bg-muted/50 lobbyist-row"
-                data-name={`${lobbyist.first_name} ${lobbyist.last_name}`}
-                data-email={lobbyist.email || lobbyist.user?.email || ''}
-                data-status={lobbyist.is_pending ? 'pending' : lobbyist.is_active ? 'active' : 'inactive'}
-                data-tier={lobbyist.subscription_tier || 'free'}
-                data-approval={lobbyist.approval_status || 'pending_approval'}
-                data-cities={lobbyist.cities?.join(' ') || ''}
-                data-lobbyist-id={lobbyist.id}
-                data-created={lobbyist.created_at}
-              >
+              <tr class="hover:bg-muted/50">
                 <td class="px-4 py-4 whitespace-nowrap">
                   <input
                     type="checkbox"
                     class="lobbyist-checkbox rounded border-gray-300 text-texas-blue-600 focus:ring-texas-blue-500"
                     data-lobbyist-id={lobbyist.id}
+                    data-name={`${lobbyist.first_name} ${lobbyist.last_name}`}
+                    data-email={lobbyist.email || lobbyist.user?.email || ''}
                   />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -263,202 +290,132 @@ const pageTitle = 'Manage Lobbyists | Admin';
         </table>
         </div>
       </div>
+
+      <!-- Pagination -->
+      {totalPages > 1 && (
+        <div class="mt-6 flex items-center justify-center gap-2">
+          {/* Previous Button */}
+          {page > 1 ? (
+            <a
+              href={`/admin/lobbyists?${new URLSearchParams({ page: String(page - 1), ...searchTerm && { search: searchTerm }, ...statusFilter && { status: statusFilter }, ...tierFilter && { tier: tierFilter }, ...approvalFilter && { approval: approvalFilter } }).toString()}`}
+              class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              ← Previous
+            </a>
+          ) : (
+            <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+              ← Previous
+            </span>
+          )}
+
+          {/* Page Numbers */}
+          <div class="flex items-center gap-1">
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              let pageNum = i + 1;
+              if (totalPages > 5 && page > 3) {
+                pageNum = page - 2 + i;
+                if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+              }
+
+              return (
+                <a
+                  href={`/admin/lobbyists?${new URLSearchParams({ page: String(pageNum), ...searchTerm && { search: searchTerm }, ...statusFilter && { status: statusFilter }, ...tierFilter && { tier: tierFilter }, ...approvalFilter && { approval: approvalFilter } }).toString()}`}
+                  class={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${
+                    pageNum === page
+                      ? 'bg-texas-blue-500 text-white'
+                      : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                  }`}
+                >
+                  {pageNum}
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Next Button */}
+          {page < totalPages ? (
+            <a
+              href={`/admin/lobbyists?${new URLSearchParams({ page: String(page + 1), ...searchTerm && { search: searchTerm }, ...statusFilter && { status: statusFilter }, ...tierFilter && { tier: tierFilter }, ...approvalFilter && { approval: approvalFilter } }).toString()}`}
+              class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              Next →
+            </a>
+          ) : (
+            <span class="inline-flex items-center justify-center rounded-md border border-input bg-muted px-4 py-2 text-sm font-medium text-muted-foreground cursor-not-allowed">
+              Next →
+            </span>
+          )}
+        </div>
+      )}
     </div>
   </section>
 </Layout>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Search and filter functionality
-    const searchInput = document.getElementById('search-input') as HTMLInputElement;
-    const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
-    const tierFilter = document.getElementById('tier-filter') as HTMLSelectElement;
-    const approvalFilter = document.getElementById('approval-filter') as HTMLSelectElement;
-    const clearFiltersBtn = document.getElementById('clear-filters') as HTMLButtonElement;
-    const resultsCount = document.getElementById('results-count') as HTMLSpanElement;
-    const lobbyistRows = document.querySelectorAll('.lobbyist-row') as NodeListOf<HTMLElement>;
-
-    function filterLobbyists() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const statusValue = statusFilter.value.toLowerCase();
-      const tierValue = tierFilter.value.toLowerCase();
-      const approvalValue = approvalFilter.value.toLowerCase();
-
-      let visibleCount = 0;
-
-      lobbyistRows.forEach(row => {
-        const name = row.dataset.name?.toLowerCase() || '';
-        const email = row.dataset.email?.toLowerCase() || '';
-        const cities = row.dataset.cities?.toLowerCase() || '';
-        const status = row.dataset.status?.toLowerCase() || '';
-        const tier = row.dataset.tier?.toLowerCase() || '';
-        const approval = row.dataset.approval?.toLowerCase() || '';
-
-        // Check search term
-        const matchesSearch = !searchTerm ||
-          name.includes(searchTerm) ||
-          email.includes(searchTerm) ||
-          cities.includes(searchTerm);
-
-        // Check status filter
-        const matchesStatus = !statusValue || status === statusValue;
-
-        // Check tier filter
-        const matchesTier = !tierValue || tier === tierValue;
-
-        // Check approval filter
-        const matchesApproval = !approvalValue || approval === approvalValue;
-
-        // Show/hide row
-        if (matchesSearch && matchesStatus && matchesTier && matchesApproval) {
-          row.style.display = '';
-          visibleCount++;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      // Update results count
-      resultsCount.textContent = `${visibleCount} lobbyist${visibleCount !== 1 ? 's' : ''}`;
-    }
-
-    function clearFilters() {
-      searchInput.value = '';
-      statusFilter.value = '';
-      tierFilter.value = '';
-      approvalFilter.value = '';
-      filterLobbyists();
-    }
-
-    // Add event listeners
-    searchInput.addEventListener('input', filterLobbyists);
-    statusFilter.addEventListener('change', filterLobbyists);
-    tierFilter.addEventListener('change', filterLobbyists);
-    approvalFilter.addEventListener('change', filterLobbyists);
-    clearFiltersBtn.addEventListener('click', clearFilters);
-
     // Bulk selection functionality
     const selectAllCheckbox = document.getElementById('select-all') as HTMLInputElement;
     const lobbyistCheckboxes = document.querySelectorAll('.lobbyist-checkbox') as NodeListOf<HTMLInputElement>;
-    const selectedCount = document.getElementById('selected-count') as HTMLSpanElement;
-    const exportSelectedBtn = document.getElementById('export-selected') as HTMLButtonElement;
     const exportAllBtn = document.getElementById('export-all') as HTMLButtonElement;
 
-    function updateSelectionUI() {
-      const checkedBoxes = Array.from(lobbyistCheckboxes).filter(cb => cb.checked);
-      const count = checkedBoxes.length;
-
-      if (count > 0) {
-        selectedCount.classList.remove('hidden');
-        exportSelectedBtn.classList.remove('hidden');
-        selectedCount.textContent = `${count} selected`;
-      } else {
-        selectedCount.classList.add('hidden');
-        exportSelectedBtn.classList.add('hidden');
-      }
-
-      // Update select-all checkbox state
-      const visibleCheckboxes = Array.from(lobbyistCheckboxes).filter(cb => {
-        const row = cb.closest('tr');
-        return row && row.style.display !== 'none';
-      });
-
-      if (visibleCheckboxes.length > 0) {
-        const allChecked = visibleCheckboxes.every(cb => cb.checked);
-        const someChecked = visibleCheckboxes.some(cb => cb.checked);
-        selectAllCheckbox.checked = allChecked;
-        selectAllCheckbox.indeterminate = someChecked && !allChecked;
-      }
-    }
-
-    selectAllCheckbox.addEventListener('change', () => {
+    // Select all/none
+    selectAllCheckbox?.addEventListener('change', () => {
       const isChecked = selectAllCheckbox.checked;
       lobbyistCheckboxes.forEach(checkbox => {
-        const row = checkbox.closest('tr');
-        if (row && row.style.display !== 'none') {
-          checkbox.checked = isChecked;
+        checkbox.checked = isChecked;
+      });
+    });
+
+    // Update select-all state when individual checkboxes change
+    lobbyistCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const allChecked = Array.from(lobbyistCheckboxes).every(cb => cb.checked);
+        const someChecked = Array.from(lobbyistCheckboxes).some(cb => cb.checked);
+        if (selectAllCheckbox) {
+          selectAllCheckbox.checked = allChecked;
+          selectAllCheckbox.indeterminate = someChecked && !allChecked;
         }
       });
-      updateSelectionUI();
     });
 
-    lobbyistCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', updateSelectionUI);
-    });
+    // Export current page to CSV
+    exportAllBtn?.addEventListener('click', () => {
+      const rows = Array.from(document.querySelectorAll('tbody tr'));
+      const data = rows.map(row => {
+        const cells = row.querySelectorAll('td');
+        return {
+          name: cells[1]?.querySelector('.font-medium')?.textContent || '',
+          email: cells[1]?.querySelector('.text-sm')?.textContent || '',
+          status: cells[2]?.textContent?.trim() || '',
+          tier: cells[3]?.textContent?.trim() || '',
+          approval: cells[4]?.textContent?.trim() || '',
+          cities: cells[5]?.textContent?.trim() || '',
+          created: cells[6]?.textContent?.trim() || ''
+        };
+      });
 
-    // Export functionality
-    function exportToCSV(lobbyists: any[]) {
-      const headers = ['Name', 'Email', 'Status', 'Tier', 'Approval', 'Cities', 'Phone', 'Created'];
-      const rows = lobbyists.map(lob => [
-        lob.name || '',
-        lob.email || '',
-        lob.status || '',
-        lob.tier || '',
-        lob.approval || '',
-        lob.cities || '',
-        lob.phone || '',
-        lob.created || ''
-      ]);
-
+      const headers = ['Name', 'Email', 'Status', 'Tier', 'Approval', 'Cities', 'Created'];
       const csvContent = [
         headers.join(','),
-        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+        ...data.map(row => [
+          `"${row.name}"`,
+          `"${row.email}"`,
+          `"${row.status}"`,
+          `"${row.tier}"`,
+          `"${row.approval}"`,
+          `"${row.cities}"`,
+          `"${row.created}"`
+        ].join(','))
       ].join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `lobbyists_export_${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
+      link.setAttribute('download', `lobbyists_page_${new Date().toISOString().split('T')[0]}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-
-    exportSelectedBtn.addEventListener('click', () => {
-      const checkedBoxes = Array.from(lobbyistCheckboxes).filter(cb => cb.checked);
-      const selectedLobbyists = checkedBoxes.map(cb => {
-        const row = cb.closest('tr') as HTMLElement;
-        return {
-          name: row.dataset.name || '',
-          email: row.dataset.email || '',
-          status: row.dataset.status || '',
-          tier: row.dataset.tier || '',
-          approval: row.dataset.approval || '',
-          cities: row.dataset.cities || '',
-          phone: '', // Not in dataset
-          created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : ''
-        };
-      });
-
-      if (selectedLobbyists.length === 0) {
-        alert('Please select at least one lobbyist to export.');
-        return;
-      }
-
-      exportToCSV(selectedLobbyists);
-    });
-
-    exportAllBtn.addEventListener('click', () => {
-      const visibleRows = Array.from(lobbyistRows).filter(row => row.style.display !== 'none');
-      const allLobbyists = visibleRows.map(row => ({
-        name: row.dataset.name || '',
-        email: row.dataset.email || '',
-        status: row.dataset.status || '',
-        tier: row.dataset.tier || '',
-        approval: row.dataset.approval || '',
-        cities: row.dataset.cities || '',
-        phone: '', // Not in dataset
-        created: row.dataset.created ? new Date(row.dataset.created).toLocaleDateString() : ''
-      }));
-
-      if (allLobbyists.length === 0) {
-        alert('No lobbyists to export.');
-        return;
-      }
-
-      exportToCSV(allLobbyists);
     });
   });
 </script>

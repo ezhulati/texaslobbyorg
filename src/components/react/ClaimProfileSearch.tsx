@@ -202,50 +202,68 @@ export default function ClaimProfileSearch({
   };
 
   const handleSelectProfile = (profile: any) => {
+    console.log('[ClaimProfileSearch] handleSelectProfile called, isAuthenticated:', isAuthenticated, 'profile:', profile);
+
     // If not authenticated, show inline signup form
     if (!isAuthenticated) {
+      console.log('[ClaimProfileSearch] Not authenticated, showing signup form');
       setShowSignupForm(true);
       return;
     }
 
     // If authenticated, proceed to claim
+    console.log('[ClaimProfileSearch] Authenticated, showing claim form');
     setSelectedProfileForClaim(profile);
     setVerificationDocumentUrl(null);
     setError('');
   };
 
   const handleSignup = async (e: React.FormEvent) => {
+    console.log('[ClaimProfileSearch] handleSignup called');
     e.preventDefault();
-    if (!selectedProfilePreview) return;
 
+    if (!selectedProfilePreview) {
+      console.error('[ClaimProfileSearch] No profile preview selected');
+      return;
+    }
+
+    console.log('[ClaimProfileSearch] Signing up for profile:', selectedProfilePreview.id);
     setError('');
     setSigningUp(true);
 
     try {
+      const payload = {
+        email: signupEmail,
+        password: signupPassword,
+        firstName: selectedProfilePreview.first_name,
+        lastName: selectedProfilePreview.last_name,
+        userType: 'lobbyist',
+        lobbyistId: selectedProfilePreview.id
+      };
+
+      console.log('[ClaimProfileSearch] Calling signup API with payload:', {... payload, password: '***'});
+
       // Call signup API
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: signupEmail,
-          password: signupPassword,
-          firstName: selectedProfilePreview.first_name,
-          lastName: selectedProfilePreview.last_name,
-          userType: 'lobbyist',
-          lobbyistId: selectedProfilePreview.id
-        })
+        body: JSON.stringify(payload)
       });
 
+      console.log('[ClaimProfileSearch] API response status:', response.status);
       const data = await response.json();
+      console.log('[ClaimProfileSearch] API response data:', data);
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create account');
       }
 
       // Account created successfully!
+      console.log('[ClaimProfileSearch] Account created, redirecting to claim-profile');
       // Reload page to get authenticated state and proceed to ID upload
       window.location.href = `/claim-profile?lobbyist=${selectedProfilePreview.id}`;
     } catch (err: any) {
+      console.error('[ClaimProfileSearch] Signup error:', err);
       setError(err.message || 'Failed to create account');
     } finally {
       setSigningUp(false);
@@ -519,8 +537,18 @@ export default function ClaimProfileSearch({
                 <button
                   key={profile.id}
                   onClick={() => {
+                    console.log('[ClaimProfileSearch] Autocomplete button clicked, profile:', profile);
                     setSelectedProfilePreview(profile);
                     setShowAutocomplete(false);
+
+                    // If not authenticated, show signup form directly
+                    if (!isAuthenticated) {
+                      console.log('[ClaimProfileSearch] Not authenticated, showing signup form');
+                      setShowSignupForm(true);
+                    } else {
+                      console.log('[ClaimProfileSearch] Authenticated, proceeding to claim');
+                      handleSelectProfile(profile);
+                    }
                   }}
                   className={`w-full px-4 py-3 text-left border-b border-gray-100 last:border-b-0 transition-colors ${
                     index === 0

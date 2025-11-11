@@ -104,10 +104,10 @@ export default function ClientsFilter({
         </select>
       </div>
 
-      {/* Subject Area Filter */}
+      {/* Policy Area Filter */}
       <div>
         <label className="block text-sm font-medium mb-2">
-          Filter by Subject Area
+          Filter by Policy Area
         </label>
         <div className="relative">
           <div

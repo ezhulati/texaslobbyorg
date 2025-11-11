@@ -248,24 +248,27 @@ const pageDescription = 'Get in touch with TexasLobby.org. We\'re here to help b
         const result = await response.json();
 
         if (response.ok) {
-          // Success message
+          // Success message - more prominent version
           const successDiv = document.createElement('div');
-          successDiv.className = 'form-message rounded-lg border border-green-200 bg-green-50 p-4';
+          successDiv.className = 'form-message rounded-lg border-2 border-green-500 bg-green-50 p-8 text-center shadow-lg';
           successDiv.innerHTML = `
-            <div class="flex items-start gap-3">
-              <svg class="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
+            <div class="flex flex-col items-center gap-4">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full bg-green-500">
+                <svg class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
               <div>
-                <p class="font-medium text-green-800">Message sent successfully!</p>
-                <p class="text-sm text-green-700 mt-1">We'll get back to you within 1-2 business days.</p>
+                <h3 class="text-2xl font-bold text-green-900 mb-2">Message Sent Successfully!</h3>
+                <p class="text-base text-green-800 mb-1">Thank you for contacting us.</p>
+                <p class="text-sm text-green-700">We'll get back to you within 1-2 business days.</p>
               </div>
             </div>
           `;
           form.insertAdjacentElement('beforebegin', successDiv);
 
-          // Reset form
-          form.reset();
+          // Hide the form after successful submission
+          form.style.display = 'none';
 
           // Scroll to success message
           successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -275,17 +278,19 @@ const pageDescription = 'Get in touch with TexasLobby.org. We\'re here to help b
         }
 
       } catch (error: any) {
-        // Error message
+        // Error message - more prominent version
         const errorDiv = document.createElement('div');
-        errorDiv.className = 'form-message rounded-lg border border-red-200 bg-red-50 p-4';
+        errorDiv.className = 'form-message rounded-lg border-2 border-red-500 bg-red-50 p-8 text-center shadow-lg';
         errorDiv.innerHTML = `
-          <div class="flex items-start gap-3">
-            <svg class="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-            </svg>
+          <div class="flex flex-col items-center gap-4">
+            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-500">
+              <svg class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
             <div>
-              <p class="font-medium text-red-800">Failed to send message</p>
-              <p class="text-sm text-red-700 mt-1">${error.message || 'Please try again later.'}</p>
+              <h3 class="text-2xl font-bold text-red-900 mb-2">Failed to Send Message</h3>
+              <p class="text-base text-red-800">${error.message || 'Please try again later.'}</p>
             </div>
           </div>
         `;

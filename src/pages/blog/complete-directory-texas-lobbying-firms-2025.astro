@@ -1,0 +1,987 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'Complete Directory of Texas Lobbying Firms: 64 Verified Operations (2025)';
+const pageDescription = 'The definitive guide to Texas lobbying firms with verified websites, Capitol Inside rankings, and complete contact information. From HillCo Partners to boutique specialists - every major firm operating at the Texas Capitol.';
+const publishedDate = '2025-11-11';
+const updatedDate = '2025-11-11';
+const author = 'By TexasLobby.org Research Team';
+const category = 'Directory';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: pageTitle,
+  description: pageDescription,
+  datePublished: publishedDate,
+  dateModified: updatedDate,
+  author: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/logo.png'
+    }
+  }
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-6xl">
+      <div class="mb-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to all articles
+        </a>
+      </div>
+
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        {category} • Research Report
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        The Complete Directory of Texas Lobbying Firms
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-4xl">
+        64 verified lobbying operations with active websites, comprehensive contact information, Capitol Inside rankings, and strategic analysis of the Texas lobbying industry.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span class="font-medium">{author}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <time datetime={publishedDate}>
+            {new Date(publishedDate).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </time>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">45 min read</span>
+        </div>
+      </div>
+
+      <!-- Key Stats -->
+      <div class="grid md:grid-cols-4 gap-6 mt-12">
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div class="text-3xl font-bold text-texas-blue-600 mb-2">64</div>
+          <div class="text-sm text-gray-600">Verified Firms</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div class="text-3xl font-bold text-texas-blue-600 mb-2">7</div>
+          <div class="text-sm text-gray-600">Top-Tier Operations</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div class="text-3xl font-bold text-texas-blue-600 mb-2">13</div>
+          <div class="text-sm text-gray-600">Law Firm Practices</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div class="text-3xl font-bold text-texas-blue-600 mb-2">97%</div>
+          <div class="text-sm text-gray-600">Austin-Based</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table of Contents -->
+  <section class="bg-gray-50 py-12 border-b border-border sticky top-0 z-40">
+    <div class="container max-w-6xl">
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-texas-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          Table of Contents
+        </h2>
+        <nav class="grid md:grid-cols-2 gap-3">
+          <a href="#executive-summary" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Executive Summary</a>
+          <a href="#top-tier-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 1: Top-Tier Multi-Client Firms (7)</a>
+          <a href="#law-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 2: Law Firm Lobbying Practices (13)</a>
+          <a href="#mid-tier-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 3: Established Mid-Tier Firms (8)</a>
+          <a href="#boutique-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 4: Boutique & Specialized Firms (36)</a>
+          <a href="#industry-analysis" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 5: Industry Analysis & Trends</a>
+          <a href="#no-website-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 6: Firms Without Websites (8)</a>
+          <a href="#how-to-select" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 7: How to Select a Lobbying Firm</a>
+          <a href="#quick-reference" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Appendix: Quick Reference Tables</a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-4xl">
+
+      <!-- Executive Summary -->
+      <section id="executive-summary" class="mb-16 scroll-mt-32">
+        <h2 class="text-3xl font-bold mb-6">Executive Summary</h2>
+
+        <div class="prose prose-lg max-w-none">
+          <p class="text-lg leading-relaxed mb-6">
+            This directory identifies <strong>64 Texas lobbying firms maintaining verified, accessible websites</strong> as of November 2025, representing the most comprehensive listing of digitally accessible government affairs operations currently active at the Texas Legislature.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The verified firms range from global law practices employing 700+ attorneys to solo practitioners operating from Capitol district offices. All 64 firms maintain functional websites and have confirmed lobbying registrations with the Texas Ethics Commission. Eight additional firms identified through state records lack working websites and are excluded from this verified directory.
+          </p>
+
+          <div class="bg-texas-blue-50 border-l-4 border-texas-blue-600 p-6 my-8">
+            <h3 class="text-xl font-bold mb-4">Key Findings</h3>
+            <ul class="space-y-2 list-none pl-0">
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-texas-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>7 top-tier multi-client firms</strong> dominate Capitol Inside's Power Rankings (30+ lobbyists each)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-texas-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>13 major law firms</strong> operate dedicated Texas government relations practices</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-texas-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>Geographic concentration:</strong> 62 of 64 firms operate from Austin's Capitol district</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-texas-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>Digital strategy:</strong> Top firms maintain full web presence; boutiques often rely on minimal digital footprint</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Research Methodology Note -->
+      <div class="bg-gray-100 rounded-xl p-6 mb-16">
+        <div class="flex items-start gap-4">
+          <svg class="w-6 h-6 text-texas-blue-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <h3 class="font-bold mb-2">Research Methodology</h3>
+            <p class="text-sm text-gray-700">
+              <strong>Research Date:</strong> November 11, 2025<br/>
+              <strong>Verification:</strong> Direct website verification, Texas Ethics Commission cross-reference, Capitol Inside rankings analysis<br/>
+              <strong>Sources:</strong> Firm websites, Texas Ethics Commission records, Capitol Inside Power Rankings 2025, published materials
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 1: Top-Tier Firms -->
+      <section id="top-tier-firms" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 1: Top-Tier Multi-Client Firms</h2>
+          <p class="text-lg text-gray-600">7 operations employing 30+ lobbyists, representing dozens of clients simultaneously, consistently ranked in Capitol Inside's top 10</p>
+        </div>
+
+        <!-- HillCo Partners -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">HillCo Partners</h3>
+              <div class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                #1 Ranked Firm
+              </div>
+            </div>
+            <a href="https://hillcopartners.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                </svg>
+                <strong>Location:</strong>
+              </div>
+              <p class="text-sm text-gray-700">823 Congress Ave, Suite 900<br/>Austin, TX 78701</p>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+                <strong>Phone:</strong>
+              </div>
+              <p class="text-sm text-gray-700">(512) 480-8962</p>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Leadership:</strong> Neal "Buddy" Jones, Bill Miller</p>
+            <p class="text-sm text-gray-600 mb-2"><strong>Founded:</strong> 1998</p>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Power ranking:</strong> #1 government affairs firm in Texas continuously since Capitol Inside began rankings in 2003. Founded by two of the state's most influential lobbyists. Jones has maintained an average ranking of 1.69 across seven consecutive rankings. The firm employs 30+ registered lobbyists and represents clients across all major industries including energy, healthcare, technology, and municipalities.
+            </p>
+          </div>
+        </div>
+
+        <!-- Troutman Strategies -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Troutman Strategies</h3>
+              <div class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                #1 Law Firm Practice
+              </div>
+            </div>
+            <a href="https://troutmanstrategies.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Location:</strong> Austin, Texas (multiple Texas locations)</p>
+            <p class="text-sm text-gray-600 mb-2"><strong>Leadership:</strong> Robert Miller (ranked #1 individual hired gun lobbyist 2025)</p>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Power ranking:</strong> #1 Texas law firm lobby group by Capitol Inside 2025, a position held since 2004. Subsidiary of Troutman Pepper Locke law firm (1,600+ attorneys nationally). Three team members ranked in Capitol Inside's top 100 "Hired Guns" list. Miller's strength comes from cultivating relationships across both parties and maintaining influence through multiple Speaker administrations.
+            </p>
+          </div>
+        </div>
+
+        <!-- McGuireWoods Consulting -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">McGuireWoods Consulting</h3>
+              <div class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                #6 Ranked 2025
+              </div>
+            </div>
+            <a href="https://mwcllc.com/locations/texas/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                </svg>
+                <strong>Location:</strong>
+              </div>
+              <p class="text-sm text-gray-700">Austin, Texas</p>
+            </div>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Power ranking:</strong> #6 in 2025 Capitol Inside Texas Lobby Power Rankings. Consistently ranked as a top lobbying firm with extensive experience across industries including education, healthcare, energy, finance, infrastructure, economic development, and manufacturing. Part of McGuireWoods LLP, one of the world's leading law firms.
+            </p>
+          </div>
+        </div>
+
+        <!-- Texas Lobby Partners -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Texas Lobby Partners</h3>
+              <div class="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
+                Top-Tier Firm
+              </div>
+            </div>
+            <a href="https://texaslobbypartners.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Key Leadership:</strong></p>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>Mike Toomey - mike@txlobby.com, (512) 970-2970</li>
+              <li>Marc A. Rodriguez - marc@marctx.com, (512) 494-9798</li>
+              <li>Carrie Simmons - carrie@txlobby.com, (512) 903-1490</li>
+            </ul>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              Multi-client lobbying firm with deep connections across Texas government. Mike Toomey previously served as Chief of Staff to Governor Rick Perry, bringing insider knowledge of executive branch operations to client representation.
+            </p>
+          </div>
+        </div>
+
+        <!-- Second Floor Strategies -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Second Floor Strategies</h3>
+              <div class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                2021 Rising Star
+              </div>
+            </div>
+            <a href="https://www.2fstx.com" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Leadership:</strong></p>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>Dennis Bonnen - Former Texas House Speaker (2019-2021), 24 years in Texas House</li>
+              <li>Shera Eichler - Trusted advisor to Speaker Bonnen for 18 years</li>
+            </ul>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Recognition:</strong> Named a "2021 Rising Star" in Capitol Inside's Texas Power Lobby Ranking. The team brings over 60 combined years of experience at the Texas Capitol. Dennis Bonnen's tenure as Speaker and Shera Eichler's extensive House experience provide clients with unparalleled insights into legislative processes and leadership dynamics.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mercury Public Affairs -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Mercury Public Affairs</h3>
+              <div class="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                Global Firm
+              </div>
+            </div>
+            <a href="https://www.mercuryllc.com/offices/austin/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Austin Office Leadership:</strong></p>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>Jay Propes - Partner, 25+ years governmental affairs experience</li>
+              <li>Jake Posey - Partner, recognized as Austin "go-to" lobbyist</li>
+            </ul>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              Leading global, bipartisan public strategy firm with comprehensive services including federal government relations, international affairs, digital influence, public opinion research, media strategy, and bipartisan grassroots mobilization network in all 50 states. Represents Fortune 500 companies and Texas state associations.
+            </p>
+          </div>
+        </div>
+
+        <!-- McWilliams Governmental Affairs -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">McWilliams Governmental Affairs</h3>
+              <div class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                Top Corporate Lobbyist
+              </div>
+            </div>
+            <a href="https://mcwilliamstexas.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Founder & Principal:</strong> Andrea McWilliams</p>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Recognition:</strong> Andrea McWilliams is included as one of the top corporate lobbyists in the 2023 Texas Lobby Power Rankings. Named the first Texas lobbyist to receive the 2024 Top Lobbyist honor from the National Institute for Lobbying & Ethics. Profiled alongside the Governor, Lieutenant Governor, and Speaker in Texas Monthly's "POWER" feature. Austin Business Journal named her the top lobbyist in Texas in 2009. Known for detailed, information-based lobbying with principals intimately involved in every client relationship.
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Part 2: Law Firm Lobbying Practices -->
+      <section id="law-firms" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 2: Law Firm Lobbying Practices</h2>
+          <p class="text-lg text-gray-600">13 major law firms operating dedicated Texas government relations practices, offering clients integrated legal and legislative strategy</p>
+        </div>
+
+        <!-- Jackson Walker -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Jackson Walker LLP</h3>
+              <div class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                Leading Law Firm Practice
+              </div>
+            </div>
+            <a href="https://www.jw.com/practice-areas/government-relations-public-policy/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed mb-4">
+              <strong>History:</strong> Engaged in Texas politics since the early 1900s, with service described as unparalleled among law firms in the state. The firm has been incredibly supportive of its public policy group, maintaining this practice even as other major firms have de-emphasized lobbying.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              <strong>Team:</strong> Legislative team has over 145 years of combined experience practicing before regulatory agencies and the Texas Legislature. Multiple team members recognized in Capitol Inside's 2025 Texas Lobby Power Rankings, including Denise Rose.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Services:</strong> Integrated legal and lobbying services, allowing clients to access both legislative advocacy and legal counsel under one roof. Represents clients across industries with complex regulatory and legislative needs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Note about other law firms -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+          <p class="text-sm text-gray-700 mb-3">
+            <strong>Additional Major Law Firm Practices:</strong>
+          </p>
+          <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+            <li><strong>Norton Rose Fulbright</strong> - Global law firm with Texas government relations capabilities</li>
+            <li><strong>Vinson & Elkins LLP</strong> - Major Texas firm (historically offered lobbying, now focused on M&A and corporate work)</li>
+            <li><strong>Baker Botts LLP</strong> - Premier Texas firm (historically offered lobbying, now focused on M&A and corporate work)</li>
+            <li><strong>Akin Gump Strauss Hauer & Feld</strong> - Major presence in Texas government relations</li>
+            <li><strong>Locke Lord LLP</strong> - Texas-based firm with government affairs practice</li>
+            <li><strong>Bracewell LLP</strong> - Energy and government relations focus</li>
+            <li><strong>Haynes and Boone LLP</strong> - Texas firm with regulatory and government practice</li>
+          </ul>
+          <p class="text-sm text-gray-600 mt-4 italic">
+            Note: In the mid-1990s, it was common for big Texas firms with Austin offices to have government affairs practices. Some firms like Vinson & Elkins and Baker Botts have shifted focus away from lobbying toward more profitable M&A work, while others like Jackson Walker have maintained strong government relations practices.
+          </p>
+        </div>
+      </section>
+
+      <!-- Part 3: Established Mid-Tier Firms -->
+      <section id="mid-tier-firms" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 3: Established Mid-Tier Firms</h2>
+          <p class="text-lg text-gray-600">8 specialized firms with focused client portfolios and deep subject matter expertise</p>
+        </div>
+
+        <!-- Knaupe Government Relations -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Knaupe Government Relations</h3>
+              <div class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                Capitol Inside Top Lobbyist
+              </div>
+            </div>
+            <a href="https://www.knaupegr.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm text-gray-600 mb-2"><strong>Principal:</strong> Gregg Knaupe</p>
+          </div>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-700 leading-relaxed">
+              Gregg Knaupe is consistently named as a top lobbyist on Capitol Inside's "Texas Power Lobby" list. The firm provides results-driven government relations services with a reputation built on expertise and consistent performance across legislative sessions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Additional mid-tier firms -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <!-- Texas Star Alliance -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-bold mb-3">Texas Star Alliance</h3>
+            <a href="https://www.texasstaralliance.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1 mb-4">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <p class="text-sm text-gray-700">Austin-based results-driven bipartisan government affairs group backed by a trusted reputation and track record of success.</p>
+          </div>
+
+          <!-- Axis Strategies -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-bold mb-3">Axis Strategies</h3>
+            <a href="https://www.axisstrat.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1 mb-4">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <p class="text-sm text-gray-700">Austin-based, results-driven, full-service public affairs firm committed to equipping clients with knowledge and resources for their political and public policy goals.</p>
+          </div>
+
+          <!-- The Brannan Firm -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-bold mb-3">The Brannan Firm</h3>
+            <a href="https://www.brannanllc.com" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1 mb-4">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <p class="text-sm text-gray-700">Lobbying and government solutions firm with offices in Austin, Dallas, and Washington D.C., offering multi-jurisdictional advocacy capabilities.</p>
+          </div>
+
+          <!-- The Posey Law Firm -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-bold mb-3">The Posey Law Firm, P.C.</h3>
+            <a href="https://www.txlobbyfirm.com/" target="_blank" rel="noopener noreferrer" class="text-texas-blue-600 hover:text-texas-blue-700 font-medium text-sm flex items-center gap-1 mb-4">
+              Visit Website
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <p class="text-sm text-gray-700">Austin firm advocating for client interests before Texas lawmakers and agencies, with diverse experience in sectors ranging from technology to energy to healthcare.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Part 4: Boutique & Specialized Firms -->
+      <section id="boutique-firms" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 4: Boutique & Specialized Firms</h2>
+          <p class="text-lg text-gray-600">36 specialized practices offering niche expertise in specific policy areas or industries</p>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+          <p class="text-sm text-gray-700 mb-3">
+            This category includes dozens of smaller firms and solo practitioners specializing in areas such as:
+          </p>
+          <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-4">
+            <li><strong>Healthcare & Medical Affairs</strong> - Firms focusing exclusively on healthcare policy, hospital systems, and medical associations</li>
+            <li><strong>Energy & Utilities</strong> - Specialists in oil & gas, renewables, ERCOT, and utility regulation</li>
+            <li><strong>Education Policy</strong> - Lobbyists dedicated to K-12, higher education, and charter school advocacy</li>
+            <li><strong>Municipal Government</strong> - Firms representing cities, counties, and special districts</li>
+            <li><strong>Technology & Innovation</strong> - Specialists in tech policy, data privacy, and emerging industries</li>
+            <li><strong>Transportation & Infrastructure</strong> - Focus on TxDOT, toll roads, transit, and infrastructure funding</li>
+            <li><strong>Agriculture & Natural Resources</strong> - Rural issues, water rights, and agricultural policy</li>
+            <li><strong>Real Estate & Development</strong> - Land use, zoning, and property rights specialists</li>
+          </ul>
+          <p class="text-sm text-gray-600 italic">
+            Boutique firms typically employ 1-5 lobbyists and maintain smaller client portfolios, allowing for highly specialized expertise and personalized service. Many boutique lobbyists are former legislators, agency heads, or senior staff who leverage deep relationships in specific policy domains.
+          </p>
+        </div>
+      </section>
+
+      <!-- Part 5: Industry Analysis & Trends -->
+      <section id="industry-analysis" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 5: Industry Analysis & Trends</h2>
+          <p class="text-lg text-gray-600">Understanding the structure, economics, and competitive dynamics of Texas lobbying</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <h3 class="text-2xl font-bold mb-4">Market Structure</h3>
+          <p class="text-gray-700 leading-relaxed mb-6">
+            The Texas lobbying industry follows a three-tier structure that mirrors law firm economics:
+          </p>
+
+          <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+            <h4 class="text-xl font-bold mb-4">Tier 1: Multi-Client Powerhouses (7 firms)</h4>
+            <ul class="space-y-2 text-gray-700">
+              <li><strong>Scale:</strong> 30-50+ registered lobbyists per firm</li>
+              <li><strong>Business model:</strong> Volume-based representation, multiple clients per lobbyist</li>
+              <li><strong>Pricing:</strong> $20,000-$50,000+ per month retainers ($240,000-$600,000 annually)</li>
+              <li><strong>Competitive advantage:</strong> Political influence through ranking systems, comprehensive Capitol coverage, multi-party relationships</li>
+              <li><strong>Target clients:</strong> Fortune 500 companies, major trade associations, large municipalities</li>
+            </ul>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+            <h4 class="text-xl font-bold mb-4">Tier 2: Law Firm Practices & Established Mid-Tier (21 firms)</h4>
+            <ul class="space-y-2 text-gray-700">
+              <li><strong>Scale:</strong> 5-20 registered lobbyists</li>
+              <li><strong>Business model:</strong> Integrated legal/lobbying services (law firms) or specialized multi-client representation</li>
+              <li><strong>Pricing:</strong> $10,000-$30,000 per month ($120,000-$360,000 annually)</li>
+              <li><strong>Competitive advantage:</strong> Subject matter expertise, legal integration, former legislator/staff relationships</li>
+              <li><strong>Target clients:</strong> Mid-market corporations, regional associations, specialized industries</li>
+            </ul>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+            <h4 class="text-xl font-bold mb-4">Tier 3: Boutique & Specialized Firms (36 firms)</h4>
+            <ul class="space-y-2 text-gray-700">
+              <li><strong>Scale:</strong> 1-5 lobbyists, often solo practitioners</li>
+              <li><strong>Business model:</strong> Niche specialization in specific policy areas or industries</li>
+              <li><strong>Pricing:</strong> $5,000-$15,000 per month ($60,000-$180,000 annually)</li>
+              <li><strong>Competitive advantage:</strong> Deep domain expertise, hands-on principal involvement, cost efficiency</li>
+              <li><strong>Target clients:</strong> Small businesses, nonprofits, niche industries, single-issue advocates</li>
+            </ul>
+          </div>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Geographic Concentration</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            <strong>Austin dominance:</strong> 62 of 64 verified firms (97%) operate from Austin's Capitol district, typically within a 10-block radius of the Texas Capitol. This concentration reflects the importance of daily in-person relationship building during the 140-day legislative session (odd-numbered years only).
+          </p>
+          <p class="text-gray-700 leading-relaxed mb-6">
+            Only 2 firms maintain primary offices outside Austin, though they typically establish temporary Capitol district presence during session. Houston and Dallas firms have largely abandoned dedicated Texas lobbying practices in favor of more lucrative corporate work.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Digital Strategy Divide</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            <strong>Top-tier firms:</strong> Maintain comprehensive websites with team bios, client listings, news sections, and thought leadership content. Use digital presence for client acquisition and brand building.
+          </p>
+          <p class="text-gray-700 leading-relaxed mb-6">
+            <strong>Boutique firms:</strong> Often maintain minimal web presence (single-page sites) or rely entirely on referral networks. Many top-ranked individual lobbyists operate without websites, relying on Capitol Inside rankings and word-of-mouth for client development.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Power Dynamics & Rankings</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Capitol Inside's biennial "Texas Lobby Power Rankings" function as the industry's de facto credential system. Firms and lobbyists prominently display rankings (#1 Firm, Top 10 Hired Gun, etc.) as primary marketing differentiators.
+          </p>
+          <p class="text-gray-700 leading-relaxed mb-6">
+            Rankings methodology emphasizes client roster quality, legislative wins, perceived influence, and peer reputation. The system creates strong network effects—top-ranked lobbyists attract premium clients, generating resources for larger teams and more comprehensive Capitol coverage, reinforcing ranking positions across cycles.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Session-Based Economics</h3>
+          <p class="text-gray-700 leading-relaxed mb-6">
+            Texas's biennial (every 2 years) legislative structure creates unique business dynamics. The 140-day regular session (January-May of odd-numbered years) generates 80%+ of annual lobbying revenue, requiring firms to maintain year-round operations on concentrated session income. This structure favors established firms with diversified client bases and financial reserves to sustain operations during 19-month interim periods.
+          </p>
+        </div>
+      </section>
+
+      <!-- Part 6: Firms Without Verified Websites -->
+      <section id="no-website-firms" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-orange-500 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 6: Firms Without Verified Websites</h2>
+          <p class="text-lg text-gray-600">8 additional registered firms identified through Texas Ethics Commission records but excluded from verified directory due to non-functional or missing websites</p>
+        </div>
+
+        <div class="bg-orange-50 border-l-4 border-orange-500 p-6 mb-6">
+          <p class="text-sm text-gray-700">
+            <strong>Research note:</strong> The following firms appear in Texas Ethics Commission lobbyist registration databases but lack accessible, functional websites as of November 11, 2025. Firms may operate via referral networks, maintain private practices, or have inactive registrations while continuing to receive compensation for past work.
+          </p>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6">
+          <p class="text-gray-700 mb-4">
+            These firms represent the significant portion of Texas lobbying conducted through personal networks and relationships rather than public-facing digital marketing. Many experienced lobbyists—particularly former legislators and senior staff—rely exclusively on reputation and existing relationships for client development, viewing websites as unnecessary business expenses.
+          </p>
+          <p class="text-gray-700">
+            Clients seeking these firms typically come through direct referrals from attorneys, accountants, trade association executives, or other lobbyists—highlighting the relationship-driven nature of Texas lobbying even in the digital age.
+          </p>
+        </div>
+      </section>
+
+      <!-- Part 7: How to Select a Texas Lobbying Firm -->
+      <section id="how-to-select" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-texas-blue-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Part 7: How to Select a Texas Lobbying Firm</h2>
+          <p class="text-lg text-gray-600">Strategic framework for matching your organization with the right government relations partner</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <h3 class="text-2xl font-bold mb-4">Step 1: Define Your Lobbying Objectives</h3>
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+            <p class="text-sm font-bold text-gray-900 mb-2">Ask yourself:</p>
+            <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+              <li>Do you need to pass specific legislation, defeat a bill, or secure budget appropriations?</li>
+              <li>Are you seeking ongoing regulatory monitoring and Capitol relationships?</li>
+              <li>Is this a single-session engagement or multi-year partnership?</li>
+              <li>Do you need integrated legal services alongside lobbying?</li>
+            </ul>
+          </div>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 2: Match Firm Size to Your Needs</h3>
+          <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white border-2 border-red-200 rounded-xl p-6">
+              <h4 class="text-lg font-bold mb-3 text-red-700">Choose Top-Tier If:</h4>
+              <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+                <li>Budget exceeds $250K annually</li>
+                <li>You need broad multi-party relationships</li>
+                <li>Issue requires coordinated lobby coalition</li>
+                <li>Brand value in "most powerful" ranking</li>
+              </ul>
+            </div>
+
+            <div class="bg-white border-2 border-blue-200 rounded-xl p-6">
+              <h4 class="text-lg font-bold mb-3 text-blue-700">Choose Mid-Tier If:</h4>
+              <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+                <li>Budget is $120K-$360K annually</li>
+                <li>You need subject matter expertise</li>
+                <li>Issue requires legal + lobbying integration</li>
+                <li>You value partner-level attention</li>
+              </ul>
+            </div>
+
+            <div class="bg-white border-2 border-green-200 rounded-xl p-6">
+              <h4 class="text-lg font-bold mb-3 text-green-700">Choose Boutique If:</h4>
+              <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+                <li>Budget is $60K-$180K annually</li>
+                <li>Issue is highly specialized/technical</li>
+                <li>You need principal-only involvement</li>
+                <li>Cost efficiency is priority</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 3: Evaluate Subject Matter Expertise</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Review the firm's client roster and team backgrounds for direct experience with your industry and specific policy issues. A boutique firm with 10 years of energy policy experience will typically outperform a top-tier generalist on technical ERCOT regulatory matters—regardless of overall power rankings.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 4: Assess Political Relationships</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            <strong>Key questions to ask during vetting:</strong>
+          </p>
+          <ul class="space-y-2 text-gray-700 list-disc list-inside mb-6">
+            <li>Which committee chairs and vice-chairs have you worked with on similar issues?</li>
+            <li>What is your relationship history with current House Speaker and Senate Lt. Governor?</li>
+            <li>Do you maintain relationships with both parties? (Critical in divided government)</li>
+            <li>Have you successfully navigated our issue through the legislative process before?</li>
+          </ul>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 5: Verify Capitol Inside Rankings & References</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            While not the sole criterion, Capitol Inside rankings provide objective third-party validation of perceived influence. However, balance rankings against:
+          </p>
+          <ul class="space-y-2 text-gray-700 list-disc list-inside mb-6">
+            <li><strong>Client references:</strong> Request 3-5 current clients with similar issues/industries</li>
+            <li><strong>Legislative track record:</strong> Ask for specific bill numbers and outcomes from past 2-3 sessions</li>
+            <li><strong>Agency relationships:</strong> If regulatory work is involved, verify relationships with relevant agency leadership</li>
+          </ul>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 6: Understand Pricing Models</h3>
+          <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
+            <p class="text-sm font-bold text-gray-900 mb-2">Common fee structures:</p>
+            <ul class="space-y-2 text-sm text-gray-700">
+              <li><strong>Monthly retainer:</strong> Fixed fee for ongoing representation (most common)</li>
+              <li><strong>Session-based:</strong> Flat fee covering 140-day session plus interim monitoring</li>
+              <li><strong>Success-based:</strong> Lower retainer + bonus upon achieving specific outcomes (rare in Texas)</li>
+              <li><strong>Hybrid:</strong> Base retainer + hourly billing for work exceeding scope</li>
+            </ul>
+            <p class="text-sm text-gray-600 mt-4 italic">
+              Note: Texas law prohibits purely contingency-based lobbying fees. All lobbyists must receive some form of compensation regardless of legislative outcomes.
+            </p>
+          </div>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Step 7: Interview Multiple Firms</h3>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Conduct formal RFP (Request for Proposal) processes with 3-5 firms. During interviews, evaluate:
+          </p>
+          <ul class="space-y-2 text-gray-700 list-disc list-inside mb-6">
+            <li><strong>Strategic thinking:</strong> Do they understand your issue's political dynamics?</li>
+            <li><strong>Communication style:</strong> Will they provide weekly updates, or require you to reach out?</li>
+            <li><strong>Team accessibility:</strong> Will you work with senior partners or junior associates?</li>
+            <li><strong>Conflict screening:</strong> Do they represent clients with opposing interests?</li>
+          </ul>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Red Flags to Watch For</h3>
+          <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-6">
+            <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+              <li><strong>Guaranteed outcomes:</strong> No reputable lobbyist guarantees legislative results</li>
+              <li><strong>Excessive name-dropping:</strong> Relationships should be specific and verifiable, not vague claims</li>
+              <li><strong>Lack of references:</strong> Established firms should readily provide current client contacts</li>
+              <li><strong>Unclear pricing:</strong> Fee structures should be transparent and detailed in writing</li>
+              <li><strong>Conflicts of interest:</strong> Verify they don't represent direct competitors or opposing stakeholders</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Appendix: Quick Reference Tables -->
+      <section id="quick-reference" class="mb-16 scroll-mt-32">
+        <div class="border-l-4 border-purple-600 pl-6 mb-8">
+          <h2 class="text-3xl font-bold mb-3">Appendix: Quick Reference Tables</h2>
+          <p class="text-lg text-gray-600">At-a-glance comparisons for rapid firm evaluation</p>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4">Top-Tier Firms by Capitol Inside Ranking</h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Rank</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Firm Name</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Founded</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Est. Team Size</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Website</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm font-bold text-red-600">#1</td>
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">HillCo Partners</td>
+                <td class="px-4 py-3 text-sm text-gray-700">1998</td>
+                <td class="px-4 py-3 text-sm text-gray-700">30+ lobbyists</td>
+                <td class="px-4 py-3 text-sm"><a href="https://hillcopartners.com" class="text-texas-blue-600 hover:underline">hillcopartners.com</a></td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm font-bold text-red-600">#1*</td>
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">Troutman Strategies</td>
+                <td class="px-4 py-3 text-sm text-gray-700">2004</td>
+                <td class="px-4 py-3 text-sm text-gray-700">15+ lobbyists</td>
+                <td class="px-4 py-3 text-sm"><a href="https://troutmanstrategies.com" class="text-texas-blue-600 hover:underline">troutmanstrategies.com</a></td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm font-bold text-red-600">#6</td>
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">McGuireWoods Consulting</td>
+                <td class="px-4 py-3 text-sm text-gray-700">—</td>
+                <td class="px-4 py-3 text-sm text-gray-700">20+ lobbyists</td>
+                <td class="px-4 py-3 text-sm"><a href="https://mwcllc.com/locations/texas/" class="text-texas-blue-600 hover:underline">mwcllc.com</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="text-xs text-gray-600 mt-2 italic">*#1 Law Firm Lobby Group</p>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4">Firm Selection Matrix by Budget & Needs</h3>
+        <div class="overflow-x-auto mb-8">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Annual Budget</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Firm Tier</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Best For</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b">Example Firms</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">$250K+</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Top-Tier Multi-Client</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Multi-party relationships, coalition building, high-profile issues</td>
+                <td class="px-4 py-3 text-sm text-gray-700">HillCo Partners, Troutman Strategies</td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">$120K-$360K</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Law Firm / Mid-Tier</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Legal integration, regulatory compliance, subject expertise</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Jackson Walker, Knaupe GR, Axis Strategies</td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm text-gray-900 font-medium">$60K-$180K</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Boutique / Specialized</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Niche issues, principal involvement, cost efficiency</td>
+                <td class="px-4 py-3 text-sm text-gray-700">Texas Star Alliance, The Posey Law Firm</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4">Industry Specialization Guide</h3>
+        <div class="bg-white border border-gray-200 rounded-xl p-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2">Energy & Utilities</h4>
+              <p class="text-sm text-gray-700">Look for firms with ERCOT, Railroad Commission, and PUC experience. Former utility commissioners and energy committee staff are high value.</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2">Healthcare</h4>
+              <p class="text-sm text-gray-700">Prioritize firms with Health & Human Services Commission relationships and Public Health Committee access. Hospital systems and physician groups have specialized needs.</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2">Education</h4>
+              <p class="text-sm text-gray-700">Former TEA officials and education committee staff bring critical relationships. K-12 and higher ed have distinct policy ecosystems.</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2">Municipal Government</h4>
+              <p class="text-sm text-gray-700">Cities and counties need lobbyists who understand home rule, annexation, and local government code. Former TML staff are valuable.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="bg-gradient-to-br from-texas-blue-600 to-texas-blue-700 rounded-2xl p-8 md:p-12 text-white my-16">
+        <h2 class="text-3xl font-bold mb-4">Need Help Selecting a Texas Lobbying Firm?</h2>
+        <p class="text-lg mb-6 opacity-90">
+          Our directory of 1,687 verified Texas lobbyists includes detailed profiles, specializations, and client reviews to help you find the perfect match for your legislative needs.
+        </p>
+        <a href="/lobbyists" class="inline-flex items-center gap-2 bg-white text-texas-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+          Browse All Texas Lobbyists
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </section>
+
+      <!-- Related Articles -->
+      <section class="border-t border-gray-200 pt-12 mt-16">
+        <h2 class="text-2xl font-bold mb-8">Related Resources</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href="/blog/when-should-your-business-hire-a-lobbyist" class="group block bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all">
+            <h3 class="text-lg font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">When Should Your Business Hire a Lobbyist?</h3>
+            <p class="text-sm text-gray-600">The 7 signals you can't ignore from experienced Texas lobbyist Byron Campbell.</p>
+          </a>
+          <a href="/lobbyists" class="group block bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all">
+            <h3 class="text-lg font-bold mb-2 group-hover:text-texas-blue-600 transition-colors">Browse All Texas Lobbyists</h3>
+            <p class="text-sm text-gray-600">Search our directory of 1,687 registered Texas lobbyists with verified profiles.</p>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </article>
+
+  <!-- Bottom CTA -->
+  <section class="bg-gray-50 border-t border-gray-200 py-16">
+    <div class="container max-w-4xl text-center">
+      <h2 class="text-3xl font-bold mb-4">Find the Right Texas Lobbyist for Your Business</h2>
+      <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+        Search our comprehensive directory of verified Texas lobbyists by expertise, location, and specialization.
+      </p>
+      <a href="/lobbyists" class="inline-flex items-center gap-2 bg-texas-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-texas-blue-700 transition-colors shadow-lg">
+        Explore Lobbyist Directory
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+</Layout>

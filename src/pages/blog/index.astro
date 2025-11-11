@@ -6,6 +6,16 @@ import { supabase } from '@/lib/supabase';
 // For now, we'll manually list blog posts
 const blogPosts = [
   {
+    slug: 'complete-directory-texas-lobbying-firms-2025',
+    title: 'Complete Directory of Texas Lobbying Firms: 64 Verified Operations (2025)',
+    description: 'The definitive guide to Texas lobbying firms with verified websites, Capitol Inside rankings, and complete contact information. From HillCo Partners to boutique specialists - every major firm operating at the Texas Capitol.',
+    category: 'Industry News',
+    author: 'TexasLobby.org Research Team',
+    publishedDate: '2025-11-11',
+    readTime: '45 min read',
+    featured: true,
+  },
+  {
     slug: '89th-legislature-recap-what-passed-failed-and-why',
     title: '89th Texas Legislature Recap: What Passed, What Failed, and Who Won',
     description: 'Insider analysis of the 89th Legislature - which bills passed, which died, and the power dynamics that determined everything. By Byron Campbell, Texas Lobbyist.',
@@ -13,7 +23,7 @@ const blogPosts = [
     author: 'Byron Campbell, Texas Lobbyist',
     publishedDate: '2025-06-10',
     readTime: '18 min read',
-    featured: true,
+    featured: false,
   },
   {
     slug: '89th-legislature-preview-top-bills-to-watch',
@@ -41,7 +51,7 @@ const categories = [
   { name: 'All Posts', slug: 'all', count: blogPosts.length },
   { name: 'Legislative Analysis', slug: 'legislative-analysis', count: 2 },
   { name: 'Strategy', slug: 'strategy', count: 1 },
-  { name: 'Industry News', slug: 'industry-news', count: 0 },
+  { name: 'Industry News', slug: 'industry-news', count: 1 },
   { name: 'Case Studies', slug: 'case-studies', count: 0 },
 ];
 

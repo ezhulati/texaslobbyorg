@@ -107,34 +107,13 @@ const schema = {
     </div>
   </section>
 
-  <!-- Table of Contents -->
-  <section class="bg-gray-50 py-12 border-b border-border sticky top-0 z-40">
-    <div class="container max-w-6xl">
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-texas-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-          Table of Contents
-        </h2>
-        <nav class="grid md:grid-cols-2 gap-3">
-          <a href="#executive-summary" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Executive Summary</a>
-          <a href="#top-tier-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 1: Top-Tier Multi-Client Firms (7)</a>
-          <a href="#law-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 2: Law Firm Lobbying Practices (13)</a>
-          <a href="#mid-tier-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 3: Established Mid-Tier Firms (8)</a>
-          <a href="#boutique-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 4: Boutique & Specialized Firms (36)</a>
-          <a href="#industry-analysis" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 5: Industry Analysis & Trends</a>
-          <a href="#no-website-firms" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 6: Firms Without Websites (8)</a>
-          <a href="#how-to-select" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Part 7: How to Select a Lobbying Firm</a>
-          <a href="#quick-reference" class="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline">Appendix: Quick Reference Tables</a>
-        </nav>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Content -->
+  <!-- Main Content with Sidebar -->
   <article class="py-16 lg:py-20">
-    <div class="container max-w-4xl">
+    <div class="container max-w-7xl">
+      <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+
+        <!-- Main Content Column -->
+        <div class="lg:col-span-8">
 
       <!-- Executive Summary -->
       <section id="executive-summary" class="mb-16 scroll-mt-32">
@@ -966,6 +945,34 @@ const schema = {
         </div>
       </section>
 
+        </div>
+
+        <!-- Sidebar Table of Contents -->
+        <aside class="hidden lg:block lg:col-span-4">
+          <div class="sticky top-24">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-texas-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                Table of Contents
+              </h2>
+              <nav class="space-y-2">
+                <a href="#executive-summary" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Executive Summary</a>
+                <a href="#top-tier-firms" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 1: Top-Tier Multi-Client Firms</a>
+                <a href="#law-firms" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 2: Law Firm Practices</a>
+                <a href="#mid-tier-firms" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 3: Mid-Tier Firms</a>
+                <a href="#boutique-firms" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 4: Boutique Firms</a>
+                <a href="#industry-analysis" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 5: Industry Analysis</a>
+                <a href="#no-website-firms" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 6: Firms Without Websites</a>
+                <a href="#how-to-select" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Part 7: How to Select a Firm</a>
+                <a href="#quick-reference" class="block text-sm text-gray-700 hover:text-texas-blue-600 hover:underline py-1">Appendix: Quick Reference</a>
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+      </div>
     </div>
   </article>
 

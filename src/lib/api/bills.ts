@@ -110,23 +110,38 @@ export async function getBillBySlug(slug: string) {
 }
 
 /**
- * Get bill updates/history for a bill
+ * Get bill updates/history for a bill (fetches in batches if needed)
  */
 export async function getBillUpdates(billId: string) {
   const supabase = createServerClient();
 
-  const { data, error } = await supabase
-    .from('bill_updates')
-    .select('*')
-    .eq('bill_id', billId)
-    .order('action_date', { ascending: false })
-    .order('created_at', { ascending: false });
+  // Fetch in batches to overcome 1000 row limit
+  const batchSize = 1000;
+  let offset = 0;
+  let hasMore = true;
+  let allUpdates: any[] = [];
 
-  if (error) {
-    throw new Error(`Failed to get bill updates: ${error.message}`);
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('bill_updates')
+      .select('*')
+      .eq('bill_id', billId)
+      .order('action_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + batchSize - 1);
+
+    if (error) {
+      throw new Error(`Failed to get bill updates: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) break;
+
+    allUpdates = [...allUpdates, ...data];
+    hasMore = data.length === batchSize;
+    offset += batchSize;
   }
 
-  return data;
+  return allUpdates;
 }
 
 /**
@@ -309,27 +324,40 @@ export async function getBillTags(billId: string) {
 }
 
 /**
- * Get available subject areas from bills
+ * Get available subject areas from bills (fetches in batches to overcome 1000 row limit)
  */
 export async function getBillSubjectAreas() {
   const supabase = createServerClient();
 
-  const { data, error } = await supabase
-    .from('bills')
-    .select('subject_areas')
-    .not('subject_areas', 'is', null);
-
-  if (error) {
-    throw new Error(`Failed to get subject areas: ${error.message}`);
-  }
-
-  // Flatten and deduplicate subject areas
+  // Fetch in batches to overcome 1000 row limit
+  const batchSize = 1000;
+  let offset = 0;
+  let hasMore = true;
   const allSubjects = new Set<string>();
-  data.forEach(bill => {
-    if (bill.subject_areas) {
-      bill.subject_areas.forEach((subject: string) => allSubjects.add(subject));
+
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('bills')
+      .select('subject_areas')
+      .not('subject_areas', 'is', null)
+      .range(offset, offset + batchSize - 1);
+
+    if (error) {
+      throw new Error(`Failed to get subject areas: ${error.message}`);
     }
-  });
+
+    if (!data || data.length === 0) break;
+
+    // Flatten and add to set
+    data.forEach(bill => {
+      if (bill.subject_areas) {
+        bill.subject_areas.forEach((subject: string) => allSubjects.add(subject));
+      }
+    });
+
+    hasMore = data.length === batchSize;
+    offset += batchSize;
+  }
 
   return Array.from(allSubjects).sort();
 }
@@ -343,7 +371,8 @@ export async function getLegislativeSessions() {
   const { data, error } = await supabase
     .from('legislative_sessions')
     .select('*')
-    .order('start_date', { ascending: false });
+    .order('start_date', { ascending: false })
+    .limit(100); // Unlikely to have more than 100 sessions, but set limit just in case
 
   if (error) {
     throw new Error(`Failed to get legislative sessions: ${error.message}`);
@@ -353,35 +382,50 @@ export async function getLegislativeSessions() {
 }
 
 /**
- * Get bills tagged by a lobbyist
+ * Get bills tagged by a lobbyist (fetches in batches if needed)
  */
 export async function getLobbyistTaggedBills(lobbyistId: string) {
   const supabase = createServerClient();
 
-  const { data, error } = await supabase
-    .from('bill_tags')
-    .select(`
-      *,
-      bill:bills (
-        id,
-        bill_number,
-        title,
-        slug,
-        current_status,
-        chamber,
-        session_id,
-        subject_areas,
-        last_action,
-        last_action_date,
-        view_count
-      )
-    `)
-    .eq('lobbyist_id', lobbyistId)
-    .order('created_at', { ascending: false });
+  // Fetch in batches to overcome 1000 row limit
+  const batchSize = 1000;
+  let offset = 0;
+  let hasMore = true;
+  let allTags: any[] = [];
 
-  if (error) {
-    throw new Error(`Failed to get tagged bills: ${error.message}`);
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('bill_tags')
+      .select(`
+        *,
+        bill:bills (
+          id,
+          bill_number,
+          title,
+          slug,
+          current_status,
+          chamber,
+          session_id,
+          subject_areas,
+          last_action,
+          last_action_date,
+          view_count
+        )
+      `)
+      .eq('lobbyist_id', lobbyistId)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + batchSize - 1);
+
+    if (error) {
+      throw new Error(`Failed to get tagged bills: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) break;
+
+    allTags = [...allTags, ...data];
+    hasMore = data.length === batchSize;
+    offset += batchSize;
   }
 
-  return data;
+  return allTags;
 }

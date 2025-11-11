@@ -1,0 +1,134 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'About Us | TexasLobby.org';
+const pageDescription = 'Learn about TexasLobby.org - we make it easy to find Texas lobbyists by providing a searchable directory of registered lobbyists.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Page Hero -->
+  <section class="bg-gradient-to-b from-texas-blue-500/5 to-background py-16 border-b border-border">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
+        <p class="text-xl text-muted-foreground">We make it easy to find Texas lobbyists</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Problem -->
+  <section class="py-16 md:py-20">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">The Problem</h2>
+        <p class="text-lg text-muted-foreground mb-4">
+          Texas has 1,600+ registered lobbyists. The only official list is a government database with no search, no filters, and no way to compare expertise.
+        </p>
+        <p class="text-lg text-muted-foreground">
+          If you need a lobbyist, you're stuck calling around or sorting through pages of unfiltered names. If you're a lobbyist, potential clients can't find you.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Built -->
+  <section class="py-16 md:py-20 bg-muted/50">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">What We Built</h2>
+        <p class="text-lg text-muted-foreground mb-4">
+          A directory you can actually use. Search by city and industry. Compare client lists. Contact lobbyists directly.
+        </p>
+        <p class="text-lg text-muted-foreground">
+          For businesses, it's the fastest way to find representation. For lobbyists, it's a free profile that gets you in front of people who need your expertise.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="py-16 md:py-20 bg-texas-blue-950 text-white">
+    <div class="container">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8 md:gap-12 text-center">
+          <div class="p-6">
+            <div class="text-5xl md:text-6xl font-bold text-texas-red-500 mb-3">1,600+</div>
+            <div class="text-lg text-gray-300">Registered Lobbyists</div>
+          </div>
+          <div class="p-6">
+            <div class="text-5xl md:text-6xl font-bold text-texas-red-500 mb-3">$300M+</div>
+            <div class="text-lg text-gray-300">Spent Each Session</div>
+          </div>
+          <div class="p-6">
+            <div class="text-5xl md:text-6xl font-bold text-texas-red-500 mb-3">140</div>
+            <div class="text-lg text-gray-300">Days Per Session</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 md:py-20">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">How It Works</h2>
+        <p class="text-lg text-muted-foreground mb-4">
+          Businesses search by location and industry. They see profiles with client lists, areas of expertise, and contact information. They reach out directly to the lobbyist that fits their needs.
+        </p>
+        <p class="text-lg text-muted-foreground">
+          Lobbyists claim their free profile, add details about their practice, and show up in search results when businesses look for their specialty.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Data -->
+  <section class="py-16 md:py-20 bg-texas-red-600 text-white">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Data</h2>
+        <p class="text-lg mb-4">
+          All information comes from the Texas Ethics Commission. We just make it searchable.
+        </p>
+        <p class="text-lg mb-8">
+          Every lobbyist in Texas is required to register with the TEC. We take that public data and turn it into a functional directory.
+        </p>
+        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
+          <p class="text-base"><strong>Source:</strong> Texas Ethics Commission Public Records</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why We Built This -->
+  <section class="py-16 md:py-20 bg-muted/50">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Why We Built This</h2>
+        <p class="text-lg text-muted-foreground mb-4">
+          Every legislative session, laws pass that affect businesses across Texas. Companies with lobbyists have a voice in those decisions. Those without don't.
+        </p>
+        <p class="text-lg text-muted-foreground">
+          Finding a lobbyist shouldn't be harder than finding a lawyer or an accountant. We're fixing that.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="py-20 md:py-24 bg-background">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Questions?</h2>
+        <p class="text-xl text-muted-foreground mb-8">Get in touch with us</p>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center rounded-md bg-texas-red-600 px-10 py-4 text-lg font-semibold text-white hover:bg-texas-red-700 transition-colors"
+        >
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

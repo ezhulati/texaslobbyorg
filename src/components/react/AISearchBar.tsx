@@ -108,6 +108,14 @@ export default function AISearchBar() {
     setQuery(example);
   };
 
+  const handleReset = () => {
+    setQuery('');
+    setResults([]);
+    setExtractedCriteria(null);
+    setError(null);
+    setHasSearched(false);
+  };
+
   return (
     <div className="w-full">
       {/* Search Input */}
@@ -136,7 +144,7 @@ export default function AISearchBar() {
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                <span className="hidden sm:inline">AI Search</span>
+                <span className="hidden sm:inline">Search</span>
               </>
             )}
           </button>
@@ -145,7 +153,7 @@ export default function AISearchBar() {
         {/* Example Queries */}
         {!hasSearched && (
           <div className="mt-3">
-            <p className="text-xs text-muted-foreground mb-2">Try asking:</p>
+            <p className="text-xs text-muted-foreground mb-2 text-left">Try asking:</p>
             <div className="flex flex-wrap gap-2">
               {EXAMPLE_QUERIES.map((example, idx) => (
                 <button
@@ -168,7 +176,7 @@ export default function AISearchBar() {
             <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-white/20 backdrop-blur-sm">
               <Brain className="w-10 h-10 animate-pulse" />
             </div>
-            <h3 className="text-2xl font-bold mb-4">Claude is thinking...</h3>
+            <h3 className="text-2xl font-bold mb-4">Searching...</h3>
             <div className="flex items-center justify-center gap-2 text-lg">
               <Loader2 className="w-5 h-5 animate-spin" />
               <p className="animate-pulse">{THINKING_STEPS[thinkingStep]}</p>
@@ -192,7 +200,7 @@ export default function AISearchBar() {
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-texas-blue-600" />
-            <span className="text-sm font-medium text-muted-foreground">AI understood:</span>
+            <span className="text-sm font-medium text-muted-foreground">What you asked for:</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {extractedCriteria.cities.length > 0 &&
@@ -242,15 +250,23 @@ export default function AISearchBar() {
             <h3 className="text-2xl font-bold">
               Found {results.length} {results.length === 1 ? 'Match' : 'Matches'}
             </h3>
-            <a
-              href={`/lobbyists?${new URLSearchParams({
-                ...(extractedCriteria?.cities.length ? { city: extractedCriteria.cities[0] } : {}),
-                ...(extractedCriteria?.subject_areas.length ? { subject: extractedCriteria.subject_areas[0] } : {}),
-              }).toString()}`}
-              className="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline font-medium"
-            >
-              View all results →
-            </a>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleReset}
+                className="text-sm text-muted-foreground hover:text-texas-blue-600 font-medium transition-colors"
+              >
+                ← New Search
+              </button>
+              <a
+                href={`/lobbyists?${new URLSearchParams({
+                  ...(extractedCriteria?.cities.length ? { city: extractedCriteria.cities[0] } : {}),
+                  ...(extractedCriteria?.subject_areas.length ? { subject: extractedCriteria.subject_areas[0] } : {}),
+                }).toString()}`}
+                className="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline font-medium"
+              >
+                View all results →
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -296,7 +312,7 @@ export default function AISearchBar() {
 
                     {/* Cities and Expertise */}
                     {(result.cities || result.subject_areas) && (
-                      <p className="text-sm text-muted-foreground mb-3">
+                      <p className="text-sm text-muted-foreground mb-3 text-left">
                         {result.cities?.slice(0, 3).join(', ')}
                         {result.cities && result.subject_areas && ' • '}
                         {result.subject_areas?.slice(0, 3).join(', ')}
@@ -304,10 +320,8 @@ export default function AISearchBar() {
                     )}
 
                     {/* AI Explanation */}
-                    <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-md">
-                      <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-blue-900">
-                        <strong className="font-medium">Why this match:</strong>{' '}
+                    <div className="p-3 bg-blue-50 rounded-md">
+                      <p className="text-sm text-blue-900 text-left">
                         {result.ai_explanation}
                       </p>
                     </div>

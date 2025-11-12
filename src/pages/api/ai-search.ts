@@ -105,34 +105,110 @@ Call the extract_search_criteria tool with your findings.`,
       keywords: string;
     };
 
-    // Step 2: Search database using sophisticated search_lobbyists() function
-    // This provides proper relevance ranking, view count weighting, and tier-based ordering
-    const { data: lobbyists, error: dbError } = await supabase.rpc('search_lobbyists', {
-      search_query: searchParams.keywords || null,  // Use extracted keywords for full-text search
-      city_filters: searchParams.cities.length > 0 ? searchParams.cities : null,
-      subject_filters: searchParams.subject_areas.length > 0 ? searchParams.subject_areas : null,
-      tier_filter: null,
-      client_filters: null,
-      limit_count: 20,
-      offset_count: 0,
-    });
+    // Step 2: Intelligent search cascade - always returns results
+    // Progressively relaxes constraints until we find matches
+    let lobbyists: any[] = [];
+    let searchMethod = '';
 
-    if (dbError) {
-      console.error('Database error:', dbError);
-      return new Response(
-        JSON.stringify({ error: 'Database query failed' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
+    // Try 1: Full search (keywords + geo + subjects)
+    if (searchParams.keywords || searchParams.cities.length > 0 || searchParams.subject_areas.length > 0) {
+      const { data, error } = await supabase.rpc('search_lobbyists', {
+        search_query: searchParams.keywords || null,
+        city_filters: searchParams.cities.length > 0 ? searchParams.cities : null,
+        subject_filters: searchParams.subject_areas.length > 0 ? searchParams.subject_areas : null,
+        tier_filter: null,
+        client_filters: null,
+        limit_count: 20,
+        offset_count: 0,
+      });
+
+      if (!error && data && data.length > 0) {
+        lobbyists = data;
+        searchMethod = 'full_match';
+      }
     }
 
+    // Try 2: Geo + Subjects (drop keywords - might be too specific)
+    if (lobbyists.length === 0 && (searchParams.cities.length > 0 || searchParams.subject_areas.length > 0)) {
+      const { data, error } = await supabase.rpc('search_lobbyists', {
+        search_query: null,
+        city_filters: searchParams.cities.length > 0 ? searchParams.cities : null,
+        subject_filters: searchParams.subject_areas.length > 0 ? searchParams.subject_areas : null,
+        tier_filter: null,
+        client_filters: null,
+        limit_count: 20,
+        offset_count: 0,
+      });
+
+      if (!error && data && data.length > 0) {
+        lobbyists = data;
+        searchMethod = 'geo_subject_match';
+      }
+    }
+
+    // Try 3: Just geo (location matters most)
+    if (lobbyists.length === 0 && searchParams.cities.length > 0) {
+      const { data, error } = await supabase.rpc('search_lobbyists', {
+        search_query: null,
+        city_filters: searchParams.cities,
+        subject_filters: null,
+        tier_filter: null,
+        client_filters: null,
+        limit_count: 20,
+        offset_count: 0,
+      });
+
+      if (!error && data && data.length > 0) {
+        lobbyists = data;
+        searchMethod = 'geo_only';
+      }
+    }
+
+    // Try 4: Just subjects (expertise matters)
+    if (lobbyists.length === 0 && searchParams.subject_areas.length > 0) {
+      const { data, error } = await supabase.rpc('search_lobbyists', {
+        search_query: null,
+        city_filters: null,
+        subject_filters: searchParams.subject_areas,
+        tier_filter: null,
+        client_filters: null,
+        limit_count: 20,
+        offset_count: 0,
+      });
+
+      if (!error && data && data.length > 0) {
+        lobbyists = data;
+        searchMethod = 'subject_only';
+      }
+    }
+
+    // Try 5: Top-rated lobbyists (always works - guaranteed results)
+    if (lobbyists.length === 0) {
+      const { data, error } = await supabase.rpc('search_lobbyists', {
+        search_query: null,
+        city_filters: null,
+        subject_filters: null,
+        tier_filter: null,
+        client_filters: null,
+        limit_count: 20,
+        offset_count: 0,
+      });
+
+      if (!error && data && data.length > 0) {
+        lobbyists = data;
+        searchMethod = 'top_rated';
+      }
+    }
+
+    // Final safety check - should never happen
     if (!lobbyists || lobbyists.length === 0) {
+      console.error('Critical: No lobbyists found even in fallback');
       return new Response(
         JSON.stringify({
-          results: [],
+          error: 'No lobbyists available in the directory',
           extracted_criteria: searchParams,
-          message: 'No lobbyists found matching your criteria.',
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 

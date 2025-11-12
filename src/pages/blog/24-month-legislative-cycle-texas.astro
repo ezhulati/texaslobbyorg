@@ -1,0 +1,347 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'The 24-Month Legislative Cycle: When Deals Get Made in Texas | TexasLobby.org';
+const pageDescription = 'Why the 18-month interim between Texas legislative sessions matters more than the 140-day session for positioning your priorities and building support.';
+const publishedDate = '2025-11-12';
+const updatedDate = '2025-11-12';
+const author = 'By Byron Campbell';
+const category = 'Legislative Strategy';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: pageTitle,
+  description: pageDescription,
+  datePublished: publishedDate,
+  dateModified: updatedDate,
+  author: {
+    '@type': 'Person',
+    name: 'Byron Campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/logo.png'
+    }
+  }
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Article Header -->
+  <section class="bg-gradient-to-b from-texas-blue-500/10 to-background py-16 border-b border-border">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 mb-6"
+        >
+          <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to all articles
+        </a>
+
+        <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+          {category}
+        </div>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+          The 24-Month Legislative Cycle: When Deals Get Made in Texas
+        </h1>
+
+        <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-4xl">
+          The Texas Legislature meets for 140 days every two years. That sounds like plenty of time to pass legislation. It's not. Here's why the 18-month interim matters more than the session.
+        </p>
+
+        <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+          <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <a href="/authors/byron-campbell" class="font-medium hover:text-texas-blue-500 transition-colors">{author}</a>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <time datetime={publishedDate}>
+              {new Date(publishedDate).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </time>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-medium">15 min read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-16">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <div class="prose prose-lg max-w-none">
+
+          <p class="text-lg leading-relaxed mb-6">
+            When the Texas Legislature adjourns in late May of odd-numbered years, most businesses breathe a sigh of relief. The session is over. Time to get back to normal operations.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            That mentality wastes the most valuable 18 months in Texas government relations.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The successful bills that pass during the next regular session—whether in 2027, 2029, or beyond—are being positioned right now during the interim. Committee hearings are happening. Stakeholder meetings are building coalitions. Staff are getting briefed on complex issues so they can advise their legislators when bills get filed.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            If you're waiting until January of an odd-numbered year to engage on Texas legislation, you're entering a process that started 12-18 months earlier without you.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">How the Texas Biennial Session Works</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Texas operates under a biennial legislative schedule established by the state constitution. The Legislature convenes in regular session on the second Tuesday in January of odd-numbered years (2025, 2027, 2029) for exactly 140 days.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            That's it. No annual sessions like most states. No option to extend beyond 140 days except through a governor-called special session addressing specific topics.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The math creates intense pressure: Over 7,000 bills typically get filed. Only about 20% will pass. Every bill must clear committee, pass a floor vote in its originating chamber, repeat the process in the opposite chamber, survive any conference committee negotiations, and reach the governor's desk before sine die—the final day of session.
+          </p>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 my-8">
+            <h3 class="text-xl font-bold mb-4">The 140-Day Timeline</h3>
+            <ul class="space-y-3 text-gray-700">
+              <li><strong>Days 1-60:</strong> Bill filing deadline (usually around early March). Committees begin hearing bills.</li>
+              <li><strong>Days 61-100:</strong> Bills must pass their originating chamber. Intense committee activity and floor votes.</li>
+              <li><strong>Days 101-130:</strong> Bills move to opposite chamber for committee hearings and floor consideration.</li>
+              <li><strong>Days 131-139:</strong> Conference committees resolve differences between House and Senate versions.</li>
+              <li><strong>Day 140:</strong> Final passage deadline. Governor has 20 days to sign or veto after adjournment.</li>
+            </ul>
+          </div>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Understanding this timeline reveals the fundamental challenge: 140 days sounds like nearly five months, but the actual window for productive negotiation and amendment is much narrower. By the time session starts, the bills are already filed or being drafted. The sponsors are already identified. The opposition is already organizing.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">Why the Interim Period Matters More</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Between regular sessions, Texas doesn't go dormant. The interim period (approximately 18 months between May adjournment and the following January) is when the foundation for the next session gets built.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Interim Committee Hearings</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Leadership assigns interim charges to committees—specific topics to study before the next session. These committees hold hearings, take testimony, and issue reports with legislative recommendations.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            If you're not participating in these interim hearings, you're missing the opportunity to shape the committee's understanding of your issue before bills get drafted. The recommendations that emerge from interim committee reports often become the foundation for legislation filed the following session.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Staff Briefings and Relationship Building</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Legislative staff turnover happens during the interim. New analysts join committee staff. New chiefs of staff come on board. These are the people who will brief legislators during session about your industry, your issue, and your proposed solutions.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The interim is when you build relationships with staff without the pressure of active legislation. You can educate them about your industry, explain technical complexities, and establish yourself as a credible resource. When session starts and they're working 80-hour weeks responding to constituent calls and drafting bill analyses, that early relationship work pays dividends.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Coalition Development</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Successful legislation usually requires coalition support—multiple organizations or industries aligned behind a common goal. Building those coalitions takes time.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            During the interim, you can have substantive conversations with potential coalition partners without the immediate pressure of a bill hearing next week. You can work through disagreements on strategy. You can align messaging. You can identify which organizations bring the most credibility with which legislators.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            By the time session starts, your coalition should be aligned and ready to execute, not still figuring out who's in charge.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Legislative Language Development</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Good legislative language takes multiple drafts. You need to work with the Texas Legislative Council (the nonpartisan drafting service) to translate your policy goal into statutory language that accomplishes what you want without unintended consequences.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            This process works better during the interim when Legislative Council attorneys aren't drowning in 7,000 competing bill requests. You can get thoughtful feedback, revise your approach, and have clean legislative language ready before session starts.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Sponsor Recruitment</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The best bill sponsors aren't just willing to file your legislation—they're actively engaged in strategy, willing to carry the bill through tough negotiations, and credible with their colleagues on your issue.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Finding those sponsors and building their confidence in your legislation takes time. During the interim, legislators are more accessible. They can take meetings without rushing to a floor vote. They can review your proposal thoughtfully and ask questions without the pressure of a filing deadline.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">The Cost of Waiting Until Session</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            When organizations wait until January to engage on Texas legislation, they face predictable challenges that drive up costs and reduce effectiveness.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Limited Access to Legislators</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            During session, legislators work grueling schedules. Committee hearings run from early morning until late evening. Floor sessions can last past midnight. Constituent services, fundraising, and district work continue even during session.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Getting a 15-minute meeting with a key committee member in March is difficult. Getting 45 minutes to walk them through your technical issue and answer questions thoughtfully? Nearly impossible.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The interim offers access when legislators have time for substantive conversation.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Defensive Posture Instead of Strategic Positioning</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            If you first learn about legislation affecting your industry when it's already filed and assigned to committee, you're playing defense. You're responding to someone else's language, someone else's coalition, and someone else's legislative champion.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Interim engagement lets you shape the conversation before opposition forms and positions harden.
+          </p>
+
+          <h3 class="text-2xl font-bold mb-4 mt-8">Higher Lobbying Costs</h3>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Government relations firms charge more for crisis response than strategic positioning. If you call in January saying "there's a bill that threatens our business and it's in committee next week," you're hiring for emergency service.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Effective firms will still take the work, but they'll charge premium rates because the difficulty level is higher and the probability of success is lower. The same outcome—defeating or amending that legislation—costs significantly less if you position against it during the interim before it gets filed.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">What Effective Interim Engagement Looks Like</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Interim work doesn't require the same intensity as session activity, but it requires consistent presence and strategic focus.
+          </p>
+
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+            <h3 class="text-xl font-bold mb-4">A Productive 18-Month Interim Schedule</h3>
+            <ul class="space-y-4 text-gray-700">
+              <li><strong>Months 1-3 (June-August after session):</strong> Debrief with your government relations team about session outcomes. Identify what worked, what didn't, and what issues are likely to emerge next session. Begin monitoring interim committee charge assignments.</li>
+              <li><strong>Months 4-9 (September-February):</strong> Participate in relevant interim committee hearings. Brief new legislative staff. Begin coalition conversations with potential partners. Start developing legislative language for proactive priorities.</li>
+              <li><strong>Months 10-15 (March-August):</strong> Finalize coalition alignment. Complete legislative drafting. Recruit bill sponsors. Prepare analysis materials showing fiscal impact, stakeholder support, and policy rationale.</li>
+              <li><strong>Months 16-18 (September-December):</strong> Brief key committee staff on your legislation. Finalize bill sponsor agreements. Prepare coalition members for session coordination. Complete session strategy planning.</li>
+            </ul>
+          </div>
+
+          <p class="text-lg leading-relaxed mb-6">
+            This timeline assumes proactive legislation. If your focus is defensive monitoring or regulatory engagement, the interim schedule adjusts but the principle remains: consistent, strategic presence between sessions positions you for success during session.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">The Exception: Emergency Issues and Special Sessions</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Sometimes you don't have the luxury of 18-month positioning. Emergency situations arise. The governor calls a special session limited to specific topics. A regulatory crisis demands immediate legislative response.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            In these scenarios, you work with what you have. Good government relations teams can execute effective emergency response. But it's more expensive, more stressful, and less likely to achieve optimal outcomes compared to strategic interim positioning.
+          </p>
+
+          <h2 class="text-3xl font-bold mb-6 mt-12">Making Interim Work Part of Your Strategy</h2>
+
+          <p class="text-lg leading-relaxed mb-6">
+            The challenge for most organizations is that interim work doesn't generate the same urgency as session activity. There's no looming deadline. No vote scheduled next week. No crisis driving action.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            That lack of urgency is precisely why interim work gets deprioritized—and why organizations that maintain consistent interim engagement gain significant competitive advantages.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            If your government relations budget only funds work during the 140-day session, you're funding the least effective portion of the legislative cycle. The 18-month interim is where relationships develop, coalitions form, legislative language gets refined, and bill sponsors commit to your cause.
+          </p>
+
+          <p class="text-lg leading-relaxed mb-6">
+            Successful Texas legislation is a 24-month cycle, not a 140-day sprint. Organizations that understand this—and fund government relations accordingly—consistently achieve better policy outcomes at lower total costs.
+          </p>
+
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+            <h3 class="text-xl font-bold mb-4">Key Takeaways</h3>
+            <ul class="space-y-3 text-gray-700">
+              <li>The Texas Legislature meets 140 days every two years, but the 18-month interim is when successful legislation gets positioned</li>
+              <li>Interim committee hearings, staff briefings, coalition building, and legislative drafting happen between sessions</li>
+              <li>Waiting until January to engage means entering a process that started 12-18 months earlier without you</li>
+              <li>Interim work costs less and delivers better outcomes than crisis response during session</li>
+              <li>Effective Texas government relations requires year-round presence, not just session-focused activity</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-xl text-white">
+          <h3 class="text-2xl font-bold mb-4">Find Experienced Texas Lobbyists</h3>
+          <p class="text-blue-50 mb-6">
+            Connect with government relations professionals who understand the full 24-month legislative cycle and maintain year-round Capitol presence.
+          </p>
+          <a
+            href="/lobbyists"
+            class="inline-flex items-center justify-center px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-blue-50 transition-colors"
+          >
+            Search Lobbyists
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="py-16 bg-muted/30">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold mb-8">Related Articles</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-bold mb-3 hover:text-texas-blue-500 transition-colors">
+              <a href="/blog/how-to-select-government-relations-team">How to Select the Right Government Relations Team</a>
+            </h3>
+            <p class="text-muted-foreground text-sm mb-4">
+              A decision framework for choosing the right government relations team based on your issue complexity and budget.
+            </p>
+            <a
+              href="/blog/how-to-select-government-relations-team"
+              class="inline-flex items-center text-texas-blue-500 hover:text-texas-blue-600 font-medium text-sm"
+            >
+              Read article
+              <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

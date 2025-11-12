@@ -66,10 +66,10 @@ export default function ReportIssueButton({ lobbyistId, lobbyistName }: ReportIs
       {/* Report Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="w-full inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
         title="Report inaccurate or fraudulent information"
       >
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircle className="h-3.5 w-3.5" />
         <span>Report Issue</span>
       </button>
 

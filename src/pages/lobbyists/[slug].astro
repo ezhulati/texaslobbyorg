@@ -81,15 +81,8 @@ const similarLobbyists = candidateLobbyists && candidateLobbyists.length > 0
 // Build page title and description
 const fullName = `${lobbyist.first_name} ${lobbyist.last_name}`;
 
-// Build SEO-optimized title (55-60 chars)
-let titleParts = [fullName];
-if (lobbyist.subject_areas.length > 0 && lobbyist.subject_areas[0]) {
-  titleParts.push(lobbyist.subject_areas[0]);
-}
-if (lobbyist.cities.length > 0 && lobbyist.cities[0] && titleParts.join(' | ').length < 45) {
-  titleParts.push(lobbyist.cities[0]);
-}
-const pageTitle = `${titleParts.join(' | ')} | Texas Lobbyist`;
+// Build SEO-optimized title - Simple format
+const pageTitle = `${fullName} - Texas Lobbyist`;
 
 // Build SEO-optimized description (155-160 chars max)
 let pageDescription = '';

@@ -34,7 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Step 1: Extract search criteria from natural language
     const extractionResponse = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-opus-20240229',
       max_tokens: 1024,
       tools: [
         {
@@ -105,29 +105,17 @@ Call the extract_search_criteria tool with your findings.`,
       keywords: string;
     };
 
-    // Step 2: Search database using extracted criteria
-    let dbQuery = supabase
-      .from('lobbyists')
-      .select('*')
-      .eq('is_active', true)
-      .eq('approval_status', 'approved');
-
-    // Apply city filters if specified
-    if (searchParams.cities && searchParams.cities.length > 0) {
-      dbQuery = dbQuery.overlaps('cities', searchParams.cities);
-    }
-
-    // Apply subject area filters if specified
-    if (searchParams.subject_areas && searchParams.subject_areas.length > 0) {
-      dbQuery = dbQuery.overlaps('subject_areas', searchParams.subject_areas);
-    }
-
-    // Order by subscription tier and limit results
-    dbQuery = dbQuery
-      .order('subscription_tier', { ascending: false })
-      .limit(20);
-
-    const { data: lobbyists, error: dbError } = await dbQuery;
+    // Step 2: Search database using sophisticated search_lobbyists() function
+    // This provides proper relevance ranking, view count weighting, and tier-based ordering
+    const { data: lobbyists, error: dbError } = await supabase.rpc('search_lobbyists', {
+      search_query: searchParams.keywords || null,  // Use extracted keywords for full-text search
+      city_filters: searchParams.cities.length > 0 ? searchParams.cities : null,
+      subject_filters: searchParams.subject_areas.length > 0 ? searchParams.subject_areas : null,
+      tier_filter: null,
+      client_filters: null,
+      limit_count: 20,
+      offset_count: 0,
+    });
 
     if (dbError) {
       console.error('Database error:', dbError);
@@ -155,7 +143,7 @@ Call the extract_search_criteria tool with your findings.`,
       topMatches.map(async (lobbyist) => {
         try {
           const explanationResponse = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
+            model: 'claude-3-haiku-20240307',
             max_tokens: 150,
             messages: [
               {

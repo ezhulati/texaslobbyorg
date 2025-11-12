@@ -3,8 +3,8 @@
  * Allows users to search for lobbyists using natural language
  */
 
-import { useState } from 'react';
-import { Sparkles, Search, Loader2, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Search, Loader2, AlertCircle, Brain } from 'lucide-react';
 
 interface SearchResult {
   id: string;
@@ -37,6 +37,15 @@ const EXAMPLE_QUERIES = [
   'energy lobbyist with oil and gas experience',
 ];
 
+const THINKING_STEPS = [
+  'Understanding your query...',
+  'Analyzing search criteria...',
+  'Searching through 1,600+ Texas lobbyists...',
+  'Matching expertise and locations...',
+  'Ranking best matches...',
+  'Generating personalized recommendations...',
+];
+
 export default function AISearchBar() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,6 +53,19 @@ export default function AISearchBar() {
   const [extractedCriteria, setExtractedCriteria] = useState<SearchResponse['extracted_criteria'] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState(0);
+
+  // Animate thinking steps while loading
+  useEffect(() => {
+    if (!loading) return;
+
+    setThinkingStep(0);
+    const interval = setInterval(() => {
+      setThinkingStep((prev) => (prev + 1) % THINKING_STEPS.length);
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -51,6 +73,7 @@ export default function AISearchBar() {
     setLoading(true);
     setError(null);
     setHasSearched(true);
+    setThinkingStep(0);
 
     try {
       const response = await fetch('/api/ai-search', {
@@ -138,25 +161,63 @@ export default function AISearchBar() {
         )}
       </div>
 
-      {/* Extracted Criteria Display */}
-      {extractedCriteria && !error && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-start gap-2">
-            <Sparkles className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div className="text-sm">
-              <p className="font-medium text-blue-900 mb-1">AI understood your search:</p>
-              <div className="text-blue-700 space-y-1">
-                {extractedCriteria.cities.length > 0 && (
-                  <p>• Cities: {extractedCriteria.cities.join(', ')}</p>
-                )}
-                {extractedCriteria.subject_areas.length > 0 && (
-                  <p>• Expertise: {extractedCriteria.subject_areas.join(', ')}</p>
-                )}
-                {extractedCriteria.keywords && (
-                  <p>• Keywords: {extractedCriteria.keywords}</p>
-                )}
-              </div>
+      {/* Thinking Splash Screen */}
+      {loading && (
+        <div className="mt-8 p-12 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-xl text-white">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-white/20 backdrop-blur-sm">
+              <Brain className="w-10 h-10 animate-pulse" />
             </div>
+            <h3 className="text-2xl font-bold mb-4">Claude is thinking...</h3>
+            <div className="flex items-center justify-center gap-2 text-lg">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <p className="animate-pulse">{THINKING_STEPS[thinkingStep]}</p>
+            </div>
+            <div className="mt-8 flex justify-center gap-2">
+              {THINKING_STEPS.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-2 w-2 rounded-full transition-all ${
+                    idx === thinkingStep ? 'bg-white w-8' : 'bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Extracted Criteria Display - Horizontal Chips */}
+      {extractedCriteria && !error && !loading && (
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-texas-blue-600" />
+            <span className="text-sm font-medium text-muted-foreground">AI understood:</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {extractedCriteria.cities.length > 0 &&
+              extractedCriteria.cities.map((city) => (
+                <span
+                  key={city}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-900 border border-blue-300"
+                >
+                  📍 {city}
+                </span>
+              ))}
+            {extractedCriteria.subject_areas.length > 0 &&
+              extractedCriteria.subject_areas.map((subject) => (
+                <span
+                  key={subject}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-900 border border-purple-300"
+                >
+                  💼 {subject}
+                </span>
+              ))}
+            {extractedCriteria.keywords && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-900 border border-green-300">
+                🔍 {extractedCriteria.keywords}
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -175,10 +236,10 @@ export default function AISearchBar() {
       )}
 
       {/* Results */}
-      {results.length > 0 && !error && (
-        <div className="mt-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">
+      {results.length > 0 && !error && !loading && (
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold">
               Found {results.length} {results.length === 1 ? 'Match' : 'Matches'}
             </h3>
             <a
@@ -186,73 +247,75 @@ export default function AISearchBar() {
                 ...(extractedCriteria?.cities.length ? { city: extractedCriteria.cities[0] } : {}),
                 ...(extractedCriteria?.subject_areas.length ? { subject: extractedCriteria.subject_areas[0] } : {}),
               }).toString()}`}
-              className="text-sm text-texas-blue-600 hover:underline"
+              className="text-sm text-texas-blue-600 hover:text-texas-blue-700 hover:underline font-medium"
             >
               View all results →
             </a>
           </div>
 
-          {results.map((result) => (
-            <a
-              key={result.id}
-              href={`/lobbyists/${result.slug}`}
-              className="block p-6 border border-border rounded-lg hover:border-texas-blue-500 hover:shadow-lg transition-all bg-white"
-            >
-              <div className="flex items-start gap-4">
-                {/* Profile Image */}
-                {result.profile_image_url ? (
-                  <img
-                    src={result.profile_image_url}
-                    alt={`${result.first_name} ${result.last_name}`}
-                    className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold text-lg flex-shrink-0">
-                    {result.first_name[0]}
-                    {result.last_name[0]}
-                  </div>
-                )}
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h4 className="text-xl font-bold">
-                      {result.first_name} {result.last_name}
-                    </h4>
-                    {result.subscription_tier !== 'free' && (
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          result.subscription_tier === 'featured'
-                            ? 'bg-texas-blue-500 text-white'
-                            : 'bg-texas-gold-500 text-white'
-                        }`}
-                      >
-                        {result.subscription_tier === 'featured' ? 'Featured' : 'Premium'}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Cities and Expertise */}
-                  {(result.cities || result.subject_areas) && (
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {result.cities?.slice(0, 3).join(', ')}
-                      {result.cities && result.subject_areas && ' • '}
-                      {result.subject_areas?.slice(0, 3).join(', ')}
-                    </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {results.map((result) => (
+              <a
+                key={result.id}
+                href={`/lobbyists/${result.slug}`}
+                className="block p-6 border border-border rounded-lg hover:border-texas-blue-500 hover:shadow-lg transition-all bg-white"
+              >
+                <div className="flex items-start gap-4">
+                  {/* Profile Image */}
+                  {result.profile_image_url ? (
+                    <img
+                      src={result.profile_image_url}
+                      alt={`${result.first_name} ${result.last_name}`}
+                      className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-texas-blue-100 flex items-center justify-center text-texas-blue-600 font-semibold text-lg flex-shrink-0">
+                      {result.first_name[0]}
+                      {result.last_name[0]}
+                    </div>
                   )}
 
-                  {/* AI Explanation */}
-                  <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-md">
-                    <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-blue-900">
-                      <strong className="font-medium">Why this match:</strong>{' '}
-                      {result.ai_explanation}
-                    </p>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <h4 className="text-xl font-bold">
+                        {result.first_name} {result.last_name}
+                      </h4>
+                      {result.subscription_tier !== 'free' && (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            result.subscription_tier === 'featured'
+                              ? 'bg-texas-blue-500 text-white'
+                              : 'bg-texas-gold-500 text-white'
+                          }`}
+                        >
+                          {result.subscription_tier === 'featured' ? 'Featured' : 'Premium'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Cities and Expertise */}
+                    {(result.cities || result.subject_areas) && (
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {result.cities?.slice(0, 3).join(', ')}
+                        {result.cities && result.subject_areas && ' • '}
+                        {result.subject_areas?.slice(0, 3).join(', ')}
+                      </p>
+                    )}
+
+                    {/* AI Explanation */}
+                    <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-md">
+                      <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-blue-900">
+                        <strong className="font-medium">Why this match:</strong>{' '}
+                        {result.ai_explanation}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))}
+          </div>
         </div>
       )}
 

@@ -23,7 +23,7 @@ let query = serverClient
   .from('lobbyists')
   .select(`
     *,
-    user:user_id (
+    user:users!user_id (
       email,
       full_name,
       last_sign_in_at

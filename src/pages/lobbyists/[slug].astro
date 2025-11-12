@@ -6,6 +6,7 @@ import CollapsibleBio from '@/components/react/CollapsibleBio';
 import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
 import FavoriteButton from '@/components/react/FavoriteButton';
 import TestimonialsDisplay from '@/components/react/TestimonialsDisplay';
+import VerifiedBadge from '@/components/react/VerifiedBadge';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { getLobbyistTaggedBills } from '@/lib/api/bills';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
@@ -185,6 +186,9 @@ const tagTypeConfig = {
         <div class="flex-1">
           <div class="flex flex-wrap items-center gap-3 mb-2">
             <h1 class="text-3xl md:text-4xl font-bold">{fullName}</h1>
+            {(lobbyist.is_claimed || lobbyist.claimed_by) && (
+              <VerifiedBadge size="lg" client:load />
+            )}
             {lobbyist.subscription_tier !== 'free' && (
               <span
                 class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${

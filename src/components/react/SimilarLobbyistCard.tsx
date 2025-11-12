@@ -1,5 +1,6 @@
 import { MapPin, Briefcase, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import VerifiedBadge from './VerifiedBadge';
 
 interface SimilarLobbyistCardProps {
   firstName: string;
@@ -12,6 +13,8 @@ interface SimilarLobbyistCardProps {
   subscriptionTier: 'free' | 'premium' | 'featured';
   viewCount: number;
   title?: string | null;
+  isClaimed?: boolean;
+  claimedBy?: string | null;
 }
 
 export default function SimilarLobbyistCard({
@@ -25,9 +28,12 @@ export default function SimilarLobbyistCard({
   subscriptionTier,
   viewCount,
   title,
+  isClaimed = false,
+  claimedBy = null,
 }: SimilarLobbyistCardProps) {
   const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`;
   const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+  const isVerified = isClaimed || !!claimedBy;
 
   return (
     <a
@@ -67,9 +73,12 @@ export default function SimilarLobbyistCard({
           {/* Header */}
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-semibold text-foreground group-hover:text-texas-blue-600 transition-colors line-clamp-1">
-                {fullName}
-              </h3>
+              <div className="flex items-center gap-1.5 mb-1">
+                <h3 className="text-base font-semibold text-foreground group-hover:text-texas-blue-600 transition-colors line-clamp-1">
+                  {fullName}
+                </h3>
+                {isVerified && <VerifiedBadge size="sm" showText={false} />}
+              </div>
               {title && (
                 <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
                   {title}
@@ -80,7 +89,7 @@ export default function SimilarLobbyistCard({
             {subscriptionTier !== 'free' && (
               <span
                 className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold',
+                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold flex-shrink-0',
                   subscriptionTier === 'featured' && 'bg-texas-red-500 text-white',
                   subscriptionTier === 'premium' && 'bg-texas-gold-500 text-white'
                 )}

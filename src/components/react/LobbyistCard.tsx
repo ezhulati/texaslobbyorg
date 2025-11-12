@@ -3,6 +3,7 @@ import { MapPin, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import FavoriteButton from './FavoriteButton';
 import AuthModal from './AuthModal';
+import VerifiedBadge from './VerifiedBadge';
 
 interface LobbyistCardProps {
   id: string;
@@ -19,6 +20,8 @@ interface LobbyistCardProps {
   industryClientCount?: number;
   isFavorited?: boolean;
   isAuthenticated?: boolean;
+  isClaimed?: boolean;
+  claimedBy?: string | null;
 }
 
 export default function LobbyistCard({
@@ -36,10 +39,13 @@ export default function LobbyistCard({
   industryClientCount,
   isFavorited = false,
   isAuthenticated = false,
+  isClaimed = false,
+  claimedBy = null,
 }: LobbyistCardProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`;
   const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+  const isVerified = isClaimed || !!claimedBy;
 
   return (
     <>
@@ -91,6 +97,7 @@ export default function LobbyistCard({
             <h3 className="text-lg font-semibold text-foreground">
               {fullName}
             </h3>
+            {isVerified && <VerifiedBadge size="sm" />}
             {subscriptionTier !== 'free' && (
               <span
                 className={cn(

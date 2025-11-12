@@ -12,6 +12,8 @@ interface Lobbyist {
   subscription_tier: 'free' | 'premium' | 'featured';
   view_count: number;
   title?: string | null;
+  is_claimed?: boolean;
+  claimed_by?: string | null;
 }
 
 interface SimilarLobbyistsListProps {
@@ -46,6 +48,8 @@ export default function SimilarLobbyistsList({
           subscriptionTier={lobbyist.subscription_tier}
           viewCount={lobbyist.view_count}
           title={lobbyist.title}
+          isClaimed={lobbyist.is_claimed}
+          claimedBy={lobbyist.claimed_by}
         />
       ))}
     </div>

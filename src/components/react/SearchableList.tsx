@@ -16,6 +16,8 @@ interface Lobbyist {
   matchingSubjects?: string[];
   industryClientCount?: number;
   relevanceScore?: number;
+  is_claimed?: boolean;
+  claimed_by?: string | null;
 }
 
 interface SearchableListProps {
@@ -132,6 +134,8 @@ export default function SearchableList({
               industryClientCount={showIndustryBadges ? lobbyist.industryClientCount : undefined}
               isFavorited={favoriteLobbyistIds.includes(lobbyist.id)}
               isAuthenticated={isAuthenticated}
+              isClaimed={lobbyist.is_claimed}
+              claimedBy={lobbyist.claimed_by}
             />
           ))}
         </div>

@@ -6,17 +6,51 @@
 import type { APIRoute } from 'astro';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabase } from '@/lib/supabase';
+import { rateLimiter, getClientIP, RATE_LIMITS } from '@/lib/security/rateLimiter';
+import { aiSearchSchema, validateRequest, createValidationErrorResponse, ValidationError } from '@/lib/security/validation';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { query } = await request.json();
+    // Strict rate limiting for AI search (expensive operation)
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimiter.check(
+      clientIP,
+      RATE_LIMITS.AI_SEARCH.limit,
+      RATE_LIMITS.AI_SEARCH.windowMs
+    );
 
-    if (!query || query.trim().length === 0) {
+    if (!rateLimitResult.allowed) {
       return new Response(
-        JSON.stringify({ error: 'Query is required' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          error: 'Too many requests',
+          message: 'AI search is rate limited. Please try again later.',
+          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000),
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Limit': RATE_LIMITS.AI_SEARCH.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.resetAt.toString(),
+            'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          },
+        }
       );
     }
+
+    // Validate input with Zod
+    let validatedData;
+    try {
+      validatedData = await validateRequest(request, aiSearchSchema);
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return createValidationErrorResponse(error);
+      }
+      throw error;
+    }
+
+    const { query } = validatedData;
 
     // Get available options from database
     const [citiesResult, subjectsResult] = await Promise.all([

@@ -1,21 +1,49 @@
 import type { APIRoute } from 'astro';
 import { createServerClient } from '@/lib/supabase';
 import { Resend } from 'resend';
+import { rateLimiter, getClientIP, RATE_LIMITS } from '@/lib/security/rateLimiter';
+import { reportIssueSchema, validateRequest, createValidationErrorResponse, ValidationError } from '@/lib/security/validation';
 
 const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { lobbyistId, lobbyistName, issueType, description, reporterEmail } = body;
+    // Rate limiting - 10 reports per minute per IP
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimiter.check(clientIP, 10, 60 * 1000);
 
-    // Validate required fields
-    if (!lobbyistId || !issueType || !description) {
+    if (!rateLimitResult.allowed) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          error: 'Too many requests',
+          message: 'You have exceeded the rate limit. Please try again later.',
+          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000),
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Limit': '10',
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.resetAt.toString(),
+            'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          },
+        }
       );
     }
+
+    // Validate input with Zod
+    let validatedData;
+    try {
+      validatedData = await validateRequest(request, reportIssueSchema);
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return createValidationErrorResponse(error);
+      }
+      throw error;
+    }
+
+    const { lobbyistId, lobbyistName, issueType, description, reporterEmail } = validatedData;
 
     const serverClient = createServerClient();
 

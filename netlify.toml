@@ -6,6 +6,8 @@
   directory = ".netlify/v1/functions"
   included_files = [".netlify/v1/**"]
   node_bundler = "esbuild"
+
+[functions."*"]
   timeout = 10
 
 # Security Headers - Applied to all pages

@@ -78,6 +78,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         is_pending: false,
         is_active: true,
         is_verified: true,
+        approval_status: 'approved', // Set approval status
         pending_reason: null,
         // Clear rejection fields if profile was previously rejected
         is_rejected: false,

@@ -109,6 +109,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         is_claimed: true,
         is_active: false, // Not active until approved by admin
         is_pending: true, // Awaiting admin review
+        approval_status: 'pending', // Set approval status
         pending_reason: 'New lobbyist registration - ID verification required',
         subscription_tier: 'free',
       })

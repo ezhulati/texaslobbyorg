@@ -197,6 +197,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         is_rejected: false,
         is_pending: true,
         is_active: false,
+        approval_status: 'pending', // Set approval status back to pending
         pending_reason: `Resubmission (Attempt ${existingProfile.rejection_count + 1} of 3) - Awaiting review`,
         // Update timestamps
         last_resubmission_at: new Date().toISOString(),

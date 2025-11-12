@@ -84,6 +84,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
         is_pending: false,
         is_active: false,
         is_rejected: true,
+        approval_status: 'rejected', // Set approval status
         rejection_reason: userMessage,
         rejection_category: category,
         rejected_at: new Date().toISOString(),

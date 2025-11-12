@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 
 interface IDUploadProps {
@@ -86,36 +85,24 @@ export default function IDUpload({ userId, onUploadComplete, onError }: IDUpload
     setUploading(true);
 
     try {
-      // Generate unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}/${Date.now()}.${fileExt}`;
+      // Create form data
+      const formData = new FormData();
+      formData.append('file', file);
 
-      // Upload to Supabase Storage
-      const { data, error: uploadError } = await supabase.storage
-        .from('id-verifications')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      // Upload via API endpoint (server-side with auth)
+      const response = await fetch('/api/upload/id-verification', {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (uploadError) {
-        console.error('Supabase upload error:', uploadError);
+      const result = await response.json();
 
-        // Provide helpful error messages based on error type
-        if (uploadError.message.includes('not found') || uploadError.message.includes('Bucket')) {
-          throw new Error('Storage bucket not configured. Please contact support.');
-        }
-
-        throw uploadError;
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to upload file');
       }
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('id-verifications')
-        .getPublicUrl(fileName);
-
-      console.log('[IDUpload] Upload successful:', publicUrl);
-      onUploadComplete(publicUrl);
+      console.log('[IDUpload] Upload successful:', result.url);
+      onUploadComplete(result.url);
     } catch (err: any) {
       console.error('[IDUpload] Upload error:', err);
       onError(err?.message || 'Failed to upload file. Please try again.');

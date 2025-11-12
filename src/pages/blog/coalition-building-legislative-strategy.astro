@@ -1,0 +1,410 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const currentYear = new Date().getFullYear();
+const pageTitle = `Coalition Building: How to Build Legislative Support Beyond Your Industry ${currentYear}`;
+const pageDescription = 'Why single-company lobbying efforts fail and how to build coalitions that give legislators political cover to support your position.';
+const publishedDate = '2025-11-12';
+const author = 'Byron Campbell';
+const readTime = '14 min read';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: author,
+    url: 'https://texaslobby.org/authors/byron-campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/images/logo.png'
+    }
+  },
+  datePublished: publishedDate,
+  dateModified: publishedDate
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <article class="container max-w-4xl py-16">
+    <!-- Article Header -->
+    <header class="mb-12 pb-8 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
+          Strategy
+        </span>
+        <span class="text-sm text-muted-foreground">{readTime}</span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+        Coalition Building: How to Build Legislative Support Beyond Your Industry
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+        <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+          By {author}
+        </a>
+        <span>•</span>
+        <time datetime={publishedDate}>
+          {new Date(publishedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </time>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none">
+      <p class="text-xl text-muted-foreground mb-8 lead">
+        Legislators don't pass bills because one company wants them. They pass bills when diverse coalitions demonstrate broad support that gives them political cover.
+      </p>
+
+      <p>
+        I've seen Fortune 500 companies with massive lobbying budgets fail to pass straightforward legislation because they operated alone. I've seen small businesses succeed with controversial bills because they built coalitions that made legislators comfortable voting yes.
+      </p>
+
+      <p>
+        The difference wasn't resources. It was strategy. Effective lobbying isn't about buying access or overpowering opposition. It's about building coalitions that frame your issue as broader than one company's self-interest.
+      </p>
+
+      <h2>Why Single-Company Advocacy Fails</h2>
+
+      <p>
+        When a single company lobbies for legislation that benefits them, legislators immediately ask: "Who else supports this? Who opposes it? What's the catch?"
+      </p>
+
+      <p>
+        Even if your bill is good policy, legislators are skeptical of legislation that appears to benefit one company. They worry about constituent backlash. They question whether you're revealing all the impacts. They hesitate to be the first supporter of something that might become controversial.
+      </p>
+
+      <p>
+        The perception problem compounds when opposition emerges. Your company versus organized opposition looks like special interest lobbying. The same bill with a coalition behind it looks like a policy debate with stakeholders on both sides.
+      </p>
+
+      <h3>The Political Cover Problem</h3>
+
+      <p>
+        Legislators need to explain their votes to constituents. A bill that benefits one company is hard to explain. A bill supported by a coalition of diverse interests—small businesses, consumer groups, industry associations, local governments—is easy to explain.
+      </p>
+
+      <p>
+        I've watched legislators who privately agreed with a company's position vote no because they couldn't justify voting yes to their constituents. The bill wasn't controversial on the merits. It was politically difficult because no coalition existed to provide cover.
+      </p>
+
+      <h2>What Makes a Strong Coalition</h2>
+
+      <p>
+        Strong coalitions aren't just lists of organizations that agree with you. They're strategic assemblies of stakeholders that demonstrate broad impact and political diversity.
+      </p>
+
+      <h3>Geographic Diversity</h3>
+
+      <p>
+        A coalition of Austin businesses tells legislators this matters in Austin. A coalition that includes businesses from Houston, Dallas, San Antonio, rural counties, and border communities tells legislators this matters statewide.
+      </p>
+
+      <p>
+        Legislators represent districts. Showing that stakeholders in their district support your position matters more than showing that 100 Austin companies support it.
+      </p>
+
+      <h3>Industry Diversity</h3>
+
+      <p>
+        When only your industry supports legislation, legislators assume it's self-interested advocacy. When multiple industries support it, legislators see broader economic impact.
+      </p>
+
+      <p>
+        The healthcare bill that gets support from hospitals, physicians, insurance companies, and patient advocacy groups demonstrates stakeholder alignment. The same bill with only hospital support looks like hospitals lobbying for their interests.
+      </p>
+
+      <h3>Political Diversity</h3>
+
+      <p>
+        In Texas's Republican-dominated legislature, showing conservative support matters. But bills that also have support from moderate Republicans, business Democrats, and nonpartisan civic groups demonstrate broad appeal that makes voting yes easier.
+      </p>
+
+      <p>
+        The transportation bill supported by both the Texas Association of Business and environmental groups signals that diverse political perspectives see value. That breadth gives legislators from different constituencies reason to support it.
+      </p>
+
+      <h3>Grassroots Component</h3>
+
+      <p>
+        Coalitions of lobbyists and interest groups matter. But coalitions that include people legislators hear from in their districts matter more.
+      </p>
+
+      <p>
+        Small business owners who employ people in the district. Consumers who vote. Local elected officials who endorse the legislation. These grassroots voices validate that the bill addresses real needs beyond industry lobbying.
+      </p>
+
+      <h2>How to Build Coalitions That Work</h2>
+
+      <p>
+        Building effective coalitions takes time and strategic thinking. You can't assemble a coalition two weeks before filing a bill. This is interim work that positions your issue before session starts.
+      </p>
+
+      <h3>Start With Natural Allies</h3>
+
+      <p>
+        Identify organizations that share your policy goal even if they come at it from different angles. If you're advancing healthcare technology, your natural allies might include:
+      </p>
+
+      <p>
+        Patient advocacy groups who want better care access. Rural hospitals that need technology to serve underserved areas. Physician associations focused on practice efficiency. Insurance companies interested in cost reduction.
+      </p>
+
+      <p>
+        Each group has different motivations but the same policy preference. That diversity strengthens the coalition by demonstrating that the legislation solves multiple problems.
+      </p>
+
+      <h3>Neutralize Potential Opposition</h3>
+
+      <p>
+        Sometimes the strongest coalitions are built by preventing opposition. If a stakeholder group might oppose your bill, engaging them early to address concerns can turn opposition into neutrality or limited support.
+      </p>
+
+      <p>
+        I've worked on bills where we spent months negotiating with potential opponents before filing. The final legislation included compromises we didn't want to make. But passing a bill with neutral opposition is easier than passing a bill with active opposition—even if the active opposition is wrong on the merits.
+      </p>
+
+      <h3>Find Credible Messengers</h3>
+
+      <p>
+        Coalition members matter, but coalition spokespeople matter more. The stakeholder who testifies at committee hearings, does media interviews, and meets with legislators shapes how the coalition is perceived.
+      </p>
+
+      <p>
+        For business legislation, having a small business owner testify carries more weight than having a Fortune 500 VP testify. For healthcare legislation, having a physician or patient testify matters more than having a hospital administrator testify.
+      </p>
+
+      <p>
+        Look for coalition members who have credibility beyond self-interest. The more your spokesperson can say "this isn't about my company, it's about patients/consumers/small businesses," the more effective their advocacy.
+      </p>
+
+      <h3>Develop Shared Messaging</h3>
+
+      <p>
+        Coalition members need to tell a consistent story even if they emphasize different aspects. Conflicting messages from coalition members raise questions about whether the coalition is real or just organizations that signed a letter.
+      </p>
+
+      <p>
+        The message should focus on the problem you're solving, not the solution you're proposing. "We need to increase healthcare access in rural areas" resonates better than "We need telemedicine reimbursement parity." The first frames the issue around a problem everyone agrees exists. The second sounds like industry advocacy.
+      </p>
+
+      <h2>Coalition Building Timeline</h2>
+
+      <p>
+        Effective coalitions aren't built during session. They're assembled during the interim through sustained relationship-building.
+      </p>
+
+      <h3>Interim Months 1-6: Exploration and Outreach</h3>
+
+      <p>
+        Identify potential coalition partners. Meet with their lobbyists or leadership. Discuss whether your policy goals align. Don't ask for commitment yet—build relationships and understand their priorities.
+      </p>
+
+      <h3>Interim Months 6-12: Draft Legislation and Coalition Formation</h3>
+
+      <p>
+        Share draft bill language with potential coalition members. Gather input. Negotiate changes that address concerns while preserving your core objectives. Start building formal coalition structure—who leads it, how decisions get made, who speaks for the coalition publicly.
+      </p>
+
+      <h3>Interim Months 12-18: Coalition Launch and Pre-Session Positioning</h3>
+
+      <p>
+        Announce the coalition publicly if appropriate. Begin legislative education—meetings with committee chairs, key legislators, and leadership staff. Present the coalition as proof that diverse stakeholders support this policy approach.
+      </p>
+
+      <h3>Session: Maintain Coalition Unity</h3>
+
+      <p>
+        During session, amendment negotiations will test coalition unity. Some coalition members will want different changes. Your lobbyist needs to coordinate with all coalition members so amendments don't fracture the coalition.
+      </p>
+
+      <p>
+        The bills that fail during session often die because coalition members couldn't agree on amendments. The coalition announces publicly that they support the bill, but behind the scenes coalition members are lobbying for conflicting changes. Legislators see the disunity and conclude the issue isn't ready.
+      </p>
+
+      <h2>The Opposition Coalition Dynamic</h2>
+
+      <p>
+        While you're building a support coalition, opponents are building an opposition coalition. Legislative outcomes often depend on which coalition is stronger—not in terms of members, but in terms of credibility, geographic reach, and political diversity.
+      </p>
+
+      <p>
+        I've seen bills where the support coalition had more members but the opposition coalition had more credible messengers. The opposition won. Numbers matter less than who your coalition includes and how effectively they advocate.
+      </p>
+
+      <h3>Anticipating Opposition Strategy</h3>
+
+      <p>
+        Smart opposition doesn't just fight your bill. They build their own coalition and frame the issue differently. If you're advancing healthcare technology, opposition might build a coalition around patient privacy concerns. If you're seeking regulatory change, opposition builds a coalition around consumer protection.
+      </p>
+
+      <p>
+        Your coalition needs to address opposition framing before they establish it. If patient privacy is a potential concern, your coalition should include patient advocates who explain why privacy protections in your bill are adequate. If consumer protection is the concern, include consumer groups in your coalition.
+      </p>
+
+      <h2>When Coalitions Can't Be Built</h2>
+
+      <p>
+        Not every issue supports coalition-building. Sometimes your company has unique circumstances that can't be generalized. Sometimes potential allies have competing interests. Sometimes opposition is too entrenched to neutralize.
+      </p>
+
+      <p>
+        In these situations, single-company advocacy becomes necessary. But understand the handicap you're operating with. Without a coalition, you need stronger relationships, better evidence, and more credible policy arguments to overcome legislators' skepticism about single-company bills.
+      </p>
+
+      <h3>Alternative Approaches Without Coalitions</h3>
+
+      <p>
+        If you can't build a formal coalition, look for informal support from credible third parties. Academic experts who can testify about the policy benefits. Think tanks that publish research supporting your position. Local officials who write letters supporting the legislation.
+      </p>
+
+      <p>
+        These aren't coalition members in the formal sense. But they provide third-party validation that your bill addresses a real problem beyond your company's self-interest.
+      </p>
+
+      <h2>Coalition Management Red Flags</h2>
+
+      <p>
+        When evaluating whether your lobbyist is effectively managing coalition strategy, watch for these warning signs.
+      </p>
+
+      <p>
+        <strong>Cosmetic coalitions:</strong> Your lobbyist announces a coalition of 50 organizations but none of them actively lobby for the bill. Real coalitions require active engagement, not just letterhead signatures.
+      </p>
+
+      <p>
+        <strong>Unmanaged conflicts:</strong> Coalition members publicly disagree about the bill or lobby for conflicting amendments. This signals poor coalition management and gives legislators reason to wait until the coalition resolves internal disputes.
+      </p>
+
+      <p>
+        <strong>Late coalition assembly:</strong> Your lobbyist starts building the coalition after the bill is filed. Effective coalitions are built during the interim, not during session.
+      </p>
+
+      <p>
+        <strong>Missing credible messengers:</strong> The coalition exists but everyone testifying represents industry. No patients, consumers, small businesses, or community voices that give legislators political cover.
+      </p>
+
+      <h2>What to Ask Your Lobbyist</h2>
+
+      <p>
+        Before the session starts, ask your lobbyist about coalition strategy. Not whether they can build a coalition—whether they've already started building one.
+      </p>
+
+      <p>
+        <strong>Who are the natural allies for this legislation?</strong> Your lobbyist should be able to name specific organizations, explain why they'd support the bill, and describe what they've done to engage them.
+      </p>
+
+      <p>
+        <strong>What concerns do potential coalition members have?</strong> If your lobbyist says everyone loves the bill, be skeptical. Real coalition-building involves negotiating concerns and finding compromise language.
+      </p>
+
+      <p>
+        <strong>Who will be credible messengers?</strong> Ask who will testify, who will do media, who will meet with legislators. If the answer is "we will," the coalition isn't real.
+      </p>
+
+      <p>
+        <strong>How will you maintain coalition unity during amendments?</strong> Your lobbyist should have a process for coordinating with coalition members when amendments emerge. Without that process, amendments will fracture the coalition.
+      </p>
+
+      <h2>Why This Matters</h2>
+
+      <p>
+        Companies that treat lobbying as transactional—hire a lobbyist, they go talk to legislators, bill passes—consistently underperform. Companies that understand lobbying as coalition-building and stakeholder engagement succeed.
+      </p>
+
+      <p>
+        The difference is perspective. If you think your lobbyist's job is to convince legislators your bill is good, you'll be disappointed when legislators remain skeptical. If you understand your lobbyist's job is to build coalitions that give legislators political cover to support your bill, you'll invest in that coalition-building work.
+      </p>
+
+      <p>
+        Use TexasLobby.org to find lobbyists with experience building coalitions in your policy area. Ask about specific coalitions they've assembled, not just bills they've worked on. The best lobbyists can walk you through coalition strategies and stakeholder relationships that made their legislative wins possible.
+      </p>
+
+    </div>
+
+    <!-- Author Bio -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <div class="flex items-start gap-6">
+        <img
+          src="/images/Byron-Campbell.png.webp"
+          alt="Byron Campbell"
+          class="w-24 h-24 rounded-full object-cover flex-shrink-0"
+        />
+        <div>
+          <h3 class="text-xl font-bold mb-2">
+            <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+              {author}
+            </a>
+          </h3>
+          <p class="text-muted-foreground mb-3">
+            Contributing Author | Senior Partner, Capitol Insights
+          </p>
+          <p class="text-sm text-muted-foreground">
+            Byron Campbell is a Senior Partner at Capitol Insights with extensive experience building legislative coalitions across diverse stakeholder groups. He specializes in strategic positioning that gives legislators political cover to support business priorities.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Articles -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <h2 class="text-2xl font-bold mb-6">Related Articles</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <a href="/blog/how-to-select-government-relations-team" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              How to Select the Right Government Relations Team
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              A practical decision framework for choosing lobbyists who can advance your business priorities at the Texas Capitol.
+            </p>
+          </article>
+        </a>
+        <a href="/blog/when-bills-die-five-kill-points" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Legislative Process
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              When Bills Die: The 5 Kill Points in Texas Legislature
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Understanding where and why legislation fails in Texas - and what your lobbyist should be doing at each critical juncture.
+            </p>
+          </article>
+        </a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
+      <h2 class="text-2xl font-bold mb-4">Find Coalition-Building Expertise</h2>
+      <p class="text-blue-50 mb-6">
+        Search for Texas lobbyists with experience assembling stakeholder coalitions and building legislative support across diverse groups.
+      </p>
+      <a
+        href="/lobbyists"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-gray-100 transition-colors"
+      >
+        Search Lobbyists
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </a>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,390 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const currentYear = new Date().getFullYear();
+const pageTitle = `When Bills Die: The 5 Kill Points in Texas Legislature ${currentYear}`;
+const pageDescription = 'Understanding where and why legislation fails in Texas - and what your lobbyist should be doing at each critical juncture.';
+const publishedDate = '2025-11-12';
+const author = 'Byron Campbell';
+const readTime = '13 min read';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: author,
+    url: 'https://texaslobby.org/authors/byron-campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/images/logo.png'
+    }
+  },
+  datePublished: publishedDate,
+  dateModified: publishedDate
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <article class="container max-w-4xl py-16">
+    <!-- Article Header -->
+    <header class="mb-12 pb-8 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
+          Legislative Process
+        </span>
+        <span class="text-sm text-muted-foreground">{readTime}</span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+        When Bills Die: The 5 Kill Points in Texas Legislature
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+        <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+          By {author}
+        </a>
+        <span>•</span>
+        <time datetime={publishedDate}>
+          {new Date(publishedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </time>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none">
+      <p class="text-xl text-muted-foreground mb-8 lead">
+        Of the roughly 7,000 bills filed each session, fewer than 1,400 pass. Your business needs to understand where the other 5,600 die—and what your lobbyist should be doing at each kill point.
+      </p>
+
+      <p>
+        I've watched hundreds of bills fail. Some died because they were bad policy. Others died because sponsors didn't do the groundwork. The most frustrating deaths? Bills that should have passed but died because the client didn't understand where vulnerability exists in the legislative process.
+      </p>
+
+      <p>
+        If you're paying a lobbyist to advance or defend against legislation, you need to know the five places where bills get killed. More importantly, you need to know what effective advocacy looks like at each stage.
+      </p>
+
+      <h2>Kill Point 1: Before Filing (Interim Negotiations)</h2>
+
+      <p>
+        The first kill point happens before most people know legislation is coming. During the interim, legislators and staff develop bill concepts, work with stakeholders, negotiate language.
+      </p>
+
+      <p>
+        Bills that never get filed? They died here. An idea that seemed good in principle ran into opposition from key stakeholders, couldn't get support from committee leadership, or revealed implementation problems during staff research.
+      </p>
+
+      <p>
+        This is the cheapest, quietest place to kill bad legislation or shape good legislation. No public opposition. No recorded votes. Just conversations between legislative staff, stakeholders, and potential sponsors about whether an idea can work.
+      </p>
+
+      <h3>What Your Lobbyist Should Be Doing</h3>
+
+      <p>
+        If you're trying to kill a bill concept, your lobbyist should be meeting with the potential sponsor's staff during interim. Providing technical analysis on why the concept creates problems. Suggesting alternative approaches that address the legislator's goal without harming your business.
+      </p>
+
+      <p>
+        If you're advancing legislation, your lobbyist should be working with legislative staff to address concerns before filing. Building coalition support. Getting buy-in from committee chairs. Neutralizing potential opposition.
+      </p>
+
+      <p>
+        The mistake companies make: waiting until a bill is filed to engage. By then you've missed your best opportunity to influence the outcome.
+      </p>
+
+      <h2>Kill Point 2: Committee Referral (First 60 Days)</h2>
+
+      <p>
+        Once a bill is filed, the Speaker (House) or Lieutenant Governor (Senate) refers it to committee. This decision matters more than most people realize.
+      </p>
+
+      <p>
+        A bill referred to a hostile committee chair won't get a hearing. It dies without anyone voting against it. Committee referral is a strategic kill point—and it's how most controversial legislation gets quietly buried.
+      </p>
+
+      <p>
+        I've watched bills get referred to committees where the chair was known to oppose them. The sponsor might protest publicly, but the decision stands. The bill never gets scheduled. It dies in committee without a hearing.
+      </p>
+
+      <h3>What Your Lobbyist Should Be Doing</h3>
+
+      <p>
+        Before filing, your lobbyist should be discussing committee strategy with leadership staff. If you're advancing a bill, you want referral to a committee whose chair is supportive or at least neutral.
+      </p>
+
+      <p>
+        If you're trying to kill a bill, you want referral to a committee where the chair has concerns. Your lobbyist should be briefing that chair's staff on problems with the legislation before it gets referred.
+      </p>
+
+      <p>
+        Once a bill is referred, the window for influencing committee assignment closes. This is why interim positioning matters. By the time the bill is filed, committee chairs and leadership staff already have positions on major legislation.
+      </p>
+
+      <h2>Kill Point 3: Committee Process (Days 60-100)</h2>
+
+      <p>
+        Even if a bill gets referred to a favorable committee, it still has to survive the committee process. Public hearing. Committee vote. This is where most bills that get hearings die.
+      </p>
+
+      <p>
+        Committee chairs control the calendar. A bill that gets a hearing but not a vote? Dead. A bill that gets voted out of committee but sent to Calendars Committee in the House or dies waiting for floor time in Senate? Also dead.
+      </p>
+
+      <p>
+        The dynamics here are complex. A chair might give a bill a hearing as a courtesy to the sponsor but have no intention of voting it out. Opposition might be so strong during the hearing that the sponsor withdraws the bill. Amendments might gut the bill to the point where it no longer does what you need.
+      </p>
+
+      <h3>What Your Lobbyist Should Be Doing</h3>
+
+      <p>
+        Before the hearing, your lobbyist should be meeting with every committee member's staff. Providing analysis. Answering questions. Building support for a favorable vote.
+      </p>
+
+      <p>
+        If amendments are coming, your lobbyist should be negotiating the language with legislative staff before they get filed. You want to know what amendments are coming and whether you can live with them.
+      </p>
+
+      <p>
+        After the hearing, your lobbyist needs to monitor whether the chair will schedule a vote. If the bill is stalling, your lobbyist should be working with the sponsor to address whatever concerns are preventing a vote.
+      </p>
+
+      <p>
+        The common failure: showing up to testify at the hearing without having done the work beforehand. By the time of the public hearing, most committee members have already decided how they'll vote. Testimony matters, but staff meetings before the hearing matter more.
+      </p>
+
+      <h2>Kill Point 4: Calendars and Floor Action (Days 100-130)</h2>
+
+      <p>
+        Bills that pass committee still have to get scheduled for floor consideration. In the House, this means getting through Calendars Committee—a separate hurdle where controversial bills often die.
+      </p>
+
+      <p>
+        In the Senate, bills need two-thirds support just to get a vote. That's 21 of 31 senators. Without that threshold, a bill never reaches the floor no matter how much support it has.
+      </p>
+
+      <p>
+        Floor consideration brings new vulnerabilities. Amendments from the floor can kill a bill by making it unworkable. Point-of-order challenges can get a bill sent back to committee on procedural grounds. Unexpected opposition can emerge from legislators who weren't engaged during committee.
+      </p>
+
+      <h3>What Your Lobbyist Should Be Doing</h3>
+
+      <p>
+        Your lobbyist should be coordinating with the sponsor to ensure the bill gets scheduled. In the House, this means working with Calendars Committee members. In the Senate, this means counting to 21 votes before bringing the bill up.
+      </p>
+
+      <p>
+        Before floor consideration, your lobbyist should be meeting with members who weren't on the committee. Many legislators won't focus on a bill until it reaches the floor. Your lobbyist needs to be educating members and answering questions.
+      </p>
+
+      <p>
+        During floor debate, your lobbyist should be monitoring amendments and working with the sponsor to accept friendly amendments while fighting hostile ones. This requires real-time decision-making as the debate unfolds.
+      </p>
+
+      <p>
+        The mistake businesses make: assuming that because a bill passed committee, it will pass on the floor. Committee passage is necessary but not sufficient. The floor vote requires its own strategy and preparation.
+      </p>
+
+      <h2>Kill Point 5: Conference Committee and Final Passage (Days 130-140)</h2>
+
+      <p>
+        If a bill passes both chambers but in different forms, it goes to conference committee. This is where bills go to die quietly in the final days of session.
+      </p>
+
+      <p>
+        Conference committees negotiate differences between House and Senate versions. Time pressure is intense. If conferees can't reach agreement, the bill dies. If they reach agreement but run out of time for final votes, the bill dies.
+      </p>
+
+      <p>
+        In the last week of session, hundreds of bills are in conference. Time management becomes critical. Bills that get conference reports adopted early survive. Bills still in conference on the last day often don't.
+      </p>
+
+      <h3>What Your Lobbyist Should Be Doing</h3>
+
+      <p>
+        Your lobbyist should be monitoring which members get appointed to conference committee. Conferees have enormous power to negotiate final language. Your lobbyist needs to be briefing them on acceptable compromises.
+      </p>
+
+      <p>
+        During conference negotiations, your lobbyist should be available to answer questions and provide input on proposed compromise language. Conference committees often meet with little advance notice. Your lobbyist needs to be present.
+      </p>
+
+      <p>
+        Once a conference report is filed, your lobbyist should be working to get it scheduled quickly. In the final days of session, bills die simply because they run out of time. Getting scheduled early in the final week matters.
+      </p>
+
+      <p>
+        The reality of session end: legislators are exhausted, dealing with hundreds of bills simultaneously, and making rapid decisions under time pressure. Your lobbyist needs to make it easy for members to support your position by providing clear, concise information exactly when needed.
+      </p>
+
+      <h2>The Vulnerability No One Talks About</h2>
+
+      <p>
+        Beyond these five structural kill points, there's one vulnerability that can kill bills at any stage: lack of sustained attention from the sponsor.
+      </p>
+
+      <p>
+        Legislators file bills for many reasons. Some are priorities they'll fight for. Others are courtesy filings for constituents or interest groups. The sponsor's level of commitment determines whether a bill survives challenges at each kill point.
+      </p>
+
+      <p>
+        I've watched well-crafted bills die because the sponsor got busy with other priorities. I've watched problematic bills pass because the sponsor was relentless in pushing them through every obstacle.
+      </p>
+
+      <p>
+        Your lobbyist's relationship with the sponsor matters. A lobbyist who can text the sponsor directly, who the sponsor trusts for strategic advice, who coordinates closely with the sponsor's staff—that lobbyist can help maintain the sponsor's focus through a 140-day session.
+      </p>
+
+      <h2>What This Means for Your Business</h2>
+
+      <p>
+        When you hire a lobbyist, ask them to walk you through their strategy at each kill point. Not generic talking points—specific plans.
+      </p>
+
+      <p>
+        <strong>Before filing:</strong> Who are they meeting with? What coalitions are they building? What concerns are they addressing?
+      </p>
+
+      <p>
+        <strong>Committee referral:</strong> Which committee do they want the bill referred to? What's their relationship with that chair's staff?
+      </p>
+
+      <p>
+        <strong>Committee process:</strong> How many committee members' staff have they briefed? What amendments do they expect? How will they respond?
+      </p>
+
+      <p>
+        <strong>Floor consideration:</strong> How are they building support beyond the committee? What's their vote count? Who's coordinating with the sponsor on floor strategy?
+      </p>
+
+      <p>
+        <strong>Conference committee:</strong> If the bill goes to conference, what compromises are acceptable? Who on the conference committee do they have relationships with?
+      </p>
+
+      <p>
+        A lobbyist who can answer these questions specifically is doing the work. A lobbyist who gives vague assurances about "working on it" is not.
+      </p>
+
+      <h2>Defensive Strategy at Kill Points</h2>
+
+      <p>
+        If you're trying to kill legislation that threatens your business, these five points are your opportunities.
+      </p>
+
+      <p>
+        The most effective opposition happens early. Interim engagement to prevent filing. Committee referral to a hostile chair. Opposition presented to committee before the hearing.
+      </p>
+
+      <p>
+        The least effective opposition happens late. Trying to kill a bill on the floor after it passed committee with strong support. Attempting to derail conference committee when both chambers have already voted. You might succeed, but you've spent more political capital and had lower odds of success.
+      </p>
+
+      <p>
+        Your lobbyist should be advising you on which kill point offers the best opportunity. Sometimes you want to kill a bill quietly in committee. Other times you need a public floor fight to demonstrate industry opposition. Strategy depends on the specific bill, the political dynamics, and your long-term relationships with legislators.
+      </p>
+
+      <h2>Why Good Lobbyists Are Worth the Cost</h2>
+
+      <p>
+        Understanding these kill points is one thing. Having the relationships to capitalize on them is different.
+      </p>
+
+      <p>
+        The lobbyist who can call a committee chair's chief of staff and get a meeting before a bill is referred. The lobbyist who knows which amendments are coming because they drafted them with legislative staff. The lobbyist who can get your bill scheduled for floor consideration ahead of 200 other bills waiting in Calendars Committee.
+      </p>
+
+      <p>
+        Those relationships are built over years. They're what you're paying for when you hire an experienced lobbyist. The difference between understanding where bills die and having the ability to influence outcomes at each kill point.
+      </p>
+
+      <p>
+        Use TexasLobby.org's search to find lobbyists with committee experience relevant to your legislation. Ask them to explain their relationships with committee staff and leadership offices. Compare their specific strategic knowledge, not just their general experience.
+      </p>
+
+    </div>
+
+    <!-- Author Bio -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <div class="flex items-start gap-6">
+        <img
+          src="/images/Byron-Campbell.png.webp"
+          alt="Byron Campbell"
+          class="w-24 h-24 rounded-full object-cover flex-shrink-0"
+        />
+        <div>
+          <h3 class="text-xl font-bold mb-2">
+            <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+              {author}
+            </a>
+          </h3>
+          <p class="text-muted-foreground mb-3">
+            Contributing Author | Senior Partner, Capitol Insights
+          </p>
+          <p class="text-sm text-muted-foreground">
+            Byron Campbell is a Senior Partner at Capitol Insights with extensive experience navigating Texas legislative process. He specializes in helping businesses understand where legislative battles are won and lost.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Articles -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <h2 class="text-2xl font-bold mb-6">Related Articles</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <a href="/blog/24-month-legislative-cycle-texas" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              The 24-Month Legislative Cycle: When Deals Get Made in Texas
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Understanding Texas's biennial legislative cycle and why the 18-month interim matters more than the 140-day session.
+            </p>
+          </article>
+        </a>
+        <a href="/blog/legislative-staff-relationships" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              Legislative Staff Relationships: The Hidden Power Center
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Why building relationships with legislative staff matters more than most lobbyists realize - and how to do it right.
+            </p>
+          </article>
+        </a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
+      <h2 class="text-2xl font-bold mb-4">Find Experienced Texas Lobbyists</h2>
+      <p class="text-blue-50 mb-6">
+        Search lobbyists by committee experience and subject area expertise. Find representation that understands how to navigate each stage of the legislative process.
+      </p>
+      <a
+        href="/lobbyists"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-gray-100 transition-colors"
+      >
+        Search Lobbyists
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </a>
+    </div>
+  </article>
+</Layout>

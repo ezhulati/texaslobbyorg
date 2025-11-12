@@ -1,0 +1,480 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const currentYear = new Date().getFullYear();
+const pageTitle = `How to Track Texas Legislation That Affects Your Business ${currentYear}`;
+const pageDescription = 'A practical system for monitoring legislation without hiring a lobbyist - and when DIY tracking breaks down and you need professional help.';
+const publishedDate = '2025-11-12';
+const author = 'Byron Campbell';
+const readTime = '13 min read';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: author,
+    url: 'https://texaslobby.org/authors/byron-campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/images/logo.png'
+    }
+  },
+  datePublished: publishedDate,
+  dateModified: publishedDate
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <article class="container max-w-4xl py-16">
+    <!-- Article Header -->
+    <header class="mb-12 pb-8 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
+          Practical Guide
+        </span>
+        <span class="text-sm text-muted-foreground">{readTime}</span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+        How to Track Texas Legislation That Affects Your Business
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+        <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+          By {author}
+        </a>
+        <span>•</span>
+        <time datetime={publishedDate}>
+          {new Date(publishedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </time>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none">
+      <p class="text-xl text-muted-foreground mb-8 lead">
+        Not every business needs a lobbyist, but every Texas business should monitor legislation. Here's how to build a tracking system that catches bills affecting your operations—and when to recognize you need professional help.
+      </p>
+
+      <p>
+        During the 2023 session, roughly 7,000 bills were filed. Your business might care about 20-50 of them. The challenge is identifying those 20-50 bills among thousands, tracking their progress, and understanding which ones require action.
+      </p>
+
+      <p>
+        Some businesses can handle this monitoring internally. Others need professional tracking. The difference is usually complexity—how many bills affect you, how technical the policy issues are, and how much risk you face if something passes without your input.
+      </p>
+
+      <h2>The Texas Legislature Online System</h2>
+
+      <p>
+        The Texas Legislature maintains a comprehensive bill tracking system at capitol.texas.gov. It's free, searchable, and updated continuously during session. This is your primary tracking tool.
+      </p>
+
+      <h3>Setting Up Keyword Searches</h3>
+
+      <p>
+        Start by identifying keywords relevant to your business. Not just your industry name—specific terms that appear in legislation affecting your operations.
+      </p>
+
+      <p>
+        If you're in healthcare, don't just search "healthcare." Search specific terms like "Medicaid reimbursement," "telemedicine," "prior authorization," "scope of practice," "facility licensing." Legislation affecting healthcare providers might not mention "healthcare" but will mention these specific regulatory concepts.
+      </p>
+
+      <p>
+        If you're in energy, search "renewable energy," "ERCOT," "transmission lines," "interconnection," "utility regulation," "carbon emissions." Each term catches different aspects of energy policy.
+      </p>
+
+      <p>
+        The Texas Legislature website allows you to save searches and receive email alerts when new bills matching your keywords get filed. Set up 5-10 keyword searches covering different aspects of your business. You'll get email notifications as relevant bills are filed.
+      </p>
+
+      <h3>Understanding Bill Status</h3>
+
+      <p>
+        Once you identify bills to track, you need to understand their legislative progress. The Texas Legislature website shows detailed status for every bill.
+      </p>
+
+      <p>
+        <strong>Filed:</strong> Bill has been submitted but not yet referred to committee. Many bills die at this stage because authors don't push for committee referral.
+      </p>
+
+      <p>
+        <strong>Referred to committee:</strong> Leadership has assigned the bill to a committee. This tells you which committee chair controls whether the bill gets a hearing.
+      </p>
+
+      <p>
+        <strong>Scheduled for hearing:</strong> The committee will consider the bill on a specific date. This is your opportunity to testify or submit written testimony.
+      </p>
+
+      <p>
+        <strong>Reported favorably:</strong> The committee voted to advance the bill. It moves to Calendars Committee (House) or directly to the floor (Senate).
+      </p>
+
+      <p>
+        <strong>Scheduled for floor:</strong> The bill will be debated and voted on by the full House or Senate.
+      </p>
+
+      <p>
+        <strong>Passed chamber:</strong> The bill passed the House or Senate and moves to the other chamber, where the process repeats.
+      </p>
+
+      <p>
+        <strong>Sent to Governor:</strong> Both chambers passed the bill. The Governor has 10 days to sign, veto, or let it become law without signature.
+      </p>
+
+      <h2>Building Your Tracking Spreadsheet</h2>
+
+      <p>
+        Relying solely on Texas Legislature email alerts will overwhelm you during session. You need a tracking system that lets you prioritize and manage bills systematically.
+      </p>
+
+      <p>
+        Create a spreadsheet with these columns:
+      </p>
+
+      <p>
+        <strong>Bill Number:</strong> HB 1234 or SB 5678<br/>
+        <strong>Author:</strong> Who filed it<br/>
+        <strong>Subject:</strong> One-sentence description<br/>
+        <strong>Status:</strong> Where it is in process<br/>
+        <strong>Committee:</strong> Which committee it's assigned to<br/>
+        <strong>Impact:</strong> How it affects your business (High/Medium/Low)<br/>
+        <strong>Position:</strong> Support/Oppose/Monitor<br/>
+        <strong>Next Action:</strong> What you need to do<br/>
+        <strong>Notes:</strong> Key details and updates
+      </p>
+
+      <p>
+        Update this spreadsheet weekly during session. Bills move quickly—what was in committee on Monday might be on the floor by Friday. Your tracking system needs to reflect current status so you can prioritize appropriately.
+      </p>
+
+      <h3>Prioritization Framework</h3>
+
+      <p>
+        Not every bill you track requires action. Use this framework to prioritize.
+      </p>
+
+      <p>
+        <strong>High Impact + Likely to Pass:</strong> These need immediate attention. Monitor closely, prepare to testify, consider whether you need lobbying help.
+      </p>
+
+      <p>
+        <strong>High Impact + Unlikely to Pass:</strong> Monitor but don't overreact. Many problematic bills get filed but never get hearings. Track status but don't invest resources until the bill shows momentum.
+      </p>
+
+      <p>
+        <strong>Medium Impact + Likely to Pass:</strong> These require situational judgment. If you can address concerns through amendments, engage. If the bill is generally acceptable with minor issues, monitor but don't actively oppose.
+      </p>
+
+      <p>
+        <strong>Low Impact:</strong> Track but don't spend time on these unless status changes dramatically.
+      </p>
+
+      <h2>Monitoring Committee Activity</h2>
+
+      <p>
+        Bill status tells you what happened. Committee activity tells you what's about to happen.
+      </p>
+
+      <p>
+        Committee hearing schedules are posted on the Texas Legislature website, usually 5-7 days before hearings (though emergency hearings can be scheduled with 24-48 hours notice). Sign up for committee schedule notifications for committees relevant to your business.
+      </p>
+
+      <p>
+        If you're in healthcare, monitor House and Senate Public Health committees. If you're in insurance, monitor Insurance committees. If your business is regulated by a specific agency, monitor committees with oversight of that agency.
+      </p>
+
+      <h3>When to Testify</h3>
+
+      <p>
+        Testifying at committee hearings is how businesses provide input without hiring lobbyists. But testimony is only effective if done well.
+      </p>
+
+      <p>
+        <strong>Testify when:</strong> You have specific information the committee needs. Technical expertise about implementation challenges. Data showing impact on your industry. Examples of how the bill would affect your operations.
+      </p>
+
+      <p>
+        <strong>Don't testify when:</strong> You're just stating general opposition without specifics. Someone else is already making your point. You can't answer technical questions about your testimony.
+      </p>
+
+      <p>
+        Committee testimony should be 2-3 minutes. Focus on facts, not opinions. Provide specific examples. Offer to answer technical questions. Leave written testimony with supporting documentation.
+      </p>
+
+      <p>
+        The testimony that influences legislators is specific, knowledgeable, and helpful. The testimony that doesn't is generic, emotional, or obviously self-interested without broader impact.
+      </p>
+
+      <h2>Understanding Amendments</h2>
+
+      <p>
+        Bills change through the amendment process. The version that gets filed might be problematic, but amendments could fix your concerns. Or a good bill could get gutted by amendments.
+      </p>
+
+      <p>
+        Amendments aren't always available online in advance. Committee amendments might not be public until the hearing. Floor amendments might get filed just hours before debate.
+      </p>
+
+      <p>
+        This is where professional lobbyists earn their value. They're at the Capitol monitoring amendments, talking to committee staff about what changes are coming, and responding in real-time. If you're tracking legislation from your office, you'll often see amendments after they've been adopted.
+      </p>
+
+      <h3>When Amendments Change Your Position</h3>
+
+      <p>
+        You opposed a bill based on the filed version. The committee adopts an amendment that addresses your concern. Now what?
+      </p>
+
+      <p>
+        You need to communicate the position change to legislators. If you testified in opposition at the committee hearing, follow up with committee members to withdraw opposition. If the bill moves to the floor, communicate with floor members that you're neutral or supportive based on the amended version.
+      </p>
+
+      <p>
+        Legislators remember businesses that maintain opposition even after their concerns are addressed. That's not advocacy—that's obstruction. It damages your credibility for future sessions.
+      </p>
+
+      <h2>Trade Association Tracking</h2>
+
+      <p>
+        Many industries have trade associations that track legislation and coordinate advocacy. If your industry has a credible association, their legislative tracking might cover your needs.
+      </p>
+
+      <h3>What Good Association Tracking Looks Like</h3>
+
+      <p>
+        <strong>Weekly session updates:</strong> Summary of bills filed, committee hearings, floor action. Not just a list—analysis of what bills mean for your industry.
+      </p>
+
+      <p>
+        <strong>Priority bill tracking:</strong> Detailed status and position on high-impact legislation. The association should identify bills they're actively supporting or opposing and explain why.
+      </p>
+
+      <p>
+        <strong>Action alerts:</strong> When the association needs member engagement—testimony at hearings, calls to legislators, grassroots pressure.
+      </p>
+
+      <p>
+        <strong>Position coordination:</strong> The association discusses positions with members before taking official stances. You have input into association advocacy positions.
+      </p>
+
+      <p>
+        If your association provides this level of tracking and advocacy, you might not need additional monitoring. But verify the association is lobbying your specific priorities, not just general industry positions.
+      </p>
+
+      <h3>When Association Tracking Isn't Enough</h3>
+
+      <p>
+        Association tracking fails when your business has priorities that differ from general industry positions. A tax bill might benefit large companies but harm small ones. Regulatory changes might help established businesses but hurt new entrants.
+      </p>
+
+      <p>
+        If your business needs diverge from association positions, you need your own tracking system and possibly your own lobbyist.
+      </p>
+
+      <h2>Third-Party Tracking Services</h2>
+
+      <p>
+        Several commercial services provide Texas Legislature tracking. Quorum, FiscalNote, and others offer subscription-based platforms with advanced search, automated alerts, and bill analysis.
+      </p>
+
+      <p>
+        These services cost $3,000-$10,000+ annually depending on features. They're worth the investment if you're tracking 50+ bills and need sophisticated filtering and reporting.
+      </p>
+
+      <p>
+        What you get for that cost: better search algorithms than the Texas Legislature website, automated bill summaries, stakeholder tracking showing who else is engaged on bills, easier report generation for internal stakeholders.
+      </p>
+
+      <p>
+        What you don't get: strategic analysis of which bills matter, relationships with legislators and staff, ability to influence outcomes. These services are tracking tools, not lobbying services.
+      </p>
+
+      <h2>When DIY Tracking Breaks Down</h2>
+
+      <p>
+        Self-tracking works for businesses with limited legislative exposure. It breaks down when legislative activity exceeds your bandwidth to monitor and respond.
+      </p>
+
+      <h3>Signs You Need Professional Help</h3>
+
+      <p>
+        <strong>You're tracking 50+ bills:</strong> At this volume, staying current requires daily attention during session. Unless someone on your team can dedicate 20+ hours weekly to legislative monitoring, you're going to miss important developments.
+      </p>
+
+      <p>
+        <strong>Bills are too technical to understand:</strong> You're reading bill language and can't determine whether it affects your business. This requires policy expertise beyond what your team has.
+      </p>
+
+      <p>
+        <strong>Multiple bills threaten your business model:</strong> Defensive lobbying becomes critical when legislative activity could materially harm your operations. This isn't about tracking—it's about strategic opposition.
+      </p>
+
+      <p>
+        <strong>Amendments are changing bills faster than you can monitor:</strong> You think you understand a bill based on what was filed. Three committee amendments and two floor amendments later, you have no idea what the bill does. This requires real-time Capitol monitoring.
+      </p>
+
+      <p>
+        <strong>You need to influence outcomes, not just track them:</strong> Monitoring tells you what's happening. Lobbying influences what happens. If tracking reveals problematic legislation, you need advocacy to stop or amend it.
+      </p>
+
+      <h2>Hybrid Approaches</h2>
+
+      <p>
+        Some businesses use hybrid strategies—internal tracking supplemented by limited professional support.
+      </p>
+
+      <h3>Option 1: Session-Only Monitoring</h3>
+
+      <p>
+        Hire a lobbyist for session-only monitoring at $3,000-$6,000 monthly. You get professional bill tracking, weekly updates, and alerts when action is needed. The lobbyist isn't actively lobbying bills—just monitoring and reporting.
+      </p>
+
+      <p>
+        This works for businesses that need better intelligence than they can generate internally but don't face threats requiring active advocacy.
+      </p>
+
+      <h3>Option 2: On-Call Advocacy</h3>
+
+      <p>
+        Track legislation internally but retain a lobbyist who can engage on specific bills as needed. You pay a small monthly retainer ($1,500-$3,000) for access, then project fees when you need advocacy.
+      </p>
+
+      <p>
+        This works when legislative threats are infrequent but potentially serious. You monitor most of the time, but when a problematic bill emerges, you activate professional advocacy.
+      </p>
+
+      <h3>Option 3: Association Plus Individual</h3>
+
+      <p>
+        Rely on trade association tracking for general industry issues, but supplement with individual lobbyist for company-specific priorities.
+      </p>
+
+      <p>
+        This works when the association handles 80% of your needs but you have unique concerns that require dedicated advocacy.
+      </p>
+
+      <h2>Building Internal Capacity</h2>
+
+      <p>
+        If you're going to track legislation internally, someone needs to own that responsibility. Dividing legislative monitoring among multiple people without clear ownership usually fails.
+      </p>
+
+      <p>
+        Designate one person as your legislative monitor. They receive all bill alerts, update the tracking spreadsheet, and escalate issues to leadership when action is needed.
+      </p>
+
+      <p>
+        That person needs protected time during session—10-15 hours weekly minimum. Legislative monitoring done in spare moments between other priorities will miss critical developments.
+      </p>
+
+      <p>
+        Train your monitor on legislative process. They need to understand how bills move, what different statuses mean, when intervention is most effective. Consider sending them to Capitol orientation sessions offered by trade associations or chambers of commerce.
+      </p>
+
+      <h2>The Tracking to Advocacy Transition</h2>
+
+      <p>
+        Most businesses start with tracking and transition to professional advocacy when they realize monitoring isn't enough.
+      </p>
+
+      <p>
+        That transition often happens mid-session when a problematic bill starts moving. You've been tracking it, assuming it would die in committee. Suddenly it passes committee and is scheduled for floor debate in three days.
+      </p>
+
+      <p>
+        Emergency lobbying is possible but expensive and less effective than proactive advocacy. If your tracking reveals serious threats, hire a lobbyist before the crisis, not during it.
+      </p>
+
+      <p>
+        Use TexasLobby.org to identify lobbyists with experience in your policy area. Explain what you've been tracking and ask whether they recommend professional advocacy or continued monitoring. Good lobbyists will be honest about whether you need their services or can continue handling tracking internally.
+      </p>
+
+    </div>
+
+    <!-- Author Bio -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <div class="flex items-start gap-6">
+        <img
+          src="/images/Byron-Campbell.png.webp"
+          alt="Byron Campbell"
+          class="w-24 h-24 rounded-full object-cover flex-shrink-0"
+        />
+        <div>
+          <h3 class="text-xl font-bold mb-2">
+            <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+              {author}
+            </a>
+          </h3>
+          <p class="text-muted-foreground mb-3">
+            Contributing Author | Senior Partner, Capitol Insights
+          </p>
+          <p class="text-sm text-muted-foreground">
+            Byron Campbell is a Senior Partner at Capitol Insights who helps businesses understand when self-tracking is sufficient and when professional advocacy becomes necessary.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Articles -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <h2 class="text-2xl font-bold mb-6">Related Articles</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <a href="/blog/cost-benefit-analysis-government-relations" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              The Real Cost of Government Relations: ROI Analysis for Texas Businesses
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              How to calculate the value of hiring a Texas lobbyist - including the hidden costs of not having government relations representation.
+            </p>
+          </article>
+        </a>
+        <a href="/blog/when-bills-die-five-kill-points" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Legislative Process
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              When Bills Die: The 5 Kill Points in Texas Legislature
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Understanding where and why legislation fails in Texas - and what your lobbyist should be doing at each critical juncture.
+            </p>
+          </article>
+        </a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
+      <h2 class="text-2xl font-bold mb-4">Find Texas Lobbyists</h2>
+      <p class="text-blue-50 mb-6">
+        Whether you need full advocacy or session-only monitoring, find Texas lobbyists who can help protect your business interests.
+      </p>
+      <a
+        href="/lobbyists"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-gray-100 transition-colors"
+      >
+        Search Lobbyists
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </a>
+    </div>
+  </article>
+</Layout>

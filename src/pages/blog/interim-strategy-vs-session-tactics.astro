@@ -1,0 +1,472 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const currentYear = new Date().getFullYear();
+const pageTitle = `Interim Strategy vs Session Tactics: Where Lobbying Success Is Determined ${currentYear}`;
+const pageDescription = 'Why the work that happens during the 18-month interim determines which bills pass during the 140-day session - and what your lobbyist should be doing between sessions.';
+const publishedDate = '2025-11-12';
+const author = 'Byron Campbell';
+const readTime = '15 min read';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  author: {
+    '@type': 'Person',
+    name: author,
+    url: 'https://texaslobby.org/authors/byron-campbell'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'TexasLobby.org',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://texaslobby.org/images/logo.png'
+    }
+  },
+  datePublished: publishedDate,
+  dateModified: publishedDate
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <article class="container max-w-4xl py-16">
+    <!-- Article Header -->
+    <header class="mb-12 pb-8 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
+          Strategy
+        </span>
+        <span class="text-sm text-muted-foreground">{readTime}</span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+        Interim Strategy vs Session Tactics: Where Lobbying Success Is Determined
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+        <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+          By {author}
+        </a>
+        <span>•</span>
+        <time datetime={publishedDate}>
+          {new Date(publishedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </time>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none">
+      <p class="text-xl text-muted-foreground mb-8 lead">
+        Companies that only pay attention during the 140-day session consistently lose to companies that invest in the 18-month interim. Legislative outcomes are determined by strategic work that happens when the Capitol looks quiet.
+      </p>
+
+      <p>
+        The chaos of session makes terrible television. Packed committee hearings, late-night floor debates, protests on the Capitol steps. That's what people think lobbying looks like.
+      </p>
+
+      <p>
+        The work that determines legislative outcomes happens in committee staff offices during July. In coalition meetings during September. In interim hearings during November. By the time session starts, the strategic positioning is done. Session is tactics.
+      </p>
+
+      <h2>The Fundamental Difference</h2>
+
+      <p>
+        <strong>Interim work is strategic:</strong> Building relationships, positioning issues, developing coalitions, negotiating bill language, educating legislators. This is investment that compounds over time.
+      </p>
+
+      <p>
+        <strong>Session work is tactical:</strong> Executing on the strategy you built during interim. Testifying at hearings, monitoring amendments, counting votes, responding to opposition. This is implementation.
+      </p>
+
+      <p>
+        Companies that understand this distinction invest continuously. Companies that don't tend to panic-hire lobbyists in January and wonder why they can't influence outcomes by February.
+      </p>
+
+      <h2>What Interim Strategy Looks Like</h2>
+
+      <p>
+        Effective interim strategy has distinct phases, each building toward session success.
+      </p>
+
+      <h3>Post-Session Assessment (Months 1-3)</h3>
+
+      <p>
+        Immediately after session ends, your lobbyist should be analyzing what happened and why. Which bills affecting your industry passed? Which failed? What were the dynamics that determined outcomes?
+      </p>
+
+      <p>
+        This isn't about celebrating wins or explaining losses. It's intelligence gathering that informs next session strategy. Who emerged as champions for your issues? Who was opposition? Which committee chairs were receptive? Which staff were knowledgeable about your industry?
+      </p>
+
+      <p>
+        Companies that skip this analysis repeat mistakes. I've watched businesses lose the same legislative fight two sessions in a row because they never analyzed why they lost the first time.
+      </p>
+
+      <h3>Relationship Building (Months 4-9)</h3>
+
+      <p>
+        The middle of interim is when smart lobbyists invest in relationships that will matter next session. This looks boring from the outside. Lunch meetings with committee staff. Phone calls with new legislators. Attending interim hearings even when your specific issue isn't being discussed.
+      </p>
+
+      <p>
+        These interactions aren't about asking for anything. They're about building familiarity and credibility so that when you do need something during session, you're not a stranger making demands.
+      </p>
+
+      <p>
+        The new legislator who got elected last November? Your lobbyist should have met with them and their chief of staff by June. Not to lobby them on bills that haven't been filed. To introduce your company, explain your industry, offer to be a resource if questions come up.
+      </p>
+
+      <h3>Interim Committee Participation (Months 6-12)</h3>
+
+      <p>
+        Between sessions, legislative committees hold interim hearings on issues they'll address next session. These hearings shape how legislators think about problems before bills get filed.
+      </p>
+
+      <p>
+        If your industry is facing regulatory challenges, interim hearings are where you frame those challenges for legislators. Not by lobbying for specific solutions—by educating them about the problem in a way that naturally points toward your preferred solution.
+      </p>
+
+      <p>
+        The company that testifies at September interim hearings about implementation challenges with existing regulations has positioned their issue before any bills get filed. When legislation emerges during session, committee members already understand the context.
+      </p>
+
+      <h3>Coalition Assembly (Months 9-15)</h3>
+
+      <p>
+        Strong coalitions take months to build. Identifying potential partners. Meeting with their lobbyists. Negotiating shared priorities. Developing coalition structure and messaging.
+      </p>
+
+      <p>
+        Coalition work during interim happens when stakeholders have time for thoughtful discussion. During session, everyone's too busy for coalition meetings. The coalitions that work during session are the ones assembled during interim.
+      </p>
+
+      <h3>Bill Development (Months 12-18)</h3>
+
+      <p>
+        In the final months before session, your lobbyist should be developing bill language, working with legislative staff on drafting, and coordinating with legislators who will author your bills.
+      </p>
+
+      <p>
+        Good bill development involves multiple draft iterations. Showing draft language to legislative staff to get their input. Running drafts by potential coalition members to ensure everyone can support the language. Identifying and addressing potential opposition before filing.
+      </p>
+
+      <p>
+        Bills filed during session without this interim development process tend to have problems. Language that creates unintended consequences. Provisions that generate unexpected opposition. Technical errors that require amendments.
+      </p>
+
+      <h2>What Session Tactics Look Like</h2>
+
+      <p>
+        If interim was strategic, session is execution. Your lobbyist is implementing plans developed over 18 months, responding to developments, and adapting tactics as circumstances change.
+      </p>
+
+      <h3>Pre-Filing Coordination (Weeks 1-3)</h3>
+
+      <p>
+        Session starts in January, but filing doesn't hit peak until late February or March. The first weeks of session are about confirming filing plans, coordinating with bill authors, and ensuring coalition members are ready.
+      </p>
+
+      <p>
+        Your lobbyist should already know which legislators are filing your bills. Session Week 1 is about confirming those commitments and handling any last-minute issues that emerged between pre-filing and session start.
+      </p>
+
+      <h3>Committee Process (Weeks 4-14)</h3>
+
+      <p>
+        Once bills are referred to committee, session tactics accelerate. Scheduling hearings, preparing testimony, meeting with committee members, monitoring opposition testimony, responding to concerns raised during hearings.
+      </p>
+
+      <p>
+        This work is tactical because the strategy was set during interim. Your lobbyist already knows which committee members need attention, what their concerns are, and how to address those concerns. Session is executing that plan.
+      </p>
+
+      <p>
+        The companies that struggle during committee process are usually the ones who didn't do interim work. They're trying to build relationships with committee members they should have met six months ago. They're surprised by opposition they should have anticipated and addressed during interim.
+      </p>
+
+      <h3>Floor Strategy (Weeks 14-18)</h3>
+
+      <p>
+        Getting bills to the floor requires coordination with leadership, Calendars Committee (House), and floor sponsors. Your lobbyist should have been building these relationships during interim. Session is when you leverage them.
+      </p>
+
+      <p>
+        Floor strategy includes vote counting, preparing for floor amendments, coordinating with the sponsor on debate strategy, and responding to last-minute opposition that emerges during debate.
+      </p>
+
+      <h3>End-of-Session Crisis Management (Weeks 18-20)</h3>
+
+      <p>
+        The final two weeks of session are chaos. Bills in conference committee. Time management battles. Late-night votes. Your lobbyist is in full crisis management mode, making real-time decisions as circumstances change hourly.
+      </p>
+
+      <p>
+        Strong interim strategy makes end-of-session chaos manageable. Your bills were well-positioned, your relationships are solid, your coalition is united. You're executing contingency plans developed during interim, not improvising under time pressure.
+      </p>
+
+      <h2>Why Interim Investment Matters More Than Session Intensity</h2>
+
+      <p>
+        I can tell you from experience: the lobbyist who works consistently during interim will outperform the lobbyist who works 80-hour weeks during session.
+      </p>
+
+      <p>
+        Session intensity can't overcome lack of strategic positioning. You can't build relationships in February that should have been built in June. You can't assemble coalitions in March that should have been formed in October. You can't develop bill language in April that should have been drafted in December.
+      </p>
+
+      <p>
+        The companies that win during session are the ones that invested in interim strategy. They arrive at session with relationships established, coalitions assembled, bill language negotiated, and legislators educated about their issues.
+      </p>
+
+      <h3>The Time Advantage</h3>
+
+      <p>
+        During interim, legislative staff have time for thoughtful discussion. They'll spend 30 minutes with your lobbyist walking through technical policy details. During session, you might get 5 minutes between committee hearings.
+      </p>
+
+      <p>
+        Legislators during interim will take meetings to learn about issues even if no legislation is pending. During session, every meeting is about a specific bill and members are managing dozens of priorities simultaneously.
+      </p>
+
+      <p>
+        The lobbyist who invests interim time in education builds understanding that pays off during session when decisions happen rapidly.
+      </p>
+
+      <h3>The Relationship Advantage</h3>
+
+      <p>
+        Relationships built during interim feel different than relationships formed under session pressure. Your lobbyist meeting with committee staff in August to discuss industry trends builds rapport. That same meeting in March, two days before a hearing, feels transactional.
+      </p>
+
+      <p>
+        Legislators remember who engaged them during interim versus who only showed up during session. The company that provided useful information during interim hearings earns credibility. The company that first contacts legislators when they need a vote looks like they're only interested in their own priorities.
+      </p>
+
+      <h2>What Your Lobbyist Should Report During Interim</h2>
+
+      <p>
+        If you're paying for year-round representation, you should receive regular updates on interim activity. Not just monthly retainer invoices—substantive reports on strategic work.
+      </p>
+
+      <p>
+        <strong>Relationship tracking:</strong> Which new legislators has your lobbyist met? Which committee staff have they briefed? What feedback did they receive about issues affecting your industry?
+      </p>
+
+      <p>
+        <strong>Interim hearing intelligence:</strong> What issues are committees studying? How are legislators framing problems? Which stakeholders are participating in interim discussions?
+      </p>
+
+      <p>
+        <strong>Coalition development:</strong> Which organizations has your lobbyist approached about coalition participation? What concerns have emerged? What progress has been made toward coalition formation?
+      </p>
+
+      <p>
+        <strong>Bill development:</strong> What bill concepts is your lobbyist developing? Who's providing input on draft language? Which legislators are interested in authoring your bills?
+      </p>
+
+      <p>
+        <strong>Opposition monitoring:</strong> What are opponents planning for next session? What coalitions are they building? What legislative champions have they recruited?
+      </p>
+
+      <p>
+        A lobbyist who can't provide detailed interim activity reports probably isn't doing much interim work. Your monthly retainer should be funding strategic positioning, not just keeping your company on the lobbyist's client list.
+      </p>
+
+      <h2>The Cost Difference</h2>
+
+      <p>
+        Many businesses budget for session-only representation to save money. They pay lobbyists January through May, then pause until next session.
+      </p>
+
+      <p>
+        This approach is penny-wise and pound-foolish. You're paying for tactical execution without strategic positioning. Your lobbyist shows up in January with no interim preparation and tries to compete against opponents who spent 18 months positioning their issues.
+      </p>
+
+      <p>
+        The lobbyists who only work during session charge premium rates because they know clients are desperate. Session-only monthly rates often run 50-100% higher than year-round rates because the lobbyist is compressing work and risk into five months.
+      </p>
+
+      <p>
+        Year-round representation spreads costs across 12 months but delivers better outcomes because strategic work happens during interim when it's most effective.
+      </p>
+
+      <h2>When Session-Only Representation Makes Sense</h2>
+
+      <p>
+        Not every business needs year-round lobbying. If you face minimal legislative risk and aren't pursuing proactive legislation, session-only monitoring might suffice.
+      </p>
+
+      <p>
+        Session-only representation works when:
+      </p>
+
+      <p>
+        Your goal is defensive monitoring—watching for bills that might affect your business and alerting you if action becomes necessary.
+      </p>
+
+      <p>
+        Your industry has a strong trade association providing year-round advocacy on shared priorities. You're supplementing association advocacy with company-specific representation during session.
+      </p>
+
+      <p>
+        You're responding to specific legislation that emerged unexpectedly and need tactical help during session.
+      </p>
+
+      <p>
+        But if you're advancing legislation, defending against serious threats, or operating in a high-risk legislative environment, session-only representation puts you at a strategic disadvantage.
+      </p>
+
+      <h2>Measuring Interim Work Quality</h2>
+
+      <p>
+        How do you know if your lobbyist is doing effective interim work? Ask these questions before session starts.
+      </p>
+
+      <p>
+        <strong>How many new legislators have you met with?</strong> If your lobbyist hasn't met with legislators elected last November by the time session starts, they're behind.
+      </p>
+
+      <p>
+        <strong>What did you learn at interim hearings?</strong> Your lobbyist should be attending relevant interim hearings and gathering intelligence about how committees are thinking about issues.
+      </p>
+
+      <p>
+        <strong>Who's in our coalition?</strong> If session is starting and you don't have a coalition assembled, you're trying to do during session what should have been done during interim.
+      </p>
+
+      <p>
+        <strong>What bill language has been drafted?</strong> Bills filed during session without interim development tend to have problems. Good bills are drafted and refined during interim.
+      </p>
+
+      <p>
+        <strong>Which legislators are authoring our bills?</strong> Your lobbyist should have bill authors committed before session starts, not be shopping for authors in January.
+      </p>
+
+      <p>
+        If your lobbyist can't answer these questions specifically, they haven't been doing strategic interim work.
+      </p>
+
+      <h2>The Long Game</h2>
+
+      <p>
+        Lobbying isn't about winning individual legislative battles. It's about building relationships and positioning issues over multiple sessions.
+      </p>
+
+      <p>
+        The issue you raise during September interim hearings might not result in legislation until next session. The relationship your lobbyist builds with a freshman legislator in 2025 might pay off in 2027 when that legislator is on the committee handling your bill.
+      </p>
+
+      <p>
+        Companies that think tactically—what can we pass this session—consistently underperform companies that think strategically—how do we position our issues over multiple sessions.
+      </p>
+
+      <p>
+        The most effective lobbying I've seen involves three-session strategies. Session 1: introduce the issue through interim hearings and initial legislation that likely won't pass. Session 2: build coalition support and pass narrower legislation that demonstrates the concept. Session 3: pass comprehensive legislation because legislators understand the issue and precedent exists.
+      </p>
+
+      <p>
+        That three-session strategy requires continuous interim work. You can't execute it with session-only representation.
+      </p>
+
+      <h2>Making the Investment Decision</h2>
+
+      <p>
+        The question isn't whether interim work matters. It does. The question is whether your legislative priorities justify year-round investment.
+      </p>
+
+      <p>
+        Calculate the value at stake. If adverse legislation could cost you $500,000 in compliance expenses or lost revenue, spending $50,000 annually for strategic positioning is insurance. If favorable legislation could open a $5 million market opportunity, spending $75,000 for year-round advocacy is investment.
+      </p>
+
+      <p>
+        Compare the cost of year-round representation to the cost of session-only crisis lobbying. Year-round might cost $5,000-$8,000 monthly. Session-only often costs $15,000-$25,000 monthly for five months—higher total cost, lower effectiveness.
+      </p>
+
+      <p>
+        Use TexasLobby.org to compare lobbyists' approach to interim strategy. Ask about their interim activity, how they maintain relationships between sessions, and what coalition-building work they do before filing bills. The lobbyists worth hiring can describe specific interim strategy, not just general session tactics.
+      </p>
+
+    </div>
+
+    <!-- Author Bio -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <div class="flex items-start gap-6">
+        <img
+          src="/images/Byron-Campbell.png.webp"
+          alt="Byron Campbell"
+          class="w-24 h-24 rounded-full object-cover flex-shrink-0"
+        />
+        <div>
+          <h3 class="text-xl font-bold mb-2">
+            <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
+              {author}
+            </a>
+          </h3>
+          <p class="text-muted-foreground mb-3">
+            Contributing Author | Senior Partner, Capitol Insights
+          </p>
+          <p class="text-sm text-muted-foreground">
+            Byron Campbell is a Senior Partner at Capitol Insights with extensive experience in year-round government relations strategy. He emphasizes interim positioning as the foundation for session success.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Articles -->
+    <div class="mt-16 pt-8 border-t border-border">
+      <h2 class="text-2xl font-bold mb-6">Related Articles</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <a href="/blog/24-month-legislative-cycle-texas" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              The 24-Month Legislative Cycle: When Deals Get Made in Texas
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Understanding Texas's biennial legislative cycle and why the 18-month interim matters more than the 140-day session.
+            </p>
+          </article>
+        </a>
+        <a href="/blog/coalition-building-legislative-strategy" class="group">
+          <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow h-full">
+            <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700 mb-3">
+              Strategy
+            </span>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-texas-blue-500 transition-colors">
+              Coalition Building: How to Build Legislative Support Beyond Your Industry
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              Why single-company lobbying efforts fail and how to build coalitions that give legislators political cover to support your position.
+            </p>
+          </article>
+        </a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
+      <h2 class="text-2xl font-bold mb-4">Find Strategic Lobbyists</h2>
+      <p class="text-blue-50 mb-6">
+        Search for Texas lobbyists who provide year-round strategic representation, not just session tactics.
+      </p>
+      <a
+        href="/lobbyists"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-gray-100 transition-colors"
+      >
+        Search Lobbyists
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </a>
+    </div>
+  </article>
+</Layout>

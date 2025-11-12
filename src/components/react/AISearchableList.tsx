@@ -58,7 +58,25 @@ export default function AISearchableList({
     <div className="space-y-6">
       {/* AI Search Filter */}
       <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-1">
+            Describe what you need in plain English
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Our AI will find the best matches for your specific situation
+          </p>
+        </div>
         <AISearchFilter onFilter={handleAIFilter} />
+      </div>
+
+      {/* Advanced Filters Link */}
+      <div className="text-left">
+        <a
+          href="#advanced-filters"
+          className="text-sm text-texas-blue-600 hover:text-texas-blue-700 font-medium transition-colors"
+        >
+          Or use advanced filters (city/expertise) →
+        </a>
       </div>
 
       {/* Results Count */}
@@ -71,7 +89,7 @@ export default function AISearchableList({
       {/* Lobbyist List */}
       <SearchableList
         lobbyists={displayedLobbyists}
-        hideSearch={!!aiFilteredIds} // Hide traditional search when AI is active
+        hideSearch={true} // Always hide - AI search is primary
         showIndustryBadges={showIndustryBadges}
         favoriteLobbyistIds={favoriteLobbyistIds}
         isAuthenticated={isAuthenticated}

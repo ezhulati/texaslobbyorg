@@ -71,18 +71,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     // STEP 3: Parse cities and subject areas
+    // Handle both array (from multi-select) and string (legacy) formats
     const cities = formData.cities
-      ? formData.cities
-          .split(',')
-          .map((c: string) => c.trim())
-          .filter((c: string) => c.length > 0)
+      ? Array.isArray(formData.cities)
+        ? formData.cities.filter((c: string) => c.length > 0)
+        : formData.cities
+            .split(',')
+            .map((c: string) => c.trim())
+            .filter((c: string) => c.length > 0)
       : [];
 
     const subjectAreas = formData.subjectAreas
-      ? formData.subjectAreas
-          .split(',')
-          .map((s: string) => s.trim())
-          .filter((s: string) => s.length > 0)
+      ? Array.isArray(formData.subjectAreas)
+        ? formData.subjectAreas.filter((s: string) => s.length > 0)
+        : formData.subjectAreas
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter((s: string) => s.length > 0)
       : [];
 
     // STEP 4: Create lobbyist profile with pending status

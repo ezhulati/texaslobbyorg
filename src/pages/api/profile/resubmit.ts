@@ -138,6 +138,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     // STEP 5: Check for meaningful changes (anti-spam)
+    // Handle both array (from multi-select) and string (legacy) formats for comparison
+    const parsedCities = formData.cities
+      ? Array.isArray(formData.cities)
+        ? formData.cities.filter((c: string) => c.length > 0)
+        : formData.cities.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0)
+      : [];
+
+    const parsedSubjectAreas = formData.subjectAreas
+      ? Array.isArray(formData.subjectAreas)
+        ? formData.subjectAreas.filter((s: string) => s.length > 0)
+        : formData.subjectAreas.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
+      : [];
+
     const hasChanges = (
       existingProfile.first_name !== formData.firstName ||
       existingProfile.last_name !== formData.lastName ||
@@ -147,12 +160,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       existingProfile.linkedin_url !== (formData.linkedinUrl || null) ||
       existingProfile.bio !== (formData.bio || null) ||
       existingProfile.id_verification_url !== (formData.idVerificationUrl || null) ||
-      JSON.stringify(existingProfile.cities || []) !== JSON.stringify(
-        formData.cities ? formData.cities.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0) : []
-      ) ||
-      JSON.stringify(existingProfile.subject_areas || []) !== JSON.stringify(
-        formData.subjectAreas ? formData.subjectAreas.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0) : []
-      )
+      JSON.stringify(existingProfile.cities || []) !== JSON.stringify(parsedCities) ||
+      JSON.stringify(existingProfile.subject_areas || []) !== JSON.stringify(parsedSubjectAreas)
     );
 
     if (!hasChanges) {
@@ -166,20 +175,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     }
 
-    // STEP 6: Parse cities and subject areas
-    const cities = formData.cities
-      ? formData.cities
-          .split(',')
-          .map((c: string) => c.trim())
-          .filter((c: string) => c.length > 0)
-      : [];
-
-    const subjectAreas = formData.subjectAreas
-      ? formData.subjectAreas
-          .split(',')
-          .map((s: string) => s.trim())
-          .filter((s: string) => s.length > 0)
-      : [];
+    // STEP 6: Use already parsed cities and subject areas from Step 5
+    const cities = parsedCities;
+    const subjectAreas = parsedSubjectAreas;
 
     // STEP 7: Update profile with new data and reset rejection status
     const { data: updatedProfile, error: updateError } = await serverClient

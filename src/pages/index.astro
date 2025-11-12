@@ -1,5 +1,6 @@
 ---
 import Layout from '@/components/astro/Layout.astro';
+import AISearchBar from '@/components/react/AISearchBar';
 import SearchFilter from '@/components/react/SearchFilter';
 import { supabase } from '@/lib/supabase';
 
@@ -91,17 +92,27 @@ const schema = {
           Connect with experienced lobbyists who understand your industry
         </p>
         <p class="text-lg text-muted-foreground mb-12">
-          Search 1,600+ Texas lobbyists by city and expertise. Compare profiles, see client lists, connect with confidence.
+          Just describe what you need. Our AI will find the perfect match from 1,600+ Texas lobbyists.
         </p>
 
-        <!-- Search Filter -->
+        <!-- AI Search Bar -->
         <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
-          <SearchFilter
-            cities={cities || []}
-            subjectAreas={subjectAreas || []}
-            client:load
-          />
+          <AISearchBar client:load />
         </div>
+
+        <!-- Traditional Filter Toggle -->
+        <details class="mt-6">
+          <summary class="text-sm text-texas-blue-600 hover:text-texas-blue-700 cursor-pointer font-medium text-center">
+            Or use traditional filters →
+          </summary>
+          <div class="mt-4 bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <SearchFilter
+              cities={cities || []}
+              subjectAreas={subjectAreas || []}
+              client:load
+            />
+          </div>
+        </details>
       </div>
     </div>
   </section>

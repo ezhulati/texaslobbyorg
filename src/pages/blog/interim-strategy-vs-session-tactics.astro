@@ -7,6 +7,7 @@ const pageDescription = 'Why the work that happens during the 18-month interim d
 const publishedDate = '2025-11-12';
 const author = 'Byron Campbell';
 const readTime = '15 min read';
+const category = 'Strategy';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -32,40 +33,66 @@ const schema = {
 ---
 
 <Layout title={pageTitle} description={pageDescription} schema={schema}>
-  <article class="container max-w-4xl py-16">
-    <!-- Article Header -->
-    <header class="mb-12 pb-8 border-b border-border">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-3 py-1 text-xs font-medium text-texas-blue-700">
-          Strategy
-        </span>
-        <span class="text-sm text-muted-foreground">{readTime}</span>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to all articles
+        </a>
       </div>
 
-      <h1 class="text-4xl md:text-5xl font-bold mb-6">
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        {category}
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
         Interim Strategy vs Session Tactics: Where Lobbying Success Is Determined
       </h1>
 
-      <div class="flex items-center gap-4 text-sm text-muted-foreground">
-        <a href="/authors/byron-campbell" class="hover:text-texas-blue-500 transition-colors">
-          By {author}
-        </a>
-        <span>•</span>
-        <time datetime={publishedDate}>
-          {new Date(publishedDate).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          })}
-        </time>
-      </div>
-    </header>
-
-    <!-- Article Content -->
-    <div class="prose prose-lg max-w-none">
-      <p class="text-xl text-muted-foreground mb-8 lead">
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl">
         Companies that only pay attention during the 140-day session consistently lose to companies that invest in the 18-month interim. Legislative outcomes are determined by strategic work that happens when the Capitol looks quiet.
       </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <a href="/authors/byron-campbell" class="font-medium hover:text-texas-blue-500 transition-colors">By {author}</a>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <time datetime={publishedDate}>
+            {new Date(publishedDate).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </time>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">{readTime}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
+      <div class="prose prose-lg max-w-none">
 
       <p>
         The chaos of session makes terrible television. Packed committee hearings, late-night floor debates, protests on the Capitol steps. That's what people think lobbying looks like.
@@ -393,10 +420,14 @@ const schema = {
         When comparing lobbyists, ask about their interim activity, how they maintain relationships between sessions, and what coalition-building work they do before filing bills. The lobbyists worth hiring can describe specific interim strategy, not just general session tactics.
       </p>
 
+      </div>
     </div>
+  </article>
 
-    <!-- Author Bio -->
-    <div class="mt-16 pt-8 border-t border-border">
+  <!-- Author Bio -->
+  <section class="py-16 bg-muted/30">
+    <div class="container max-w-3xl">
+    <div class="pt-8 border-t border-border">
       <div class="flex items-start gap-6">
         <img
           src="/images/Byron-Campbell.png.webp"
@@ -418,9 +449,13 @@ const schema = {
         </div>
       </div>
     </div>
+    </div>
+  </section>
 
-    <!-- Related Articles -->
-    <div class="mt-16 pt-8 border-t border-border">
+  <!-- Related Articles -->
+  <section class="py-16">
+    <div class="container max-w-3xl">
+    <div class="pt-8 border-t border-border">
       <h2 class="text-2xl font-bold mb-6">Related Articles</h2>
       <div class="grid gap-6 md:grid-cols-2">
         <a href="/blog/24-month-legislative-cycle-texas" class="group">
@@ -451,9 +486,13 @@ const schema = {
         </a>
       </div>
     </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
+  <!-- CTA -->
+  <section class="py-16 bg-muted/30">
+    <div class="container max-w-3xl">
+    <div class="p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-lg text-white">
       <h2 class="text-2xl font-bold mb-4">Find Strategic Lobbyists</h2>
       <p class="text-blue-50 mb-6">
         Search for Texas lobbyists who provide year-round strategic representation, not just session tactics.
@@ -468,5 +507,6 @@ const schema = {
         </svg>
       </a>
     </div>
-  </article>
+    </div>
+  </section>
 </Layout>

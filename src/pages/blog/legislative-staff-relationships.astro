@@ -31,67 +31,66 @@ const schema = {
 ---
 
 <Layout title={pageTitle} description={pageDescription} schema={schema}>
-  <!-- Article Header -->
-  <section class="bg-gradient-to-b from-texas-blue-500/10 to-background py-16 border-b border-border">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <div class="mb-8">
         <a
           href="/blog"
-          class="inline-flex items-center text-sm text-muted-foreground hover:text-texas-blue-500 mb-6"
+          class="inline-flex items-center text-sm font-medium text-texas-blue-600 hover:text-texas-blue-700 transition-colors group"
         >
-          <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg class="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Back to all articles
         </a>
+      </div>
 
-        <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
-          {category}
+      <div class="inline-flex items-center rounded-full bg-texas-blue-500/10 px-4 py-2 text-sm font-medium text-texas-blue-700 mb-6">
+        {category}
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        Legislative Staff Relationships: The Hidden Power Center
+      </h1>
+
+      <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl">
+        Staffers control the calendar, draft the analysis, and shape how legislators understand issues. Here's how to build relationships with the people who matter most.
+      </p>
+
+      <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <a href="/authors/byron-campbell" class="font-medium hover:text-texas-blue-500 transition-colors">{author}</a>
         </div>
-
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
-          Legislative Staff Relationships: The Hidden Power Center
-        </h1>
-
-        <p class="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-4xl">
-          Staffers control the calendar, draft the analysis, and shape how legislators understand issues. Here's how to build relationships with the people who matter most.
-        </p>
-
-        <div class="flex flex-wrap gap-6 text-sm text-muted-foreground border-t border-border pt-6">
-          <div class="flex items-center gap-2">
-            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <a href="/authors/byron-campbell" class="font-medium hover:text-texas-blue-500 transition-colors">{author}</a>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <time datetime={publishedDate}>
-              {new Date(publishedDate).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </time>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="font-medium">14 min read</span>
-          </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <time datetime={publishedDate}>
+            {new Date(publishedDate).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </time>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="h-5 w-5 text-texas-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium">14 min read</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content -->
-  <section class="py-16">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
-        <div class="prose prose-lg max-w-none">
+  <article class="py-16 lg:py-20">
+    <div class="container max-w-3xl">
+      <div class="prose prose-lg max-w-none">
 
           <p class="text-lg leading-relaxed mb-6">
             When I worked as a Legislative Assistant on the U.S. House Education and Workforce Committee under Chairman John Boehner, I watched hundreds of lobbyists compete for 15-minute meetings with members of Congress.
@@ -318,29 +317,30 @@ const schema = {
           </div>
 
         </div>
+    </div>
+  </article>
 
-        <!-- CTA -->
-        <div class="mt-16 p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-xl text-white">
-          <h3 class="text-2xl font-bold mb-4">Find Lobbyists With Strong Staff Relationships</h3>
-          <p class="text-blue-50 mb-6">
-            Connect with experienced Texas lobbyists who've built credibility with legislative staff over multiple sessions.
-          </p>
-          <a
-            href="/lobbyists"
-            class="inline-flex items-center justify-center px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-blue-50 transition-colors"
-          >
-            Search Lobbyists
-          </a>
-        </div>
-
+  <!-- CTA -->
+  <section class="py-16 bg-muted/30">
+    <div class="container max-w-3xl">
+      <div class="p-8 bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-xl text-white">
+        <h3 class="text-2xl font-bold mb-4">Find Lobbyists With Strong Staff Relationships</h3>
+        <p class="text-blue-50 mb-6">
+          Connect with experienced Texas lobbyists who've built credibility with legislative staff over multiple sessions.
+        </p>
+        <a
+          href="/lobbyists"
+          class="inline-flex items-center justify-center px-6 py-3 bg-white text-texas-blue-600 font-medium rounded-md hover:bg-blue-50 transition-colors"
+        >
+          Search Lobbyists
+        </a>
       </div>
     </div>
   </section>
 
   <!-- Related Articles -->
-  <section class="py-16 bg-muted/30">
-    <div class="container">
-      <div class="max-w-4xl mx-auto">
+  <section class="py-16">
+    <div class="container max-w-3xl">
         <h2 class="text-2xl font-bold mb-8">Related Articles</h2>
         <div class="grid md:grid-cols-2 gap-6">
           <article class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow">

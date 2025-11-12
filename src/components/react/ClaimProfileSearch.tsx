@@ -73,6 +73,7 @@ export default function ClaimProfileSearch({
             .select('*')
             .eq('id', lobbyistId)
             .eq('is_claimed', false)
+            .is('claimed_by', null)
             .single();
 
           if (data && !error) {
@@ -114,7 +115,8 @@ export default function ClaimProfileSearch({
           .from('lobbyists')
           .select('*')
           .eq('is_active', true)
-          .eq('is_claimed', false);
+          .eq('is_claimed', false)
+          .is('claimed_by', null);
 
         if (searchEmail) {
           query = query.ilike('email', `%${searchEmail}%`);

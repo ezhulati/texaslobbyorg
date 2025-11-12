@@ -240,7 +240,7 @@ const tagTypeConfig = {
                 <CollapsibleBio bio={lobbyist.bio} previewSentences={3} client:load />
               </div>
             </div>
-          ) : !lobbyist.user_id && (
+          ) : !lobbyist.is_claimed && !lobbyist.claimed_by && (
             <div class="mb-8 rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
               <h2 class="text-xl font-semibold mb-2">Listing Not Yet Claimed</h2>
               <p class="text-muted-foreground mb-4">
@@ -717,7 +717,7 @@ const tagTypeConfig = {
           </div>
 
           {/* Upgrade CTA for unclaimed profiles */}
-          {!lobbyist.user_id && (
+          {!lobbyist.is_claimed && !lobbyist.claimed_by && (
             <div class="rounded-lg border-2 border-dashed border-texas-blue-500 bg-texas-blue-500/5 p-6">
               <h3 class="text-lg font-semibold mb-2">Is this you?</h3>
               <p class="text-sm text-muted-foreground mb-4">

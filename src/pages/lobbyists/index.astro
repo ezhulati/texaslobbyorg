@@ -132,15 +132,21 @@ const schema = {
         <AISearchFilter onFilter={() => {}} client:load />
       </div>
 
-      <!-- Advanced Filters Link -->
-      <div class="text-left mb-4">
-        <a
-          href="#advanced-filters"
-          class="text-sm text-texas-blue-600 hover:text-texas-blue-700 font-medium transition-colors"
-        >
+      <!-- Advanced Filters (Collapsible) -->
+      <details class="mb-4">
+        <summary class="text-sm text-texas-blue-600 hover:text-texas-blue-700 cursor-pointer font-medium list-none [&::-webkit-details-marker]:hidden transition-all text-left">
           Or use advanced filters (city/expertise) →
-        </a>
-      </div>
+        </summary>
+        <div class="mt-4 bg-white rounded-lg shadow-md p-6">
+          <SearchFilter
+            cities={cities || []}
+            subjectAreas={subjectAreas || []}
+            initialCity={cityFilter}
+            initialSubject={subjectFilter}
+            client:load
+          />
+        </div>
+      </details>
 
       <!-- Active Filters -->
       {hasFilters && (
@@ -278,26 +284,6 @@ const schema = {
       </div>
     </section>
   )}
-
-  <!-- Advanced Filters Section -->
-  <section id="advanced-filters" class="py-8 bg-muted/30">
-    <div class="container">
-      <details class="group max-w-4xl mx-auto">
-        <summary class="text-base text-texas-blue-600 hover:text-texas-blue-700 cursor-pointer font-medium text-center list-none [&::-webkit-details-marker]:hidden transition-all py-4">
-          Advanced Filters: Filter by city or expertise →
-        </summary>
-        <div class="mt-4 bg-white rounded-lg shadow-md p-6">
-          <SearchFilter
-            cities={cities || []}
-            subjectAreas={subjectAreas || []}
-            initialCity={cityFilter}
-            initialSubject={subjectFilter}
-            client:load
-          />
-        </div>
-      </details>
-    </div>
-  </section>
 
   <!-- CTA Section -->
   <section class="py-12 bg-muted/50 border-t border-border">

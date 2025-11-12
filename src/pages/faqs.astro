@@ -1,0 +1,552 @@
+---
+import Layout from '@/components/astro/Layout.astro';
+
+const pageTitle = 'Frequently Asked Questions | TexasLobby.org';
+const pageDescription = 'Common questions about TexasLobby.org - Texas lobbyist directory, pricing, how to find lobbyists, and how to claim your profile.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is TexasLobby.org?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'TexasLobby.org is a searchable directory of every registered lobbyist in Texas. We help business owners find and hire experienced lobbyists who can represent their interests in Austin.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Is TexasLobby.org free to use?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, completely free for business owners. You can search lobbyists, view profiles, and contact them directly without paying anything.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does it cost to hire a lobbyist?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Lobbyist fees vary widely based on experience, firm size, and scope of work. Solo practitioners typically charge $3,000-$10,000/month, mid-size firms $10,000-$25,000/month, and top firms $25,000-$100,000+/month.'
+      }
+    }
+  ]
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={schema}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-texas-blue-50 via-white to-background py-20 lg:py-28 border-b border-border">
+    <div class="container max-w-4xl">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight text-center">
+        Frequently Asked Questions
+      </h1>
+      <p class="text-xl md:text-2xl text-muted-foreground text-center max-w-3xl mx-auto">
+        Everything you need to know about TexasLobby.org
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ Container -->
+  <div class="container max-w-4xl py-16 lg:py-20">
+
+    <!-- FOR BUSINESS OWNERS -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-texas-blue-600 mb-8 pb-4 border-b-2 border-texas-blue-600">
+        For Business Owners
+      </h2>
+
+      <div class="space-y-4">
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">What is TexasLobby.org?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>TexasLobby.org is a searchable directory of every registered lobbyist in Texas. We help business owners find and hire experienced lobbyists who can represent their interests in Austin.</p>
+            <p>Think of us like a search engine for Texas lobbyists—but with filters, reviews, and detailed profiles you won't find anywhere else.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Is TexasLobby.org free to use?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes, completely free for business owners.</strong></p>
+            <p>You can search lobbyists, view profiles, and contact them directly without paying anything. We make money by charging lobbyists for premium features like enhanced profiles and priority placement.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I know if I need a lobbyist?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>You might need a lobbyist if:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>A new bill could hurt your business (licensing, taxes, regulations)</li>
+              <li>Your industry is facing increased government scrutiny</li>
+              <li>Your competitors have lobbyists and political influence</li>
+              <li>You need permits or regulatory approval that's stalled</li>
+              <li>You want to proactively shape policy before problems arise</li>
+            </ul>
+            <p>If any of these apply, it's worth having a conversation with a lobbyist.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How much does it cost to hire a lobbyist?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Lobbyist fees vary widely based on experience, firm size, and scope of work:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li><strong class="text-foreground">Solo practitioners:</strong> $3,000 - $10,000/month</li>
+              <li><strong class="text-foreground">Mid-size firms:</strong> $10,000 - $25,000/month</li>
+              <li><strong class="text-foreground">Top firms:</strong> $25,000 - $100,000+/month</li>
+            </ul>
+            <p>Some lobbyists work on project basis ($15K - $50K for a single session) or success fees. Most require 3-6 month minimum retainers.</p>
+            <p>Contact lobbyists directly through our platform to discuss pricing for your specific needs.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I choose the right lobbyist?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Look for:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li><strong class="text-foreground">Industry expertise:</strong> Do they have experience in your sector?</li>
+              <li><strong class="text-foreground">Track record:</strong> What bills have they successfully influenced?</li>
+              <li><strong class="text-foreground">Client list:</strong> Do they represent your competitors? (Conflict of interest)</li>
+              <li><strong class="text-foreground">Relationships:</strong> Do they have connections to key legislators?</li>
+              <li><strong class="text-foreground">Communication style:</strong> Will they keep you informed?</li>
+            </ul>
+            <p>Use our search filters to narrow by industry and location, then contact 3-5 lobbyists to compare.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Can I contact lobbyists directly through your site?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes.</strong> Every lobbyist profile includes contact information (email and phone) and many have contact forms built into their profile.</p>
+            <p>We don't charge fees or commissions when you hire through our platform. You work directly with the lobbyist.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Where does your lobbyist data come from?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>All lobbyist data comes from the <strong class="text-foreground">Texas Ethics Commission</strong>—the official state agency that regulates lobbying.</p>
+            <p>Every lobbyist in Texas must register with the TEC and disclose their clients. We take that public data and make it searchable, filterable, and useful.</p>
+            <p>We update our database regularly to reflect new registrations, client changes, and expired registrations.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- FOR LOBBYISTS -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-texas-blue-600 mb-8 pb-4 border-b-2 border-texas-blue-600">
+        For Lobbyists
+      </h2>
+
+      <div class="space-y-4">
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How did I get listed on TexasLobby.org?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>We automatically created profiles for all registered Texas lobbyists using public data from the Texas Ethics Commission.</p>
+            <p>If you're registered with the TEC for the current year (2025), you have a profile on our site. You didn't need to sign up—we built it for you.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I claim my profile?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Step 1:</strong> Find your profile by searching your name</p>
+            <p><strong class="text-foreground">Step 2:</strong> Click "Claim This Profile"</p>
+            <p><strong class="text-foreground">Step 3:</strong> Create an account with your email</p>
+            <p><strong class="text-foreground">Step 4:</strong> Upload verification (photo of your driver's license or passport)</p>
+            <p><strong class="text-foreground">Step 5:</strong> We review and approve within 48 hours</p>
+            <p>Once approved, you can edit your profile, add a bio and photo, and upgrade to premium features.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Why do I need to verify my identity?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>We require verification (driver's license or passport) to prevent fraud and ensure only the real lobbyist can claim their profile.</p>
+            <p>Your verification document is reviewed by our team and then securely deleted. We never share it with third parties.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">What's included in a free profile?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Every lobbyist gets a free basic profile that includes:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>Name and contact information</li>
+              <li>Office location</li>
+              <li>Subject areas (from TEC data)</li>
+              <li>Client list (from TEC data)</li>
+              <li>Appears in search results</li>
+            </ul>
+            <p>This is enough for businesses to find and contact you. Premium tiers add enhanced features and visibility.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">What are the premium tiers?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <div class="bg-muted/30 rounded-lg p-4">
+              <p class="font-semibold text-foreground mb-2">Premium - $297/month</p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>Custom bio and professional photo</li>
+                <li>Priority placement in search results</li>
+                <li>"Premium" badge on your profile</li>
+                <li>Basic analytics (profile views)</li>
+                <li>Enhanced contact options</li>
+              </ul>
+            </div>
+
+            <div class="bg-muted/30 rounded-lg p-4">
+              <p class="font-semibold text-foreground mb-2">Featured - $597/month</p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>Everything in Premium, plus:</li>
+                <li>Homepage featured placement</li>
+                <li>Top of category pages (e.g., "Healthcare Lobbyists")</li>
+                <li>Advanced analytics dashboard</li>
+                <li>Social proof badges</li>
+              </ul>
+            </div>
+
+            <div class="bg-muted/30 rounded-lg p-4">
+              <p class="font-semibold text-foreground mb-2">Professional - $997/month</p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>Everything in Featured, plus:</li>
+                <li>LobbyistGPT AI copilot (coming soon)</li>
+                <li>White-label client portal</li>
+                <li>API access</li>
+                <li>Priority support</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Will my free profile be hidden if I don't upgrade?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">No.</strong> Your free profile will always appear in search results.</p>
+            <p>Premium tiers give you priority placement and enhanced features, but we never hide free profiles. Businesses can always find you.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Can I cancel my premium subscription anytime?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes.</strong> All subscriptions are month-to-month. Cancel anytime from your dashboard.</p>
+            <p>When you cancel, you keep premium features through the end of your billing period, then your profile reverts to the free basic listing.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">I'm not registered for 2025 yet. Can I still create a profile?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes.</strong> If you're a practicing lobbyist but haven't completed your 2025 TEC registration, you can create a new profile through our registration process.</p>
+            <p>Your profile will be marked as "Self-Registered" until you appear in the TEC database. Once you're registered with TEC, we'll update your status to "Verified."</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I get analytics about who's viewing my profile?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Analytics are included in Premium ($297/month) and higher tiers.</p>
+            <p>You'll see:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>Total profile views (last 30 days)</li>
+              <li>Search terms that found you</li>
+              <li>Geographic breakdown of viewers</li>
+              <li>Contact form submissions</li>
+            </ul>
+            <p>Featured and Professional tiers include advanced analytics like industry breakdown and conversion rates.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ACCOUNT & TECHNICAL -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-texas-blue-600 mb-8 pb-4 border-b-2 border-texas-blue-600">
+        Account & Technical
+      </h2>
+
+      <div class="space-y-4">
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">I created an account but I'm already in your database. What do I do?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>If you accidentally created a new profile when you already had one from the TEC import, contact us to merge your accounts.</p>
+            <p>We'll combine both profiles, keep the TEC data as primary, and transfer any subscription to the correct profile.</p>
+            <p><a href="/contact" class="text-texas-blue-600 hover:underline">Contact us</a> with both profile URLs and we'll merge them for you.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Can I have both a lobbyist account and a business account?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes.</strong> Your single account can have both capabilities.</p>
+            <p>If you're a lobbyist who also needs to search for other lobbyists, your account automatically includes both features. You don't need separate logins.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I delete my account?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Go to Settings > Account > Delete Account.</p>
+            <p>You'll have a 30-day grace period to change your mind. During this time, your profile is hidden from public search but you can still log in and cancel the deletion.</p>
+            <p>After 30 days, your account and profile are permanently deleted (we keep financial records for tax purposes only).</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">What if I forgot my password?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Click "Forgot Password" on the login page. We'll send a reset link to your email.</p>
+            <p>If you no longer have access to your email, <a href="/contact" class="text-texas-blue-600 hover:underline">contact us</a> with verification (driver's license or other proof of identity).</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How do I update my email address?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>Go to Settings > Account > Change Email.</p>
+            <p>You'll need to verify the new email address. We'll also send a confirmation to your old email to prevent unauthorized changes.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Do you sell my data to third parties?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">No.</strong> We never sell user data.</p>
+            <p>Business owners: We don't share your information with lobbyists unless you contact them directly.</p>
+            <p>Lobbyists: Your public profile information (from TEC) is already public. We don't share your analytics or private account details with anyone.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ABOUT THE PLATFORM -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-texas-blue-600 mb-8 pb-4 border-b-2 border-texas-blue-600">
+        About the Platform
+      </h2>
+
+      <div class="space-y-4">
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Who runs TexasLobby.org?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>TexasLobby.org is an independent platform dedicated to making Texas lobbying more transparent and accessible.</p>
+            <p>We're not affiliated with any political party, lobbying firm, or government agency. We're funded by premium subscriptions from lobbyists—not by selling data or taking commissions.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Is TexasLobby.org affiliated with the Texas government?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">No.</strong> We're an independent private company.</p>
+            <p>We use public data from the Texas Ethics Commission (TEC), but we're not part of the government. Think of us like Zillow (which uses public property records) or OpenSecrets (which uses FEC data).</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">How often is your data updated?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>We sync with the Texas Ethics Commission database monthly to capture:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>New lobbyist registrations</li>
+              <li>Client list changes</li>
+              <li>Subject area updates</li>
+              <li>Expired registrations</li>
+            </ul>
+            <p>Claimed profiles with user-added content (bios, photos) are updated in real-time as lobbyists edit them.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Can I report inaccurate information?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">Yes.</strong> Every profile has a "Report Issue" button.</p>
+            <p>If you see incorrect data, outdated client lists, or fraudulent claims, let us know and we'll investigate.</p>
+            <p>For TEC-sourced data, we'll check the official records. For user-submitted content, we'll review and potentially remove false information.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">What's LobbyistGPT?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p>LobbyistGPT is an AI-powered tool (coming soon) that helps lobbyists:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>Track bills affecting their clients</li>
+              <li>Generate legislative briefs and summaries</li>
+              <li>Analyze voting records and legislator positions</li>
+              <li>Draft client reports</li>
+            </ul>
+            <p>It will be included in the Professional tier ($997/month) when it launches.</p>
+          </div>
+        </details>
+
+        <details class="group bg-white border border-border rounded-lg overflow-hidden">
+          <summary class="flex justify-between items-center cursor-pointer p-6 hover:bg-muted/50 transition-colors">
+            <h3 class="text-lg font-semibold text-foreground">Do you cover lobbyists in other states?</h3>
+            <svg class="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6 text-muted-foreground space-y-4">
+            <p><strong class="text-foreground">No, we're Texas-only.</strong></p>
+            <p>We believe in going deep rather than wide. Texas has unique political culture, legislative process, and lobbying dynamics. We're experts in Texas, and we're staying focused on serving this market well.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-gradient-to-br from-texas-blue-500 to-texas-blue-600 rounded-xl p-8 lg:p-12 text-white text-center">
+      <h2 class="text-3xl font-bold mb-4">Still Have Questions?</h2>
+      <p class="text-xl text-blue-50 mb-8">We're here to help. Get in touch with our team.</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center px-8 py-4 bg-white text-texas-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors"
+      >
+        Contact Us
+      </a>
+    </section>
+  </div>
+</Layout>

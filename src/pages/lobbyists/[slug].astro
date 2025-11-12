@@ -7,6 +7,7 @@ import SimilarLobbyistsList from '@/components/react/SimilarLobbyistsList';
 import FavoriteButton from '@/components/react/FavoriteButton';
 import TestimonialsDisplay from '@/components/react/TestimonialsDisplay';
 import VerifiedBadge from '@/components/react/VerifiedBadge';
+import ReportIssueButton from '@/components/react/ReportIssueButton';
 import { getLobbyistBySlug, getLobbyistClients } from '@/lib/api/lobbyists';
 import { getLobbyistTaggedBills } from '@/lib/api/bills';
 import { calculateSimilarLobbyists } from '@/lib/utils/similarity';
@@ -718,6 +719,15 @@ const tagTypeConfig = {
                 </div>
               </>
             )}
+
+            {/* Report Issue - Always visible at bottom */}
+            <div class="pt-4 border-t border-border">
+              <ReportIssueButton
+                lobbyistId={lobbyist.id}
+                lobbyistName={fullName}
+                client:load
+              />
+            </div>
           </div>
 
           {/* Upgrade CTA for unclaimed profiles */}

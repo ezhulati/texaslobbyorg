@@ -38,6 +38,9 @@ export default function AISearchFilter({ onFilter }: AISearchFilterProps) {
       // Extract lobbyist IDs from results
       const ids = data.results.map((r: any) => r.id);
       onFilter(ids);
+
+      // Scroll to top of page to show results
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       onFilter(null);

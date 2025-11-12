@@ -258,8 +258,8 @@ export default function ProfileEditForm({
               key={city.slug}
               className={`flex items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors ${
                 selectedCities.includes(city.slug)
-                  ? 'border-texas-blue bg-texas-blue-500/5'
-                  : 'border-border hover:border-texas-blue/50'
+                  ? 'border-texas-blue-500 bg-texas-blue-500/5'
+                  : 'border-border hover:border-texas-blue-300'
               }`}
             >
               <input
@@ -267,7 +267,7 @@ export default function ProfileEditForm({
                 checked={selectedCities.includes(city.slug)}
                 onChange={() => toggleCity(city.slug)}
                 disabled={loading}
-                className="rounded border-gray-300 text-texas-blue-500 focus:ring-texas-blue"
+                className="rounded border-gray-300 text-texas-blue-500 focus:ring-texas-blue-500"
               />
               <span className="text-sm font-medium">{city.name}</span>
             </label>
@@ -290,8 +290,8 @@ export default function ProfileEditForm({
               key={subject.slug}
               className={`flex items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors ${
                 selectedSubjects.includes(subject.slug)
-                  ? 'border-texas-blue bg-texas-blue-500/5'
-                  : 'border-border hover:border-texas-blue/50'
+                  ? 'border-texas-blue-500 bg-texas-blue-500/5'
+                  : 'border-border hover:border-texas-blue-300'
               }`}
             >
               <input
@@ -299,7 +299,7 @@ export default function ProfileEditForm({
                 checked={selectedSubjects.includes(subject.slug)}
                 onChange={() => toggleSubject(subject.slug)}
                 disabled={loading}
-                className="rounded border-gray-300 text-texas-blue-500 focus:ring-texas-blue"
+                className="rounded border-gray-300 text-texas-blue-500 focus:ring-texas-blue-500"
               />
               <span className="text-sm font-medium">{subject.name}</span>
             </label>

@@ -313,7 +313,7 @@ export default function ClientManagement({ lobbyistId }: ClientManagementProps) 
             {currentClients.map((client) => (
               <div
                 key={client.id}
-                className="rounded-lg border border-border bg-white p-4 hover:border-texas-blue/50 transition-colors"
+                className="rounded-lg border border-border bg-white p-4 hover:border-texas-blue-300 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
@@ -361,7 +361,7 @@ export default function ClientManagement({ lobbyistId }: ClientManagementProps) 
             {pastClients.map((client) => (
               <div
                 key={client.id}
-                className="rounded-lg border border-border bg-muted/30 p-4 hover:border-texas-blue/50 transition-colors"
+                className="rounded-lg border border-border bg-muted/30 p-4 hover:border-texas-blue-300 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">

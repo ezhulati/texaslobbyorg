@@ -14,6 +14,7 @@ export default defineConfig({
   output: 'server',
   adapter: netlify({
     edgeMiddleware: false,
+    imageCDN: false,
   }),
   site: 'https://texaslobby.org',
   server: {

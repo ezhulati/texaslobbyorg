@@ -140,6 +140,40 @@ if (isAdmin) {
             >
               Dashboard
             </a>
+
+            <!-- My Bills Dropdown -->
+            <div class="relative group">
+              <button
+                class="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-texas-blue-500 transition-colors"
+                aria-label="My Bills menu"
+              >
+                My Bills
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="absolute left-0 mt-2 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <a
+                  href="/watchlist"
+                  class:list={[
+                    'block px-4 py-2.5 text-sm transition-colors hover:bg-accent',
+                    pathname === '/watchlist' ? 'text-texas-blue-600 font-medium' : 'text-foreground',
+                  ]}
+                >
+                  My Watch List
+                </a>
+                <a
+                  href="/tagged-bills"
+                  class:list={[
+                    'block px-4 py-2.5 text-sm transition-colors hover:bg-accent',
+                    pathname === '/tagged-bills' ? 'text-texas-blue-600 font-medium' : 'text-foreground',
+                  ]}
+                >
+                  My Tagged Bills
+                </a>
+              </div>
+            </div>
+
             <div class="relative group">
               <button
                 class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -155,8 +189,6 @@ if (isAdmin) {
               <div class="absolute right-0 mt-2 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 {lobbyistSlug && <a href={`/lobbyists/${lobbyistSlug}`} class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Profile</a>}
                 <a href="/dashboard" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Edit Profile</a>
-                <a href="/watchlist" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Watchlist</a>
-                <a href="/tagged-bills" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">My Tagged Bills</a>
                 <a href="/dashboard/analytics" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Analytics</a>
                 <a href="/dashboard/subscription" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Plan & Billing</a>
                 <a href="/account" class="block px-4 py-2 text-sm text-foreground hover:bg-accent">Account Settings</a>
@@ -368,6 +400,26 @@ if (isAdmin) {
             >
               Dashboard
             </a>
+
+            <!-- My Bills Section -->
+            <div class="pt-2">
+              <div class="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                My Bills
+              </div>
+              <a
+                href="/watchlist"
+                class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors mb-2"
+              >
+                My Watch List
+              </a>
+              <a
+                href="/tagged-bills"
+                class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
+              >
+                My Tagged Bills
+              </a>
+            </div>
+
             {lobbyistSlug && (
               <a
                 href={`/lobbyists/${lobbyistSlug}`}
@@ -383,10 +435,10 @@ if (isAdmin) {
               Edit Profile
             </a>
             <a
-              href="/tagged-bills"
+              href="/dashboard/analytics"
               class="block w-full text-center px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-md hover:bg-accent transition-colors"
             >
-              My Tagged Bills
+              Analytics
             </a>
             <a
               href="/dashboard/subscription"

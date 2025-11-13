@@ -3,6 +3,7 @@ import Layout from '@/components/astro/Layout.astro';
 import { supabase } from '@/lib/supabase';
 import { createServerClient } from '@/lib/supabase';
 import { getUserRole } from '@/lib/auth';
+import ProfileVisibilityToggle from '@/components/react/ProfileVisibilityToggle';
 
 // Check if user is authenticated (from middleware)
 const user = Astro.locals.user;
@@ -332,6 +333,13 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
           </p>
         </div>
 
+      <!-- Profile Visibility Toggle (show for claimed, non-pending, non-rejected profiles) -->
+      {isClaimed && !isPending && !isRejected && (
+        <div class="mb-8">
+          <ProfileVisibilityToggle client:load initialIsActive={isActive} />
+        </div>
+      )}
+
       <!-- Pending Approval Banner -->
       {isPending && (
         <div class="mb-8 rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-white p-8 shadow-sm">
@@ -499,24 +507,7 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
         </div>
       )}
 
-      <!-- Inactive Profile Banner (claimed but not yet active) -->
-      {isClaimed && !isActive && !isPending && !isRejected && (
-        <div class="mb-8 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
-          <div class="flex gap-4">
-            <div class="flex-shrink-0">
-              <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="text-lg font-semibold text-blue-900 mb-2">Profile Not Yet Active</h3>
-              <p class="text-sm text-blue-800">
-                Your profile has been claimed but is not yet visible on the site. Please contact support if you believe this is an error.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <!-- This banner is no longer needed - users can toggle visibility themselves above -->
 
       <!-- Duplicate Profiles Detected Banner -->
       {duplicates && duplicates.length > 0 && !pendingMerge && (
@@ -573,17 +564,27 @@ const pageDescription = 'Manage your Texas lobbyist profile, update information,
               {isActive ? 'Active' : isPending ? 'Pending' : 'Inactive'}
             </span>
           </div>
-          <div class="space-y-2 text-sm">
+          <div class="space-y-3 text-sm">
             <div class="flex justify-between">
               <span class="text-muted-foreground">Claimed:</span>
               <span class="font-medium">{isClaimed ? 'Yes' : 'No'}</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-muted-foreground">Visibility:</span>
-              <span class="font-medium">{isActive ? 'Public' : 'Hidden'}</span>
+            <div class="flex justify-between items-start">
+              <span class="text-muted-foreground">Directory Status:</span>
+              <div class="text-right">
+                <span class={`font-medium ${isActive ? 'text-green-600' : 'text-gray-600'}`}>
+                  {isActive ? '🟢 Listed' : '🔴 Unlisted'}
+                </span>
+                {isActive && (
+                  <p class="text-xs text-muted-foreground mt-0.5">Visible to all</p>
+                )}
+                {!isActive && !isPending && (
+                  <p class="text-xs text-muted-foreground mt-0.5">Direct link only</p>
+                )}
+              </div>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted-foreground">Tier:</span>
+              <span class="text-muted-foreground">Subscription:</span>
               <span class:list={[
                 'font-medium capitalize',
                 isCancelledButActive && 'text-orange-600'

@@ -28,16 +28,22 @@ async function checkSEOCount() {
     .single();
 
   console.log('\n📊 SEO Metadata Status:');
-  console.log(`   ✅ Bills WITH SEO: ${withSEO}`);
-  console.log(`   ⏳ Bills still needing SEO: ${needingSEO}`);
-  console.log(`   📈 Completion: ${((withSEO / (withSEO + needingSEO)) * 100).toFixed(1)}%`);
+  console.log(`   ✅ Bills WITH SEO: ${withSEO ?? 0}`);
+  console.log(`   ⏳ Bills still needing SEO: ${needingSEO ?? 0}`);
+  const total = (withSEO ?? 0) + (needingSEO ?? 0);
+  const completion = total > 0 ? (((withSEO ?? 0) / total) * 100).toFixed(1) : '0.0';
+  console.log(`   📈 Completion: ${completion}%`);
 
   if (sample) {
     console.log(`\n📝 Sample Bill (${sample.bill_number}):`);
-    console.log(`   Title Tag (${sample.title_tag.length} chars): ${sample.title_tag}`);
-    console.log(`   Meta Desc (${sample.meta_description.length} chars): ${sample.meta_description}`);
-    console.log(`   Intro Hook: ${sample.intro_hook}`);
-    console.log(`   Excerpt: ${sample.excerpt}`);
+    if (sample.title_tag) {
+      console.log(`   Title Tag (${sample.title_tag.length} chars): ${sample.title_tag}`);
+    }
+    if (sample.meta_description) {
+      console.log(`   Meta Desc (${sample.meta_description.length} chars): ${sample.meta_description}`);
+    }
+    console.log(`   Intro Hook: ${sample.intro_hook ?? 'N/A'}`);
+    console.log(`   Excerpt: ${sample.excerpt ?? 'N/A'}`);
   }
 }
 

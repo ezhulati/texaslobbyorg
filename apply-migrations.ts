@@ -5,6 +5,7 @@ import { join } from 'path';
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,

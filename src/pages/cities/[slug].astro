@@ -5,6 +5,10 @@ import { supabase } from '@/lib/supabase';
 
 const { slug } = Astro.params;
 
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
 // Get city data
 const { data: city, error: cityError } = await supabase
   .from('cities')
@@ -40,11 +44,18 @@ lobbyists?.forEach((lobbyist) => {
 });
 
 const topSubjects = Object.entries(subjectCounts)
-  .sort(([, a], [, b]) => b - a)
+  .sort(([, a], [, b]) => (b as number) - (a as number))
   .slice(0, 5);
 
 const featuredCount = lobbyists?.filter((l) => l.subscription_tier === 'featured').length || 0;
 const premiumCount = lobbyists?.filter((l) => l.subscription_tier === 'premium').length || 0;
+
+// Transform lobbyists data to match component interface (ensure cities is never null)
+const lobbyistsForComponent = lobbyists?.map(l => ({
+  ...l,
+  cities: l.cities || [],
+  subject_areas: l.subject_areas || []
+})) || [];
 
 // Build SEO-optimized title (55-60 chars)
 const lobbyistCount = lobbyists?.length || 0;
@@ -211,7 +222,7 @@ if (!pageDescription) {
                 </div>
 
                 {/* Searchable Lobbyists List */}
-                <SearchableList lobbyists={lobbyists} client:load />
+                <SearchableList lobbyists={lobbyistsForComponent} client:load />
               </div>
             ) : (
               /* Empty State */

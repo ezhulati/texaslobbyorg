@@ -68,9 +68,9 @@ const config = tagTypeConfig[tag.tag_type as keyof typeof tagTypeConfig] || tagT
       </div>
 
       {/* Notes */}
-      {tag.context_notes && (
+      {tag.notes && (
         <div class="mb-4">
-          <p class="text-gray-700 leading-relaxed">{tag.context_notes}</p>
+          <p class="text-gray-700 leading-relaxed">{tag.notes}</p>
         </div>
       )}
 

@@ -8,14 +8,35 @@
 
 import Layout from '@/components/astro/Layout.astro';
 import { getLobbyistTaggedBills } from '@/lib/api/bills';
-import { getOrCreateMockUser } from '@/lib/auth-mock';
+import { createServerClient } from '@/lib/supabase';
 
-// Get mock user (in real implementation, this would use Supabase Auth)
-const mockUser = getOrCreateMockUser();
+// Require authentication
+const user = Astro.locals.user;
+if (!user) {
+  const returnUrl = `${Astro.url.pathname}${Astro.url.search}`;
+  return Astro.redirect(`/login?redirect=${returnUrl}`);
+}
 
 // Only lobbyists can access this page
-if (mockUser.role !== 'lobbyist') {
+if (user.role !== 'lobbyist') {
   return Astro.redirect('/bills?error=lobbyist-only');
+}
+
+// Resolve lobbyist id (claimed or linked)
+let lobbyistId: string | null = null;
+try {
+  const server = createServerClient();
+  const { data } = await server
+    .from('lobbyists')
+    .select('id')
+    .or(`user_id.eq.${user.id},claimed_by.eq.${user.id}`)
+    .limit(1)
+    .maybeSingle();
+  lobbyistId = data?.id || null;
+} catch {}
+
+if (!lobbyistId) {
+  return Astro.redirect('/claim-profile');
 }
 
 // Fetch tagged bills for this lobbyist
@@ -23,7 +44,7 @@ let taggedBills: any[] = [];
 let error: string | null = null;
 
 try {
-  taggedBills = await getLobbyistTaggedBills(mockUser.id);
+  taggedBills = await getLobbyistTaggedBills(lobbyistId);
 } catch (err) {
   console.error('Failed to fetch tagged bills:', err);
   error = err instanceof Error ? err.message : 'Failed to load tagged bills';
@@ -207,13 +228,13 @@ const tagTypeConfig = {
                 </div>
               </div>
 
-              {/* Notes */}
-              {tag.context_notes && (
-                <div class="mb-4 p-3 bg-gray-50 rounded-md border border-gray-200">
-                  <div class="text-xs text-gray-500 mb-1 font-medium">My Notes</div>
-                  <p class="text-sm text-gray-700 leading-relaxed">{tag.context_notes}</p>
-                </div>
-              )}
+                  {/* Notes */}
+                  {(tag.notes || tag.context_notes) && (
+                    <div class="mb-4 p-3 bg-gray-50 rounded-md border border-gray-200">
+                      <div class="text-xs text-gray-500 mb-1 font-medium">My Notes</div>
+                      <p class="text-sm text-gray-700 leading-relaxed">{tag.notes || tag.context_notes}</p>
+                    </div>
+                  )}
 
               {/* Bill Details */}
               <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">

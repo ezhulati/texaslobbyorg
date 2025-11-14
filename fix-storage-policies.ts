@@ -24,7 +24,7 @@ async function fixStoragePolicies() {
     console.log('❌ profile-photos bucket does NOT exist');
     console.log('Creating bucket...\n');
 
-    const { data: newBucket, error: createError } = await supabase
+    const { error: createError } = await supabase
       .storage
       .createBucket('profile-photos', {
         public: true,

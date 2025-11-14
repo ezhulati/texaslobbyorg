@@ -79,7 +79,7 @@ const cityData = lobbyists?.reduce((acc, l) => {
 }, {} as Record<string, number>) || {};
 
 const topCities = Object.entries(cityData)
-  .sort(([, a], [, b]) => b - a)
+  .sort(([, a], [, b]) => (b as number) - (a as number))
   .slice(0, 10);
 
 // Subject area breakdown
@@ -91,7 +91,7 @@ const subjectData = lobbyists?.reduce((acc, l) => {
 }, {} as Record<string, number>) || {};
 
 const topSubjects = Object.entries(subjectData)
-  .sort(([, a], [, b]) => b - a)
+  .sort(([, a], [, b]) => (b as number) - (a as number))
   .slice(0, 15);
 
 // Industry breakdown using our industry matching logic
@@ -177,7 +177,7 @@ const categorizedClients: Record<string, Array<{ name: string; count: number }>>
 
 sortedClients.forEach(client => {
   const category = categorizeClient(client.name);
-  if (category && categorizedClients[category].length < 5) {
+  if (category && categorizedClients[category] && categorizedClients[category].length < 5) {
     categorizedClients[category].push(client);
   }
 });
@@ -281,11 +281,12 @@ const schema = {
           <div class="p-6">
             <div class="space-y-4">
               {topCities.map(([city, count], index) => {
-                const percentage = ((count / totalLobbyists) * 100).toFixed(1);
-                const barWidth = Math.max(10, (count / topCities[0][1]) * 100);
+                const numCount = count as number;
+                const percentage = ((numCount / totalLobbyists) * 100).toFixed(1);
+                const barWidth = Math.max(10, (numCount / (topCities[0]?.[1] as number || 1)) * 100);
 
                 return (
-                  <div key={city}>
+                  <div>
                     <div class="flex items-center justify-between mb-2">
                       <div class="flex items-center gap-3">
                         <span class="text-sm font-mono text-muted-foreground w-6">#{index + 1}</span>
@@ -335,11 +336,8 @@ const schema = {
           </div>
           <div class="p-6">
             <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
-              {topSubjects.map(([subject, count], index) => {
-                const percentage = ((count / totalLobbyists) * 100).toFixed(1);
-
-                return (
-                  <div key={subject} class="flex items-center justify-between">
+              {topSubjects.map(([subject, count], index) => (
+                  <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                       <span class="text-sm font-mono text-muted-foreground w-6">#{index + 1}</span>
                       <a
@@ -353,8 +351,7 @@ const schema = {
                       <span class="font-semibold text-foreground">{count}</span>
                     </div>
                   </div>
-                );
-              })}
+              ))}
             </div>
           </div>
         </div>
@@ -371,7 +368,6 @@ const schema = {
             return (
               <a
                 href={`/industries/${industrySlug}`}
-                key={industry}
                 class="bg-white rounded-lg border border-border p-6 hover:border-texas-blue-500 transition-colors"
               >
                 <h3 class="font-semibold text-lg mb-2">{industry}</h3>
@@ -396,7 +392,7 @@ const schema = {
 
         <div class="grid md:grid-cols-2 gap-8">
           <!-- Lobby Teams -->
-          {categorizedClients.lobbyTeams.length > 0 && (
+          {categorizedClients.lobbyTeams && categorizedClients.lobbyTeams.length > 0 && (
             <div class="bg-white rounded-lg border border-border overflow-hidden">
               <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
                 <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Lobby Teams</h3>
@@ -404,7 +400,7 @@ const schema = {
               <div class="p-6">
                 <ol class="space-y-3">
                   {categorizedClients.lobbyTeams.map((client, index) => (
-                    <li key={client.name} class="flex items-start justify-between">
+                    <li class="flex items-start justify-between">
                       <div class="flex items-start gap-3">
                         <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
                         <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>
@@ -418,7 +414,7 @@ const schema = {
           )}
 
           <!-- Law Firms -->
-          {categorizedClients.lawFirms.length > 0 && (
+          {categorizedClients.lawFirms && categorizedClients.lawFirms.length > 0 && (
             <div class="bg-white rounded-lg border border-border overflow-hidden">
               <div class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
                 <h3 class="font-bold text-red-900 uppercase tracking-wide text-sm">Law Firms</h3>
@@ -426,7 +422,7 @@ const schema = {
               <div class="p-6">
                 <ol class="space-y-3">
                   {categorizedClients.lawFirms.map((client, index) => (
-                    <li key={client.name} class="flex items-start justify-between">
+                    <li class="flex items-start justify-between">
                       <div class="flex items-start gap-3">
                         <span class="text-sm font-semibold text-muted-foreground min-w-[1.5rem]">{index + 1}</span>
                         <span class="text-texas-blue-500 font-medium hover:underline">{client.name}</span>

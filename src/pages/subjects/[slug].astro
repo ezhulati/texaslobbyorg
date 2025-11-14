@@ -6,6 +6,10 @@ import { getIndustriesForSubject } from '@/lib/industries-data';
 
 const { slug } = Astro.params;
 
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
 // Get subject area data
 const { data: subject, error: subjectError } = await supabase
   .from('subject_areas')
@@ -41,16 +45,23 @@ lobbyists?.forEach((lobbyist) => {
 });
 
 const topCities = Object.entries(cityCounts)
-  .sort(([, a], [, b]) => b - a)
+  .sort(([, a], [, b]) => (b as number) - (a as number))
   .slice(0, 5);
 
 const featuredCount = lobbyists?.filter((l) => l.subscription_tier === 'featured').length || 0;
 const premiumCount = lobbyists?.filter((l) => l.subscription_tier === 'premium').length || 0;
-const totalYearsExperience = lobbyists?.reduce((sum, l) => {
+const totalYearsExperience = lobbyists?.reduce((sum) => {
   // Rough estimate based on sample data
   return sum + 10;
 }, 0) || 0;
 const avgYearsExperience = lobbyists?.length ? Math.round(totalYearsExperience / lobbyists.length) : 0;
+
+// Transform lobbyists data to match component interface (ensure cities is never null)
+const lobbyistsForComponent = lobbyists?.map(l => ({
+  ...l,
+  cities: l.cities || [],
+  subject_areas: l.subject_areas || []
+})) || [];
 
 // Build SEO-optimized title (55-60 chars)
 const lobbyistCount = lobbyists?.length || 0;
@@ -316,7 +327,7 @@ if (!pageDescription) {
                 </div>
 
                 {/* Searchable Lobbyists List */}
-                <SearchableList lobbyists={lobbyists} client:load />
+                <SearchableList lobbyists={lobbyistsForComponent} client:load />
               </div>
             ) : (
               /* Empty State */

@@ -278,26 +278,35 @@ export type Database = {
       bill_tags: {
         Row: {
           bill_id: string
-          context_notes: string | null
+          notes: string | null
           created_at: string | null
           id: string
           lobbyist_id: string
+          is_public: boolean
+          show_on_profile: boolean
+          tag_type: string | null
           updated_at: string | null
         }
         Insert: {
           bill_id: string
-          context_notes?: string | null
+          notes?: string | null
           created_at?: string | null
           id?: string
           lobbyist_id: string
+          is_public?: boolean
+          show_on_profile?: boolean
+          tag_type?: string | null
           updated_at?: string | null
         }
         Update: {
           bill_id?: string
-          context_notes?: string | null
+          notes?: string | null
           created_at?: string | null
           id?: string
           lobbyist_id?: string
+          is_public?: boolean
+          show_on_profile?: boolean
+          tag_type?: string | null
           updated_at?: string | null
         }
         Relationships: [

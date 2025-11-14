@@ -13,9 +13,11 @@
  * Alternative: Use Supabase's pg_cron extension (if available in your plan)
  */
 
+// @ts-ignore - Deno runtime types not available in TypeScript check
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-Deno.serve(async (req) => {
+// @ts-ignore - Deno runtime types not available in TypeScript check
+Deno.serve(async (req: Request) => {
   try {
     // Only allow POST requests
     if (req.method !== 'POST') {
@@ -35,7 +37,9 @@ Deno.serve(async (req) => {
     }
 
     // Create Supabase client with service role
+    // @ts-ignore - Deno runtime types not available in TypeScript check
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    // @ts-ignore - Deno runtime types not available in TypeScript check
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
     const supabase = createClient(supabaseUrl, supabaseKey);

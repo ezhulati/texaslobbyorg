@@ -1,3 +1,4 @@
+// @ts-ignore - pg types not installed, script run outside main build
 import pg from 'pg';
 import * as fs from 'fs';
 
@@ -46,7 +47,7 @@ async function runMigration() {
     `);
 
     console.log('Verified columns:');
-    result.rows.forEach(row => {
+    result.rows.forEach((row: any) => {
       console.log(`  - ${row.column_name}: ${row.data_type}`);
     });
 

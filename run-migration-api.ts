@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import * as fs from 'fs';
 
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;

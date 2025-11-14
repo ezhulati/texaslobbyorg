@@ -35,16 +35,17 @@ export const PATCH: APIRoute = async ({ params, request }) => {
 
   try {
     const body = await request.json();
-    const { tag_type, notes, is_public } = body;
+    const { tag_type, notes, is_public, show_on_profile } = body;
 
     const supabase = createServerClient();
 
     const updateData: any = {};
     if (tag_type) updateData.tag_type = tag_type;
-    if (notes !== undefined) updateData.context_notes = notes;
+    if (notes !== undefined) updateData.notes = notes;
     if (is_public !== undefined) updateData.is_public = is_public;
+    if (show_on_profile !== undefined) updateData.show_on_profile = show_on_profile;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('bill_tags')
       .update(updateData)
       .eq('id', tagId)
@@ -53,7 +54,24 @@ export const PATCH: APIRoute = async ({ params, request }) => {
       .single();
 
     if (error) {
-      throw error;
+      const msg = String(error.message || '');
+      const fallbackUpdate: any = { ...updateData };
+      if (msg.includes('column "notes"')) {
+        fallbackUpdate.context_notes = fallbackUpdate.notes;
+        delete fallbackUpdate.notes;
+      }
+      // Always omit show_on_profile for older schemas
+      delete fallbackUpdate.show_on_profile;
+      const retry = await supabase
+        .from('bill_tags')
+        .update(fallbackUpdate)
+        .eq('id', tagId)
+        .eq('bill_id', billId)
+        .select()
+        .single();
+      data = retry.data as any;
+      error = retry.error as any;
+      if (error) throw error;
     }
 
     if (!data) {

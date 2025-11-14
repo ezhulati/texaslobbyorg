@@ -47,11 +47,11 @@ if (isAuthenticated && currentUser) {
 // Fetch clients
 const clients: Database['public']['Tables']['clients']['Row'][] = await getLobbyistClients(lobbyist.id);
 
-// Fetch tagged bills (public only)
+// Fetch tagged bills (profile visibility)
 let taggedBills: any[] = [];
 try {
   const allTaggedBills = await getLobbyistTaggedBills(lobbyist.id);
-  taggedBills = allTaggedBills.filter((tag: any) => tag.is_public);
+  taggedBills = allTaggedBills.filter((tag: any) => tag.show_on_profile ?? tag.is_public);
 } catch (err) {
   console.error('Failed to fetch tagged bills:', err);
 }
@@ -314,10 +314,10 @@ const tagTypeConfig = {
                       </div>
 
                       {/* Notes */}
-                      {tag.context_notes && (
+                      {tag.notes && (
                         <div class="mb-3 p-3 bg-gray-50 rounded-md border border-gray-200">
                           <div class="text-xs text-gray-500 mb-1 font-medium">{fullName}'s Insight</div>
-                          <p class="text-sm text-gray-700 leading-relaxed">{tag.context_notes}</p>
+                          <p class="text-sm text-gray-700 leading-relaxed">{tag.notes}</p>
                         </div>
                       )}
 

@@ -9,7 +9,7 @@ async function checkTables() {
   console.log('Checking database tables...\n');
 
   // Check testimonials table
-  const { data: testimonialsTest, error: testimonialsError } = await supabase
+  const { error: testimonialsError } = await supabase
     .from('testimonials')
     .select('id')
     .limit(1);
@@ -18,7 +18,7 @@ async function checkTables() {
   if (testimonialsError) console.log('  Error:', testimonialsError.message);
 
   // Check support_tickets table
-  const { data: ticketsTest, error: ticketsError } = await supabase
+  const { error: ticketsError } = await supabase
     .from('support_tickets')
     .select('id')
     .limit(1);
@@ -27,7 +27,7 @@ async function checkTables() {
   if (ticketsError) console.log('  Error:', ticketsError.message);
 
   // Check support_ticket_messages table
-  const { data: messagesTest, error: messagesError } = await supabase
+  const { error: messagesError } = await supabase
     .from('support_ticket_messages')
     .select('id')
     .limit(1);
@@ -38,14 +38,14 @@ async function checkTables() {
   console.log('\n✓ Existing tables check:');
 
   // Check existing tables
-  const { data: lobbyistsTest, error: lobbyistsError } = await supabase
+  const { error: lobbyistsError } = await supabase
     .from('lobbyists')
     .select('id')
     .limit(1);
 
   console.log('  lobbyists table:', lobbyistsError ? '❌ ERROR' : '✅ EXISTS');
 
-  const { data: usersTest, error: usersError } = await supabase
+  const { error: usersError } = await supabase
     .from('users')
     .select('id')
     .limit(1);

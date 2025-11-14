@@ -72,7 +72,7 @@ export const POST: APIRoute = async ({ params, request }) => {
 
   try {
     const body = await request.json();
-    const { lobbyist_id, tag_type, notes, is_public } = body;
+    const { lobbyist_id, tag_type, notes, is_public, show_on_profile } = body;
 
     if (!lobbyist_id || !tag_type) {
       return new Response(
@@ -86,18 +86,21 @@ export const POST: APIRoute = async ({ params, request }) => {
 
     const supabase = createServerClient();
 
-    const { data, error } = await supabase
+    // First attempt: use modern columns
+    let { data, error } = await supabase
       .from('bill_tags')
       .insert({
         bill_id: billId,
         lobbyist_id,
         tag_type: tag_type || 'monitoring',
-        context_notes: notes || null,
+        notes: notes || null,
         is_public: is_public ?? true,
+        show_on_profile: show_on_profile ?? true,
       })
       .select()
       .single();
 
+    // Fallbacks for older schemas
     if (error) {
       if (error.code === '23505') {
         return new Response(
@@ -108,7 +111,27 @@ export const POST: APIRoute = async ({ params, request }) => {
           }
         );
       }
-      throw error;
+      const msg = String(error.message || '');
+      let insertPayload: any = {
+        bill_id: billId,
+        lobbyist_id,
+        tag_type: tag_type || 'monitoring',
+        is_public: is_public ?? true,
+      };
+      if (msg.includes('column "notes"')) {
+        insertPayload.context_notes = notes || null;
+      } else {
+        insertPayload.notes = notes || null;
+      }
+      // Do not include show_on_profile in fallback to support older schemas
+      const retry = await supabase
+        .from('bill_tags')
+        .insert(insertPayload)
+        .select()
+        .single();
+      data = retry.data as any;
+      error = retry.error as any;
+      if (error) throw error;
     }
 
     return new Response(JSON.stringify({ tag: data }), {

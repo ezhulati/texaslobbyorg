@@ -28,19 +28,29 @@ export default function WatchlistButton({
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Get user ID from cookies on mount
+  // Resolve userId via API; check status; auto-add after login intent
   useEffect(() => {
-    if (isAuthenticated) {
-      // Get user ID from cookie or session
-      const userIdFromCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('user_id='))
-        ?.split('=')[1];
-      setUserId(userIdFromCookie || null);
-      if (userIdFromCookie) {
-        checkWatchlistStatus(userIdFromCookie);
-      }
-    }
+    (async () => {
+      try {
+        const resp = await fetch('/api/auth/me');
+        if (resp.ok) {
+          const json = await resp.json();
+          const uid = json.userId || null;
+          setUserId(uid);
+          if (uid) {
+            await checkWatchlistStatus(uid);
+            // Auto-add if returning from login with intent
+            const url = new URL(window.location.href);
+            if (url.searchParams.get('intent') === 'watchlist' && url.searchParams.get('billId') === billId && !isInWatchlist) {
+              // Clean intent before action to avoid loops
+              url.searchParams.delete('intent');
+              history.replaceState(null, '', url.pathname + url.search);
+              handleToggleWatchlist();
+            }
+          }
+        }
+      } catch {}
+    })();
   }, [isAuthenticated, billId]);
 
   const checkWatchlistStatus = async (uid: string) => {
@@ -59,8 +69,17 @@ export default function WatchlistButton({
 
   const handleToggleWatchlist = async () => {
     if (!userId) {
-      setError('Please log in to use watchlist');
-      return;
+      // Redirect to login with return URL and intent
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('intent', 'watchlist');
+        url.searchParams.set('billId', billId);
+        window.location.href = `/login?redirect=${encodeURIComponent(url.pathname + url.search)}`;
+        return;
+      } catch {
+        setError('Please log in to use watchlist');
+        return;
+      }
     }
 
     setIsLoading(true);

@@ -9,14 +9,17 @@ import Layout from '@/components/astro/Layout.astro';
 import BillCard from '@/components/astro/bills/BillCard.astro';
 import { getUserWatchlist } from '@/lib/api/bills';
 
-// For now, use a mock user ID
-// TODO: Replace with real auth when Supabase Auth is implemented
-const mockUserId = 'mock-user-1731213600000'; // This will be from localStorage in client-side
+// Require authentication
+const user = Astro.locals.user;
+if (!user) {
+  const returnUrl = `${Astro.url.pathname}${Astro.url.search}`;
+  return Astro.redirect(`/login?redirect=${returnUrl}`);
+}
 
-// Fetch watchlist (will be empty initially, populated via client-side)
+// Fetch watchlist for current user
 let bills = [];
 try {
-  bills = await getUserWatchlist(mockUserId);
+  bills = await getUserWatchlist(user.id);
 } catch (error) {
   console.error('Failed to fetch watchlist:', error);
 }
@@ -95,7 +98,7 @@ const pageDescription =
     </div>
 
     {/* Bills List */}
-    <div id="watchlist-container">
+    <div id="watchlist-container" data-user-id={user.id}>
       {bills.length > 0 ? (
         <div class="space-y-4">
           {bills.map((bill: any) => (
@@ -162,13 +165,9 @@ const pageDescription =
 </Layout>
 
 <script>
-  import { getOrCreateMockUser } from '@/lib/auth-mock';
-
-  // Handle remove from watchlist
+  // Handle remove from watchlist (uses server-rendered user id)
   document.addEventListener('click', async (e) => {
-    const button = (e.target as HTMLElement).closest(
-      '[data-action="remove"]'
-    );
+    const button = (e.target as HTMLElement).closest('[data-action="remove"]');
     if (!button) return;
 
     const billId = (button as HTMLElement).dataset.billId;
@@ -177,34 +176,25 @@ const pageDescription =
     if (!confirm('Remove this bill from your watchlist?')) return;
 
     try {
-      const user = getOrCreateMockUser();
-      const response = await fetch(
-        `/api/watchlist/${user.id}/bills/${billId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const container = document.getElementById('watchlist-container');
+      const userId = container?.getAttribute('data-user-id');
+      if (!userId) {
+        window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        return;
+      }
 
+      const response = await fetch(`/api/watchlist/${userId}/bills/${billId}`, { method: 'DELETE' });
       if (response.ok) {
-        // Remove the bill card from the page
         const card = button.closest('.relative');
         if (card) {
           card.remove();
-
-          // Update stats
           const totalElement = document.getElementById('total-watching');
           if (totalElement) {
             const current = parseInt(totalElement.textContent || '0');
             totalElement.textContent = (current - 1).toString();
           }
-
-          // Check if watchlist is now empty
-          const container = document.getElementById('watchlist-container');
-          const remainingCards = container?.querySelectorAll('.relative');
-          if (remainingCards && remainingCards.length === 0) {
-            // Show empty state
-            location.reload();
-          }
+          const remainingCards = document.getElementById('watchlist-container')?.querySelectorAll('.relative');
+          if (remainingCards && remainingCards.length === 0) location.reload();
         }
       } else {
         alert('Failed to remove bill from watchlist');

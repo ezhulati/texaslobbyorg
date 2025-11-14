@@ -15,9 +15,10 @@ interface BillTagButtonProps {
   billNumber: string;
   isAuthenticated: boolean;
   isLobbyist: boolean;
+  lobbyistId?: string | null;
 }
 
-export default function BillTagButton({ billId, billNumber, isAuthenticated, isLobbyist }: BillTagButtonProps) {
+export default function BillTagButton({ billId, billNumber, isAuthenticated, isLobbyist, lobbyistId: initialLobbyistId }: BillTagButtonProps) {
   const [isTagged, setIsTagged] = useState(false);
   const [existingTag, setExistingTag] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
@@ -29,20 +30,40 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
   const [tagType, setTagType] = useState<TagType>('monitoring');
   const [notes, setNotes] = useState('');
   const [isPublic, setIsPublic] = useState(true);
+  const [showOnProfile, setShowOnProfile] = useState(true);
 
   useEffect(() => {
     if (isAuthenticated && isLobbyist) {
-      // Get lobbyist ID from cookie
-      const lobbyistIdFromCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('user_id='))
-        ?.split('=')[1];
-      setLobbyistId(lobbyistIdFromCookie || null);
-      if (lobbyistIdFromCookie) {
-        checkTagStatus(lobbyistIdFromCookie);
+      const fromProp = initialLobbyistId || null;
+      if (fromProp) {
+        setLobbyistId(fromProp);
+        checkTagStatus(fromProp);
+        return;
       }
+      // Fallback: resolve via API
+      (async () => {
+        try {
+          const resp = await fetch('/api/lobbyist/me');
+          if (resp.ok) {
+            const json = await resp.json();
+            const resolved = json.lobbyistId || null;
+            setLobbyistId(resolved);
+            if (resolved) checkTagStatus(resolved);
+          }
+        } catch {}
+      })();
     }
-  }, [isAuthenticated, isLobbyist, billId]);
+    // Auto-open after login if intent=tag
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('intent') === 'tag' && url.searchParams.get('billId') === billId) {
+        setShowModal(true);
+        // Clean intent param to avoid re-triggering on subsequent navigations
+        url.searchParams.delete('intent');
+        history.replaceState(null, '', url.pathname + url.search);
+      }
+    } catch {}
+  }, [isAuthenticated, isLobbyist, billId, initialLobbyistId]);
 
   const checkTagStatus = async (lid: string) => {
     try {
@@ -56,8 +77,9 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
           setIsTagged(true);
           setExistingTag(myTag);
           setTagType(myTag.tag_type || 'monitoring');
-          setNotes(myTag.context_notes || '');
+          setNotes(myTag.notes || myTag.context_notes || '');
           setIsPublic(myTag.is_public ?? true);
+          setShowOnProfile(myTag.show_on_profile ?? true);
         }
       }
     } catch (err) {
@@ -69,7 +91,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
     e.preventDefault();
 
     if (!lobbyistId) {
-      setError('Please log in as a lobbyist to tag bills');
+      setError('We could not find your linked lobbyist profile. Please claim or link your profile to tag bills.');
       return;
     }
 
@@ -86,6 +108,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
             tag_type: tagType,
             notes,
             is_public: isPublic,
+            show_on_profile: showOnProfile,
           }),
         });
 
@@ -102,6 +125,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
             tag_type: tagType,
             notes,
             is_public: isPublic,
+            show_on_profile: showOnProfile,
           }),
         });
 
@@ -157,7 +181,16 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
   return (
     <>
       <button
-        onClick={() => setShowModal(true)}
+        onClick={() => {
+          if (!isAuthenticated || !isLobbyist) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('intent', 'tag');
+            url.searchParams.set('billId', billId);
+            window.location.href = `/login?redirect=${encodeURIComponent(url.pathname + url.search)}`;
+            return;
+          }
+          setShowModal(true);
+        }}
         className={`inline-flex items-center gap-2 px-6 py-3 font-medium rounded-md transition-colors ${
           isTagged
             ? 'bg-green-100 text-green-700 hover:bg-green-200 border-2 border-green-300'
@@ -237,18 +270,32 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
                 />
               </div>
 
-              {/* Public/Private */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="isPublic"
-                  checked={isPublic}
-                  onChange={(e) => setIsPublic(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label htmlFor="isPublic" className="text-sm text-gray-700">
-                  Show publicly on bill page (helps connect you with clients)
-                </label>
+              {/* Visibility Settings */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isPublic"
+                    checked={isPublic}
+                    onChange={(e) => setIsPublic(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="isPublic" className="text-sm text-gray-700">
+                    Show publicly on bill page
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="showOnProfile"
+                    checked={showOnProfile}
+                    onChange={(e) => setShowOnProfile(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="showOnProfile" className="text-sm text-gray-700">
+                    Show on my profile (bill and position)
+                  </label>
+                </div>
               </div>
 
               {error && (

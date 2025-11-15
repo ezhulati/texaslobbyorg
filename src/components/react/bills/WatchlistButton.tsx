@@ -133,6 +133,9 @@ export default function WatchlistButton({
     }
   }, [successToast]);
 
+  const tooltipAdd = 'Add this bill to your watchlist to get updates and find it later';
+  const tooltipRemove = 'Remove this bill from your watchlist';
+
   // Icon-only variant
   if (variant === 'icon') {
     return (
@@ -144,7 +147,7 @@ export default function WatchlistButton({
             ? 'text-blue-600 hover:bg-blue-50'
             : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
         } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-        title={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+        title={isInWatchlist ? tooltipRemove : tooltipAdd}
         aria-label={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
       >
         <svg
@@ -175,6 +178,7 @@ export default function WatchlistButton({
             ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        title={isInWatchlist ? tooltipRemove : tooltipAdd}
       >
         <svg
           className="w-4 h-4"
@@ -205,6 +209,7 @@ export default function WatchlistButton({
             ? 'bg-blue-600 text-white hover:bg-blue-700'
             : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
         } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        title={isInWatchlist ? tooltipRemove : tooltipAdd}
       >
         <svg
           className="w-5 h-5"

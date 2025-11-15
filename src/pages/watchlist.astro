@@ -111,6 +111,14 @@ const pageDescription =
                       <input type="checkbox" class="w-4 h-4" data-action="toggle-notifications" data-bill-id={bill.bill_id} checked={bill.notifications_enabled} />
                       Notifications
                     </label>
+                    <button
+                      class="px-2 py-1 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                      data-action="open-prefs"
+                      data-bill-id={bill.bill_id}
+                      title="Notification Preferences"
+                    >
+                      Preferences
+                    </button>
                   </div>
                 </div>
                 <p class="text-sm text-gray-700 mb-2">{bill.title}</p>
@@ -245,6 +253,96 @@ const pageDescription =
       console.error('Error updating notifications:', err);
       alert('Failed to update notifications');
       input.checked = !input.checked;
+    }
+  });
+
+  // Preferences modal
+  const modal = (() => {
+    const el = document.createElement('div');
+    el.id = 'prefs-modal';
+    el.className = 'fixed inset-0 hidden bg-black/50 z-50 items-center justify-center p-4';
+    el.innerHTML = `
+      <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-gray-900">Notification Preferences</h3>
+          <button id="prefs-close" class="text-gray-400 hover:text-gray-600">✕</button>
+        </div>
+        <form id="prefs-form" class="space-y-3">
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="types" value="status_change" class="w-4 h-4"/>
+            Status changes
+          </label>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="types" value="new_update" class="w-4 h-4"/>
+            New updates
+          </label>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="types" value="committee_action" class="w-4 h-4"/>
+            Committee actions
+          </label>
+          <div class="pt-3 flex gap-2">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Save</button>
+            <button type="button" id="prefs-cancel" class="px-4 py-2 border border-gray-300 rounded-md text-sm">Cancel</button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  })();
+
+  let currentPrefsBillId: string | null = null;
+
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest('[data-action="open-prefs"]') as HTMLElement | null;
+    if (!btn) return;
+    const billId = btn.getAttribute('data-bill-id');
+    if (!billId) return;
+    currentPrefsBillId = billId;
+    // preload existing types if available (requires API fetch if not in page data)
+    const form = modal.querySelector('#prefs-form') as HTMLFormElement;
+    form.querySelectorAll<HTMLInputElement>('input[name="types"]').forEach(cb => cb.checked = false);
+    // show
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  });
+
+  modal.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.id === 'prefs-close' || target.id === 'prefs-cancel') {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentPrefsBillId = null;
+    }
+  });
+
+  modal.querySelector('#prefs-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentPrefsBillId) return;
+    const form = e.target as HTMLFormElement;
+    const types = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="types"]'))
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+    try {
+      const container = document.getElementById('watchlist-container');
+      const userId = container?.getAttribute('data-user-id');
+      if (!userId) return;
+      const response = await fetch(`/api/watchlist/${userId}/bills/${currentPrefsBillId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notifications_enabled: true, notification_types: types }),
+      });
+      if (!response.ok) {
+        alert('Failed to save preferences');
+        return;
+      }
+      // close modal
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentPrefsBillId = null;
+    } catch (err) {
+      console.error('Error saving preferences:', err);
+      alert('Failed to save preferences');
     }
   });
 </script>

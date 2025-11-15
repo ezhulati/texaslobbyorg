@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Info } from 'lucide-react';
 
 interface WatchlistButtonProps {
   billId: string;
@@ -201,35 +202,43 @@ export default function WatchlistButton({
   // Default variant
   return (
     <div className="flex flex-col gap-2">
-      <button
-        onClick={handleToggleWatchlist}
-        disabled={isLoading}
-        className={`inline-flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-md transition-colors ${
-          isInWatchlist
-            ? 'bg-blue-600 text-white hover:bg-blue-700'
-            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-        title={isInWatchlist ? tooltipRemove : tooltipAdd}
-      >
-        <svg
-          className="w-5 h-5"
-          fill={isInWatchlist ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handleToggleWatchlist}
+          disabled={isLoading}
+          className={`inline-flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-md transition-colors ${
+            isInWatchlist
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+          } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          title={isInWatchlist ? tooltipRemove : tooltipAdd}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-          />
-        </svg>
-        {isLoading
-          ? 'Loading...'
-          : isInWatchlist
-          ? 'Remove from Watchlist'
-          : 'Add to Watchlist'}
-      </button>
+          <svg
+            className="w-5 h-5"
+            fill={isInWatchlist ? 'currentColor' : 'none'}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+            />
+          </svg>
+          {isLoading
+            ? 'Loading...'
+            : isInWatchlist
+            ? 'Remove from Watchlist'
+            : 'Add to Watchlist'}
+        </button>
+        <div className="relative group">
+          <Info className="w-4 h-4 text-gray-400" />
+          <span className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
+            {isInWatchlist ? tooltipRemove : tooltipAdd}
+          </span>
+        </div>
+      </div>
 
       {error && (
         <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">

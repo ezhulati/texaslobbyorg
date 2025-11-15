@@ -171,38 +171,46 @@ export default function WatchlistButton({
   // Compact variant
   if (variant === 'compact') {
     return (
-      <button
-        onClick={handleToggleWatchlist}
-        disabled={isLoading}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-          isInWatchlist
-            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-        title={isInWatchlist ? tooltipRemove : tooltipAdd}
-      >
-        <svg
-          className="w-4 h-4"
-          fill={isInWatchlist ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div className="relative inline-block">
+        <button
+          onClick={handleToggleWatchlist}
+          disabled={isLoading}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            isInWatchlist
+              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          title={isInWatchlist ? tooltipRemove : tooltipAdd}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-          />
-        </svg>
-        {isInWatchlist ? 'Watching' : 'Watch'}
-      </button>
+          <svg
+            className="w-4 h-4"
+            fill={isInWatchlist ? 'currentColor' : 'none'}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+            />
+          </svg>
+          {isInWatchlist ? 'Watching' : 'Watch'}
+        </button>
+        <div className="absolute -top-1 -right-1 group">
+          <Info className="w-4 h-4 text-gray-400 bg-white rounded-full shadow p-0.5" />
+          <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
+            {isInWatchlist ? tooltipRemove : tooltipAdd}
+          </span>
+        </div>
+      </div>
     );
   }
 
   // Default variant
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
+      <div className="relative inline-block">
         <button
           onClick={handleToggleWatchlist}
           disabled={isLoading}
@@ -232,9 +240,9 @@ export default function WatchlistButton({
             ? 'Remove from Watchlist'
             : 'Add to Watchlist'}
         </button>
-        <div className="relative group">
-          <Info className="w-4 h-4 text-gray-400" />
-          <span className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
+        <div className="absolute -top-1 -right-1 group">
+          <Info className="w-4 h-4 text-gray-400 bg-white rounded-full shadow p-0.5" />
+          <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
             {isInWatchlist ? tooltipRemove : tooltipAdd}
           </span>
         </div>

@@ -203,12 +203,6 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
             <span>{tagTypeConfig[existingTag?.tag_type || 'monitoring'].icon}</span>
             Tagged: {tagTypeConfig[existingTag?.tag_type || 'monitoring'].label}
           </span>
-          <div className="relative group">
-            <Info className="w-4 h-4 text-gray-400" />
-            <span className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
-              Tag your position (support, monitor, oppose) and optional notes. Visibility controls decide if it shows on this bill and your profile.
-            </span>
-          </div>
           <button
             onClick={handleRemoveTag}
             className="px-4 py-2 text-sm font-medium border border-red-300 rounded-md text-red-600 hover:bg-red-50"
@@ -217,29 +211,29 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
           </button>
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="relative inline-block">
           <button
-          onClick={() => {
-            if (!isAuthenticated || !isLobbyist) {
-              const url = new URL(window.location.href);
-              url.searchParams.set('intent', 'tag');
-              url.searchParams.set('billId', billId);
-              window.location.href = `/login?redirect=${encodeURIComponent(url.pathname + url.search)}`;
-              return;
-            }
-            setShowModal(true);
-          }}
-          className="inline-flex items-center gap-2 px-6 py-3 font-medium rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-          title="Tag your position (support, monitor, oppose) and optional notes. Visibility controls decide if it shows on this bill and your profile."
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-          <span>Tag This Bill</span>
+            onClick={() => {
+              if (!isAuthenticated || !isLobbyist) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('intent', 'tag');
+                url.searchParams.set('billId', billId);
+                window.location.href = `/login?redirect=${encodeURIComponent(url.pathname + url.search)}`;
+                return;
+              }
+              setShowModal(true);
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 font-medium rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+            title="Tag your position (support, monitor, oppose) and optional notes. Visibility controls decide if it shows on this bill and your profile."
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            <span>Tag This Bill</span>
           </button>
-          <div className="relative group">
-            <Info className="w-4 h-4 text-gray-400" />
-            <span className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
+          <div className="absolute -top-1 -right-1 group">
+            <Info className="w-4 h-4 text-gray-400 bg-white rounded-full shadow p-0.5" />
+            <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
               Tag your position (support, monitor, oppose) and optional notes. Visibility controls decide if it shows on this bill and your profile.
             </span>
           </div>

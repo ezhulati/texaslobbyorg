@@ -231,7 +231,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
             </svg>
             <span>Tag This Bill</span>
           </button>
-          <div className="absolute -top-1 -right-1 group">
+          <div className="absolute top-1 right-1 group">
             <Info className="w-4 h-4 text-gray-400 bg-white rounded-full shadow p-0.5" />
             <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 hidden group-hover:block bg-gray-900 text-white text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10">
               Tag your position (support, monitor, oppose) and optional notes. Visibility controls decide if it shows on this bill and your profile.

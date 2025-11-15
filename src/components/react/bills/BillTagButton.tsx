@@ -24,6 +24,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
   const [lobbyistId, setLobbyistId] = useState<string | null>(null);
 
   // Form state
@@ -64,6 +65,13 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
       }
     } catch {}
   }, [isAuthenticated, isLobbyist, billId, initialLobbyistId]);
+
+  useEffect(() => {
+    if (successToast) {
+      const t = setTimeout(() => setSuccessToast(null), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [successToast]);
 
   const checkTagStatus = async (lid: string) => {
     try {
@@ -115,6 +123,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
         if (!response.ok) {
           throw new Error('Failed to update tag');
         }
+        setSuccessToast('Tag updated');
       } else {
         // Create new tag
         const response = await fetch(`/api/bills/${billId}/tags`, {
@@ -134,6 +143,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
         }
 
         setIsTagged(true);
+        setSuccessToast('Tag added');
       }
 
       setShowModal(false);
@@ -164,6 +174,7 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
       setIsTagged(false);
       setExistingTag(null);
       setShowModal(false);
+      setSuccessToast('Tag removed');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to remove tag';
       setError(message);
@@ -180,6 +191,11 @@ export default function BillTagButton({ billId, billNumber, isAuthenticated, isL
 
   return (
     <>
+      {successToast && (
+        <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+          {successToast}
+        </div>
+      )}
       {isTagged ? (
         <div className="flex items-center gap-2">
           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${tagTypeConfig[existingTag?.tag_type || 'monitoring'].bgClass} ${tagTypeConfig[existingTag?.tag_type || 'monitoring'].textClass} ${tagTypeConfig[existingTag?.tag_type || 'monitoring'].borderClass}`}>

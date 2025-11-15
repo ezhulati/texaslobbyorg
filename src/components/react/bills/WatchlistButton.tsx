@@ -97,6 +97,7 @@ export default function WatchlistButton({
         }
 
         setIsInWatchlist(false);
+        setSuccessToast('Removed from watchlist');
       } else {
         // Add to watchlist
         const response = await fetch(`/api/watchlist/${userId}/bills`, {
@@ -111,6 +112,7 @@ export default function WatchlistButton({
         }
 
         setIsInWatchlist(true);
+        setSuccessToast('Added to watchlist');
       }
 
       onSuccess?.();
@@ -122,6 +124,14 @@ export default function WatchlistButton({
       setIsLoading(false);
     }
   };
+
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  useEffect(() => {
+    if (successToast) {
+      const t = setTimeout(() => setSuccessToast(null), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [successToast]);
 
   // Icon-only variant
   if (variant === 'icon') {
@@ -219,6 +229,11 @@ export default function WatchlistButton({
       {error && (
         <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
           {error}
+        </div>
+      )}
+      {successToast && (
+        <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+          {successToast}
         </div>
       )}
     </div>
